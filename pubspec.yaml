@@ -1,0 +1,10 @@
+name: Daxe
+author: Damien Guillaume
+description: Dart XML Editor
+dependencies:
+  browser: any
+  meta: any
+
+#dependencies:
+#  js: any
+#  unittest: any

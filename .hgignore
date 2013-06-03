@@ -1,0 +1,10 @@
+syntax: glob
+*~
+.settings
+packages
+*.dart.js
+*.dart.js.deps
+*.dart.js.map
+part.js
+part.js.map
+

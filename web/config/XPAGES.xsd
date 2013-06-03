@@ -200,8 +200,6 @@
             <xs:element ref="TABLEAU"/>
             <xs:element ref="ENVIMAGE"/>
             <xs:element ref="APPLICATION"/>
-            <xs:element ref="APPLET"/>
-            <xs:element ref="FLASH"/>
             <xs:element ref="COMMENTAIRE"/>
             <xs:element ref="CODE"/>
             <xs:element ref="EXERCICE"/>
@@ -253,8 +251,6 @@
             <xs:element ref="TABLEAU"/>
             <xs:element ref="ENVIMAGE"/>
             <xs:element ref="APPLICATION"/>
-            <xs:element ref="APPLET"/>
-            <xs:element ref="FLASH"/>
             <xs:element ref="COMMENTAIRE"/>
             <xs:element ref="CODE"/>
             <xs:element ref="EXERCICE"/>
@@ -658,74 +654,6 @@
     </xs:complexType>
 </xs:element>
 
-<xs:element name="APPLET">
-    <xs:annotation>
-        <xs:documentation>
-        Applet Java. Les fichiers (classes, archives, données) doivent être placés
-        dans le dossier de la contribution.
-        </xs:documentation>
-    </xs:annotation>
-    <xs:complexType>
-        <xs:sequence>
-            <xs:element ref="PARAM" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element ref="LEGENDE" minOccurs="0"/>
-            <xs:element ref="CREDIT" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="titre" type="xs:string" use="optional">
-            <xs:annotation>
-                <xs:documentation>
-                    Titre de l'applet
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="classe" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Classe principale de l'applet.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="archive" type="xs:string" use="optional">
-            <xs:annotation>
-                <xs:documentation>
-                    Archive jar optionnelle.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="largeur" type="xs:int" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Largeur de la zone de l'applet, en pixels.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="hauteur" type="xs:int" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Hauteur de la zone de l'applet, en pixels.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="localisation" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Positionnement souhaité pour l'applet :
-                    - texte : dans le texte
-                    - page : dans la page à côté du texte
-                    - icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
-                </xs:documentation>
-            </xs:annotation>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="texte"/>
-                    <xs:enumeration value="page"/>
-                    <xs:enumeration value="icône"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
-    </xs:complexType>
-</xs:element>
-
 <xs:element name="PARAM">
     <xs:annotation>
         <xs:documentation>
@@ -746,66 +674,6 @@
                     Valeur du paramètre.
                 </xs:documentation>
             </xs:annotation>
-        </xs:attribute>
-    </xs:complexType>
-</xs:element>
-
-<xs:element name="FLASH">
-    <xs:annotation>
-        <xs:documentation>
-        Objet Flash. Les fichiers doivent se trouver dans le dossier de la contribution.
-        </xs:documentation>
-    </xs:annotation>
-    <xs:complexType>
-        <xs:sequence>
-            <xs:element ref="PARAM" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element ref="LEGENDE" minOccurs="0"/>
-            <xs:element ref="CREDIT" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="titre" type="xs:string" use="optional">
-            <xs:annotation>
-                <xs:documentation>
-                    Titre de l'objet Flash.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="fichier" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Chemin vers le fichier SWF, relatif à la contribution.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="largeur" type="xs:int" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Largeur de la zone de l'objet Flash, en pixels.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="hauteur" type="xs:int" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Hauteur de la zone de l'objet Flash, en pixels.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="localisation" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    Positionnement souhaité pour l'objet Flash :
-                    - texte : dans le texte
-                    - page : dans la page à côté du texte
-                    - icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
-                </xs:documentation>
-            </xs:annotation>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="texte"/>
-                    <xs:enumeration value="page"/>
-                    <xs:enumeration value="icône"/>
-                </xs:restriction>
-            </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
 </xs:element>
@@ -868,8 +736,6 @@
             <xs:element ref="TABLEAU"/>
             <xs:element ref="ENVIMAGE"/>
             <xs:element ref="APPLICATION"/>
-            <xs:element ref="APPLET"/>
-            <xs:element ref="FLASH"/>
         </xs:choice>
     </xs:complexType>
 </xs:element>
@@ -926,8 +792,6 @@
             <xs:element ref="TABLEAU"/>
             <xs:element ref="ENVIMAGE"/>
             <xs:element ref="APPLICATION"/>
-            <xs:element ref="APPLET"/>
-            <xs:element ref="FLASH"/>
         </xs:choice>
     </xs:complexType>
 </xs:element>
@@ -972,8 +836,6 @@
             <xs:element ref="TABLEAU"/>
             <xs:element ref="ENVIMAGE"/>
             <xs:element ref="APPLICATION"/>
-            <xs:element ref="APPLET"/>
-            <xs:element ref="FLASH"/>
         </xs:choice>
     </xs:complexType>
 </xs:element>

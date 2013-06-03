@@ -30,8 +30,6 @@
 </MENU>
 <MENU nom="Interactif">
 <MENU_INSERTION nom="APPLICATION"/>
-<MENU_INSERTION nom="APPLET" type_noeud="element"/>
-<MENU_INSERTION nom="FLASH" type_noeud="element"/>
 <MENU_INSERTION nom="PARAM" type_noeud="element"/>
 </MENU>
 <MENU nom="Exercices">
@@ -172,12 +170,6 @@
 <AFFICHAGE_ELEMENT element="LEGENDE" type="zone"/>
 <AFFICHAGE_ELEMENT element="CREDIT" type="zone"/>
 <AFFICHAGE_ELEMENT element="APPLICATION" type="zone">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="APPLET" type="zone">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="FLASH" type="zone">
 <PARAMETRE nom="titreAtt" valeur="titre"/>
 </AFFICHAGE_ELEMENT>
 <AFFICHAGE_ELEMENT element="PARAM" type="vide">
@@ -717,98 +709,6 @@ Hauteur de la zone de l'application, en pixels.
 <TITRE>localisation</TITRE>
 <DOCUMENTATION>
 Positionnement souhaité pour l'application :
-- texte : dans le texte
-- page : dans la page à côté du texte
-- icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">texte</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icône</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="APPLET">
-<TITRE>Applet Java</TITRE>
-<DOCUMENTATION>
-Applet Java. Les fichiers (classes, archives, données) doivent être placés
-dans le dossier de la contribution.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre de l'applet
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="classe">
-<TITRE>classe</TITRE>
-<DOCUMENTATION>
-Classe principale de l'applet.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="archive">
-<TITRE>archive</TITRE>
-<DOCUMENTATION>
-Archive jar optionnelle.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="largeur">
-<TITRE>largeur</TITRE>
-<DOCUMENTATION>
-Largeur de la zone de l'applet, en pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="hauteur">
-<TITRE>hauteur</TITRE>
-<DOCUMENTATION>
-Hauteur de la zone de l'applet, en pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>localisation</TITRE>
-<DOCUMENTATION>
-Positionnement souhaité pour l'applet :
-- texte : dans le texte
-- page : dans la page à côté du texte
-- icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">texte</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icône</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="FLASH">
-<TITRE>Objet Flash</TITRE>
-<DOCUMENTATION>
-Objet Flash. Les fichiers doivent se trouver dans le dossier de la contribution.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre de l'objet Flash.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="fichier">
-<TITRE>fichier</TITRE>
-<DOCUMENTATION>
-Chemin vers le fichier SWF, relatif à la contribution.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="largeur">
-<TITRE>largeur</TITRE>
-<DOCUMENTATION>
-Largeur de la zone de l'objet Flash, en pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="hauteur">
-<TITRE>hauteur</TITRE>
-<DOCUMENTATION>
-Hauteur de la zone de l'objet Flash, en pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>localisation</TITRE>
-<DOCUMENTATION>
-Positionnement souhaité pour l'objet Flash :
 - texte : dans le texte
 - page : dans la page à côté du texte
 - icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
@@ -1655,97 +1555,6 @@ Height for the application area, in pixels.
 <TITRE>layout</TITRE>
 <DOCUMENTATION>
 Position for the application :
-- text : within the text
-- page : in the page next to the text
-- icon : available with a small icon, next to the following paragraph
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">text</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icon</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="APPLET">
-<TITRE>Java applet</TITRE>
-<DOCUMENTATION>
-Java Applet. Its files (classes, archives, data) must be placed
-in the contribution folder.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Applet title
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="classe">
-<TITRE>class</TITRE>
-<DOCUMENTATION>
-Main class for the applet.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="archive">
-<TITRE>archive</TITRE>
-<DOCUMENTATION>
-Optional jar archive.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="largeur">
-<TITRE>width</TITRE>
-<DOCUMENTATION>
-Width for the applet area, in pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="hauteur">
-<TITRE>height</TITRE>
-<DOCUMENTATION>
-Height for the applet area, in pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>layout</TITRE>
-<DOCUMENTATION>
-Position for the applet :
-- text : within the text
-- page : in the page next to the text
-- icon : available with a small icon, next to the following paragraph
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">text</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icon</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="FLASH">
-<TITRE>Flash object</TITRE>
-<DOCUMENTATION>
-Flash object. Its files must be placed in the contribution folder.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Title for the Flash object.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="fichier">
-<TITRE>file</TITRE>
-<DOCUMENTATION>
-Path to the SWF file, relative to the contribution.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="largeur">
-<TITRE>width</TITRE>
-<DOCUMENTATION>
-Width of the Flash object area, in pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="hauteur">
-<TITRE>height</TITRE>
-<DOCUMENTATION>
-Height of the Flash object area, in pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>layout</TITRE>
-<DOCUMENTATION>
-Position for the Flash object :
 - text : within the text
 - page : in the page next to the text
 - icon : available with a small icon, next to the following paragraph

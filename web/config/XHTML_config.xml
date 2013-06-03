@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?><CONFIG_JAXE>
+<?xml version="1.0" encoding="UTF-8"?><CONFIG_JAXE>
 <LANGAGE>
 <FICHIER_SCHEMA nom="xhtml1-strict.xsd"/>
 <RACINE element="html"/>
@@ -370,13 +370,13 @@ Removes all the styles in the selected text
 <TITRE>Document XHTML</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="head">
-<TITRE>Entête (head)</TITRE>
+<TITRE>EntÃªte (head)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="title">
 <TITRE>Titre (title)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="meta">
-<TITRE>Métadonnée (meta)</TITRE>
+<TITRE>MÃ©tadonnÃ©e (meta)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="link">
 <TITRE>Lien (link)</TITRE>
@@ -423,19 +423,19 @@ Removes all the styles in the selected text
 <TITRE>Indentation (blockquote)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="pre">
-<TITRE>Texte préformaté (pre)</TITRE>
+<TITRE>Texte prÃ©formatÃ© (pre)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="em">
 <TITRE>Emphase (em)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="strong">
-<TITRE>Appuyé (strong)</TITRE>
+<TITRE>AppuyÃ© (strong)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="tt">
-<TITRE>Télétype (tt)</TITRE>
+<TITRE>TÃ©lÃ©type (tt)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="abbr">
-<TITRE>Abbréviation (abbr)</TITRE>
+<TITRE>AbbrÃ©viation (abbr)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="acronym">
 <TITRE>Acronyme (acronym)</TITRE>
@@ -463,22 +463,22 @@ Removes all the styles in the selected text
 <TITRE>Listes/Tables</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="ul">
-<TITRE>Liste à points (ul)</TITRE>
+<TITRE>Liste Ã  points (ul)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="li">
-<TITRE>élément de liste (li)</TITRE>
+<TITRE>Ã©lÃ©ment de liste (li)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="ol">
-<TITRE>Liste numérotée (ol)</TITRE>
+<TITRE>Liste numÃ©rotÃ©e (ol)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="dl">
-<TITRE>Liste de définitions (dl)</TITRE>
+<TITRE>Liste de dÃ©finitions (dl)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="dt">
-<TITRE>Titre de liste de déf. (dt)</TITRE>
+<TITRE>Titre de liste de dÃ©f. (dt)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="dd">
-<TITRE>Définition de liste de déf. (dd)</TITRE>
+<TITRE>DÃ©finition de liste de dÃ©f. (dd)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="table">
 <TITRE>Table (table)</TITRE>
@@ -494,7 +494,7 @@ Removes all the styles in the selected text
 <TITRE>Objet (object)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="param">
-<TITRE>Paramètre (param)</TITRE>
+<TITRE>ParamÃ¨tre (param)</TITRE>
 </STRINGS_MENU>
 
 <STRINGS_MENU menu="formulaires">
@@ -504,16 +504,16 @@ Removes all the styles in the selected text
 <TITRE>Formulaire (form)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="input">
-<TITRE>Entrée de donnée (input)</TITRE>
+<TITRE>EntrÃ©e de donnÃ©e (input)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="label">
 <TITRE>Label (label)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="select">
-<TITRE>Menu de sélection (select)</TITRE>
+<TITRE>Menu de sÃ©lection (select)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="option">
-<TITRE>Option de sélection (option)</TITRE>
+<TITRE>Option de sÃ©lection (option)</TITRE>
 </STRINGS_MENU>
 <STRINGS_MENU menu="textarea">
 <TITRE>Zone de texte (textarea)</TITRE>
@@ -525,7 +525,7 @@ Removes all the styles in the selected text
 <STRINGS_MENU menu="normal">
 <TITRE>Sans style</TITRE>
 <DOCUMENTATION>
-Retire tous les styles du texte sélectionné, le transformant en texte normal
+Retire tous les styles du texte sÃ©lectionnÃ©, le transformant en texte normal
 </DOCUMENTATION>
 </STRINGS_MENU>
 <STRINGS_MENU menu="sup">

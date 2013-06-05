@@ -21,6 +21,7 @@ class DNTable extends DaxeNode {
   String _trtag, _tdtag, _thtag;
   x.Element _trref, _tdref, _thref;
   String _colspanAttr, _rowspanAttr, _alignAttr;
+  bool header;
   
   DNTable.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     init();
@@ -46,6 +47,8 @@ class DNTable extends DaxeNode {
         appendChild(tr);
       }
     }
+    if (firstChild != null && firstChild.firstChild is DNTH)
+      header = true;
   }
   
   void init() {
@@ -58,6 +61,7 @@ class DNTable extends DaxeNode {
     _colspanAttr = doc.cfg.elementParameterValue(ref, 'colspanAttr', null);
     _rowspanAttr = doc.cfg.elementParameterValue(ref, 'rowspanAttr', null);
     _alignAttr = doc.cfg.elementParameterValue(ref, 'alignAttr', null);
+    header = false;
   }
   
   @override
@@ -119,6 +123,17 @@ class DNTable extends DaxeNode {
     bCell.onClick.listen((h.MouseEvent event) => cellAttributes());
     bCell.style.marginRight = '1em';
     form.append(bCell);
+    
+    h.CheckboxInputElement bheader = new h.CheckboxInputElement();
+    bheader.id = "header$id";
+    bheader.checked = header;
+    bheader.onClick.listen((h.MouseEvent event) => toggleHeader());
+    form.append(bheader);
+    h.LabelElement headerLabel = new h.LabelElement();
+    headerLabel.htmlFor = "header$id";
+    headerLabel.appendText(Strings.get('table.header'));
+    headerLabel.style.marginRight = '1em';
+    form.append(headerLabel);
     
     h.ButtonElement bMergeRight = new h.ButtonElement();
     bMergeRight.attributes['type'] = 'button';
@@ -245,7 +260,11 @@ class DNTable extends DaxeNode {
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert'));
     int x = getCellX(td);
     for (DaxeNode tr in childNodes) {
-      DNTD newtd = new DNTD.fromRef(_tdref);
+      DNTD newtd;
+      if (firstChild == tr && header)
+        newtd = new DNTH.fromRef(_thref);
+      else
+        newtd = new DNTD.fromRef(_tdref);
       int offset = 0;
       for (DNTD td = tr.firstChild; td != null && x >= getCellX(td); td = td.nextSibling) {
         offset++;
@@ -365,6 +384,44 @@ class DNTable extends DaxeNode {
     return(dy);
   }
   
+  void toggleHeader() {
+    DNTR firstTR = firstChild;
+    if (firstTR == null)
+      return;
+    DaxeNode cell = firstTR.firstChild;
+    while (cell != null) {
+      DaxeNode nextCell = cell.nextSibling;
+      if (header && cell is DNTH) {
+        DNTD td = new DNTD.fromRef(_tdref);
+        DaxeNode child = cell.firstChild;
+        while (child != null) {
+          DaxeNode nextChild = child.nextSibling;
+          cell.removeChild(child);
+          td.appendChild(child);
+          child = nextChild;
+        }
+        for (DaxeAttr attr in cell.attributes)
+          td.setAttribute(attr.name, attr.value);
+        cell.replaceWith(td);
+      } else if (!header && cell is DNTD && cell is! DNTH) {
+        DNTH th = new DNTH.fromRef(_thref);
+        DaxeNode child = cell.firstChild;
+        while (child != null) {
+          DaxeNode nextChild = child.nextSibling;
+          cell.removeChild(child);
+          th.appendChild(child);
+          child = nextChild;
+        }
+        for (DaxeAttr attr in cell.attributes)
+          th.setAttribute(attr.name, attr.value);
+        cell.replaceWith(th);
+      }
+      cell = nextCell;
+    }
+    header = !header;
+    firstTR.updateHTML();
+  }
+  
   void mergeRight([DNTD td]) {
     if (td == null)
       td = getSelectedCell();
@@ -423,7 +480,11 @@ class DNTable extends DaxeNode {
       return;
     if (td.colspan < 2)
       return;
-    DNTD newtd = new DNTD.fromRef(_tdref);
+    DNTD newtd;
+    if (td is DNTH)
+      newtd = new DNTH.fromRef(_thref);
+    else
+      newtd = new DNTD.fromRef(_tdref);
     DNTR tr = td.parent;
     UndoableEdit edit;
     if (parentEdit != null)

@@ -374,6 +374,17 @@ abstract class DaxeNode {
     dn.nextSibling = null;
   }
   
+  void replaceWith(DaxeNode dn) {
+    if (parent.firstChild == this)
+      parent.firstChild = dn;
+    else
+      previousSibling.nextSibling = dn;
+    dn.parent = parent;
+    dn.nextSibling = nextSibling;
+    parent = null;
+    nextSibling = null;
+  }
+  
   void normalize() {
     for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
       while (dn.nodeType == TEXT_NODE && dn.nextSibling != null &&

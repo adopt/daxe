@@ -376,6 +376,7 @@ div.table table {
 }
 
 div.table table tr td {
+  min-width: 2em;
   border: 1px solid #000000;
   word-break: break-all;
   padding: 2px;

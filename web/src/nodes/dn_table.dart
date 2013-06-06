@@ -272,12 +272,20 @@ class DNTable extends DaxeNode {
       edit.addSubEdit(new UndoableEdit.insertNode(new Position(tr, offset), newtd));
     }
     doc.doNewEdit(edit);
+    page.moveCursorTo(new Position(td.nextSibling, 0));
   }
   
   void removeColumn() {
     DNTD td = getSelectedCell();
     if (td == null)
       return;
+    Position futurePos;
+    if (td.nextSibling != null)
+      futurePos = new Position(td.nextSibling, 0);
+    else if (td.previousSibling != null)
+      futurePos = new Position(td.previousSibling, 0);
+    else
+      futurePos = null;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove'));
     int x = getCellX(td);
     int y = 0;
@@ -291,6 +299,8 @@ class DNTable extends DaxeNode {
       y++;
     }
     doc.doNewEdit(edit);
+    if (futurePos != null)
+      page.moveCursorTo(futurePos);
   }
   
   void cellAttributes() {
@@ -614,6 +624,8 @@ class DNTD extends DaxeNode {
       td.append(dn.html());
       dn = dn.nextSibling;
     }
+    // without a space at the end, a newline at the end of a cell does not create additional
+    // space for the cell
     td.appendText(' ');
     return(td);
   }

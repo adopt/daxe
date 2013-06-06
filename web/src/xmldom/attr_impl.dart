@@ -94,13 +94,13 @@ class AttrImpl extends NodeImpl implements Attr {
     }
   }
   
-  AttrImpl.fromDH(final Document doc, final h.Attr attr) {
+  AttrImpl.fromDH(final Document doc, final String localName, final String value) {
     specified = true;
     ownerElement = null;
     isId = false;
     
-    nodeName = attr.localName; // KNOWN BUG: should be name
-    nodeValue = attr.nodeValue;
+    nodeName = localName; // KNOWN BUG: should be name
+    nodeValue = value;
     nodeType = Node.ATTRIBUTE_NODE;
     parentNode = null;
     childNodes = null;
@@ -110,9 +110,9 @@ class AttrImpl extends NodeImpl implements Attr {
     nextSibling = null;
     attributes = null;
     ownerDocument = doc;
-    namespaceURI = attr.$dom_namespaceUri;
+    namespaceURI = null;
     prefix = null; // KNOW BUG, see http://code.google.com/p/dart/issues/detail?id=8521
-    localName = attr.localName;
+    this.localName = localName;
   }
   
   Node cloneNode(bool deep) {

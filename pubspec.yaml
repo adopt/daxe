@@ -3,6 +3,7 @@ author: Damien Guillaume
 description: Dart XML Editor
 dependencies:
   browser: any
+  crypto: any
   meta: any
 
 #dependencies:

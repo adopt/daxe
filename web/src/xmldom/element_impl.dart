@@ -148,7 +148,9 @@ class ElementImpl extends NodeImpl implements Element {
           n2 = new ElementImpl.fromDH(ownerDocument, n as h.Element);
           break;
         case Node.ATTRIBUTE_NODE:
-          n2 = new AttrImpl.fromDH(ownerDocument, n as h.Attr);
+          //n2 = new AttrImpl.fromDH(ownerDocument, n as h.Attr);
+          // no longer possible, attributes are now added elsewhere
+          assert(false);
           break;
         case Node.TEXT_NODE:
           n2 = new TextImpl.fromDH(ownerDocument, n as h.Text);

@@ -27,11 +27,10 @@ library daxe;
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:crypto';
 import 'dart:html' as h;
 import 'dart:math';
-import 'dart:uri';
 
+import 'package:crypto/crypto.dart';
 import 'package:meta/meta.dart';
 //import 'package:js/js.dart' as js;
 
@@ -92,7 +91,7 @@ void main() {
       if (lparam[0] == 'config')
         config = lparam[1];
       else if (lparam[0] == 'file')
-        file = decodeUriComponent(lparam[1]);
+        file = Uri.decodeComponent(lparam[1]);
       else if (lparam[0] == 'save')
         saveURL = lparam[1];
     }

@@ -221,9 +221,10 @@ class Position {
       h.Element hn = _dn.getHTMLContentsNode();
       if (hn == null || hn.nodes.length == 0)
         return(null);
+      assert(hn.nodes.first is h.Text);
       h.Text n = hn.nodes.first;
       int offset = htmlOffset;
-      String s = n.text; // Dart bug here sometimes (type int/String ?!?)
+      String s = n.text;
       assert(s.length != 0);
       /*
       h.Text n2 = new h.Text(s.substring(offset));
@@ -286,6 +287,7 @@ class Position {
             h.Rect r = range.getClientRects().last;
             pt = new Point(r.right, r.top);
           } else {
+            // FIXME: adding a span with text can change a table layout with Firefox, causing wrong results
             h.SpanElement spos = new h.SpanElement();
             spos.appendText("|");
             if (n.nextNode == null)
@@ -297,6 +299,7 @@ class Position {
             spos.remove();
           }
         } else {
+          // FIXME: does not work with IE9 when 2 \n are together
           range.setStart(n, offset);
           range.setEnd(n, offset + 1);
           List<h.Rect> rects = range.getClientRects();
@@ -322,6 +325,8 @@ class Position {
       if (children != null && _dnOffset > 0 && _dnOffset == children.length) {
         // at the end of the children
         h.Node n = children[_dnOffset-1].getHTMLNode();
+        if (n == null)
+          return(null);
         h.Rect r;
         if (n is h.ImageElement || n is h.TableRowElement) {
           r = n.getBoundingClientRect();
@@ -330,8 +335,8 @@ class Position {
           r = n.getBoundingClientRect();
           return(new Point(r.left, r.bottom));
         } else {
-          if (n == null)
-            return(null);
+          /*
+          // FIXME: adding a span with text can change a table layout with Firefox, causing wrong results
           h.SpanElement spos = new h.SpanElement();
           spos.append(new h.Text("|"));
           n.append(spos);
@@ -344,6 +349,13 @@ class Position {
           if (r == null)
             return(null);
           return(new Point(r.left, r.top));
+          */
+          // this seems to work (top right corner of the last rect of the last child's HTML):
+          List<h.Rect> rects = n.getClientRects();
+          if (rects.length == 0)
+            return(null);
+          h.Rect r = rects.last;
+          return(new Point(r.right, r.top));
         }
       } else if (children != null && _dnOffset < children.length) {
         // within the children

@@ -296,7 +296,12 @@ abstract class DaxeNode {
         if (nextHn != null) {
           nextHn.parent.insertBefore(child.html(), nextHn);
         } else if (prevHn != null) {
-          prevHn.parent.append(child.html());
+          // there might be some nodes at the end of the parent that we want
+          // to keep at the end (for instance the space at the end of a cell)
+          if (prevHn.nextNode != null)
+            prevHn.parent.insertBefore(child.html(), prevHn.nextNode);
+          else
+            prevHn.parent.append(child.html());
         } else {
           // no sibling, there might not even be a content div...
           //TODO getHTMLContentsNode
@@ -604,6 +609,7 @@ abstract class DaxeNode {
      but caretRangeFromPoint does not work in Firefox, and rangeParent/rangeOffset
      do not exist in Dart...
      cf http://stackoverflow.com/q/3189812/438970
+     and http://code.google.com/p/dart/issues/detail?id=9227
      */
     Position pos = new Position(this, 0);
     
@@ -616,9 +622,10 @@ abstract class DaxeNode {
           continue;
         double hnx1, hny1, hnx2, hny2;
         double lineHeight;
+        // NOTE: the main problem here is to avoid adding spans to find the position
         if (hn is h.DivElement && hn.nodes.first is h.SpanElement &&
             hn.nodes.last is h.SpanElement) {
-          // this is an optimization, to avoid appending too many spans
+          // we assume here that the spans are tags, not text with a \n inside
           h.Element span_test = hn.nodes.first;
           h.Rect box = span_test.getBoundingClientRect();
           hnx1 = box.left;
@@ -628,8 +635,10 @@ abstract class DaxeNode {
           box = span_test.getBoundingClientRect();
           hnx2 = box.right;
           hny2 = box.bottom;
-        } else if (hn is h.TableCellElement || hn is h.TableRowElement ||
+        } else if (hn is h.DivElement || hn is h.TableCellElement || hn is h.TableRowElement ||
             hn is h.TableElement || hn is h.ImageElement || hn.classes.contains('form')) {
+          // block
+          // for DivElement: no span to tag the div: we take the entire div into account
           h.Rect box = hn.getBoundingClientRect();
           hnx1 = box.left;
           hny1 = box.top;
@@ -639,10 +648,44 @@ abstract class DaxeNode {
             hnx2 = box.right;
           hny2 = box.bottom;
           lineHeight = box.height;
+        } else if (hn is h.SpanElement && hn.nodes.length == 1 && hn.nodes.first is h.Text &&
+            !hn.nodes.first.nodeValue.endsWith('\n')) {
+          // text node that does not end with \n
+          List<h.Rect> rects = hn.getClientRects();
+          if (rects.length == 0)
+            return(null);
+          h.Rect box = rects.first;
+          hnx1 = box.left;
+          hny1 = box.top;
+          box = rects.last;
+          hnx2 = box.right;
+          hny2 = box.bottom;
+          lineHeight = box.height;
+        } else if (hn.nodes.last is h.SpanElement && hn.nodes.last.nodes.last is h.Text &&
+            !hn.nodes.last.nodes.last.nodeValue.endsWith('\n')) {
+          // span with a text node at the end which does not end with \n
+          h.Element span_test = hn.nodes.first;
+          List<h.Rect> rects = span_test.getClientRects();
+          if (rects.length == 0)
+            return(null);
+          h.Rect box = rects.first;
+          hnx1 = box.left;
+          hny1 = box.top;
+          span_test = hn.nodes.last;
+          rects = span_test.getClientRects();
+          if (rects.length == 0)
+            return(null);
+          box = rects.last;
+          hnx2 = box.right;
+          hny2 = box.bottom;
+          lineHeight = box.height;
         } else {
-          // note: for a span, getBoundingClientRect can return a wrong bottom when
-          // there are \n inside, so we can't even use this on hn to avoid
-          // appending unecessary spans
+          // NOTE: for a span, getBoundingClientRect and getClientRects return a wrong bottom when
+          // there are \n inside (except maybe with IE), so we can't even use them on hn to avoid
+          // appending spans (and bec. it depends on browsers we can't just add a \n).
+          // Using an empty span does not work.
+          // FIXME: adding a span with text can change a table layout with Firefox,
+          // causing wrong results and side effects
           h.Element span_test = new h.Element.tag('span');
           span_test.append(new h.Text("|"));
           if (hn.nodes.isEmpty)
@@ -718,6 +761,7 @@ abstract class DaxeNode {
             }
           } else {
             // ranges are not reliable for positions of newline characters
+            // FIXME: adding text can change a table layout with Firefox, causing wrong results
             String s = ht.text;
             ht.text = "${s.substring(0, i)}|${s.substring(i)}";
             range.setStart(ht, i);

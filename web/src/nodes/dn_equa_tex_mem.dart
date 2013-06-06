@@ -119,7 +119,7 @@ class DNEquaTexMem extends DaxeNode {
     if (text == null || text == '')
       text = '?';
     Completer<String> completer = new Completer<String>();
-    String url = "$_server?${encodeUriComponent(text)}";
+    String url = "$_server?${Uri.encodeComponent(text)}";
     // note: setting responseType does not work with synchronous requests
     // warning: arraybuffer is not supported by Internet Explorer before IE10
     h.HttpRequest.request(url, method: 'GET', responseType: 'arraybuffer'
@@ -292,7 +292,7 @@ class TeXEquationDialog {
     String text = _equationText;
     if (text == null || text == '')
       text = '?';
-    return("$_server?${encodeUriComponent(text)}");
+    return("$_server?${Uri.encodeComponent(text)}");
   }
   
   void updateImg() {

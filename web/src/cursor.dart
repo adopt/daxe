@@ -84,6 +84,7 @@ class Cursor {
     if (pos1 == null)
       return(null);
     pos1.moveInsideTextNodeIfPossible();
+    assert(pos1.dn != null);
     /*
      * we can't use window.getSelection in a MouseDown event,
      * we need another way to get the position inside text, see DaxeNode.findPosition
@@ -154,7 +155,9 @@ class Cursor {
       }
       String v = ta.value;
       ta.value = '';
-      if (selectionStart.dn is DNText && selectionStart.dn.parent is DNItem &&
+      if (((selectionStart.dn is DNItem) ||
+          (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
+          selectionStart.dnOffset == selectionStart.dn.offsetLength &&
           v == '\n' && !shift) {
         // \n in an item: adding a new list item
         // we will only do that once, in keyUp
@@ -203,10 +206,16 @@ class Cursor {
       }
       String v = ta.value;
       ta.value = '';
-      if (selectionStart.dn is DNText && selectionStart.dn.parent is DNItem &&
+      if (((selectionStart.dn is DNItem) ||
+          (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
+          selectionStart.dnOffset == selectionStart.dn.offsetLength &&
           v == '\n' && !shift) {
         // \n in an item: adding a new list item
-        DNItem item = selectionStart.dn.parent;
+        DNItem item;
+        if (selectionStart.dn is DNItem)
+          item = selectionStart.dn;
+        else
+          item = selectionStart.dn.parent;
         DNItem newitem = NodeFactory.create(item.ref);
         doc.insertNode(newitem,
             new Position(item.parent, item.parent.offsetOf(item) + 1));

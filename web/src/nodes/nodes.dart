@@ -23,11 +23,10 @@ library nodes;
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:crypto';
 import 'dart:html' as h;
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:uri';
+import 'package:crypto/crypto.dart';
 import 'package:meta/meta.dart';
 
 import '../xmldom/xmldom.dart' as x;

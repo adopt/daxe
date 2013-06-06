@@ -66,7 +66,7 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
   
   DocumentTypeImpl.fromDH(final Document doc, final h.DocumentType dt) {
     // BUG: name, publicId, systemId ???
-    name = dt.localName;
+    name = dt.$dom_localName;
     publicId = null;
     systemId = null;
     

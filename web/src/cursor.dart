@@ -563,7 +563,7 @@ class Cursor {
     h.Text n = parent.nodes.first;
     h.Node next = n.nextNode;
     hide();
-    String s = n.text;
+    String s = dn.nodeValue;
     if (offset1 == 0) {
       n.remove();
     } else {
@@ -572,7 +572,9 @@ class Cursor {
     h.SpanElement span = new h.SpanElement();
     spansSelection.add(span);
     span.classes.add('selection');
-    span.appendText(s.substring(offset1, offset2));
+    //span.appendText(s.substring(offset1, offset2));
+    //see comment in deSelect
+    span.append(new h.Text(s.substring(offset1, offset2)));
     if (next == null)
       parent.append(span);
     else
@@ -594,7 +596,10 @@ class Cursor {
         sb.write(hn.text);
       }
       parent.nodes.clear();
-      parent.appendText(sb.toString());
+      // parent.appendText(sb.toString());
+      // IE9 replaces \n by BR here when appendText is used
+      // http://code.google.com/p/dart/issues/detail?id=11180
+      parent.append(new h.Text(sb.toString()));
       selectionEnd = new Position.clone(selectionStart);
       visible = true;
     }

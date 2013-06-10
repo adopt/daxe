@@ -299,7 +299,6 @@ class Position {
             spos.remove();
           }
         } else {
-          // FIXME: does not work with IE9 when 2 \n are together
           range.setStart(n, offset);
           range.setEnd(n, offset + 1);
           List<h.Rect> rects = range.getClientRects();
@@ -308,6 +307,8 @@ class Position {
             r = rects.first;
           else if (s[offset] == '\n' && rects.length == 3)
             r = rects[1];
+          else if (s[offset-1] == '\n' && s[offset] == '\n' && rects.length == 2) // IE
+            r = rects.first;
           else
             r = rects.last;
           pt = new Point(r.left, r.top);

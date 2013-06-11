@@ -661,9 +661,11 @@ abstract class DaxeNode {
           hnx2 = box.right;
           hny2 = box.bottom;
           lineHeight = box.height;
-        } else if (hn.nodes.last is h.SpanElement && hn.nodes.last.nodes.last is h.Text &&
+        } else if (hn.nodes.first is h.Element && hn.nodes.last is h.SpanElement &&
+            hn.nodes.last.nodes.last is h.Text &&
             !hn.nodes.last.nodes.last.nodeValue.endsWith('\n')) {
           // span with a text node at the end which does not end with \n
+          // note: possibles selections on the text make the tests a bit complex...
           h.Element span_test = hn.nodes.first;
           List<h.Rect> rects = span_test.getClientRects();
           if (rects.length == 0)

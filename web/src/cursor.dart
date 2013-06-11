@@ -28,7 +28,7 @@ class Cursor {
   List<h.SpanElement> spansSelection = new List<h.SpanElement>();
   List<DaxeNode> selectedNodes = new List<DaxeNode>();
   bool visible;
-  const Duration delay = const Duration(milliseconds: 700);
+  static const Duration delay = const Duration(milliseconds: 700);
   Timer timer;
   HashMap<int, ActionFunction> shortcuts;
   
@@ -427,20 +427,20 @@ class Cursor {
   void setCaretStyle() {
     bool horizontal; // horizontal caret between block elements
     h.Element hparent = selectionStart.dn.getHTMLNode();
-    bool parentBlock = (hparent is h.DivElement || hparent is h.TableElement || hparent is h.UListElement);
+    bool parentBlock = _isBlock(hparent);
     if (parentBlock && selectionStart.dn.offsetLength > 0) {
       bool prevBlock;
       if (selectionStart.dnOffset > 0) {
         DaxeNode prev = selectionStart.dn.childAtOffset(selectionStart.dnOffset - 1);
         h.Element hprev = prev.getHTMLNode();
-        prevBlock = (hprev is h.DivElement || hprev is h.TableElement || hprev is h.UListElement);
+        prevBlock = _isBlock(hprev);
       } else
         prevBlock = true;
       bool nextBlock;
       if (selectionStart.dnOffset < selectionStart.dn.offsetLength) {
         DaxeNode next = selectionStart.dn.childAtOffset(selectionStart.dnOffset);
         h.Element hnext = next.getHTMLNode();
-        nextBlock = (hnext is h.DivElement || hnext is h.TableElement || hnext is h.UListElement);
+        nextBlock = _isBlock(hnext);
       } else
         nextBlock = true;
       horizontal = prevBlock && nextBlock;
@@ -450,6 +450,10 @@ class Cursor {
       caret.classes.add('horizontal');
     else if (caret.classes.contains('horizontal'))
       caret.classes.remove('horizontal');
+  }
+  
+  bool _isBlock(h.Element el) {
+    return(el is h.DivElement || el is h.TableElement || el is h.UListElement || el is h.LIElement);
   }
   
   void moveTo(Position pos) {
@@ -508,22 +512,25 @@ class Cursor {
         }
       }
     } else {
-      DaxeNode parent = selectionEnd.dn;
-      if (parent.nodeType == DaxeNode.TEXT_NODE) {
-        parent = parent.parent;
-      }
-      while (new Position(parent, 0) > selectionStart &&
-          new Position(parent, parent.offsetLength) > selectionEnd) {
-        selectionEnd = new Position(parent.parent, parent.parent.offsetOf(parent));
-        parent = parent.parent;
-      }
-      if (selectionStart.dn.nodeType == DaxeNode.TEXT_NODE &&
-          selectionEnd.dn.nodeType == DaxeNode.TEXT_NODE &&
-          selectionStart.dn.parent != selectionEnd.dn.parent) {
-        selectionEnd = new Position(selectionEnd.dn, 0);
+      DaxeNode startParent = selectionStart.dn;
+      if (startParent.nodeType == DaxeNode.TEXT_NODE)
+        startParent = startParent.parent;
+      if (selectionEnd > new Position(startParent, startParent.offsetLength))
+        selectionEnd = new Position(startParent, startParent.offsetLength);
+      else {
+        DaxeNode endParent = selectionEnd.dn;
+        if (endParent.nodeType == DaxeNode.TEXT_NODE)
+          endParent = endParent.parent;
+        if (endParent != startParent) {
+          while (endParent.parent != startParent) {
+            endParent = endParent.parent;
+          }
+          selectionEnd = new Position(startParent, startParent.offsetOf(endParent));
+        }
       }
       DaxeNode firstNode;
-      if (selectionStart.dn.nodeType == DaxeNode.ELEMENT_NODE) {
+      if (selectionStart.dn.nodeType == DaxeNode.ELEMENT_NODE ||
+          selectionStart.dn.nodeType == DaxeNode.DOCUMENT_NODE) {
         firstNode = selectionStart.dn.childAtOffset(selectionStart.dnOffset);
         if (firstNode != null) {
           Position p2 = new Position(selectionStart.dn, selectionStart.dnOffset + 1);
@@ -553,7 +560,9 @@ class Cursor {
         selectText(selectionEnd.dn, 0, selectionEnd.dnOffset);
       }
     }
-    hide();
+    if (selectionEnd != selectionStart)
+      hide();
+    page.updateAfterPathChange();
   }
   
   void selectText(DaxeNode dn, int offset1, int offset2) {

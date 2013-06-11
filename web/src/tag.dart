@@ -102,11 +102,7 @@ class Tag {
     } else
       span.append(new h.Text(title));
     span.onDoubleClick.listen((h.MouseEvent event) {
-      // select the element
-      int offset = _dn.parent.offsetOf(_dn);
-      Position start = new Position(_dn.parent, offset);
-      Position end = new Position(_dn.parent, offset+1);
-      page._cursor.setSelection(start, end);
+      page.selectNode(_dn);
       event.preventDefault();
       event.stopPropagation();
     });

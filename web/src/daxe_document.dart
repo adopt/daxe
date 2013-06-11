@@ -178,6 +178,7 @@ class DaxeDocument {
         }
       }
     } else {
+      // beginning of the selection
       DaxeNode firstNode;
       if (start.dn.nodeType == DaxeNode.ELEMENT_NODE) {
         firstNode = start.dn.childAtOffset(start.dnOffset);
@@ -193,16 +194,28 @@ class DaxeDocument {
               firstNode.offsetLength - start.dnOffset));
         }
       }
+      // end of the selection
       // the nodes are removed at the end to avoid text merge problems
       if (end.dn.nodeType == DaxeNode.TEXT_NODE && end.dnOffset > 0) {
         edit.addSubEdit(new UndoableEdit.removeString(
             new Position(end.dn, 0), end.dnOffset));
       }
+      // between the first and the end node of the selection
+      // text nodes to remove have to be removed before other nodes to avoid being merged
       for (DaxeNode next = firstNode.nextSibling; next != null; next = next.nextSibling) {
         Position p1 = new Position(next.parent, next.parent.offsetOf(next));
         if (p1 < end) {
-          if (next.nodeType != DaxeNode.TEXT_NODE ||
+          if (next.nodeType == DaxeNode.TEXT_NODE &&
               end >= new Position(next.parent, next.parent.offsetOf(next) + 1)) {
+            edit.addSubEdit(new UndoableEdit.removeNode(next));
+          }
+        } else
+          break;
+      }
+      for (DaxeNode next = firstNode.nextSibling; next != null; next = next.nextSibling) {
+        Position p1 = new Position(next.parent, next.parent.offsetOf(next));
+        if (p1 < end) {
+          if (next.nodeType != DaxeNode.TEXT_NODE) {
             edit.addSubEdit(new UndoableEdit.removeNode(next));
           }
         } else
@@ -315,10 +328,14 @@ class DaxeDocument {
   }
   
   void insert2(DaxeNode dn, Position pos) {
+    //TODO: use UndoableEdit.compound to include all the operations here (removal/insert/paste)
     String content = null;
     if (page.getSelectionStart() != page.getSelectionEnd()) {
       content = page._cursor.copy();
-      removeBetween(page.getSelectionStart(), page.getSelectionEnd());
+      Position selectionStart = page.getSelectionStart();
+      Position selectionEnd = page.getSelectionEnd();
+      page._cursor.deSelect();
+      removeBetween(selectionStart, selectionEnd);
       if (pos.dn.parent == null)
         pos = page.getSelectionStart();
     }
@@ -360,18 +377,22 @@ class DaxeDocument {
     List<x.Element> list = new List<x.Element>();
     Position selectionStart = page.getSelectionStart();
     Position selectionEnd = page.getSelectionEnd();
-    if (selectionStart.dn != selectionEnd.dn)
-      return(list);
-    DaxeNode parent = selectionStart.dn;
+    DaxeNode startParent = selectionStart.dn;
     int startOffset = selectionStart.dnOffset;
+    DaxeNode endParent = selectionEnd.dn;
     int endOffset = selectionEnd.dnOffset;
-    if (parent.nodeType == DaxeNode.TEXT_NODE) {
-      startOffset = parent.parent.offsetOf(parent);
-      endOffset = startOffset;
-      parent = parent.parent;
+    if (startParent.nodeType == DaxeNode.TEXT_NODE) {
+      startOffset = startParent.parent.offsetOf(startParent);
+      startParent = startParent.parent;
     }
+    if (endParent.nodeType == DaxeNode.TEXT_NODE) {
+      endOffset = endParent.parent.offsetOf(endParent);
+      endParent = endParent.parent;
+    }
+    if (startParent != endParent) // this should not happen
+      return(list);
     for (x.Element ref in allowed) {
-      if (doc.cfg.insertIsPossible(parent, startOffset, endOffset, ref))
+      if (doc.cfg.insertIsPossible(startParent, startOffset, endOffset, ref))
         list.add(ref);
     }
     return(list);

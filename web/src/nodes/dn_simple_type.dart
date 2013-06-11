@@ -51,11 +51,7 @@ class DNSimpleType extends DaxeNode {
     span.append(control.html());
     
     span.onDoubleClick.listen((h.MouseEvent event) {
-      // select the element
-      int offset = parent.offsetOf(this);
-      Position start = new Position(parent, offset);
-      Position end = new Position(parent, offset+1);
-      page.cursor.setSelection(start, end);
+      page.selectNode(this);
       event.preventDefault();
       event.stopPropagation();
     });

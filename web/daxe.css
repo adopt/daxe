@@ -359,6 +359,7 @@ div.source_bottom {
 
 ul.list {
   list-style: none;
+  min-height: 1em;
   margin-top: 0em;
   margin-bottom: 0em;
 }

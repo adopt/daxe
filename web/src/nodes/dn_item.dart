@@ -36,6 +36,13 @@ class DNItem extends DaxeNode {
     List<x.Element> attRefs = doc.cfg.elementAttributes(ref);
     if (attRefs != null && attRefs.length > 0)
       bullet1.onClick.listen((h.MouseEvent event) => attributeDialog());
+    else {
+      bullet1.onDoubleClick.listen((h.MouseEvent event) {
+        page.selectNode(this);
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    }
     li.append(bullet1);
     h.SpanElement contents = new h.SpanElement();
     DaxeNode dn = firstChild;
@@ -48,6 +55,13 @@ class DNItem extends DaxeNode {
     bullet2.classes.add('bullet');
     if (attRefs != null && attRefs.length > 0)
       bullet2.onClick.listen((h.MouseEvent event) => attributeDialog());
+    else {
+      bullet2.onDoubleClick.listen((h.MouseEvent event) {
+        page.selectNode(this);
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    }
     li.append(bullet2);
     return(li);
   }

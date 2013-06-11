@@ -23,8 +23,10 @@ class DNList extends DaxeNode {
   
   DNList.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     init();
-    if (_itemref != null)
-      appendChild(new DNItem.fromRef(_itemref));
+    // this is causing problems with paste, appending an item
+    // after a new insert would require a new method in DaxeNode...
+    //if (_itemref != null)
+    //  appendChild(new DNItem.fromRef(_itemref));
   }
   
   DNList.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
@@ -61,7 +63,7 @@ class DNList extends DaxeNode {
     return(div);
   }
   
-  @override
+  /*@override
   Position firstCursorPositionInside() {
     if (firstChild == null) {
       return(null);
@@ -75,6 +77,11 @@ class DNList extends DaxeNode {
       return(null);
     }
     return(new Position(lastChild, lastChild.offsetLength));
+  }*/
+  
+  @override
+  h.Element getHTMLContentsNode() {
+    return(getHTMLNode().nodes[1]);
   }
   
   @override

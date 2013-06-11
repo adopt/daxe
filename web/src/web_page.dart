@@ -21,16 +21,23 @@ part of daxe;
  * Represents a web page (window or tab). A page can only contain a single document.
  */
 class WebPage {
+  static const int doubleClickTime = 400; // maximum time between the clicks, in milliseconds
   InsertPanel _insertP;
   Cursor _cursor;
   Position selectionStart, selectionEnd;
   MenuBar mbar;
   MenuItem undoMenu, redoMenu;
   Menu contextualMenu;
+  Position lastClickPosition;
+  DateTime lastClickTime;
+  bool selectionByWords; // double-click+drag
   
   WebPage() {
     _insertP = new InsertPanel();
     _cursor = new Cursor();
+    lastClickPosition = null;
+    lastClickTime = null;
+    selectionByWords = false;
   }
   
   void newDocument(String configPath) {
@@ -65,7 +72,6 @@ class WebPage {
     _cursor.moveTo(pos);
     updateInsertPanel();
     
-    divdoc.onDoubleClick.listen((h.MouseEvent event) => onDoubleClick(event));
     divdoc.onMouseDown.listen((h.MouseEvent event) => onMouseDown(event));
     divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));
     divdoc.onMouseUp.listen((h.MouseEvent event) => onMouseUp(event));
@@ -135,9 +141,21 @@ class WebPage {
     if (event.shiftKey) {
       selectionStart = new Position.clone(_cursor.selectionStart);
       selectionEnd = Cursor.findPosition(event);
-      _cursor.setSelection(selectionStart, selectionEnd);
-    } else
+      if (selectionEnd != null)
+        _cursor.setSelection(selectionStart, selectionEnd);
+    } else {
       selectionStart = Cursor.findPosition(event);
+      if (selectionStart != null && lastClickPosition == selectionStart &&
+          lastClickTime.difference(new DateTime.now()).inMilliseconds.abs() < doubleClickTime &&
+          selectionStart.dn.nodeType != DaxeNode.ELEMENT_NODE) {
+        // double click
+        List<Position> positions = _extendPositionOnWord(selectionStart);
+        selectionStart = positions[0];
+        selectionEnd = positions[1];
+        _cursor.setSelection(selectionStart, selectionEnd);
+        selectionByWords = true;
+      }
+    }
   }
   
   void onMouseMove(h.MouseEvent event) {
@@ -145,10 +163,40 @@ class WebPage {
       return;
     if (contextualMenu != null)
       return;
-    selectionEnd = Cursor.findPosition(event);
-    if (selectionStart != null && selectionEnd != null)
+    Position newpos = Cursor.findPosition(event);
+    if (selectionByWords) {
+      if (selectionEnd > selectionStart && newpos <= selectionStart)
+        selectionStart = selectionEnd;
+      else if (selectionEnd < selectionStart && newpos >= selectionStart)
+        selectionStart = selectionEnd;
+    }
+    selectionEnd = newpos;
+    if (selectionStart != null && selectionEnd != null) {
+      if (selectionByWords && selectionEnd.dn.nodeType != DaxeNode.ELEMENT_NODE) {
+        List<Position> positions = _extendPositionOnWord(selectionEnd);
+        if (selectionEnd > selectionStart)
+          selectionEnd = positions[1];
+        else
+          selectionEnd = positions[0];
+      }
       _cursor.setSelection(selectionStart, selectionEnd);
+    }
     event.preventDefault();
+  }
+  
+  List<Position> _extendPositionOnWord(Position pos) {
+    List<Position> positions = new List<Position>();
+    String s = pos.dn.nodeValue;
+    int i1 = pos.dnOffset;
+    int i2 = pos.dnOffset;
+    String wstop = ' \n,;:.?!/()[]{}';
+    while (i1 > 0 && wstop.indexOf(s[i1-1]) == -1)
+      i1--;
+    while (i2 < s.length && wstop.indexOf(s[i2]) == -1)
+      i2++;
+    positions.add(new Position(pos.dn, i1));
+    positions.add(new Position(pos.dn, i2));
+    return(positions);
   }
   
   void onMouseUp(h.MouseEvent event) {
@@ -157,39 +205,36 @@ class WebPage {
         event.target is h.TextInputElement ||
         event.target is h.SelectElement)
       return;
-    selectionEnd = Cursor.findPosition(event);
-    if (selectionStart != null && selectionEnd != null)
-      _cursor.setSelection(selectionStart, selectionEnd);
+    if (!selectionByWords)
+      selectionEnd = Cursor.findPosition(event);
+    lastClickPosition = null;
+    if (selectionStart != null && selectionEnd != null) {
+      if (!selectionByWords)
+        _cursor.setSelection(selectionStart, selectionEnd);
+      if (selectionStart == selectionEnd) {
+        lastClickPosition = selectionStart;
+        lastClickTime = new DateTime.now();
+      }
+    }
     selectionStart = null;
     selectionEnd = null;
-    event.preventDefault();
-  }
-  
-  void onDoubleClick(h.MouseEvent event) {
-    // TODO: handle double click + move cursor
-    Position pos = Cursor.findPosition(event);
-    if (pos.dn.nodeType != DaxeNode.ELEMENT_NODE) {
-      String s = pos.dn.nodeValue;
-      int i1 = pos.dnOffset;
-      int i2 = pos.dnOffset;
-      String wstop = ' \n,;:.?';
-      while (i1 > 0 && wstop.indexOf(s[i1-1]) == -1)
-        i1--;
-      while (i2 < s.length && wstop.indexOf(s[i2]) == -1)
-        i2++;
-      _cursor.setSelection(new Position(pos.dn, i1), new Position(pos.dn, i2));
-    }
+    selectionByWords = false;
     event.preventDefault();
   }
   
   void onContextMenu(h.MouseEvent event) {
     if (event.shiftKey)
       return;
-    selectionStart = Cursor.findPosition(event);
-    if (selectionStart != null) {
+    Position newpos = Cursor.findPosition(event);
+    if (newpos != null) {
       event.preventDefault();
-      _cursor.setSelection(selectionStart, selectionStart);
-      showContextualMenu(event);
+      if (_cursor.selectionStart == null || _cursor.selectionEnd == null ||
+          (newpos < _cursor.selectionStart && newpos < _cursor.selectionEnd) ||
+          (newpos > _cursor.selectionStart && newpos > _cursor.selectionEnd)) {
+        _cursor.setSelection(newpos, newpos);
+      }
+      if (_cursor.selectionStart != null)
+        showContextualMenu(event);
     }
   }
   
@@ -202,9 +247,9 @@ class WebPage {
   }
   
   void showContextualMenu(h.MouseEvent event) {
-    if (doc.cfg == null || selectionStart.daxeNode == null)
+    if (doc.cfg == null || _cursor.selectionStart.daxeNode == null)
       return;
-    List<x.Element> refs = doc.elementsAllowedUnder(selectionStart.daxeNode);
+    List<x.Element> refs = doc.elementsAllowedUnder(_cursor.selectionStart.daxeNode);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     contextualMenu = new Menu(null);
     for (x.Element ref in validRefs) {
@@ -215,10 +260,10 @@ class WebPage {
     }
     contextualMenu.addSeparator();
     DaxeNode parent;
-    if (selectionStart.daxeNode is DNText)
-      parent = selectionStart.daxeNode.parent;
+    if (_cursor.selectionStart.daxeNode is DNText)
+      parent = _cursor.selectionStart.daxeNode.parent;
     else
-      parent = selectionStart.daxeNode;
+      parent = _cursor.selectionStart.daxeNode;
     String title = doc.cfg.menuTitle(parent.nodeName);
     title = "${Strings.get('contextual.help_about_element')} $title";
     contextualMenu.add(new MenuItem(title, () =>
@@ -235,7 +280,6 @@ class WebPage {
     h.DivElement div = contextualMenu.getHTMLNode();
     div.remove();
     contextualMenu = null;
-    selectionStart = null;
     event.preventDefault();
   }
   
@@ -281,8 +325,9 @@ class WebPage {
   }
   
   void selectNode(DaxeNode dn) {
-    Position p1 = new Position(dn.parent, dn.parent.offsetOf(dn));
-    Position p2 = new Position(dn.parent, dn.parent.offsetOf(dn)+1);
+    int offset = dn.parent.offsetOf(dn);
+    Position p1 = new Position(dn.parent, offset);
+    Position p2 = new Position(dn.parent, offset+1);
     _cursor.moveTo(p1); // to scroll
     _cursor.setSelection(p1, p2);
   }

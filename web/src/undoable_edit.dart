@@ -337,9 +337,11 @@ class UndoableEdit {
       case COMPOUND: sb.write("Compound "); break;
     }
     if (text != null)
-      sb.write(text);
+      sb.write("text '$text'");
     else if (dn != null)
-      sb.write(dn.nodeName);
+      sb.write("node ${dn.nodeName}");
+    else if (pos != null)
+      sb.write("$length chars at $pos");
     return(sb.toString());
   }
 }

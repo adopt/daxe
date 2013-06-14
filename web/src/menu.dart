@@ -58,7 +58,7 @@ class Menu extends MenuItem {
   void hide() {
     for (MenuItem item in items) {
       if (item is Menu)
-        item.hide();
+        (item as Menu).hide();
     }
     h.DivElement div = getHTMLNode();
     div.style.display = 'none';

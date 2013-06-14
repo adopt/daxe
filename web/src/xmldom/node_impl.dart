@@ -240,19 +240,13 @@ abstract class NodeImpl implements Node {
       case DOCUMENT_FRAGMENT_NODE:
         return(null);
       case ATTRIBUTE_NODE:
-        if (parentNode != null) {
+        if (parentNode != null)
           return(parentNode.lookupNamespaceURI(prefix));
-        } else {
-          return(null);
-        }
-        // Dartium wants a useless break here:
-        break;
+        return(null);
       default:
-        if (parentNode != null) {
+        if (parentNode != null)
           return(parentNode.lookupNamespaceURI(prefix));
-        } else {
-          return(null);
-        }
+        return(null);
     }
   }
   

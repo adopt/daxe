@@ -325,7 +325,7 @@ class Position {
       List<DaxeNode> children = _dn.childNodes;
       if (children != null && _dnOffset > 0 && _dnOffset == children.length) {
         // at the end of the children
-        h.Node n = children[_dnOffset-1].getHTMLNode();
+        h.Element n = children[_dnOffset-1].getHTMLNode();
         if (n == null)
           return(null);
         h.Rect r;

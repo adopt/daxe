@@ -4,6 +4,7 @@ description: Dart XML Editor
 dependencies:
   browser: any
   crypto: any
+  intl: any
   meta: any
 
 #dependencies:

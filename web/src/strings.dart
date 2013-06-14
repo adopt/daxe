@@ -20,42 +20,52 @@ library Strings;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:html' as h;
+import 'package:intl/intl.dart';
+import 'package:intl/intl_browser.dart'; // or intl-standalone (see findSystemLocale)
 
 
 class Strings {
   
   static String resourcePath = "LocalStrings";
   static HashMap<String, String> map = null;
+  static String systemLocale;
+  static const defaultLocale = 'en';
   
   static Future<bool> load() {
     Completer<bool> completer = new Completer<bool>();
-    //Intl intl = new Intl();
-    //String language = intl.locale.split('_')[0];
-    String language = 'fr';
-    String fullFilePath = "${resourcePath}_$language.properties";
-    
-    h.HttpRequest request = new h.HttpRequest();
-    request.open("GET", fullFilePath);
-    request.onLoad.listen((h.ProgressEvent event) {
-      String txt = request.responseText;
-      map = new HashMap<String, String>();
-      List<String> lines = txt.split("\n");
-      for (String line in lines) {
-        if (line.startsWith('#'))
-          continue;
-        int ind = line.indexOf('=');
-        if (ind == -1)
-          continue;
-        String key = line.substring(0, ind).trim();
-        String value = line.substring(ind + 1).trim();
-        map[key] = value;
-      }
-      completer.complete(true);
+    findSystemLocale().then((String sl) {
+      // note: this is not always the language chosen by the user
+      // see https://code.google.com/p/chromium/issues/detail?id=101138
+      if (sl != null)
+        systemLocale = sl;
+      else
+        systemLocale = defaultLocale;
+      String language = systemLocale.split('_')[0];
+      String fullFilePath = "${resourcePath}_$language.properties";
+      
+      h.HttpRequest request = new h.HttpRequest();
+      request.open("GET", fullFilePath);
+      request.onLoad.listen((h.ProgressEvent event) {
+        String txt = request.responseText;
+        map = new HashMap<String, String>();
+        List<String> lines = txt.split("\n");
+        for (String line in lines) {
+          if (line.startsWith('#'))
+            continue;
+          int ind = line.indexOf('=');
+          if (ind == -1)
+            continue;
+          String key = line.substring(0, ind).trim();
+          String value = line.substring(ind + 1).trim();
+          map[key] = value;
+        }
+        completer.complete(true);
+      });
+      request.onError.listen((h.ProgressEvent event) {
+        completer.completeError("Error when reading the strings in $resourcePath");
+      });
+      request.send();
     });
-    request.onError.listen((h.ProgressEvent event) {
-      completer.completeError("Error when reading the strings in $resourcePath");
-    });
-    request.send();
     return(completer.future);
   }
   

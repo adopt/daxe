@@ -23,10 +23,12 @@ class Locale {
   String country;
   
   Locale() {
-    //Intl intl = new Intl();
-    //List<String> l = intl.locale.split('_')[0];
-    language = 'fr';
-    country = 'FR';
+    List<String> l = Strings.systemLocale.split('_');
+    language = l[0];
+    if (l.length > 1)
+      country = l[1];
+    else
+      country = null;
   }
   
   Locale.l(String language) {

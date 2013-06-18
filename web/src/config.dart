@@ -387,8 +387,8 @@ class Config {
     final Menu menu = new Menu(titreM);
     String docMenu = menuDocumentation(nomMenu);
     if (docMenu != null) {
-      docMenu = "<html><body>{docMenu.replaceAll('\n', '<br>')}</body></html>";
-      menu.setToolTipText(docMenu);
+      //docMenu = "<html><body>{docMenu.replaceAll('\n', '<br>')}</body></html>";
+      menu.toolTipText = docMenu;
     }
     x.Node menunode = menudef.firstChild;
     while (menunode != null) {
@@ -419,8 +419,8 @@ class Config {
         menu.add(item);
         String itemdoc = documentation(refElement);
         if (itemdoc != null) {
-          itemdoc = formatDoc(itemdoc);
-          item.setToolTipText(itemdoc);
+          //itemdoc = formatDoc(itemdoc);
+          item.toolTipText = itemdoc;
         }
       } else if (nodename == "MENU_FONCTION") {
         final x.Element fonction = menunode as x.Element;
@@ -431,8 +431,8 @@ class Config {
         menu.add(item);
         String itemdoc = menuDocumentation(nom);
         if (itemdoc != null) {
-          itemdoc = formatDoc(itemdoc);
-          item.setToolTipText(itemdoc);
+          //itemdoc = formatDoc(itemdoc);
+          item.toolTipText = itemdoc;
         }
       } else if (nodename == "MENU") {
         item = _creationMenu(doc, menunode as x.Element);

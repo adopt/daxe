@@ -79,12 +79,7 @@ class DNForm extends DaxeNode {
   
   @override
   h.Element html() {
-    h.ButtonElement bHelp = new h.ButtonElement();
-    bHelp.attributes['type'] = 'button';
-    bHelp.classes.add('help');
-    bHelp.value = '?';
-    bHelp.text = '?';
-    bHelp.onClick.listen((h.Event event) => (new HelpDialog.Element(ref)).show());
+    h.ButtonElement bHelp = _makeHelpButton(ref, null);
     
     if (simpleField) {
       h.TableRowElement tr = new h.TableRowElement();
@@ -194,12 +189,7 @@ class DNForm extends DaxeNode {
     h.TableRowElement tr = new h.TableRowElement();
     
     h.TableCellElement td = new h.TableCellElement();
-    h.ButtonElement bHelp = new h.ButtonElement();
-    bHelp.attributes['type'] = 'button';
-    bHelp.classes.add('help');
-    bHelp.value = '?';
-    bHelp.text = '?';
-    bHelp.onClick.listen((h.Event event) => (new HelpDialog.Attribute(refAttr, ref)).show());
+    h.ButtonElement bHelp = _makeHelpButton(ref, refAttr);
     td.append(bHelp);
     tr.append(td);
     
@@ -259,12 +249,7 @@ class DNForm extends DaxeNode {
       int colspan;
       if (dn is! DNForm) {
         td = new h.TableCellElement();
-        h.ButtonElement bHelp = new h.ButtonElement();
-        bHelp.attributes['type'] = 'button';
-        bHelp.classes.add('help');
-        bHelp.value = '?';
-        bHelp.text = '?';
-        bHelp.onClick.listen((h.Event event) => (new HelpDialog.Element(dn.ref)).show());
+        h.ButtonElement bHelp = _makeHelpButton(dn.ref, null);
         td.append(bHelp);
         tr.append(td);
         colspan = 2;
@@ -410,4 +395,21 @@ class DNForm extends DaxeNode {
     sb.write('\n');
     return(sb.toString());
   }
+  
+  h.ButtonElement _makeHelpButton(final x.Element elementRef, final x.Element attributeRef) {
+    h.ButtonElement bHelp = new h.ButtonElement();
+    bHelp.attributes['type'] = 'button';
+    bHelp.classes.add('help');
+    bHelp.value = '?';
+    bHelp.text = '?';
+    if (attributeRef == null) {
+      bHelp.title = doc.cfg.documentation(elementRef);
+      bHelp.onClick.listen((h.Event event) => (new HelpDialog.Element(elementRef)).show());
+    } else {
+      bHelp.title = doc.cfg.attributeDocumentation(elementRef, attributeRef);
+      bHelp.onClick.listen((h.Event event) => (new HelpDialog.Attribute(attributeRef, elementRef)).show());
+    }
+    return(bHelp);
+  }
+  
 }

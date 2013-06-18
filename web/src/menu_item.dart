@@ -27,6 +27,7 @@ class MenuItem {
   Object data;
   bool enabled;
   bool is_separator;
+  String toolTipText;
   
   MenuItem(this._title, this.action, {this.shortcut, this.data}) {
     this.id = "menu_$idcount";
@@ -61,6 +62,8 @@ class MenuItem {
       if (!enabled)
         tr.classes.add('disabled');
     }
+    if (toolTipText != null)
+      tr.title = toolTipText;
     return(tr);
   }
   
@@ -100,10 +103,6 @@ class MenuItem {
     enabled = true;
     h.Element tr = getHTMLNode();
     tr.classes.remove('disabled');
-  }
-  
-  void setToolTipText(String s) {
-    // TODO
   }
   
   /*

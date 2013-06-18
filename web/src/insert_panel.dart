@@ -36,13 +36,7 @@ class InsertPanel {
     if (parent.nodeType == DaxeNode.TEXT_NODE)
       parent = parent.parent;
     if (parent.nodeType == DaxeNode.ELEMENT_NODE) {
-      h.ButtonElement bHelp = new h.ButtonElement();
-      bHelp.attributes['type'] = 'button';
-      bHelp.classes.add('help');
-      bHelp.value = '?';
-      bHelp.text = '?';
-      bHelp.onClick.listen((h.Event event) => help(parent.ref));
-      divInsert.append(bHelp);
+      divInsert.append(_makeHelpButton(parent.ref));
       String name = cfg.elementName(parent.ref);
       h.SpanElement span = new h.SpanElement();
       span.appendText(cfg.menuTitle(name));
@@ -52,13 +46,7 @@ class InsertPanel {
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     for (x.Element ref in refs) {
-      h.ButtonElement bHelp = new h.ButtonElement();
-      bHelp.attributes['type'] = 'button';
-      bHelp.classes.add('help');
-      bHelp.value = '?';
-      bHelp.text = '?';
-      bHelp.onClick.listen((h.Event event) => help(ref));
-      divInsert.append(bHelp);
+      divInsert.append(_makeHelpButton(ref));
       h.ButtonElement button = new h.ButtonElement();
       button.attributes['type'] = 'button';
       button.classes.add('insertb');
@@ -71,6 +59,17 @@ class InsertPanel {
       divInsert.append(button);
       divInsert.append(new h.BRElement());
     }
+  }
+  
+  h.ButtonElement _makeHelpButton(x.Element ref) {
+    h.ButtonElement bHelp = new h.ButtonElement();
+    bHelp.attributes['type'] = 'button';
+    bHelp.classes.add('help');
+    bHelp.value = '?';
+    bHelp.text = '?';
+    bHelp.title = doc.cfg.documentation(ref);
+    bHelp.onClick.listen((h.Event event) => help(ref));
+    return(bHelp);
   }
   
   void insert(x.Element ref) {

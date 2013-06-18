@@ -53,6 +53,7 @@ class AttributeDialog {
       bHelp.classes.add('help');
       bHelp.value = '?';
       bHelp.text = '?';
+      bHelp.title = doc.cfg.attributeDocumentation(ref, attref);
       bHelp.onClick.listen((h.Event event) => help(attref, ref));
       td.append(bHelp);
       tr.append(td);

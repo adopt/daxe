@@ -70,7 +70,7 @@ class WebPage {
     
     Position pos = new Position(doc.dndoc, 0);
     _cursor.moveTo(pos);
-    updateInsertPanel();
+    updateAfterPathChange();
     
     divdoc.onMouseDown.listen((h.MouseEvent event) => onMouseDown(event));
     divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));

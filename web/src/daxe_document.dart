@@ -303,7 +303,7 @@ class DaxeDocument {
       Position selectionStart = page.getSelectionStart();
       Position selectionEnd = page.getSelectionEnd();
       if (selectionStart.dn != selectionEnd.dn)
-        return;
+        return; // FIXME: handle this case (used with menus)
       DaxeNode parent = pos.dn;
       int startOffset = selectionStart.dnOffset;
       int endOffset = selectionEnd.dnOffset;
@@ -346,8 +346,21 @@ class DaxeDocument {
     page.updateAfterPathChange();
     if (content != null) {
       if (!page._cursor.paste(content)) {
+        // paste didn't work: undo remove and insert
         undo();
         undo();
+        edits.removeRange(edits.length - 2, edits.length);
+        page.updateUndoMenus();
+      } else {
+        // replace the 3 previous edits by a compound
+        UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_element'));
+        edit.addSubEdit(edits[edits.length - 3]);
+        edit.addSubEdit(edits[edits.length - 2]);
+        edit.addSubEdit(edits.last);
+        edits.removeRange(edits.length - 3, edits.length);
+        edits.add(edit);
+        undoPosition -= 2;
+        page.updateUndoMenus();
       }
     }
   }

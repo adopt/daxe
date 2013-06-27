@@ -143,7 +143,14 @@ class UndoableEdit {
   bool addEdit(UndoableEdit edit) {
     if (operation != edit.operation)
       return(false);
-    if (text == null|| edit.text == null)
+    if (operation == INSERT && dn is DNText && edit.text != null &&
+        edit.pos.dn == dn && edit.pos.dnOffset + 1 == dn.offsetLength) {
+      // insert text node + insert text
+      return(true);
+    }
+    // TODO: handle more text node merges
+    // the rest is for text nodes only
+    if (text == null || edit.text == null)
       return(false);
     if (dn != edit.dn)
       return(false);

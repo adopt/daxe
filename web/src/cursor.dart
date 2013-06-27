@@ -487,6 +487,7 @@ class Cursor {
       return;
     }
     deSelect();
+    Position previousStart = selectionStart;
     selectionStart = new Position.clone(start);
     selectionEnd = new Position.clone(end);
     if (selectionStart == selectionEnd) {
@@ -562,7 +563,8 @@ class Cursor {
     }
     if (selectionEnd != selectionStart)
       hide();
-    page.updateAfterPathChange();
+    if (selectionStart != previousStart)
+      page.updateAfterPathChange();
   }
   
   void selectText(DaxeNode dn, int offset1, int offset2) {

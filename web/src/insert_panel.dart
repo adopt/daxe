@@ -23,7 +23,11 @@ part of daxe;
  */
 class InsertPanel {
   
+  Position previousPosition = null;
+  
   void update(Position pos) {
+    if (pos == previousPosition)
+      return;
     h.Element divInsert = h.query('div#insert');
     for (h.Element child in divInsert.children)
       child.remove();
@@ -59,6 +63,7 @@ class InsertPanel {
       divInsert.append(button);
       divInsert.append(new h.BRElement());
     }
+    previousPosition = pos;
   }
   
   h.ButtonElement _makeHelpButton(x.Element ref) {

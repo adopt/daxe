@@ -45,19 +45,26 @@ class TokenRepeat extends TokenItem {
       else
         return(match);
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = null;
     int i = pos;
     while (i < doc.length) {
       MatchResult match = item.evaluateString(doc, i);
       if (match == null)
         break;
+      if (sb == null)
+        sb = new StringBuffer();
       sb.write(match.characters);
       i = i + match.nbMatched;
     }
     int nbMatched = i - pos;
-    if (nbMatched > 0 || repeat == ZERO_OR_MORE)
-      return(new MatchResult.ch(nbMatched, sb.toString()));
-    else
+    if (nbMatched > 0 || repeat == ZERO_OR_MORE) {
+      String s;
+      if (sb != null)
+        s = sb.toString();
+      else
+        s = '';
+      return(new MatchResult.ch(nbMatched, s));
+    } else
       return(null);
   }
   

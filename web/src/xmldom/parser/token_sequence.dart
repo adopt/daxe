@@ -30,7 +30,7 @@ class TokenSequence extends TokenItem {
   }
   
   MatchResult evaluateString(String doc, int pos) {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = null;
     int i = pos;
     for (TokenItem item in items) {
       if (i >= doc.length)
@@ -38,11 +38,18 @@ class TokenSequence extends TokenItem {
       MatchResult match = item.evaluateString(doc, i);
       if (match == null)
         return(null);
+      if (sb == null)
+        sb = new StringBuffer();
       sb.write(match.characters);
       i = i + match.nbMatched;
     }
     int nbMatched = i - pos;
-    return(new MatchResult.ch(nbMatched, sb.toString()));
+    String s;
+    if (sb != null)
+      s = sb.toString();
+    else
+      s = '';
+    return(new MatchResult.ch(nbMatched, s));
   }
   
   MatchResult evaluateTokens(List<Token> tokens, int pos) {

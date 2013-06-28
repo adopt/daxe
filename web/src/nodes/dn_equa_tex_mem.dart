@@ -84,7 +84,8 @@ class DNEquaTexMem extends DaxeNode {
       okfct();
     String text = _dlg.getText();
     String label = _dlg.getLabel();
-    if (getHTMLNode() != null) {
+    if (okfct == null) {
+      // existing element
       List<DaxeAttr> new_attributes = new List<DaxeAttr>();
       new_attributes.add(new DaxeAttr(_textAtt, text));
       if (_labelAtt != null && label != '')
@@ -92,6 +93,7 @@ class DNEquaTexMem extends DaxeNode {
       UndoableEdit edit = new UndoableEdit.changeAttributes(this, new_attributes);
       doc.doNewEdit(edit);
     } else {
+      // new element
       setAttribute(_textAtt, text);
       if (_labelAtt != null)
         setAttribute(_labelAtt, label);

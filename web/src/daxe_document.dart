@@ -232,6 +232,9 @@ class DaxeDocument {
     return(sb.toString());
   }
   
+  /**
+   * Executes a new edit and add it to the history so that it can be undone.
+   */
   void doNewEdit(UndoableEdit edit) {
     edit.doit();
     if (undoPosition < edits.length - 1)
@@ -271,6 +274,9 @@ class DaxeDocument {
     return(undoPosition < edits.length - 1);
   }
   
+  /**
+   * Returns the title for the undo menu.
+   */
   String getUndoTitle() {
     String title;
     if (undoPosition >= 0)
@@ -283,6 +289,9 @@ class DaxeDocument {
       return("${Strings.get('undo.undo')} $title");
   }
   
+  /**
+   * Returns the title for the redo menu.
+   */
   String getRedoTitle() {
     String title;
     if (undoPosition < edits.length - 1)
@@ -295,10 +304,72 @@ class DaxeDocument {
       return("${Strings.get('undo.redo')} $title");
   }
   
-  void insertNewNode(x.Element ref, String nodeType, [bool checkValidity=false]) {
+  /**
+   * Called when the user tries to insert text.
+   * [shift]: true if the shift key was used.
+   */
+  void insertNewString(String s, bool shift) {
+    Position selectionStart = page.getSelectionStart();
+    Position selectionEnd = page.getSelectionEnd();
+    if (((selectionStart.dn is DNItem) ||
+        (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
+        selectionStart.dnOffset == selectionStart.dn.offsetLength &&
+        s == '\n' && !shift) {
+      // \n in an item: adding a new list item
+      // TODO: try to move this node-specific code elsewhere
+      DNItem item;
+      if (selectionStart.dn is DNItem)
+        item = selectionStart.dn;
+      else
+        item = selectionStart.dn.parent;
+      DNItem newitem = NodeFactory.create(item.ref);
+      doc.insertNode(newitem,
+          new Position(item.parent, item.parent.offsetOf(item) + 1));
+      page.moveCursorTo(new Position(newitem, 0));
+      return;
+    }
+    bool problem = false;
+    if (s.trim() != '') {
+      DaxeNode parent = selectionStart.dn;
+      if (parent.nodeType == DaxeNode.TEXT_NODE)
+        parent = parent.parent;
+      if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
+        problem = true;
+      else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
+        problem = true;
+    }
+    if (problem) {
+      h.window.alert(Strings.get('insert.text_not_allowed'));
+      return;
+    }
+    bool remove = false;
+    if (selectionStart != selectionEnd) {
+      selectionStart = new Position.clone(selectionStart);
+      selectionEnd = new Position.clone(selectionEnd);
+      page._cursor.deSelect();
+      removeBetween(selectionStart, selectionEnd);
+      remove = true;
+    }
+    doc.insertString(selectionStart, s);
+    if (remove) {
+      UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
+      edit.addSubEdit(edits.removeAt(edits.length - 2));
+      edit.addSubEdit(edits.removeLast());
+      edits.add(edit);
+      undoPosition -= 1;
+    }
+  }
+  
+  /**
+   * Creates and inserts a new Daxe node at the cursor position, displaying the attribute dialog if
+   * it can have attributes.
+   * The insert is added to the edits history so that it can be undone.
+   */
+  void insertNewNode(x.Element ref, String nodeType/*, [bool checkValidity=false]*/) {
     Position pos = page.getSelectionStart();
     if (pos == null)
       return;
+    /* checkValidity is no longer used because menus are grayed out for invalid elements, as with the insert panel
     if (checkValidity) {
       Position selectionStart = page.getSelectionStart();
       Position selectionEnd = page.getSelectionEnd();
@@ -319,6 +390,7 @@ class DaxeDocument {
         return;
       }
     }
+    */
     DaxeNode seljn = pos.daxeNode;
     DaxeNode dn = NodeFactory.create(ref, nodeType);
     if (nodeType == 'element' && doc.cfg.elementAttributes(ref).length > 0)
@@ -369,6 +441,11 @@ class DaxeDocument {
     // TODO
   }
   
+  /**
+   * Returns the list of element references which can be allowed under a given parent Daxe node.
+   * For the document node, returns the list of possible root elements.
+   * For a text node, returns the list of elements references allowed under its parent.
+   */
   List<x.Element> elementsAllowedUnder(DaxeNode dn) {
     List<x.Element> refs;
     if (dn.nodeType == DaxeNode.DOCUMENT_NODE) {
@@ -386,6 +463,10 @@ class DaxeDocument {
     return(refs);
   }
   
+  /**
+   * Given a list of element references, returns the elements in this list which can
+   * be inserted over the current selection.
+   */
   List<x.Element> validElementsInSelection(List<x.Element> allowed) {
     List<x.Element> list = new List<x.Element>();
     Position selectionStart = page.getSelectionStart();
@@ -411,6 +492,9 @@ class DaxeDocument {
     return(list);
   }
   
+  /**
+   * Returns the [Position] matching the given screen coordinates.
+   */
   Position findPosition(num x, num y) {
     return(dndoc.findPosition(x, y));
   }

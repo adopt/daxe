@@ -123,22 +123,22 @@ class Cursor {
     } else if (keyCode == h.KeyCode.PAGE_UP) {
       pageUp();
     } else if (keyCode == h.KeyCode.END) {
-      // to line end
       lineEnd();
     } else if (keyCode == h.KeyCode.HOME) {
-      // to line start
       lineStart();
     } else if (keyCode == h.KeyCode.LEFT) {
-      // arrow left
-      left();
+      if (shift)
+        shiftLeft();
+      else
+        left();
     } else if (keyCode == h.KeyCode.UP) {
-      // arrow up
       up();
     } else if (keyCode == h.KeyCode.RIGHT) {
-      // arrow right
-      right();
+      if (shift)
+        shiftRight();
+      else
+        right();
     } else if (keyCode == h.KeyCode.DOWN) {
-      // arrow down
       down();
     } else if (keyCode == h.KeyCode.BACKSPACE) {
       backspace();
@@ -150,20 +150,9 @@ class Cursor {
     } else if (ta.value != '') {
       // note: the first char will only be in ta.value in keyUp, this part
       // is only for long-pressed keys
-      if (selectionStart != selectionEnd) {
-        removeSelection();
-      }
       String v = ta.value;
       ta.value = '';
-      if (((selectionStart.dn is DNItem) ||
-          (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
-          selectionStart.dnOffset == selectionStart.dn.offsetLength &&
-          v == '\n' && !shift) {
-        // \n in an item: adding a new list item
-        // we will only do that once, in keyUp
-      } else {
-        checkInsertString(v);
-      }
+      doc.insertNewString(v, shift);
     } else {
       return;
     }
@@ -201,28 +190,9 @@ class Cursor {
       shortcuts[keyCode]();
       page.updateAfterPathChange();
     } else if (ta.value != '') {
-      if (selectionStart != selectionEnd) {
-        removeSelection();
-      }
       String v = ta.value;
       ta.value = '';
-      if (((selectionStart.dn is DNItem) ||
-          (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
-          selectionStart.dnOffset == selectionStart.dn.offsetLength &&
-          v == '\n' && !shift) {
-        // \n in an item: adding a new list item
-        DNItem item;
-        if (selectionStart.dn is DNItem)
-          item = selectionStart.dn;
-        else
-          item = selectionStart.dn.parent;
-        DNItem newitem = NodeFactory.create(item.ref);
-        doc.insertNode(newitem,
-            new Position(item.parent, item.parent.offsetOf(item) + 1));
-        moveTo(new Position(newitem, 0));
-      } else {
-        checkInsertString(v);
-      }
+      doc.insertNewString(v, shift);
     } else {
       return;
     }
@@ -233,24 +203,9 @@ class Cursor {
     hide();
   }
   
-  void checkInsertString(String s) {
-    bool problem = false;
-    if (s.trim() != '') {
-      DaxeNode parent = selectionStart.dn;
-      if (parent.nodeType == DaxeNode.TEXT_NODE)
-        parent = parent.parent;
-      if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
-        problem = true;
-      else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
-        problem = true;
-    }
-    if (!problem)
-      doc.insertString(selectionStart, s);
-    else {
-      h.window.alert(Strings.get('insert.text_not_allowed'));
-    }
-  }
-  
+  /**
+   * Action for the line start key.
+   */
   void lineStart() {
     Point pt = selectionStart.positionOnScreen();
     pt.x = 0;
@@ -265,6 +220,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Action for the line end key.
+   */
   void lineEnd() {
     Point pt = selectionStart.positionOnScreen();
     pt.x += 10000;
@@ -279,6 +237,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Action for the left arrow key.
+   */
   void left() {
     deSelect();
     selectionStart.move(-1);
@@ -287,6 +248,9 @@ class Cursor {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Action for the right arrow key.
+   */
   void right() {
     Position end = new Position.clone(selectionEnd);
     end.move(1);
@@ -297,6 +261,9 @@ class Cursor {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Action for the up arrow key.
+   */
   void up() {
     deSelect();
     Point pt = selectionStart.positionOnScreen();
@@ -316,6 +283,9 @@ class Cursor {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Action for the down arrow key.
+   */
   void down() {
     deSelect();
     Point pt = selectionStart.positionOnScreen();
@@ -335,6 +305,27 @@ class Cursor {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Action for the shift + left arrow keys.
+   */
+  void shiftLeft() {
+    Position start = new Position.clone(selectionStart);
+    start.move(-1);
+    setSelection(start, selectionEnd);
+  }
+  
+  /**
+   * Action for the shift + right arrow keys.
+   */
+  void shiftRight() {
+    Position end = new Position.clone(selectionEnd);
+    end.move(1);
+    setSelection(selectionStart, end);
+  }
+  
+  /**
+   * Action for the page up key.
+   */
   void pageUp() {
     Point pt = selectionStart.positionOnScreen();
     if (pt == null)
@@ -350,6 +341,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Action for the page down key.
+   */
   void pageDown() {
     Point pt = selectionStart.positionOnScreen();
     if (pt == null)
@@ -365,6 +359,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Action for the backspace key.
+   */
   void backspace() {
     if (selectionStart == selectionEnd) {
       // FIXME: maybe we should not do that if there is a style to the left
@@ -378,6 +375,9 @@ class Cursor {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Action for the suppr key.
+   */
   void suppr() {
     if (selectionStart == selectionEnd) {
       removeChar(selectionStart);
@@ -424,6 +424,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Sets the caret style (horizontal or vertical)
+   */
   void setCaretStyle() {
     bool horizontal; // horizontal caret between block elements
     h.Element hparent = selectionStart.dn.getHTMLNode();
@@ -456,6 +459,9 @@ class Cursor {
     return(el is h.DivElement || el is h.TableElement || el is h.UListElement || el is h.LIElement);
   }
   
+  /**
+   * Moves the caret to the given Position.
+   */
   void moveTo(Position pos) {
     deSelect();
     selectionStart = new Position.clone(pos);
@@ -463,11 +469,17 @@ class Cursor {
     updateCaretPosition(true);
   }
   
+  /**
+   * Hides the cursor.
+   */
   void hide() {
     visible = false;
     caret.style.visibility = 'hidden';
   }
   
+  /**
+   * Shows the cursor.
+   */
   void show() {
     if (selectionStart != null) {
       visible = true;
@@ -475,6 +487,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Obtains the focus.
+   */
   void focus() {
     show();
     ta.focus();
@@ -660,6 +675,9 @@ class Cursor {
       caret.style.visibility = "hidden";
   }
   
+  /**
+   * Removes the first character or Daxe node coming after the cursor.
+   */
   void removeChar(Position pos) {
     if (pos.dn.nodeType == DaxeNode.TEXT_NODE &&
         pos.dn.offsetLength < pos.dnOffset + 1 &&
@@ -705,6 +723,9 @@ class Cursor {
     }
   }
   
+  /**
+   * Removes everything inside the current selection.
+   */
   void removeSelection() {
     if (selectionStart == selectionEnd)
       return;
@@ -714,6 +735,9 @@ class Cursor {
     doc.removeBetween(start, end);
   }
   
+  /**
+   * Returns the current XML selection as a String.
+   */
   String copy() {
     StringBuffer sb = new StringBuffer();
     if (selectionStart.dn == selectionEnd.dn) {
@@ -756,6 +780,9 @@ class Cursor {
     return(sb.toString());
   }
   
+  /**
+   * Parses the given String and pastes the XML at the current position.
+   */
   bool paste(String s) {
     x.Document tmpdoc;
     try {

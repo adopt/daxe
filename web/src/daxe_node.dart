@@ -610,6 +610,7 @@ abstract class DaxeNode {
      do not exist in Dart...
      cf http://stackoverflow.com/q/3189812/438970
      and http://code.google.com/p/dart/issues/detail?id=9227
+     and http://code.google.com/p/dart/issues/detail?id=11723
      */
     Position pos = new Position(this, 0);
     
@@ -640,6 +641,7 @@ abstract class DaxeNode {
           // block
           // for DivElement: no span to tag the div: we take the entire div into account
           h.Rect box = hn.getBoundingClientRect();
+          // FIXME: box is not good for a tr containing a td using rowspan
           hnx1 = box.left;
           hny1 = box.top;
           if (hn.classes.contains('form')) // FIXME: this is a hack !

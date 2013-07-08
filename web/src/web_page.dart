@@ -285,9 +285,10 @@ class WebPage {
   
   
   /**
-   * Returns the JaxeNode containing the HTML node
+   * Returns the Daxe node containing the HTML node
    */
-  DaxeNode getJaxeNode(h.Node n) {
+  @deprecated
+  DaxeNode getDaxeNode(h.Node n) {
     if (n == null)
       return(null);
     h.Element el;
@@ -297,10 +298,9 @@ class WebPage {
       el = n;
     else
       return(null);
-    //print(el.attributes['id']);
     DaxeNode jn = doc.getNodeById(el.attributes['id']);
     if (jn == null)
-      return(getJaxeNode(el.parent));
+      return(getDaxeNode(el.parent));
     return(jn);
   }
   
@@ -330,6 +330,7 @@ class WebPage {
     Position p2 = new Position(dn.parent, offset+1);
     _cursor.moveTo(p1); // to scroll
     _cursor.setSelection(p1, p2);
+    updateAfterPathChange();
   }
   
   void updateAfterPathChange() {

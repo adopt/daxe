@@ -41,7 +41,7 @@ abstract class InterfaceSchema {
    * Returns the reference for the first schema element with the given name and namespace,
    * and with the parent whose reference is given.
    */
-  Element elementReference(final Element el, [final Element parentRef]);
+  Element elementReference(final Element el, final Element parentRef);
   
   /**
    * Returns the name of the element.

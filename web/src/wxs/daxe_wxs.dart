@@ -94,8 +94,8 @@ class DaxeWXS implements InterfaceSchema {
   }
   
   // from InterfaceSchema
-  Element elementReference(final Element el, [final Element parentRef]) {
-    if (?parentRef && parentRef == null) {
+  Element elementReference(final Element el, final Element parentRef) {
+    if (parentRef == null) {
       // pour les éléments racine: il faut éviter les définitions locales
       String nom;
       if (el.prefix == null)
@@ -112,7 +112,14 @@ class DaxeWXS implements InterfaceSchema {
       }
       print("JaxeWXS: referenceElement: pas d'élément racine correspondant dans le schéma pour $nom");
       return(null);
-    } else if (parentRef == null) {
+    }
+    /*
+     C'était pour le cas où parentRef n'était pas donné en paramètre, mais ce n'est plus possible:
+     parentRef est maintenant obligatoire (le changement a été effectué parce-qu'il n'est plus
+     possible d'utiliser "?parentRef" en Dart, et donc on ne peut plus distinguer un null passé explicitement
+     d'un paramètre optionnel qui n'est pas passé en paramètre)
+     
+     else if (parentRef == null) {
       String nom, prefixe;
       prefixe = el.prefix;
       if (prefixe == null)
@@ -125,6 +132,7 @@ class DaxeWXS implements InterfaceSchema {
         return(element.getDOMElement());
       return(null);
     }
+    */
     final WXSElement wxsParent = _hRefElementVersWXS[parentRef];
     if (wxsParent == null) {
       print("DaxeWXS: referenceElement: référence élément inconnue: $parentRef");

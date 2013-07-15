@@ -39,9 +39,9 @@ class MathElement {
    * @param fontsize The font size for this element
    */
   MathElement([final MathBase base, final int fontsize]) {
-    if (?base)
+    if (base != null)
       setMathBase(base);
-    if (?fontsize)
+    if (fontsize != null)
       setFontSize(fontsize);
   }
   

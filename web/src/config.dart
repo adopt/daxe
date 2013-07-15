@@ -493,13 +493,10 @@ class Config {
   
   /**
    * Returns the reference of the first matching element in the schema,
-   * based on the element and optionnaly the reference of its parent
+   * based on the element and the reference of its parent
    */
-  x.Element getElementRef(final x.Element el, [final x.Element parentRef]) {
-    if (?parentRef)
-      return(_schema.elementReference(el, parentRef));
-    else
-      return(_schema.elementReference(el));
+  x.Element getElementRef(final x.Element el, final x.Element parentRef) {
+    return(_schema.elementReference(el, parentRef));
   }
   
   /**

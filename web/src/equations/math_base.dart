@@ -70,9 +70,9 @@ class MathBase {
     
     if (context != null)
       _fontmetrics = new List<TextMetrics>(maxfontsize);
-    if (?element)
+    if (element != null)
       setRootElement(element);
-    if (?context)
+    if (context != null)
       this._context = context;
   }
   

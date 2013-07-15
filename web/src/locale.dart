@@ -41,6 +41,13 @@ class Locale {
     this.country = country;
   }
   
+  int get hashCode {
+    int result = 17;
+    result = 37 * result + language.hashCode;
+    result = 37 * result + country.hashCode;
+    return result;
+  }
+  
   bool operator ==(Locale other) {
     return(language == other.language && country == other.country);
   }

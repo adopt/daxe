@@ -82,6 +82,13 @@ class Position {
     return(_dnOffset);
   }
   
+  int get hashCode {
+    int result = 17;
+    result = 37 * result + _dn.hashCode;
+    result = 37 * result + _dnOffset.hashCode;
+    return result;
+  }
+  
   bool operator ==(Position other) {
     return(_dn == other.dn && _dnOffset == other.dnOffset);
   }

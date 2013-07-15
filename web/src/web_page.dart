@@ -445,30 +445,6 @@ class WebPage {
     //This data URI does not work with IE9
     //h.WindowBase popup = h.window.open('data:text/xml;charset=UTF-8,$data', 'source');
     
-    
-    h.DivElement div1 = new h.DivElement();
-    div1.id = 'dlg1';
-    div1.classes.add('dlg1');
-    
-    h.DivElement divWindow = new h.DivElement();
-    divWindow.classes.add('source_window');
-    
-    h.DivElement divContent = new h.DivElement();
-    divContent.classes.add('source_content');
-    divContent.appendText(doc.toString());
-    divWindow.append(divContent);
-    
-    h.DivElement divBottom = new h.DivElement();
-    divBottom.classes.add('source_bottom');
-    h.ButtonElement bOk = new h.ButtonElement();
-    bOk.attributes['type'] = 'submit';
-    bOk.appendText(Strings.get("button.Close"));
-    bOk.onClick.listen((h.MouseEvent event) => div1.remove());
-    divBottom.append(bOk);
-    divWindow.append(divBottom);
-    
-    div1.append(divWindow);
-    
-    h.document.body.append(div1);
+    (new SourceWindow()).show();
   }
 }

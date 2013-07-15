@@ -352,6 +352,38 @@ div.source_bottom {
   background-color: #FFFFFF;
 }
 
+span.source_element_name {
+  color: #A00000;
+}
+
+span.source_attribute_name {
+  color: #0000A0;
+}
+
+span.source_attribute_value {
+  color: #006400;
+}
+
+span.source_entity {
+  color: #006464;
+}
+
+span.source_comment {
+  color: #505050;
+}
+
+span.source_cdata {
+  color: #640064;
+}
+
+span.source_pi {
+  color: #640064;
+}
+
+span.source_doctype {
+  color: #646400;
+}
+
 .selection {
   background-color: #50A0FF;
   color: #FFFFFF;

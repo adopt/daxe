@@ -57,6 +57,7 @@ part 'menubar.dart';
 part 'menu_item.dart';
 part 'node_factory.dart';
 part 'position.dart';
+part 'source_window.dart';
 part 'tag.dart';
 part 'undoable_edit.dart';
 part 'validation_dialog.dart';

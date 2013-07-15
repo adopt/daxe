@@ -178,7 +178,7 @@ class DocumentImpl extends NodeImpl implements Document {
       if (tagname == '*' || child.nodeName == tagname)
         nodes.add(child);
       if (child is Element)
-        nodes.addAll(child.getElementsByTagName(tagname));
+        nodes.addAll((child as Element).getElementsByTagName(tagname));
     }
     return(nodes);
   }
@@ -206,7 +206,7 @@ class DocumentImpl extends NodeImpl implements Document {
       if (child.namespaceURI == namespaceURI && child.localName == localName)
         nodes.add(child);
       if (child is Element)
-        nodes.addAll(child.getElementsByTagNameNS(namespaceURI, localName));
+        nodes.addAll((child as Element).getElementsByTagNameNS(namespaceURI, localName));
     }
     return(nodes);
   }

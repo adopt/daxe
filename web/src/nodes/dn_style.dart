@@ -85,11 +85,13 @@ class DNStyle extends DaxeNode {
     page.cursor.deSelect();
     start.moveInsideTextNodeIfPossible();
     end.moveInsideTextNodeIfPossible();
+    if (start == end)
+      return;
     UndoableEdit compound = new UndoableEdit.compound(Strings.get('style.remove_styles'));
-    if (start.dn == end.dn) {
+    if (start.dn == end.dn && start.dn is DNText) {
       // within a single style
       DaxeNode dn = start.dn;
-      if (dn is DNText && dn.parent is DNStyle) {
+      if (dn.parent is DNStyle) {
         if (start.dnOffset == 0 && end.dnOffset == dn.offsetLength) {
           String text = dn.nodeValue;
           DaxeNode styleParent = dn.parent.parent;
@@ -144,25 +146,51 @@ class DNStyle extends DaxeNode {
       }
       */
       // change the nodes in between
-      List<DaxeNode> toRemove = new List<DaxeNode>();
-      for (DaxeNode next = start.dn.nextSibling; next != null && next != end.dn; next = next.nextSibling) {
-        if (next is DNStyle) {
-          nodeToNormal(compound, next);
-          toRemove.add(next);
-        }
+      DaxeNode first;
+      if (start.dn is DNText) {
+        if (start.dn.parent is DNStyle)
+          first = start.dn.parent.nextSibling;
+        else
+          first = start.dn.nextSibling;
+      } else if (start.dn is DNStyle)
+        first = start.dn.nextSibling;
+      else
+        first = start.dn.childNodes[start.dnOffset];
+      DaxeNode last;
+      if (end.dn is DNText) {
+        if (end.dn.parent is DNStyle)
+          last = end.dn.parent.previousSibling;
+        else
+          last = end.dn.previousSibling;
+      } else if (end.dn is DNStyle)
+        last = end.dn.previousSibling;
+      else {
+        if (end.dnOffset < end.dn.offsetLength)
+          last = end.dn.childNodes[end.dnOffset].previousSibling;
+        else
+          last = end.dn.lastChild;
       }
-      for (DaxeNode next in toRemove)
-        compound.addSubEdit(new UndoableEdit.removeNode(next));
+      // reverse order to avoid text merge problems
+      for (DaxeNode dn = last; dn != null; dn = dn.previousSibling) {
+        nodeToNormal(compound, dn);
+        if (dn == first)
+          break;
+      }
     }
     doc.doNewEdit(compound);
   }
   
   static void nodeToNormal(UndoableEdit edit, DaxeNode dn) {
-    String text = _getText(dn);
-    Position pos = new Position(dn.parent, dn.parent.offsetOf(dn));
-    if (text != null && text != '')
-      edit.addSubEdit(new UndoableEdit.insertString(pos, text));
-    // we don't remove the style node here to avoid text merging
+    if (dn is DNStyle) {
+      String text = _getText(dn);
+      Position pos = new Position(dn.parent, dn.parent.offsetOf(dn));
+      if (text != null && text != '')
+        edit.addSubEdit(new UndoableEdit.insertString(pos, text));
+      edit.addSubEdit(new UndoableEdit.removeNode(dn));
+    } else {
+      for (DaxeNode child = dn.lastChild; child != null; child = child.previousSibling)
+        nodeToNormal(edit, child);
+    }
   }
   
   static String _getText(DaxeNode dn) {

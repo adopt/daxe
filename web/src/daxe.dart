@@ -68,6 +68,7 @@ typedef void ActionFunction();
 
 WebPage page;
 DaxeDocument doc;
+Map<String,ActionFunction> customFunctions = new Map<String,ActionFunction>();
 
 void main() {
   NodeFactory.addCoreDisplayTypes();
@@ -107,4 +108,10 @@ void main() {
   });
 }
 
+void addDisplayType(String displayType, ConstructorFromRef cref, ConstructorFromNode cnode) {
+  NodeFactory.addDisplayType(displayType, cref, cnode);
+}
 
+void addCustomFunction(String functionName, ActionFunction fct) {
+  customFunctions[functionName] = fct;
+}

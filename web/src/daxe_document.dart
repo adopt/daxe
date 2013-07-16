@@ -437,8 +437,12 @@ class DaxeDocument {
     }
   }
   
-  void executeFunction(String className, x.Element el) {
-    // TODO
+  void executeFunction(String functionName, x.Element el) {
+    // TODO: pass the parameters in el to the functions
+    if (functionName == 'jaxe.FonctionNormal') {
+      DNStyle.selectionToNormal();
+    } else if (customFunctions[functionName] != null)
+      customFunctions[functionName]();
   }
   
   /**

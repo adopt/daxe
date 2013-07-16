@@ -213,7 +213,6 @@ class Cursor {
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos == null)
       return(null);
-    pos.moveInsideTextNodeIfPossible();
     if (pos != null) {
       moveTo(pos);
       page.updateAfterPathChange();
@@ -230,7 +229,6 @@ class Cursor {
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos == null)
       return(null);
-    pos.moveInsideTextNodeIfPossible();
     if (pos != null) {
       moveTo(pos);
       page.updateAfterPathChange();
@@ -364,9 +362,14 @@ class Cursor {
    */
   void backspace() {
     if (selectionStart == selectionEnd) {
-      // FIXME: maybe we should not do that if there is a style to the left
       // FIXME: this doesn't work with tables
       selectionStart.move(-1);
+      // if this is the end of a style, do not remove the whole node, just the last character
+      DaxeNode dn = selectionStart.dn;
+      if (dn is DNText && dn.parent is DNStyle && dn.offsetLength > 1 &&
+          dn.offsetLength == selectionStart.dnOffset) {
+        selectionStart.move(-1);
+      }
       selectionEnd = new Position.clone(selectionStart);
       removeChar(selectionStart);
     } else {
@@ -380,6 +383,19 @@ class Cursor {
    */
   void suppr() {
     if (selectionStart == selectionEnd) {
+      // if this is the beginning of a style, do not remove the whole node, just the first character
+      DaxeNode next = null;
+      DaxeNode dn = selectionStart.dn;
+      int offset = selectionStart.dnOffset;
+      if (dn is! DNText && offset < dn.offsetLength)
+        next = dn.childNodes[offset];
+      else if (dn is DNText && dn.offsetLength == offset &&
+          dn.nextSibling != null)
+        next = dn.nextSibling;
+      if (next is DNStyle && next.firstChild is DNText) {
+        selectionStart.move(1);
+        selectionEnd = new Position.clone(selectionStart);
+      }
       removeChar(selectionStart);
     } else {
       removeSelection();
@@ -465,6 +481,7 @@ class Cursor {
   void moveTo(Position pos) {
     deSelect();
     selectionStart = new Position.clone(pos);
+    selectionStart.moveInsideTextNodeIfPossible();
     selectionEnd = new Position.clone(selectionStart);
     updateCaretPosition(true);
   }

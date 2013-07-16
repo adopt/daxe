@@ -458,6 +458,7 @@ class DNTable extends DaxeNode {
     edit.addSubEdit(new UndoableEdit.removeNode(next));
     doc.doNewEdit(edit);
     page.moveCursorTo(td.firstCursorPositionInside());
+    page.updateAfterPathChange();
   }
   
   void mergeBottom([DNTD td]) {
@@ -481,6 +482,7 @@ class DNTable extends DaxeNode {
     edit.addSubEdit(new UndoableEdit.removeNode(td2));
     doc.doNewEdit(edit);
     page.moveCursorTo(td.firstCursorPositionInside());
+    page.updateAfterPathChange();
   }
   
   void splitX([DNTD td, UndoableEdit parentEdit]) {

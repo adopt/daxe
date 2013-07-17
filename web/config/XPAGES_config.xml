@@ -219,7 +219,7 @@
 </AFFICHAGE_ELEMENT>
 <AFFICHAGE_ELEMENT element="EQUATEX" type="plugin">
 <PARAMETRE nom="classe" valeur="xpages.JEEquaTeXMemoire"/>
-<PARAMETRE nom="serveur" valeur="http://media4.obspm.fr/serveurtex/tex.php"/>
+<PARAMETRE nom="serveur" valeur="//media4.obspm.fr/serveurtex/tex.php"/>
 <PARAMETRE nom="texteAtt" valeur="texte"/>
 <PARAMETRE nom="labelAtt" valeur="label"/>
 </AFFICHAGE_ELEMENT>

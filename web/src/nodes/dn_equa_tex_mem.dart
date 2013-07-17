@@ -90,7 +90,7 @@ class DNEquaTexMem extends DaxeNode {
       new_attributes.add(new DaxeAttr(_textAtt, text));
       if (_labelAtt != null && label != '')
         new_attributes.add(new DaxeAttr(_labelAtt, label));
-      UndoableEdit edit = new UndoableEdit.changeAttributes(this, new_attributes);
+      UndoableEdit edit = new UndoableEdit.changeAttributes(this, new_attributes, updateDisplay:false);
       doc.doNewEdit(edit);
     } else {
       // new element

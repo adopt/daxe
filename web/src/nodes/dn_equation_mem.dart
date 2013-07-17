@@ -74,7 +74,7 @@ class DNEquationMem extends DaxeNode {
       String text = _dlg.getText();
       if (getHTMLNode() != null) {
         DaxeAttr attr = new DaxeAttr(_textAtt, text);
-        UndoableEdit edit = new UndoableEdit.changeAttribute(this, attr);
+        UndoableEdit edit = new UndoableEdit.changeAttribute(this, attr, updateDisplay:false);
         doc.doNewEdit(edit);
       } else {
         setAttribute(_textAtt, text);
@@ -95,7 +95,9 @@ class DNEquationMem extends DaxeNode {
   
   @override
   void updateAttributes() {
-    updateData();// FIXME: avoid calling this after attributeDialog
+    // this is called whenever the attributes change, for instance after undo/redo,
+    // except after attributeDialog because the data and HTML are already updated
+    updateData();
     updateHTML();
   }
   

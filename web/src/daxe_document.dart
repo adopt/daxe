@@ -73,6 +73,7 @@ class DaxeDocument {
           List<x.Element> roots = cfg.rootElements();
           if (roots.length == 1) {
             DaxeNode root = NodeFactory.create(roots[0]);
+            cfg.addNamespaceAttributes(root);
             dndoc.appendChild(root);
             root.updateValidity();
           }

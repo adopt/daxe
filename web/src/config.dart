@@ -187,9 +187,9 @@ class Config {
   }
   
   /**
-   * Adds the attributes for the namespaces to the root element
+   * Adds the attributes for the namespaces to the root node
    */
-  void addNamespaceAttributes(final x.Element rootel) {
+  void addNamespaceAttributes(final DaxeNode root) {
     final List<String> espaces = _namespaceList();
     for (final String espace in espaces) {
       if (espace != "") {
@@ -199,18 +199,18 @@ class Config {
           nomatt = "xmlns:$prefixe";
         else
           nomatt = "xmlns";
-        rootel.setAttributeNS("http://www.w3.org/2000/xmlns/", nomatt, espace);
+        root.setAttributeNS("http://www.w3.org/2000/xmlns/", nomatt, espace);
       }
     }
     final String schemaLocation = getSchemaLocation();
     final String noNamespaceSchemaLocation = getNoNamespaceSchemaLocation();
     if (schemaLocation != null || noNamespaceSchemaLocation != null) {
-      rootel.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+      root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
       if (schemaLocation != null)
-        rootel.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+        root.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
             "xsi:schemaLocation", schemaLocation);
       if (noNamespaceSchemaLocation != null)
-        rootel.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+        root.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
             "xsi:noNamespaceSchemaLocation", noNamespaceSchemaLocation);
     }
   }

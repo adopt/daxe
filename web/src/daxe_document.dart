@@ -42,6 +42,7 @@ class DaxeDocument {
       List<x.Element> roots = cfg.rootElements();
       if (roots.length == 1) {
         DaxeNode root = NodeFactory.create(roots[0]);
+        cfg.addNamespaceAttributes(root);
         dndoc.appendChild(root);
         root.updateValidity();
       }
@@ -141,6 +142,14 @@ class DaxeDocument {
   
   h.Element html() {
     return(dndoc.html());
+  }
+  
+  DaxeNode getRootElement() {
+    for (DaxeNode dn=dndoc.firstChild; dn != null; dn=dn.nextSibling) {
+      if (dn.nodeType == DaxeNode.ELEMENT_NODE)
+        return(dn);
+    }
+    return(null);
   }
   
   void insertNode(DaxeNode dn, Position pos) {
@@ -393,6 +402,9 @@ class DaxeDocument {
     */
     DaxeNode seljn = pos.daxeNode;
     DaxeNode dn = NodeFactory.create(ref, nodeType);
+    if (nodeType == 'element' && getRootElement() == null) {
+      cfg.addNamespaceAttributes(dn);
+    }
     if (nodeType == 'element' && doc.cfg.elementAttributes(ref).length > 0)
       dn.attributeDialog(() => insert2(dn, pos));
     else
@@ -400,7 +412,6 @@ class DaxeDocument {
   }
   
   void insert2(DaxeNode dn, Position pos) {
-    //TODO: use UndoableEdit.compound to include all the operations here (removal/insert/paste)
     String content = null;
     if (page.getSelectionStart() != page.getSelectionEnd()) {
       content = page._cursor.copy();

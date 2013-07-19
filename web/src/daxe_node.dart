@@ -220,6 +220,16 @@ abstract class DaxeNode {
     return(null);
   }
   
+  String getAttributeNS(String namespaceURI, String localName) {
+    if (attributes == null)
+      return(null);
+    for (DaxeAttr att in attributes) {
+      if (att.namespaceURI == namespaceURI && att.localName == localName)
+        return(att.value);
+    }
+    return(null);
+  }
+  
   void setAttribute(String name, String value) {
     for (DaxeAttr att in attributes) {
       if (att.localName == name) {
@@ -231,10 +241,41 @@ abstract class DaxeNode {
     return;
   }
   
+  void setAttributeNS(String namespaceURI, String qualifiedName, String value) {
+    String attPrefix, attLocalName;
+    int ind = qualifiedName.indexOf(":");
+    if (ind != -1) {
+      attPrefix = qualifiedName.substring(0, ind);
+      attLocalName = qualifiedName.substring(ind+1);
+    } else {
+      attPrefix = null;
+      attLocalName = qualifiedName;
+    }
+    DaxeAttr att = getAttributeNodeNS(namespaceURI, attLocalName);
+    if (att != null) {
+      att.prefix = attPrefix;
+      att.value = value;
+      return;
+    }
+    att = new DaxeAttr.NS(namespaceURI, qualifiedName, value);
+    attributes.add(att);
+  }
+  
   DaxeAttr getAttributeNode(String name) {
     for (DaxeAttr att in attributes) {
       if (att.localName == name)
         return(att);
+    }
+    return(null);
+  }
+  
+  DaxeAttr getAttributeNodeNS(String namespaceURI, String localName) {
+    if (attributes == null)
+      return(null);
+    for (DaxeAttr att in attributes) {
+      if (att.namespaceURI == namespaceURI && att.localName == localName) {
+        return(att);
+      }
     }
     return(null);
   }

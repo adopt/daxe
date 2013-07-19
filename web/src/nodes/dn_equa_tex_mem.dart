@@ -34,7 +34,10 @@ class DNEquaTexMem extends DaxeNode {
   DNEquaTexMem.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, false) {
     _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', 'texte');
     _server = doc.cfg.elementParameterValue(ref, 'serveur', null);
-    _data = node.firstChild.nodeValue;
+    if (node.firstChild != null)
+      _data = node.firstChild.nodeValue;
+    else
+      _data = null;
   }
   
   @override

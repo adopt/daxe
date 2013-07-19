@@ -31,7 +31,10 @@ class DNEquationMem extends DaxeNode {
   
   DNEquationMem.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, false) {
     _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', 'src');
-    _data = node.firstChild.nodeValue.replaceAll('\n', '');
+    if (node.firstChild != null)
+      _data = node.firstChild.nodeValue.replaceAll('\n', '');
+    else
+      _data = null;
     MathBase.loadFonts();
   }
   
@@ -41,8 +44,10 @@ class DNEquationMem extends DaxeNode {
     _img = new h.ImageElement();
     _img.attributes['id'] = "$id";
     _img.attributes['class'] = 'dn';
-    String src = "data:image/png;base64,$_data";
-    _img.attributes['src'] = src;
+    if (_data != null) {
+      String src = "data:image/png;base64,$_data";
+      _img.attributes['src'] = src;
+    }
     _img.onLoad.listen((h.Event event) => fixWidth());
     _img.onClick.listen((h.MouseEvent event) => attributeDialog());
     _img.style.verticalAlign = 'middle';

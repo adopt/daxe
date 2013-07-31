@@ -183,7 +183,7 @@
 <AFFICHAGE_ELEMENT element="QUESTION" type="formulaire"/>
 <AFFICHAGE_ELEMENT element="AIDE" type="zone"/>
 <AFFICHAGE_ELEMENT element="SOLUTION" type="zone"/>
-<AFFICHAGE_ELEMENT element="POINTS" type="typesimple"/>
+<AFFICHAGE_ELEMENT element="POINTS" type="formulaire"/>
 <AFFICHAGE_ELEMENT element="QCM" type="formulaire"/>
 <AFFICHAGE_ELEMENT element="QUESTIONQCM" type="formulaire"/>
 <AFFICHAGE_ELEMENT element="ENONCEQCM" type="zone"/>

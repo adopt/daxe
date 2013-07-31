@@ -28,7 +28,7 @@ class DNTable extends DaxeNode {
     newElementDialog();
   }
   
-  DNTable.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, false) {
+  DNTable.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
     init();
     for (x.Node xtr=node.firstChild; xtr != null; xtr=xtr.nextSibling) {
       if (xtr.nodeType == x.Node.ELEMENT_NODE) {
@@ -560,7 +560,7 @@ class DNTR extends DaxeNode {
     userCannotRemove = true;
   }
   
-  DNTR.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, false) {
+  DNTR.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
     userCannotRemove = true;
     fixLineBreaks();
   }

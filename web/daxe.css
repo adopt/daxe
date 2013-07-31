@@ -128,6 +128,11 @@ span#caret.horizontal {
   white-space: pre-wrap;
 }
 
+div.indent {
+  margin-left: 1.5em;
+}
+
+/* Tag */
 span.empty_tag, span.start_tag, span.end_tag, span.simple_type {
   font-family: sans-serif;
   font-weight: normal;
@@ -198,14 +203,7 @@ span.attribute_value {
   color: #005000;
 }
 
-span.simple_type {
-  padding: 3px;
-}
-
-div.indent {
-  margin-left: 1.5em;
-}
-
+/* dialogs */
 div.dlg1 {
   position: absolute;
   left: 0px;
@@ -265,6 +263,7 @@ input.invalid {
   color: #005000;
 }
 
+/* help */
 button.help {
   line-height: 1em;
   font-size: 80%;
@@ -313,6 +312,24 @@ ul#help_list {
   margin-top: 0px;
 }
 
+/* find */
+div.find {
+  position: absolute;
+  bottom: 1.5em;
+  left: 15em;
+  right: 0em;
+  height: 9em;
+  overflow: auto;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #505050;
+}
+
+div.options label {
+  margin-right: 1em;
+}
+
+/* source */
 div.source_window {
   position: absolute;
   z-index: 5;
@@ -384,11 +401,13 @@ span.source_doctype {
   color: #646400;
 }
 
+/* selection */
 .selection {
   background-color: #50A0FF;
   color: #FFFFFF;
 }
 
+/* DNList */
 ul.list {
   list-style: none;
   min-height: 1em;
@@ -400,6 +419,7 @@ img.bullet {
   cursor: default;
 }
 
+/* DNTable */
 div.table table {
   width: 100%;
   border-collapse: collapse;
@@ -429,6 +449,7 @@ td.header {
   font-weight: bold;
 }
 
+/* DNFile */
 img.dn {
   cursor: default;
 }
@@ -437,6 +458,7 @@ img.dn.selected, .selected img.dn {
   opacity: 0.7;
 }
 
+/* DNSpecial */
 span.special {
   font-family: STIXSubset-Regular;
 }
@@ -446,6 +468,7 @@ table.special_dlg {
   cursor: default;
 }
 
+/* DNForm */
 span.form_title {
   position: relative;
   top: 3px;
@@ -494,6 +517,17 @@ td.form_field {
   border-bottom: 2px solid #F5F5F5;
 }
 */
+
+select.invalid {
+  border: 1px solid #F00000;
+}
+
+/* DNSimpleType */
+span.simple_type {
+  padding: 3px;
+}
+
+/* Fonts for symbols and equations */
 
 @font-face { 
     font-family: 'STIXSubset-Regular';

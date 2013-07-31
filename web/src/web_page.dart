@@ -105,6 +105,8 @@ class WebPage {
     redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
     redoMenu.enabled = false;
     editMenu.add(redoMenu);
+    MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
+    editMenu.add(findMenu);
     mbar.insert(editMenu, 1);
     h.Element divdoc1 = h.query("#doc1");
     divdoc1.parent.insertBefore(mbar.html(), divdoc1);

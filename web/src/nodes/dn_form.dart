@@ -26,18 +26,34 @@ class DNForm extends DaxeNode {
   SimpleTypeControl control; // used for simple fields only
   
   DNForm.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
-    init();
-  }
-  
-  DNForm.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
-    init();
-  }
-  
-  void init() {
     childrenRefs = doc.cfg.subElements(ref);
     attRefs = doc.cfg.elementAttributes(ref);
     simpleField = (childrenRefs.length == 0 && attRefs.length == 0);
-    
+    init();
+  }
+  
+  DNForm.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
+    childrenRefs = doc.cfg.subElements(ref);
+    attRefs = doc.cfg.elementAttributes(ref);
+    simpleField = (childrenRefs.length == 0 && attRefs.length == 0);
+    // manual children addition in order to use ParentUpdatingDNText instead of DNText
+    // whenever the text is changed (for instance with find/replace or undo/redo),
+    // DNSimpleType.updateHTML is called in order to update the control
+    if (node.childNodes != null) {
+      DaxeNode prev = null;
+      for (x.Node n in node.childNodes) {
+        DaxeNode dn;
+        if (simpleField && n.nodeType == x.Node.TEXT_NODE)
+          dn = new ParentUpdatingDNText.fromNode(n, this);
+        else
+          dn = NodeFactory.createFromNode(n, this);
+        if (prev == null)
+          firstChild = dn;
+        else
+          prev.nextSibling = dn;
+        prev = dn;
+      }
+    }
     if (!simpleField) {
       // remove all text nodes:
       List<DaxeNode> children = childNodes;
@@ -46,7 +62,10 @@ class DNForm extends DaxeNode {
           removeChild(dn);
       }
     }
-    
+    init();
+  }
+  
+  void init() {
     if (attRefs.length > 0)
       attributeControls = new HashMap<String, SimpleTypeControl>();
     
@@ -159,18 +178,21 @@ class DNForm extends DaxeNode {
     String value = control.getValue();
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('form.text_edition'));
     /*
-    To avoid updateHTML() on this node at undo, use :
-    (problem: the DNText cannot be updated at undo)
+    this was causing problems with undo/redo on DNText (the text was not updated)
+    (same problem as DNForm.changeElementValue())
+    This is solved by using ParentUpdatingDNText
     if (value != '')
       edit.addSubEdit(new UndoableEdit.insertString(new Position(this, 0), value, updateDisplay: false));
     if (firstChild is DNText) {
       edit.addSubEdit(new UndoableEdit.removeString(new Position(firstChild, value.length),
           firstChild.nodeValue.length, updateDisplay: false));
-    }*/
+    }
+    */
+    //this is using ParentUpdatingDNText nodes instead of DNText to avoid the problem
     if (firstChild is DNText)
       edit.addSubEdit(new UndoableEdit.removeNode(firstChild, updateDisplay: false));
     if (value != '')
-      edit.addSubEdit(new UndoableEdit.insertNode(new Position(this, 0), new DNText(value), updateDisplay: false));
+      edit.addSubEdit(new UndoableEdit.insertNode(new Position(this, 0), new ParentUpdatingDNText(value), updateDisplay: false));
     doc.doNewEdit(edit);
     updateButtons();
   }

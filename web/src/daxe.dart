@@ -49,6 +49,7 @@ part 'config.dart';
 part 'daxe_node.dart';
 part 'daxe_attr.dart';
 //part 'file_open_dialog.dart';
+part 'find_dialog.dart';
 part 'help_dialog.dart';
 part 'insert_panel.dart';
 part 'locale.dart';

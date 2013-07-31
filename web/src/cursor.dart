@@ -498,7 +498,7 @@ class Cursor {
    * Shows the cursor.
    */
   void show() {
-    if (selectionStart != null) {
+    if (selectionStart != null && selectionStart == selectionEnd) {
       visible = true;
       caret.style.visibility = 'visible';
     }

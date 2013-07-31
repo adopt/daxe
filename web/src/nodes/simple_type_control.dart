@@ -131,6 +131,14 @@ class SimpleTypeControl {
         }
         select.append(option);
       }
+      if (!values.contains(value)) {
+        // add this invalid value
+        h.OptionElement option = new h.OptionElement();
+        option.text = value;
+        option.selected = true;
+        select.append(option);
+        hcontrol.classes.add('invalid');
+      }
       //select.value = value; // doesn't work with IE
       select.onChange.listen((h.Event event) => checkValue(true));
       span.append(select);
@@ -166,7 +174,7 @@ class SimpleTypeControl {
   
   void checkValue(bool callAction) {
     String oldValue = value;
-    if (/*hcontrol is h.TextInputElement*/ /* pb with JS: bug 10383 */
+    if (/*hcontrol is h.TextInputElement*/ /* pb with JS: Dart bug 10383 */
         hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'text') {
       value = (hcontrol as h.TextInputElement).value;
     } else if (hcontrol is h.SelectElement)
@@ -183,7 +191,7 @@ class SimpleTypeControl {
     if (refAttribute != null)
       valid = doc.cfg.validAttributeValue(refAttribute, value);
     else
-      valid = doc.cfg.isElementValueValid(refElement, value);
+      valid = (value == '' || doc.cfg.isElementValueValid(refElement, value));
     if (valid) {
       hcontrol.classes.add('valid');
       hcontrol.classes.remove('invalid');
@@ -199,10 +207,33 @@ class SimpleTypeControl {
   
   void setValue(String value) {
     this.value = value;
-    if (hcontrol is h.TextInputElement)
+    if (/*hcontrol is h.TextInputElement*/
+        hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'text')
       (hcontrol as h.TextInputElement).value = value;
-    else if (hcontrol is h.SelectElement)
-      (hcontrol as h.SelectElement).value = value;
+    else if (hcontrol is h.SelectElement) {
+      h.SelectElement select = (hcontrol as h.SelectElement);
+      // reset the options to remove invalid values
+      while (select.options.length > 0)
+        select.options[0].remove();
+      for (String v in values) {
+        h.OptionElement option = new h.OptionElement();
+        option.text = v;
+        if (v == value)
+          option.selected = true;
+        select.append(option);
+      }
+      if (!values.contains(value)) {
+        // add this invalid value (will be removed at the next call to setValue with another value)
+        h.OptionElement option = new h.OptionElement();
+        option.text = value;
+        option.selected = true;
+        select.append(option);
+        hcontrol.classes.add('invalid');
+      }
+      select.value = value;
+    } else if (/*hcontrol is h.CheckboxInputElement*/
+        hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'checkbox')
+      (hcontrol as h.CheckboxInputElement).checked = (value == 'true' || value == '1');
   }
   
   void focus() {

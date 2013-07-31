@@ -26,7 +26,7 @@ class DNSpecial extends DaxeNode {
   DNSpecial.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
   }
   
-  DNSpecial.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, false) {
+  DNSpecial.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
     _character = node.firstChild.nodeValue;
   }
   

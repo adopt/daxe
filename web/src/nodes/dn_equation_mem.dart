@@ -29,7 +29,7 @@ class DNEquationMem extends DaxeNode {
     MathBase.loadFonts();
   }
   
-  DNEquationMem.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, false) {
+  DNEquationMem.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
     _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', 'src');
     if (node.firstChild != null)
       _data = node.firstChild.nodeValue.replaceAll('\n', '');

@@ -53,7 +53,7 @@ abstract class DaxeNode {
   bool valid;
   
   
-  DaxeNode.fromNode(x.Node node, DaxeNode parent, [bool createChildren = true]) {
+  DaxeNode.fromNode(x.Node node, DaxeNode parent, {bool createChildren: true}) {
     _id = doc.newId(this);
     this.parent = parent;
     nodeType = node.nodeType;
@@ -198,6 +198,51 @@ abstract class DaxeNode {
     for (DaxeNode dn = firstChild; dn != null; dn = dn.nextSibling) {
       if (dn.nextSibling == null)
         return(dn);
+    }
+    return(null);
+  }
+  
+  DaxeNode childAtOffset(int offset) {
+    assert(nodeType != TEXT_NODE);
+    int n = 0;
+    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+      if (n == offset)
+        return(dn);
+      n++;
+    }
+    return(null);
+  }
+  
+  /**
+   * Returns the next node in the document (excluding attribute nodes).
+   */
+  DaxeNode nextNode() {
+    if (firstChild != null)
+      return(firstChild);
+    if (nextSibling != null)
+      return(nextSibling);
+    DaxeNode p = parent;
+    while (p != null) {
+      if (p.nextSibling != null)
+        return(p.nextSibling);
+      p = p.parent;
+    }
+    return(null);
+  }
+  
+  /**
+   * Returns the previous node in the document (excluding attribute nodes).
+   */
+  DaxeNode previousNode() {
+    if (firstChild != null)
+      return(lastChild);
+    if (previousSibling != null)
+      return(previousSibling);
+    DaxeNode p = parent;
+    while (p != null) {
+      if (p.previousSibling != null)
+        return(p.previousSibling);
+      p = p.parent;
     }
     return(null);
   }
@@ -470,17 +515,6 @@ abstract class DaxeNode {
     DaxeNode newjn = new DNText(s2);
     parent.insertBefore(newjn, nextSibling);
     return(newjn);
-  }
-  
-  DaxeNode childAtOffset(int offset) {
-    assert(nodeType != TEXT_NODE);
-    int n = 0;
-    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
-      if (n == offset)
-        return(dn);
-      n++;
-    }
-    return(null);
   }
   
   /**

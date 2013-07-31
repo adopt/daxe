@@ -47,6 +47,7 @@ part 'dn_file.dart';
 part 'dn_form.dart';
 part 'dn_item.dart';
 part 'dn_list.dart';
+part 'parent_updating_dn_text.dart';
 part 'dn_processing_instruction.dart';
 part 'dn_simple_type.dart';
 part 'dn_special.dart';

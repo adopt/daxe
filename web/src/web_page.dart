@@ -52,6 +52,7 @@ class WebPage {
   }
   
   void openDocument(String filePath, String configPath) {
+    filePath = '' + filePath; // http://code.google.com/p/dart/issues/detail?id=12143
     doc.openDocument(filePath, configPath).then( (_) {
       _buildMenus();
       init();

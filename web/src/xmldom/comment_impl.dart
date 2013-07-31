@@ -53,6 +53,7 @@ class CommentImpl extends NodeImpl implements Comment {
     localName = null;
   }
   
+  /*
   CommentImpl.fromDH(final Document doc, final h.Comment com) {
     nodeName = "#comment";
     nodeValue = com.nodeValue;
@@ -69,6 +70,7 @@ class CommentImpl extends NodeImpl implements Comment {
     prefix = null;
     localName = null;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new CommentImpl.clone(this));

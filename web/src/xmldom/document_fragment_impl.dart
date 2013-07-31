@@ -67,6 +67,7 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     localName = null;
   }
   
+  /*
   DocumentFragmentImpl.fromDH(final Document doc, final h.DocumentFragment df) {
     nodeName = "#document-fragment";
     nodeValue = df.nodeValue;
@@ -83,6 +84,7 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     prefix = null;
     localName = null;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new DocumentFragmentImpl.clone(this, deep));

@@ -33,7 +33,9 @@ class DOMImplementationImpl implements DOMImplementation {
     return(new DocumentImpl(this, namespaceURI, qualifiedName, doctype));
   }
   
+  /*
   Document createDocumentFromDH(h.Document doc) {
     return(new DocumentImpl.fromDH(this, doc));
   }
+  */
 }

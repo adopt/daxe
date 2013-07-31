@@ -53,6 +53,7 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     localName = null;
   }
   
+  /*
   CDATASectionImpl.fromDH(final Document doc, final h.CDataSection cds) {
     nodeName = "#cdata-section";
     nodeValue = cds.nodeValue;
@@ -69,6 +70,7 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     prefix = null;
     localName = null;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new CDATASectionImpl.clone(this));

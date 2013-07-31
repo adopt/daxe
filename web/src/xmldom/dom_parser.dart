@@ -19,7 +19,7 @@ part of xmldom;
 
 class DOMParser {
   
-  Future<Document> parseFromURL(String url, {bool useBrowserXMLParser:false, bool disableCache:true}) { // throws DOMException
+  Future<Document> parseFromURL(String url, {/*bool useBrowserXMLParser:false,*/ bool disableCache:true}) { // throws DOMException
     Completer<Document> completer = new Completer<Document>();
     // DomParser and responseXml don't work with IE9
     // http://code.google.com/p/dart/issues/detail?id=7937
@@ -52,6 +52,7 @@ class DOMParser {
         return;
       }
       Document xdoc;
+      /*
       if (useBrowserXMLParser) {
         h.Document hdoc = request.responseXml;
         if (hdoc == null) {
@@ -73,6 +74,7 @@ class DOMParser {
         DOMImplementationImpl dom = new DOMImplementationImpl();
         xdoc = dom.createDocumentFromDH(hdoc);
       } else {
+      */
         // warning: at this point responseText can have the wrong character encoding with IE,
         // unless Unicode is used
         if (request.responseText == null) {
@@ -85,7 +87,7 @@ class DOMParser {
           completer.completeError(new DOMException("Error reading $url: ${ex.message}"));
           return;
         }
-      }
+      //}
       completer.complete(xdoc);
     });
     request.onError.listen((h.ProgressEvent event) {
@@ -95,6 +97,7 @@ class DOMParser {
     return(completer.future);
   }
   
+  /*
   Document parseFromStringWithDartDOM(String s) { // throws DOMException
     h.DomParser parser = new h.DomParser();
     h.Document hdoc = parser.parseFromString(s, "text/xml");
@@ -104,6 +107,7 @@ class DOMParser {
       throw new DOMException("Error parsing XML from string");
     return(xdoc);
   }
+  */
   
   Document parseFromString(String s) { // throws DOMException
     XMLParser parser = new XMLParser();

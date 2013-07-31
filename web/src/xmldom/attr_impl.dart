@@ -94,6 +94,7 @@ class AttrImpl extends NodeImpl implements Attr {
     }
   }
   
+  /*
   AttrImpl.fromDH(final Document doc, final String localName, final String value) {
     specified = true;
     ownerElement = null;
@@ -114,6 +115,7 @@ class AttrImpl extends NodeImpl implements Attr {
     prefix = null; // KNOW BUG, see http://code.google.com/p/dart/issues/detail?id=8521
     this.localName = localName;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new AttrImpl.clone(this));

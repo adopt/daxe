@@ -64,6 +64,7 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     localName = null;
   }
   
+  /*
   DocumentTypeImpl.fromDH(final Document doc, final h.DocumentType dt) {
     // BUG: name, publicId, systemId ???
     name = dt.$dom_localName;
@@ -85,6 +86,7 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     prefix = null;
     localName = null;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new DocumentTypeImpl.clone(this));

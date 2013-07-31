@@ -110,6 +110,7 @@ class DocumentImpl extends NodeImpl implements Document {
     }
   }
   
+  /*
   DocumentImpl.fromDH(final DOMImplementation implementation, final h.Document doc) {
     // lots of info missing !
     this.implementation = implementation;
@@ -139,6 +140,7 @@ class DocumentImpl extends NodeImpl implements Document {
     
     appendChild(new ElementImpl.fromDH(this, doc.documentElement));
   }
+  */
   
   Element createElement(String tagName) { // throws DOMException
     return(new ElementImpl(this, tagName));

@@ -53,6 +53,7 @@ class TextImpl extends NodeImpl implements Text {
     localName = null;
   }
   
+  /*
   TextImpl.fromDH(final Document doc, final h.Text txt) {
     nodeName = "#text";
     nodeValue = txt.nodeValue;
@@ -69,6 +70,7 @@ class TextImpl extends NodeImpl implements Text {
     prefix = null;
     localName = null;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new TextImpl.clone(this));

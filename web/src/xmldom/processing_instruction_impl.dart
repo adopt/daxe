@@ -61,6 +61,7 @@ class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstructio
     localName = null;
   }
   
+  /*
   ProcessingInstructionImpl.fromDH(final Document doc, final h.ProcessingInstruction pi) {
     target = pi.target;
     data = pi.data;
@@ -80,6 +81,7 @@ class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstructio
     prefix = null;
     localName = null;
   }
+  */
   
   Node cloneNode(bool deep) {
     return(new ProcessingInstructionImpl.clone(this));

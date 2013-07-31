@@ -102,6 +102,7 @@ class ElementImpl extends NodeImpl implements Element {
     }
   }
   
+  /*
   ElementImpl.fromDH(final Document doc, final h.Element el) {
     tagName = el.tagName;
     nodeName = tagName;
@@ -183,6 +184,7 @@ class ElementImpl extends NodeImpl implements Element {
       }
     }
   }
+  */
   
   String getAttribute(String name) {
     if (attributes == null)

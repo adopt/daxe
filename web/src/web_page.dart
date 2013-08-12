@@ -52,7 +52,13 @@ class WebPage {
   }
   
   void openDocument(String filePath, String configPath) {
-    filePath = '' + filePath; // http://code.google.com/p/dart/issues/detail?id=12143
+    // workarounds for Dart bug 12143, should be removed once this is fixed
+    // see http://code.google.com/p/dart/issues/detail?id=12143
+    filePath = '' + filePath;
+    doc.saveURL = '${doc.saveURL}';
+    if (doc.saveURL == '' || doc.saveURL == 'null')
+      doc.saveURL = null;
+    
     doc.openDocument(filePath, configPath).then( (_) {
       _buildMenus();
       init();

@@ -17,6 +17,14 @@
 
 part of nodes;
 
+/**
+ * An equation using the Jaxe syntax. The image is encoded in base64
+ * and added as text inside the element.
+ * Jaxe display type: to be defined, for now a plugin with the class `xpages.JEEquationMemoire`.
+ * 
+ * * parameter: `texteAtt`: the name of the attribute giving the equation text
+ * * parameter: `labelAtt`: the name of the attribute giving the image label
+ */
 class DNEquationMem extends DaxeNode {
   h.ImageElement _img;
   String _textAtt;

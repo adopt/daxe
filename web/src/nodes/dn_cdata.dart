@@ -17,10 +17,13 @@
 
 part of nodes;
 
+/**
+ * CDATA section
+ */
 class DNCData extends DaxeNode {
   Tag _b1, _b2;
   
-  DNCData() : super.fromNodeType(DaxeNode.CDATA_SECTION_NODE) {
+  DNCData() : super.fromNodeType(DaxeNode.ELEMENT_NODE) {
     _b1 = new Tag(this, Tag.START);
     _b2 = new Tag(this, Tag.END);
   }
@@ -32,13 +35,16 @@ class DNCData extends DaxeNode {
   
   @override
   h.Element html() {
-    h.Element span;
-    span = new h.SpanElement();
+    h.SpanElement span = new h.SpanElement();
     span.id = "$id";
     span.classes.add('dn');
     span.append(_b1.html());
     h.SpanElement contents = new h.SpanElement();
-    contents.appendText(nodeValue);
+    DaxeNode dn = firstChild;
+    while (dn != null) {
+      contents.append(dn.html());
+      dn = dn.nextSibling;
+    }
     span.append(contents);
     span.append(_b2.html());
     return(span);
@@ -47,5 +53,21 @@ class DNCData extends DaxeNode {
   @override
   h.Element getHTMLContentsNode() {
     return(getHTMLNode().nodes[1]);
+  }
+  
+  @override
+  String toString() {
+    String value = null;
+    if (firstChild != null)
+      value = firstChild.nodeValue;
+    if (value == null)
+      value = '';
+    return("<![CDATA[$value]]>");
+  }
+  
+  @override
+  void updateValidity() {
+    super.updateValidity();
+    parent.updateValidity();
   }
 }

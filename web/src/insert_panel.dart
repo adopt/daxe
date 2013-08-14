@@ -35,7 +35,7 @@ class InsertPanel {
     DaxeNode parent = pos.daxeNode;
     if (parent.nodeType == DaxeNode.TEXT_NODE)
       parent = parent.parent;
-    if (parent.nodeType == DaxeNode.ELEMENT_NODE) {
+    if (parent.nodeType == DaxeNode.ELEMENT_NODE && parent.ref != null) {
       divInsert.append(_makeHelpButton(parent.ref));
       String name = cfg.elementName(parent.ref);
       h.SpanElement span = new h.SpanElement();

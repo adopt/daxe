@@ -17,6 +17,9 @@
 
 part of nodes;
 
+/**
+ * The document node.
+ */
 class DNDocument extends DaxeNode {
   
   DNDocument() : super.fromNodeType(DaxeNode.DOCUMENT_NODE) {

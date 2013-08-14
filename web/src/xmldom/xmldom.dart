@@ -16,7 +16,9 @@
 */
 
 /**
- * XML DOM API. A document can be parsed with [DOMParser].
+ * XML DOM API based on the [W3C recommandation](http://www.w3.org/TR/DOM-Level-3-Core/core.html)
+ * but not all features are implemented.
+ * A document can be parsed with [DOMParser].
  */
 library xmldom;
 

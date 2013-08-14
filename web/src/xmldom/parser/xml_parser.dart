@@ -36,7 +36,6 @@ class XMLParser {
   _initRules() {
     lexRules = new List<TokenRule>();
     StateCondition inTag = new StateCondition('in_tag', true);
-    StateCondition inDecl = new StateCondition('in_decl', true);
     lexRules.add(new TokenRule('CDATA_SECTION_OPEN', new TokenSequence.string('<![CDATA['),
         conditions: [new StateCondition('in_cdata_section', false)],
         changes: [new StateChange('in_cdata_section', true)]));
@@ -52,22 +51,48 @@ class XMLParser {
         changes: [new StateChange('in_comment', false)]));
     lexRules.add(new TokenRule('COMMENT_DATA', new TokenRepeat.oneOrMore(new TokenChar.except(['-->'])),
         conditions: [new StateCondition('in_comment', true)]));
-    lexRules.add(new TokenRule('DOC_DECL_OPEN', new TokenSequence.string('<?'),
+    lexRules.add(new TokenRule('DOC_DECL_OPEN', new TokenSequence.string('<?xml'),
         changes: [new StateChange('in_tag', true), new StateChange('in_decl', true)]));
     lexRules.add(new TokenRule('DOC_DECL_CLOSE', new TokenSequence.string('?>'),
-        conditions: [inDecl],
+        conditions: [new StateCondition('in_decl', true)],
         changes: [new StateChange('in_tag', false), new StateChange('in_decl', false)]));
     lexRules.add(new TokenRule('DOCTYPE_OPEN', new TokenSequence.string('<!DOCTYPE'),
         changes: [new StateChange('in_tag', true), new StateChange('in_doctype', true)]));
     lexRules.add(new TokenRule('DOCTYPE_CLOSE', new TokenSequence.string('>'),
         conditions: [new StateCondition('in_doctype', true)],
         changes: [new StateChange('in_tag', false), new StateChange('in_doctype', false)]));
+    lexRules.add(new TokenRule('PI_OPEN', new TokenSequence.string('<?'),
+        changes: [new StateChange('in_pi', true)]));
+    TokenItem firstChar = new TokenChoice([
+      new TokenChar.letter(),
+      new TokenChar('_'),
+      new TokenChar(':')
+    ]);
+    TokenItem nameChar = new TokenChoice([
+      new TokenChar.letter(),
+      new TokenChar.digit(),
+      new TokenChar('.'),
+      new TokenChar('-'),
+      new TokenChar('_'),
+      new TokenChar(':')
+    ]);
+    lexRules.add(new TokenRule('PI_TARGET', new TokenSequence([
+        firstChar,
+        new TokenRepeat.zeroOrMore(nameChar)
+        ]),
+        conditions: [new StateCondition('in_pi', true), new StateCondition('pi_after_target', false)],
+        changes: [new StateChange('pi_after_target', true)]));
+    lexRules.add(new TokenRule('PI_DATA', new TokenRepeat.oneOrMore(new TokenChar.except(['?>'])),
+        conditions: [new StateCondition('pi_after_target', true)]));
+    lexRules.add(new TokenRule('PI_CLOSE', new TokenSequence.string('?>'),
+        conditions: [new StateCondition('in_pi', true)],
+        changes: [new StateChange('in_pi', false), new StateChange('pi_after_target', false)]));
     lexRules.add(new TokenRule('TAG_END_OPEN', new TokenSequence.string('</'),
         changes: [new StateChange('in_tag', true)]));
     lexRules.add(new TokenRule('TAG_START_OPEN', new TokenChar('<'),
         changes: [new StateChange('in_tag', true)]));
     lexRules.add(new TokenRule('TAG_CLOSE', new TokenChar('>'),
-        conditions: [inTag, new StateCondition('in_decl', false)],
+        conditions: [inTag],
         changes: [new StateChange('in_tag', false)]));
     lexRules.add(new TokenRule('TAG_EMPTY_CLOSE', new TokenSequence.string('/>'),
         conditions: [inTag],
@@ -143,19 +168,6 @@ class XMLParser {
       conditions: [inTag]));
     lexRules.add(new TokenRule('PCDATA', new TokenRepeat.oneOrMore(new TokenChar.except(['<', '&'])),
         conditions: [new StateCondition('in_tag', false)]));
-    TokenItem firstChar = new TokenChoice([
-      new TokenChar.letter(),
-      new TokenChar('_'),
-      new TokenChar(':')
-    ]);
-    TokenItem nameChar = new TokenChoice([
-      new TokenChar.letter(),
-      new TokenChar.digit(),
-      new TokenChar('.'),
-      new TokenChar('-'),
-      new TokenChar('_'),
-      new TokenChar(':')
-    ]);
     lexRules.add(new TokenRule('GENERIC_ID', new TokenSequence([
         firstChar,
         new TokenRepeat.zeroOrMore(nameChar)
@@ -187,13 +199,12 @@ class XMLParser {
     );
     xmlRules.add(new TokenRule('DOC_DECL', new TokenSequence([
       new TokenId('DOC_DECL_OPEN'),
-      new TokenId('GENERIC_ID'),
       new TokenRepeat.zeroOrMore(attributeRule),
       new TokenId('DOC_DECL_CLOSE')
     ]), action: (Token token) {
-      int nbAttributes = token.matchedTokens.length - 3;
+      int nbAttributes = token.matchedTokens.length - 2;
       if (nbAttributes > 0) {
-        for (int i= 2; i < token.matchedTokens.length - 1; i++) {
+        for (int i= 1; i < token.matchedTokens.length - 1; i++) {
           Object data = token.matchedTokens[i].data;
           if (data is Attr) {
             Attr attr = data as Attr;
@@ -269,8 +280,7 @@ class XMLParser {
         data = token.matchedTokens[1].matchedString;
       else
         data = '';
-      Comment comment = new CommentImpl(doc, data);
-      token.data = comment;
+      token.data = new CommentImpl(doc, data);
     });
     TokenRule entityRefRule = new TokenRule('ENTITY_REF', new TokenSequence([
       new TokenId('ENTITY_REF')
@@ -281,8 +291,7 @@ class XMLParser {
         EntityReferenceImpl entityRef = new EntityReferenceImpl(doc, data);
         token.data = entityRef;
       } else {
-        Text text = new TextImpl(doc, data);
-        token.data = text;
+        token.data = new TextImpl(doc, data);
       }
     });
     TokenRule cdataSectionRule = new TokenRule('CDATA', new TokenSequence([
@@ -295,8 +304,21 @@ class XMLParser {
         data = token.matchedTokens[1].matchedString;
       else
         data = '';
-      CDATASection section = new CDATASectionImpl(doc, data);
-      token.data = section;
+      token.data = new CDATASectionImpl(doc, data);
+    });
+    TokenRule piRule = new TokenRule('PI', new TokenSequence([
+      new TokenId('PI_OPEN'),
+      new TokenId('PI_TARGET'),
+      new TokenRepeat.zeroOrOne(new TokenId('PI_DATA')),
+      new TokenId('PI_CLOSE')
+    ]), action: (Token token) {
+      String target = token.matchedTokens[1].matchedString;
+      String data;
+      if (token.matchedTokens.length == 4)
+        data = token.matchedTokens[2].matchedString.replaceAll(new RegExp(r"^\s+"), '');
+      else
+        data = '';
+      token.data = new ProcessingInstructionImpl(doc, target, data);
     });
     TokenRule elementRule = new TokenRule('ELEMENT', null, action: (Token token) {
       bool empty = (token.matchedTokens[0].id == 'EMPTY_ELEMENT');
@@ -325,11 +347,11 @@ class XMLParser {
                 el.appendChild(data as Node);
             }
           }
-          // normalize text nodes (including CDATA sections)
+          // normalize text nodes (but not CDATA sections)
           for (Node n = el.firstChild; n != null; n = n.nextSibling) {
-            if (n is Text) {
+            if (n.nodeType == Node.TEXT_NODE) {
               Node n2 = n.nextSibling;
-              while (n2 is Text) {
+              while (n2 != null && n2.nodeType == Node.TEXT_NODE) {
                 n.nodeValue += n2.nodeValue;
                 el.removeChild(n2);
                 n2 = n.nextSibling;
@@ -349,7 +371,8 @@ class XMLParser {
             commentRule,
             new TokenId('PCDATA'),
             entityRefRule,
-            cdataSectionRule
+            cdataSectionRule,
+            piRule
           ])
         ),
         endTagRule
@@ -365,6 +388,7 @@ class XMLParser {
     xmlRules.add(commentRule);
     xmlRules.add(entityRefRule);
     xmlRules.add(cdataSectionRule);
+    xmlRules.add(piRule);
   }
   
   Document parseString(String s) {

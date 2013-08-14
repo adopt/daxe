@@ -17,6 +17,10 @@
 
 part of nodes;
 
+/**
+ * Recursive display of all descendants in a single form.
+ * Jaxe display type: 'formulaire' (form).
+ */
 class DNForm extends DaxeNode {
   
   List<x.Element> childrenRefs;

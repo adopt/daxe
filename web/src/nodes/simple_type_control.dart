@@ -17,6 +17,9 @@
 
 part of nodes;
 
+/**
+ * Control for an element with a WXS simple type, used by [DNSimpleType] and [DNForm].
+ */
 class SimpleTypeControl {
   
   static int _n = 0;

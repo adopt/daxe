@@ -265,8 +265,8 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   }
   
   /**
-   * E.R. pour cet élément comme sous-élément d'un modèle.
-   * Renvoie null s'il n'y a pas d'élément non-abstrait correspondant à cet élément.
+   * Regular expression for this element as a model sub-element.
+   * Returns null if there is no non-abstract element matching this element.
    */
   // from WithSubElements
   String regularExpression() {

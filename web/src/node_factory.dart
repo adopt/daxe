@@ -148,7 +148,7 @@ class NodeFactory {
     } else if (nodeType == 'cdata') {
       return(new DNCData());
     }
-    String dt = doc.cfg.nodeDisplayType(elementRef, doc.cfg.elementName(elementRef), DaxeNode.ELEMENT_NODE);
+    String dt = doc.cfg.nodeDisplayType(elementRef, doc.cfg.elementName(elementRef), x.Node.ELEMENT_NODE);
     ConstructorFromRef cref = nodeFactory.constructorsFromRef[dt];
     DaxeNode dn;
     if (cref != null)

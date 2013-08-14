@@ -131,8 +131,7 @@ class Position {
   
   void move(int offset) {
     moveInsideTextNodeIfPossible();
-    if (offset < 0 && _dnOffset + offset >= 0 && _dn.nodeType != DaxeNode.TEXT_NODE &&
-        _dn.nodeType != DaxeNode.COMMENT_NODE) {
+    if (offset < 0 && _dnOffset + offset >= 0 && _dn.nodeType != DaxeNode.TEXT_NODE) {
       Position pos = _dn.childNodes[_dnOffset - 1].lastCursorPositionInside();
       if (pos != null) {
         _dn = pos.dn;
@@ -224,7 +223,7 @@ class Position {
    * offset top-left coordinates for the position
    */
   Point positionOnScreen() {
-    if (_dn.nodeType == DaxeNode.TEXT_NODE || _dn.nodeType == DaxeNode.COMMENT_NODE) {
+    if (_dn.nodeType == DaxeNode.TEXT_NODE) {
       h.Element hn = _dn.getHTMLContentsNode();
       if (hn == null || hn.nodes.length == 0)
         return(null);
@@ -414,6 +413,10 @@ class Position {
   }
 }
 
+/**
+ * A point defined by x,y coordinates.
+ * The coordinates can be integers or doubles.
+ */
 class Point {
   num x, y;
   Point(num this.x, num this.y);

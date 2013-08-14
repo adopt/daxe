@@ -258,7 +258,12 @@ class WebPage {
   void showContextualMenu(h.MouseEvent event) {
     if (doc.cfg == null || _cursor.selectionStart.daxeNode == null)
       return;
-    List<x.Element> refs = doc.elementsAllowedUnder(_cursor.selectionStart.daxeNode);
+    DaxeNode parent;
+    if (_cursor.selectionStart.daxeNode is DNText)
+      parent = _cursor.selectionStart.daxeNode.parent;
+    else
+      parent = _cursor.selectionStart.daxeNode;
+    List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     contextualMenu = new Menu(null);
     for (x.Element ref in validRefs) {
@@ -268,15 +273,12 @@ class WebPage {
       contextualMenu.add(item);
     }
     contextualMenu.addSeparator();
-    DaxeNode parent;
-    if (_cursor.selectionStart.daxeNode is DNText)
-      parent = _cursor.selectionStart.daxeNode.parent;
-    else
-      parent = _cursor.selectionStart.daxeNode;
-    String title = doc.cfg.menuTitle(parent.nodeName);
-    title = "${Strings.get('contextual.help_about_element')} $title";
-    contextualMenu.add(new MenuItem(title, () =>
-        (new HelpDialog.Element(parent.ref)).show()));
+    if (parent.ref != null) {
+      String title = doc.cfg.menuTitle(parent.nodeName);
+      title = "${Strings.get('contextual.help_about_element')} $title";
+      contextualMenu.add(new MenuItem(title, () =>
+          (new HelpDialog.Element(parent.ref)).show()));
+    }
     h.DivElement div = contextualMenu.html();
     div.style.position = 'fixed';
     div.style.display = 'block';
@@ -404,6 +406,9 @@ class WebPage {
     });
   }
   /*
+  It is not possible with Dart to get a real file path, so an open menu cannot be implemented.
+  see http://code.google.com/p/dart/issues/detail?id=12061
+  
   void openMenu() {
     
 //    FileOpenDialog dlg;

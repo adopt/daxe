@@ -17,6 +17,9 @@
 
 part of nodes;
 
+/**
+ * An editable text node.
+ */
 class DNText extends DaxeNode {
   
   DNText(String s) : super.text(s) {
@@ -36,6 +39,26 @@ class DNText extends DaxeNode {
       span.append(new h.Text(nodeValue));
     }
     return(span);
+  }
+  
+  void insertString(Position pos, String s) {
+    assert(pos.dn == this);
+    String v = nodeValue;
+    if (v == null)
+      v = '';
+    nodeValue = "${v.substring(0, pos.dnOffset)}$s${v.substring(pos.dnOffset)}";
+  }
+  
+  /**
+   * Cuts this text node at the given [offset] and returns the newly created node.
+   */
+  DNText cut(int offset) {
+    String s1 = nodeValue.substring(0, offset);
+    String s2 = nodeValue.substring(offset);
+    nodeValue = s1;
+    DaxeNode newjn = new DNText(s2);
+    parent.insertBefore(newjn, nextSibling);
+    return(newjn);
   }
   
 }

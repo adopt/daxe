@@ -17,10 +17,13 @@
 
 part of nodes;
 
+/**
+ * XML comment
+ */
 class DNComment extends DaxeNode {
   Tag _b1, _b2;
   
-  DNComment() : super.fromNodeType(DaxeNode.COMMENT_NODE) {
+  DNComment() : super.fromNodeType(DaxeNode.ELEMENT_NODE) {
     _b1 = new Tag(this, Tag.START);
     _b2 = new Tag(this, Tag.END);
   }
@@ -32,22 +35,34 @@ class DNComment extends DaxeNode {
   
   @override
   h.Element html() {
-    h.Element span;
-    span = new h.SpanElement();
+    h.SpanElement span = new h.SpanElement();
     span.id = "$id";
     span.classes.add('dn');
     span.append(_b1.html());
     h.SpanElement contents = new h.SpanElement();
-    if (nodeValue != null)
-      contents.appendText(nodeValue);
+    DaxeNode dn = firstChild;
+    while (dn != null) {
+      contents.append(dn.html());
+      dn = dn.nextSibling;
+    }
     span.append(contents);
     span.append(_b2.html());
-    span.style.color = "#909090";
+    span.style.color = "#808080";
     return(span);
   }
   
   @override
   h.Element getHTMLContentsNode() {
     return(getHTMLNode().nodes[1]);
+  }
+  
+  @override
+  String toString() {
+    String value = null;
+    if (firstChild != null)
+      value = firstChild.nodeValue;
+    if (value == null)
+      value = '';
+    return("<!--$value-->");
   }
 }

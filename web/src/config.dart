@@ -719,6 +719,9 @@ class Config {
    * its first level children, and its node value
    */
   bool elementIsValid(final DaxeNode parent) {
+    if (parent is DNComment || parent is DNProcessingInstruction || parent is DNCData)
+      return(true);
+    
     if (parent.ref == null)
       return(false);
     
@@ -737,10 +740,13 @@ class Config {
       final List<x.Element> sousElements = new List<x.Element>();
       bool avectexte = false;
       for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
-        if (dn.nodeType == DaxeNode.ELEMENT_NODE) {
+        if (dn.nodeType == DaxeNode.ELEMENT_NODE && dn.ref != null) {
           sousElements.add(dn.ref);
-        } else if (dn.nodeType == DaxeNode.TEXT_NODE || dn.nodeType == DaxeNode.CDATA_SECTION_NODE) {
+        } else if (dn.nodeType == DaxeNode.TEXT_NODE) {
           if (dn.nodeValue.trim() != "")
+            avectexte = true;
+        } else if (dn is DNCData) {
+          if (dn.firstChild != null && dn.firstChild.nodeValue.trim() != '')
             avectexte = true;
         }
       }
@@ -756,16 +762,19 @@ class Config {
       _validPatternCache = new HashMap<x.Element, Pattern>();
     
     bool avectexte = false;
-    DaxeNode sousb = parent.firstChild;
-    while (sousb != null) {
-      if (sousb.nodeType == DaxeNode.ELEMENT_NODE)  {
-        cettexp.write(sousb.localName);
+    DaxeNode child = parent.firstChild;
+    while (child != null) {
+      if (child is DNCData) {
+        if (child.firstChild != null && child.firstChild.nodeValue.trim() != '')
+          avectexte = true;
+      } else if (child.nodeType == DaxeNode.ELEMENT_NODE && child is! DNComment && child is! DNProcessingInstruction)  {
+        cettexp.write(child.localName);
         cettexp.write(",");
-      } else if (sousb.nodeType == DaxeNode.TEXT_NODE || sousb.nodeType == DaxeNode.CDATA_SECTION_NODE) {
-        if (sousb.nodeValue.trim() != "")
+      } else if (child.nodeType == DaxeNode.TEXT_NODE) {
+        if (child.nodeValue.trim() != '')
           avectexte = true;
       }
-      sousb = sousb.nextSibling;
+      child = child.nextSibling;
     }
     if (avectexte && !_schema.canContainText(refParent))
       return(false);
@@ -861,6 +870,8 @@ class Config {
    * Returns true if the given element can contain text
    */
   bool canContainText(final x.Element elementRef) {
+    if (elementRef == null)
+      return(true);
     return(_schema.canContainText(elementRef));
   }
   
@@ -976,15 +987,15 @@ class Config {
   // METHODS FOR DISPLAY TYPES
   
   /**
-   * Returns a node display type based on the element reference, the node name and the node type.
+   * Returns a node display type based on the element reference, the node name and the DOM node type.
    */
   String nodeDisplayType(final x.Element elementRef, final String name, final int nodeType) {
-    if (nodeType == DaxeNode.ELEMENT_NODE) {
+    if (nodeType == x.Node.ELEMENT_NODE) {
       final x.Element affel = getElementDisplay(localValue(name));
       if (affel == null)
         return(_typeAffichageParDefaut);
       return(affel.getAttribute("type"));
-    } else if (nodeType == DaxeNode.PROCESSING_INSTRUCTION_NODE) {
+    } else if (nodeType == x.Node.PROCESSING_INSTRUCTION_NODE) {
       x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_INSTRUCTION");
       while (elplug != null) {
         if (name != null && name == elplug.getAttribute("cible"))
@@ -992,17 +1003,17 @@ class Config {
         elplug = _nextElement(elplug, "PLUGIN_INSTRUCTION");
       }
       return("instruction");
-    } else if (nodeType == DaxeNode.COMMENT_NODE) {
+    } else if (nodeType == x.Node.COMMENT_NODE) {
       final x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_COMMENTAIRE");
       if (elplug != null)
         return("plugin");
       return("commentaire");
-    } else if (nodeType == DaxeNode.CDATA_SECTION_NODE) {
+    } else if (nodeType == x.Node.CDATA_SECTION_NODE) {
       final x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_CDATA");
       if (elplug != null)
         return("plugin");
       return("cdata");
-    } else if (nodeType == DaxeNode.TEXT_NODE) {
+    } else if (nodeType == x.Node.TEXT_NODE) {
       return("texte");
     }
     return(null);

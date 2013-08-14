@@ -17,6 +17,12 @@
 
 part of nodes;
 
+/**
+ * A short text area displayed within a start and end tags.
+ * Jaxe display type: 'string'.
+ * 
+ * * parameter: `style`: as in DNStyle
+ */
 class DNString extends DaxeNode {
   Tag _b1, _b2;
   

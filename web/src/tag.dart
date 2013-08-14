@@ -62,11 +62,18 @@ class Tag {
       title = doc.cfg.elementTitle(_dn.ref);
       if (title == null)
         title = _dn.nodeName;
-    } else if (_dn.nodeType == DaxeNode.COMMENT_NODE) {
+    } else if (_dn is DNComment) {
       if (_type == START)
         title = "(";
       else
         title = ")";
+    } else if (_dn is DNProcessingInstruction) {
+      if (_type == START)
+        title = "PI ${_dn.nodeName}";
+      else
+        title = "PI";
+    } else if (_dn is DNCData) {
+      title = "CDATA";
     } else
       title = "?";
     if (_type != END) {

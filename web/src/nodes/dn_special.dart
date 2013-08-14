@@ -17,6 +17,10 @@
 
 part of nodes;
 
+/**
+ * A symbol using UNICODE characters with a UNICODE font such as STIX.
+ * Jaxe display type: 'symbole2'.
+ */
 class DNSpecial extends DaxeNode {
   
   SpecialDialog _dlg;
@@ -81,6 +85,10 @@ class DNSpecial extends DaxeNode {
   }
 }
 
+
+/**
+ * Dialog for DNSpecial
+ */
 class SpecialDialog {
   
   static final List<List<String>> symbols = [

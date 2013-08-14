@@ -17,6 +17,10 @@
 
 part of nodes;
 
+/**
+ * A list element displayed inside a start and end bullets.
+ * Jaxe display type: 'item'.
+ */
 class DNItem extends DaxeNode {
   
   DNItem.fromRef(x.Element elementRef) : super.fromRef(elementRef) {

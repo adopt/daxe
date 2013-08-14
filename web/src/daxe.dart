@@ -28,9 +28,7 @@ library daxe;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:html' as h;
-import 'dart:math';
 
-import 'package:crypto/crypto.dart';
 import 'package:meta/meta.dart';
 //import 'package:js/js.dart' as js;
 
@@ -67,7 +65,9 @@ part 'web_page.dart';
 
 typedef void ActionFunction();
 
+/// The current web page
 WebPage page;
+/// The current XML document
 DaxeDocument doc;
 Map<String,ActionFunction> customFunctions = new Map<String,ActionFunction>();
 
@@ -109,10 +109,21 @@ void main() {
   });
 }
 
+/**
+ * Adds a custom display type. Two constructors are required to define the display type:
+ * 
+ * * one to create a new node, with the element reference in the schema as a parameter;
+ *   [Config] methods can be used via doc.cfg to obtain useful information with the reference.
+ * * another one to create a new Daxe node based on a DOM [x.Node];
+ *   it takes the future [DaxeNode] parent as a 2nd parameter.
+ */
 void addDisplayType(String displayType, ConstructorFromRef cref, ConstructorFromNode cnode) {
   NodeFactory.addDisplayType(displayType, cref, cnode);
 }
 
+/**
+ * Adds a custom function which can be called by name with a menu defined in the configuration file.
+ */
 void addCustomFunction(String functionName, ActionFunction fct) {
   customFunctions[functionName] = fct;
 }

@@ -17,6 +17,13 @@
 
 part of nodes;
 
+/**
+ * A large section in the document, delimited with page-wide tags.
+ * Nodes inside are indented.
+ * Jaxe display type: 'division'.
+ * 
+ * * parameter: `titreAtt`: an attribute that can be used as a title
+ */
 class DNDivision extends DaxeNode {
   Tag _b1, _b2;
   

@@ -828,14 +828,34 @@ class Cursor {
     // reverse order to always use selectionStart as the insert position
     // problem: the cursor is not at the right position afterwards
     for (DaxeNode dn in dnRoot.childNodes.reversed) {
-      if (dn.nodeType == DaxeNode.TEXT_NODE) {
-        if (dn.nodeValue.trim() != '' && !doc.cfg.canContainText(parent.ref)) {
+      if ((parent is DNComment || parent is DNCData || parent is DNProcessingInstruction) &&
+          dn is! DNText) {
+        String title;
+        if (dn.ref == null)
+          title = dn.nodeName;
+        else
+          title = doc.cfg.elementTitle(dn.ref);
+        h.window.alert(title + ' ' + Strings.get('insert.not_authorized_here'));
+        return(false);
+      }
+      if (dn is DNText || dn is DNCData) {
+        String value = null;
+        if (dn is DNText)
+          value = dn.nodeValue;
+        else if (dn.firstChild != null)
+          value = dn.firstChild.nodeValue;
+        if (value == null)
+          value = '';
+        if (value.trim() != '' && !doc.cfg.canContainText(parent.ref)) {
           h.window.alert(Strings.get('insert.text_not_allowed'));
           return(false);
         }
-        edit.addSubEdit(new UndoableEdit.insertString(selectionStart, dn.nodeValue));
+        if (dn is DNText)
+          edit.addSubEdit(new UndoableEdit.insertString(selectionStart, dn.nodeValue));
+        else
+          edit.addSubEdit(new UndoableEdit.insertNode(selectionStart, dn));
       } else {
-        if (dn.nodeType != DaxeNode.COMMENT_NODE) {
+        if (dn is! DNComment && dn is! DNProcessingInstruction) {
           if (dn.ref == null || !doc.cfg.isSubElement(parent.ref, dn.ref)) {
             String title;
             if (dn.ref == null)

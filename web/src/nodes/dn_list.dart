@@ -17,6 +17,10 @@
 
 part of nodes;
 
+/**
+ * A bulleted list containing item nodes.
+ * Jaxe display type: 'liste' (list)
+ */
 class DNList extends DaxeNode {
   Tag _b1, _b2;
   x.Element _itemref;

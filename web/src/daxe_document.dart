@@ -153,26 +153,48 @@ class DaxeDocument {
     return(null);
   }
   
+  /**
+   * Inserts a new [DaxeNode] at the given [Position].
+   * The insert is added to the document history so that it can be undone.
+   */
   void insertNode(DaxeNode dn, Position pos) {
     UndoableEdit edit = new UndoableEdit.insertNode(pos, dn);
     doNewEdit(edit);
   }
   
+  /**
+   * Removes the given [DaxeNode] from the document.
+   * The removal is added to the document history so that it can be undone.
+   */
   void removeNode(DaxeNode dn) {
     UndoableEdit edit = new UndoableEdit.removeNode(dn);
     doNewEdit(edit);
   }
   
+  /**
+   * Inserts a String at the given [Position].
+   * The insert is added to the document history so that it can be undone.
+   */
   void insertString(Position pos, String s) {
     UndoableEdit edit = new UndoableEdit.insertString(pos, s);
     doNewEdit(edit);
   }
   
+  /**
+   * Removes a String with the given [length] at the given [Position].
+   * The removal is added to the document history so that it can be undone.
+   */
   void removeString(Position pos, int length) {
     UndoableEdit edit = new UndoableEdit.removeString(pos, length);
     doNewEdit(edit);
   }
   
+  /**
+   * Removes everything between [start] and [end].
+   * The two positions must not cut a node, except for text nodes
+   * (all the document elements must be either inside or outside the range).
+   * The removal is added to the document history so that it can be undone.
+   */
   void removeBetween(Position start, Position end) {
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove'));
     assert(start < end);
@@ -243,7 +265,7 @@ class DaxeDocument {
   }
   
   /**
-   * Executes a new edit and add it to the history so that it can be undone.
+   * Executes a new edit and adds it to the history so that it can be undone.
    */
   void doNewEdit(UndoableEdit edit) {
     edit.doit();
@@ -359,6 +381,9 @@ class DaxeDocument {
       page._cursor.deSelect();
       removeBetween(selectionStart, selectionEnd);
       remove = true;
+      //selectionStart.dn.parent is now null if all the text inside an element was removed
+      if (selectionStart.dn.parent == null)
+        selectionStart = page.getSelectionStart();
     }
     doc.insertString(selectionStart, s);
     if (remove) {
@@ -412,6 +437,13 @@ class DaxeDocument {
       insert2(dn, pos);
   }
   
+  /**
+   * Inserts the [DaxeNode] at the given [Position] following a user action,
+   * after the attribute dialog has been validated (if there are attributes).
+   * If there is a selection, its contents are moved inside the new element.
+   * The whole operation is added to the document history so that it can be undone.
+   * This method is called by [insertNewNode].
+   */
   void insert2(DaxeNode dn, Position pos) {
     String content = null;
     if (page.getSelectionStart() != page.getSelectionEnd()) {
@@ -466,7 +498,7 @@ class DaxeDocument {
     List<x.Element> refs;
     if (dn.nodeType == DaxeNode.DOCUMENT_NODE) {
       refs = doc.cfg.rootElements();
-    } else if (dn.nodeType == DaxeNode.COMMENT_NODE) {
+    } else if (dn.ref == null) {
       refs = new List<x.Element>();
     } else {
       DaxeNode parent;

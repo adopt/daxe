@@ -22,7 +22,6 @@ library wxs;
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:html' as dh show Document, HttpRequest;
 import 'dart:math' show LN2, log;
 
 import '../interface_schema.dart';

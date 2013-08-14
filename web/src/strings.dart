@@ -15,15 +15,19 @@
   along with Daxe.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/// Provides localized strings.
 library Strings;
 
 import 'dart:async';
 import 'dart:collection';
 import 'dart:html' as h;
-import 'package:intl/intl.dart';
 import 'package:intl/intl_browser.dart'; // or intl-standalone (see findSystemLocale)
 
 
+/**
+ * Provides localized strings read from properties files.
+ * The current language file is read at application loading time.
+ */
 class Strings {
   
   static String resourcePath = "LocalStrings";

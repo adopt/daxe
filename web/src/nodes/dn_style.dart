@@ -19,10 +19,12 @@ part of nodes;
 
 /**
  * Style node (changes the style without showing tags).
- * Jaxe display type: 'style'
- * parameter: style: GRAS | ITALIQUE | EXPOSANT | INDICE | SOULIGNE | BARRE |
- *                   PCOULEUR[###,###,###] | FCOULEUR[###,###,###]
- *            (several styles can be combined with a ';')
+ * Jaxe display type: 'style'.
+ * 
+ * parameter: `style`: `GRAS` (bold) | `ITALIQUE` (italic) | `EXPOSANT` (superscript) |
+ * `INDICE` (subscript) | `SOULIGNE` (underlined) | `BARRE` (strikethrough) |
+ * `PCOULEUR[###,###,###]` (text color) | `FCOULEUR[###,###,###]` (background color)
+ * (several styles can be combined with a ';')
  */
 class DNStyle extends DaxeNode {
   

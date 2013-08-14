@@ -214,8 +214,8 @@ class UndoableEdit {
       }
     }
     if (text != null) {
-      assert(pos.dn.nodeType == DaxeNode.TEXT_NODE || pos.dn.nodeType == DaxeNode.COMMENT_NODE);
-      pos.dn.insertString(pos, text);
+      assert(pos.dn.nodeType == DaxeNode.TEXT_NODE);
+      (pos.dn as DNText).insertString(pos, text);
       if (update) {
         pos.dn.updateHTML();
         page.moveCursorTo(new Position(pos.dn, pos.dnOffset + text.length));
@@ -248,7 +248,7 @@ class UndoableEdit {
         }
       } else if (parent.nodeType == DaxeNode.TEXT_NODE) {
         if (cutNode == null)
-          cutNode = parent.cut(pos.dnOffset);
+          cutNode = (parent as DNText).cut(pos.dnOffset);
         else {
           parent.nodeValue = parent.nodeValue.substring(0, pos.dnOffset);
           parent.parent.insertAfter(cutNode, parent);

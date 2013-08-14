@@ -23,9 +23,10 @@ part of daxe;
 abstract class DaxeNode {
   static const int ELEMENT_NODE = 1;
   static const int TEXT_NODE = 3;
-  static const int CDATA_SECTION_NODE = 4;
-  static const int PROCESSING_INSTRUCTION_NODE = 7;
-  static const int COMMENT_NODE = 8;
+  //NOTE: cdata, pi and comments are now DaxeNode elements containing a text node
+  //static const int CDATA_SECTION_NODE = 4;
+  //static const int PROCESSING_INSTRUCTION_NODE = 7;
+  //static const int COMMENT_NODE = 8;
   static const int DOCUMENT_NODE = 9;
   
   static const String STYLE_BOLD = 'GRAS';
@@ -53,15 +54,29 @@ abstract class DaxeNode {
   bool valid;
   
   
+  /**
+   * Constructor using a DOM [node] and a DaxeNode [parent].
+   * Will create children nodes recursively unless [createChildren] is false.
+   */
   DaxeNode.fromNode(x.Node node, DaxeNode parent, {bool createChildren: true}) {
     _id = doc.newId(this);
     this.parent = parent;
-    nodeType = node.nodeType;
+    if (node.nodeType == x.Node.ELEMENT_NODE || node.nodeType == x.Node.TEXT_NODE ||
+        node.nodeType == x.Node.DOCUMENT_NODE)
+      nodeType = node.nodeType;
+    else
+      nodeType = ELEMENT_NODE;
     _namespaceURI = node.namespaceURI;
     prefix = node.prefix;
-    localName = node.localName;
-    if (nodeType == DaxeNode.TEXT_NODE || nodeType == DaxeNode.COMMENT_NODE ||
-        nodeType == CDATA_SECTION_NODE || nodeType == PROCESSING_INSTRUCTION_NODE)
+    if (node.nodeType == x.Node.PROCESSING_INSTRUCTION_NODE)
+      localName = node.nodeName;
+    else if (node.nodeType == x.Node.CDATA_SECTION_NODE)
+      localName = '#cdata-section';
+    else if (node.nodeType == x.Node.COMMENT_NODE)
+      localName = '#comment';
+    else
+      localName = node.localName;
+    if (nodeType == DaxeNode.TEXT_NODE)
       nodeValue = node.nodeValue;
     attributes = new List<DaxeAttr>();
     LinkedHashMap<String, x.Attr> nm = node.attributes;
@@ -84,6 +99,11 @@ abstract class DaxeNode {
             prev.nextSibling = dn;
           prev = dn;
         }
+      } else if ((node.nodeType == x.Node.CDATA_SECTION_NODE ||
+          node.nodeType == x.Node.PROCESSING_INSTRUCTION_NODE ||
+          node.nodeType == x.Node.COMMENT_NODE) &&
+          node.nodeValue != null && node.nodeValue != '') {
+        appendChild(new DNText(node.nodeValue));
       }
     }
     if (nodeType == DaxeNode.ELEMENT_NODE)
@@ -92,6 +112,10 @@ abstract class DaxeNode {
       valid = true;
   }
   
+  /**
+   * Constructor using an element reference.
+   * This will always create an element node.
+   */
   DaxeNode.fromRef(x.Element elementRef) {
     ref = elementRef;
     _id = doc.newId(this);
@@ -107,6 +131,11 @@ abstract class DaxeNode {
     valid = true;
   }
   
+  /**
+   * Constructor using a node type.
+   * Useful to create new document, cdata, pi or comment nodes (they don't have a ref).
+   * Possible node types are available as constants of this class.
+   */
   DaxeNode.fromNodeType(int nodeType) {
     ref = null;
     _id = doc.newId(this);
@@ -122,6 +151,9 @@ abstract class DaxeNode {
     valid = true;
   }
   
+  /**
+   * Constructor for a text node with the given [value].
+   */
   DaxeNode.text(String value) {
     _id = doc.newId(this);
     parent = null;
@@ -136,10 +168,16 @@ abstract class DaxeNode {
     valid = true;
   }
   
+  /**
+   * Id for the corresponding HTML element.
+   */
   String get id {
     return(_id);
   }
   
+  /**
+   * Returns the corresponding HTML element.
+   */
   h.Element getHTMLNode() {
     return(h.document.getElementById(_id));
   }
@@ -167,6 +205,10 @@ abstract class DaxeNode {
     return(buff.toString());
   }
   
+  /**
+   * For a text node, the number of characters in the node value.
+   * Otherwise, the number of children.
+   */
   int get offsetLength {
     if (nodeType == TEXT_NODE)
       return(nodeValue.length);
@@ -176,6 +218,9 @@ abstract class DaxeNode {
     return(n);
   }
   
+  /**
+   * The child nodes in a convenient list.
+   */
   List<DaxeNode> get childNodes {
     List<DaxeNode> list = new List<DaxeNode>();
     for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
@@ -184,6 +229,9 @@ abstract class DaxeNode {
     return(list);
   }
   
+  /**
+   * This node's previous sibling.
+   */
   DaxeNode get previousSibling {
     if (parent == null)
       return(null);
@@ -247,10 +295,13 @@ abstract class DaxeNode {
     return(null);
   }
   
-  int offsetOf(DaxeNode dn) {
+  /**
+   * Returns the index of the given child node.
+   */
+  int offsetOf(DaxeNode child) {
     int i = 0;
     for (DaxeNode n=firstChild; n != null; n=n.nextSibling) {
-      if (n == dn)
+      if (n == child)
         return(i);
       i++;
     }
@@ -332,6 +383,10 @@ abstract class DaxeNode {
     return(map);
   }
   
+  /**
+   * Creates and returns the HTML element for this DaxeNode.
+   * This abstract method must be overriden by subclasses.
+   */
   h.Element html();
   
   /**
@@ -409,6 +464,9 @@ abstract class DaxeNode {
     updateHTML();
   }
   
+  /**
+   * Sets whether this node is selected by the user or not.
+   */
   void setSelected(bool select) {
     if (select)
       getHTMLNode().classes.add('selected');
@@ -417,17 +475,17 @@ abstract class DaxeNode {
   }
   
   void appendChild(DaxeNode dn) {
-    DaxeNode lastChild = firstChild;
-    if (lastChild != null)
-      while (lastChild.nextSibling != null)
-        lastChild = lastChild.nextSibling;
-    if (lastChild != null)
-      lastChild.nextSibling = dn;
+    DaxeNode last = lastChild;
+    if (last != null)
+      last.nextSibling = dn;
     else
       firstChild = dn;
     dn.parent = this;
   }
   
+  /**
+   * Inserts [newdn] as a child of this node before [beforedn].
+   */
   void insertBefore(DaxeNode newdn, DaxeNode beforedn) {
     assert(beforedn == null || this == beforedn.parent);
     newdn.parent = this;
@@ -465,6 +523,9 @@ abstract class DaxeNode {
     dn.nextSibling = null;
   }
   
+  /**
+   * Replaces this node by the given node (in the tree).
+   */
   void replaceWith(DaxeNode dn) {
     if (parent.firstChild == this)
       parent.firstChild = dn;
@@ -476,6 +537,9 @@ abstract class DaxeNode {
     nextSibling = null;
   }
   
+  /**
+   * Merges adjacent child text nodes.
+   */
   void normalize() {
     for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
       while (dn.nodeType == TEXT_NODE && dn.nextSibling != null &&
@@ -484,14 +548,6 @@ abstract class DaxeNode {
         removeChild(dn.nextSibling);
       }
     }
-  }
-  
-  void insertString(Position pos, String s) {
-    assert(pos.dn == this && (nodeType == DaxeNode.TEXT_NODE || nodeType == DaxeNode.COMMENT_NODE));
-    String v = nodeValue;
-    if (v == null)
-      v = '';
-    nodeValue = "${v.substring(0, pos.dnOffset)}$s${v.substring(pos.dnOffset)}";
   }
   
   void remove(Position pos, int length) {
@@ -505,16 +561,6 @@ abstract class DaxeNode {
       String s2 = v.substring(pos.dnOffset + length);
       nodeValue = "$s1$s2";
     }
-  }
-  
-  DaxeNode cut(int offset) {
-    assert(nodeType == TEXT_NODE);
-    String s1 = nodeValue.substring(0, offset);
-    String s2 = nodeValue.substring(offset);
-    nodeValue = s1;
-    DaxeNode newjn = new DNText(s2);
-    parent.insertBefore(newjn, nextSibling);
-    return(newjn);
   }
   
   /**
@@ -572,6 +618,9 @@ abstract class DaxeNode {
     }
   }
   
+  /**
+   * XML serialization. Can be overriden in DaxeNode subclasses.
+   */
   String toString() {
     StringBuffer sb = new StringBuffer();
     switch (nodeType) {
@@ -621,30 +670,11 @@ abstract class DaxeNode {
       case TEXT_NODE :
         sb.write(escape(nodeValue));
         break;
-      
-      case CDATA_SECTION_NODE :
-        sb.write('<![CDATA[');
-        sb.write(nodeValue);
-        sb.write(']]>');
-        break;
-      
-      case PROCESSING_INSTRUCTION_NODE :
-        sb.write('<?');
-        sb.write(nodeName);
-        sb.write(' ');
-        sb.write(nodeValue);
-        sb.write('?>');
-        break;
-      
-      case COMMENT_NODE :
-        sb.write('<!--');
-        sb.write(nodeValue);
-        sb.write('-->');
-        break;
     }
     return(sb.toString());
   }
   
+  /// escapes XML character entities for serialization
   static String escape(String s) {
     s = s.replaceAll('&', '&amp;');
     s = s.replaceAll('"', '&quot;');
@@ -861,6 +891,7 @@ abstract class DaxeNode {
       // not found...
       //print("position not found");
     }
+    //TODO: comment, cdata and PI nodes
     return(new Position(this, offsetLength));
   }
   

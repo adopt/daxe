@@ -17,6 +17,13 @@
 
 part of nodes;
 
+/**
+ * Text area. Nodes inside are indented.
+ * Jaxe display type: 'zone' (area).
+ * 
+ * * parameter: `titreAtt`: an attribute that can be used as a title
+ * * parameter: `style`: as in DNStyle
+ */
 class DNArea extends DaxeNode {
   Tag _b1, _b2;
   

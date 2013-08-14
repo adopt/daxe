@@ -17,12 +17,11 @@
 
 /**
  * Implementation for Jaxe style equations.
- * Syntax documented at http://jaxe.sourceforge.net/fr/pages_guide-utilisateur-jaxe/equations.html
+ * Syntax documented [here](http://jaxe.sourceforge.net/en/pages_jaxe-user-guide/equations.html).
  */
 library equations;
 
 import 'package:meta/meta.dart';
-import 'dart:collection';
 import 'dart:html' as h;
 import 'dart:math';
 

@@ -17,6 +17,13 @@
 
 part of nodes;
 
+/**
+ * Image file. The image is displayed in the text if it is found,
+ * otherwise an error message is displayed instead of the image.
+ * Jaxe display type: 'fichier' (file).
+ * 
+ * * parameter: `srcAtt`: the name of the attribute giving the file path
+ */
 class DNFile extends DaxeNode {
   h.ImageElement _img; // TODO: support non-image files
   String _srcAtt;

@@ -17,6 +17,16 @@
 
 part of nodes;
 
+/**
+ * Table able to contain other elements in its cells.
+ * Jaxe display type: 'tabletexte' (text table).
+ * 
+ * * parameter: `trTag`: the name of row elements
+ * * parameter: `tdTag`: the name of cell elements
+ * * parameter: `thTag`: the name of header elements
+ * * parameter: `colspanAttr`: the name of the colspan attribute
+ * * parameter: `rowspanAttr`: the name of the rowspan attribute
+ */
 class DNTable extends DaxeNode {
   String _trtag, _tdtag, _thtag;
   x.Element _trref, _tdref, _thref;

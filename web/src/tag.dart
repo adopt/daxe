@@ -72,9 +72,11 @@ class Tag {
         title = "PI ${_dn.nodeName}";
       else
         title = "PI";
-    } else if (_dn is DNCData) {
+    } else if (_dn is DNCData)
       title = "CDATA";
-    } else
+    else if (_dn.nodeName != null)
+      title = _dn.nodeName;
+    else
       title = "?";
     if (_type != END) {
       bool listAllAttributes = (doc.cfg.elementParameterValue(_dn.ref,

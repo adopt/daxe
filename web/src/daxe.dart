@@ -105,7 +105,7 @@ void main() {
     else if (config != null)
       page.newDocument(config);
     else
-      print('Missing config parameter.');
+      h.window.alert(Strings.get('daxe.missing_config'));
   });
 }
 

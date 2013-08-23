@@ -356,7 +356,10 @@ class WebPage {
   }
   
   void updateMenus() {
-    List<x.Element> refs = doc.elementsAllowedUnder(_cursor.selectionStart.dn);
+    DaxeNode parent = _cursor.selectionStart.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     List<Menu> menus = mbar.menus;
     for (Menu m in menus) {

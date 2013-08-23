@@ -701,7 +701,10 @@ class DaxeWXS implements InterfaceSchema {
   }
   
   String _elementTitle(final WXSElement el) {
-    return(_hashTitres[el.getName()]);
+    if (_hashTitres[el.getName()] != null)
+      return(_hashTitres[el.getName()]);
+    else
+      return(el.getName());
   }
   
 }

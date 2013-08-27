@@ -361,13 +361,15 @@ class ElementImpl extends NodeImpl implements Element {
         sb.write(att.toString());
       }
     }
-    sb.write(">");
-    if (childNodes != null) {
+    if (childNodes != null && childNodes.length > 0) {
+      sb.write(">");
       for (Node n in childNodes) {
         sb.write(n.toString());
       }
+      sb.write("</$tagName>");
+    } else {
+      sb.write("/>");
     }
-    sb.write("</$tagName>");
     return(sb.toString());
   }
 }

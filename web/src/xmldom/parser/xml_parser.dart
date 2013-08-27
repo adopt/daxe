@@ -392,6 +392,7 @@ class XMLParser {
   }
   
   Document parseString(String s) {
+    s = s.replaceAll('\r\n', '\n');
     DOMImplementation implementation = new DOMImplementationImpl();
     doc = new DocumentImpl(implementation, null, null, null);
     

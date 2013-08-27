@@ -386,40 +386,22 @@ class DNForm extends DaxeNode {
   }
   
   @override
-  String toString() {
+  x.Node toDOMNode(x.Document domDocument) {
     if (childrenRefs.length == 0)
-      return(super.toString());
+      return(super.toDOMNode(domDocument));
     
-    StringBuffer sb = new StringBuffer();
-    sb.write('<');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    for (DaxeAttr att in attributes) {
-      sb.write(' ');
-      sb.write(att.toString());
-    }
-    sb.write('>');
-    sb.write('\n');
+    x.Element el = domDocument.createElementNS(namespaceURI, nodeName);
+    for (DaxeAttr att in attributes)
+      el.setAttributeNS(att.namespaceURI, att.name, att.value);
+    el.appendChild(domDocument.createTextNode('\n'));
     for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
       // important change here (empty elements are ignored):
       if (dn.firstChild != null || (dn.attributes != null && dn.attributes.length > 0)) {
-        sb.write(dn.toString());
-        if (!dn.newlineAfter())
-          sb.write('\n');
+        el.appendChild(dn.toDOMNode(domDocument));
+        el.appendChild(domDocument.createTextNode('\n'));
       }
     }
-    sb.write('</');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    sb.write('>');
-    sb.write('\n');
-    return(sb.toString());
+    return(el);
   }
   
   h.ButtonElement _makeHelpButton(final x.Element elementRef, final x.Element attributeRef) {

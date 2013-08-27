@@ -533,6 +533,69 @@ class Cursor {
       selectionStart = selectionEnd;
       selectionEnd = temp;
     }
+    
+    // fix selection start and end for styles (different positions look the same for the user)
+    // and to keep only the elements entirely inside the selection
+    // move the start and end positions out of text and style if possible
+    while ((selectionStart.dn is DNText || selectionStart.dn is DNStyle) &&
+        selectionStart.dnOffset == 0) {
+      selectionStart = new Position(selectionStart.dn.parent,
+          selectionStart.dn.parent.offsetOf(selectionStart.dn));
+    }
+    while ((selectionStart.dn is DNText || selectionStart.dn is DNStyle) &&
+        selectionStart.dnOffset == selectionStart.dn.offsetLength) {
+      selectionStart = new Position(selectionStart.dn.parent,
+          selectionStart.dn.parent.offsetOf(selectionStart.dn) + 1);
+    }
+    while ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle) &&
+        selectionEnd.dnOffset == selectionEnd.dn.offsetLength) {
+      selectionEnd = new Position(selectionEnd.dn.parent,
+          selectionEnd.dn.parent.offsetOf(selectionEnd.dn) + 1);
+    }
+    while ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle) &&
+        selectionEnd.dnOffset == 0) {
+      selectionEnd = new Position(selectionEnd.dn.parent,
+          selectionEnd.dn.parent.offsetOf(selectionEnd.dn));
+    }
+    // now move positions closer if possible
+    if (selectionStart != selectionEnd) {
+      if ((selectionStart.dn is DNText || selectionStart.dn is DNStyle) &&
+          selectionStart.dnOffset == selectionStart.dn.offsetLength) {
+        DaxeNode next = selectionStart.dn.nextNode();
+        selectionStart = new Position(next.parent, next.parent.offsetOf(next));
+      }
+      if ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle) &&
+          selectionEnd.dnOffset == 0) {
+        DaxeNode prev = selectionEnd.dn.previousNode();
+        selectionEnd = new Position(prev.parent, prev.parent.offsetOf(prev) + 1);
+      }
+      bool cont;
+      do {
+        cont = false;
+        if (selectionStart.dn is! DNText && selectionStart.dnOffset < selectionStart.dn.offsetLength) {
+          DaxeNode next = selectionStart.dn.childAtOffset(selectionStart.dnOffset);
+          if (new Position(selectionStart.dn, selectionStart.dnOffset + 1) > selectionEnd &&
+              new Position(next, 0) < selectionEnd) {
+            // next is not included and the end is after the beginning of next
+            selectionStart = new Position(next, 0);
+            cont = true;
+          }
+        }
+      } while (cont);
+      do {
+        cont = false;
+        if (selectionEnd.dn is! DNText && selectionEnd.dnOffset > 0) {
+          DaxeNode prev = selectionEnd.dn.childAtOffset(selectionEnd.dnOffset - 1);
+          if (new Position(selectionEnd.dn, selectionEnd.dnOffset - 1) < selectionStart &&
+              new Position(prev, prev.offsetLength) > selectionStart) {
+            // prev is not included and the start is before the end of prev
+            selectionEnd = new Position(prev, prev.offsetLength);
+            cont = true;
+          }
+        }
+      } while (cont);
+    }
+    
     if (selectionStart.dn == selectionEnd.dn) {
       DaxeNode dn = selectionStart.dn;
       if (dn.nodeType == DaxeNode.TEXT_NODE) {
@@ -811,12 +874,8 @@ class Cursor {
       return(true);
     }
     DaxeNode parent = selectionStart.dn;
-    int offset = selectionStart.dnOffset;
-    if (parent is DNText) {
-      offset = parent.parent.offsetOf(parent);
+    if (parent is DNText)
       parent = parent.parent;
-    }
-    UndoableEdit edit = new UndoableEdit.compound("Paste");
     x.Element root = tmpdoc.documentElement;
     // to call fixLineBreaks(), we need a real DaxeNode for the "root", with the right ref
     DaxeNode dnRoot = NodeFactory.create(parent.ref);
@@ -825,56 +884,15 @@ class Cursor {
       dnRoot.appendChild(dn);
     }
     dnRoot.fixLineBreaks();
-    // reverse order to always use selectionStart as the insert position
-    // problem: the cursor is not at the right position afterwards
-    for (DaxeNode dn in dnRoot.childNodes.reversed) {
-      if ((parent is DNComment || parent is DNCData || parent is DNProcessingInstruction) &&
-          dn is! DNText) {
-        String title;
-        if (dn.ref == null)
-          title = dn.nodeName;
-        else
-          title = doc.cfg.elementTitle(dn.ref);
-        h.window.alert(title + ' ' + Strings.get('insert.not_authorized_here'));
-        return(false);
-      }
-      if (dn is DNText || dn is DNCData) {
-        String value = null;
-        if (dn is DNText)
-          value = dn.nodeValue;
-        else if (dn.firstChild != null)
-          value = dn.firstChild.nodeValue;
-        if (value == null)
-          value = '';
-        if (value.trim() != '' && !doc.cfg.canContainText(parent.ref)) {
-          h.window.alert(Strings.get('insert.text_not_allowed'));
-          return(false);
-        }
-        if (dn is DNText)
-          edit.addSubEdit(new UndoableEdit.insertString(selectionStart, dn.nodeValue));
-        else
-          edit.addSubEdit(new UndoableEdit.insertNode(selectionStart, dn));
-      } else {
-        if (dn is! DNComment && dn is! DNProcessingInstruction) {
-          if (dn.ref == null || !doc.cfg.isSubElement(parent.ref, dn.ref)) {
-            String title;
-            if (dn.ref == null)
-              title = dn.nodeName;
-            else
-              title = doc.cfg.elementTitle(dn.ref);
-            String parentTitle = doc.cfg.elementTitle(parent.ref);
-            h.window.alert(title + ' ' + Strings.get('insert.not_authorized_inside') + ' ' + parentTitle);
-            return(false);
-          }
-          if (!doc.cfg.insertIsPossible(parent, offset, offset, dn.ref)) {
-            h.window.alert(doc.cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
-            return(false);
-          }
-        }
-        edit.addSubEdit(new UndoableEdit.insertNode(selectionStart, dn));
-      }
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));
+    try {
+      edit.addSubEdit(doc.insertChildrenEdit(dnRoot, selectionStart, checkValidity:true));
+    } on DaxeException catch (ex) {
+      h.window.alert(ex.toString());
+      return(false);
     }
     doc.doNewEdit(edit);
+    // FIXME: the cursor is not at the right position afterwards (because of the reverse insert order in insertChildrenEdit)
     return(true);
   }
 }

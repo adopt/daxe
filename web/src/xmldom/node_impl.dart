@@ -44,7 +44,7 @@ abstract class NodeImpl implements Node {
   LinkedHashMap<String, Attr> attributes;
   Document ownerDocument;
   String namespaceURI;
-  String prefix;
+  String prefix;//TODO: prefix setter method
   String localName;
   
   Node insertBefore(Node newChild, Node refChild) { // throws DOMException
@@ -274,5 +274,15 @@ abstract class NodeImpl implements Node {
         throw new DOMException("HIERARCHY_REQUEST_ERR");
       ancestor = ancestor.parentNode;
     }
+  }
+  
+  /// escapes XML character entities for serialization
+  static String _escape(String s) {
+    s = s.replaceAll('&', '&amp;');
+    s = s.replaceAll('"', '&quot;');
+    //s = s.replaceAll("'", '&apos;');
+    s = s.replaceAll('<', '&lt;');
+    s = s.replaceAll('>', '&gt;');
+    return(s);
   }
 }

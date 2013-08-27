@@ -22,12 +22,17 @@ part of nodes;
  */
 class DNDocument extends DaxeNode {
   
+  String xmlVersion;
+  String xmlEncoding;
+  
   DNDocument() : super.fromNodeType(DaxeNode.DOCUMENT_NODE) {
-    
+    xmlVersion = '1.0';
+    xmlEncoding = 'UTF-8';
   }
   
   DNDocument.fromNode(x.Node node) : super.fromNode(node, null) {
-    
+    xmlVersion = (node as x.Document).xmlVersion;
+    xmlEncoding = (node as x.Document).xmlEncoding;
   }
   
   @override
@@ -45,4 +50,13 @@ class DNDocument extends DaxeNode {
     return(div);
   }
   
+  @override
+  x.Node toDOMNode(x.Document domDocument) {
+    domDocument.xmlVersion = xmlVersion;
+    domDocument.xmlEncoding = xmlEncoding;
+    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+      domDocument.appendChild(dn.toDOMNode(domDocument));
+    }
+    return(domDocument);
+  }
 }

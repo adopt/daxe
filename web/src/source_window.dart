@@ -23,16 +23,7 @@ part of daxe;
 class SourceWindow {
   
   void show() {
-    // get the document as a String and parse it to DOM
-    x.DOMParser dp = new x.DOMParser();
-    String documentAsText = doc.toString();
-    x.Document domdoc;
-    try {
-      domdoc = dp.parseFromString(documentAsText);
-    } on x.DOMException catch (ex) {
-      h.window.alert(ex.toString());
-      domdoc = null;
-    }
+    x.Document domdoc = doc.toDOMDoc();
     
     h.DivElement div1 = new h.DivElement();
     div1.id = 'dlg1';
@@ -43,10 +34,7 @@ class SourceWindow {
     
     h.DivElement divContent = new h.DivElement();
     divContent.classes.add('source_content');
-    if (domdoc != null)
-      addNode(domdoc, divContent);
-    else
-      divContent.appendText(documentAsText);
+    addNode(domdoc, divContent);
     divWindow.append(divContent);
     
     h.DivElement divBottom = new h.DivElement();
@@ -73,7 +61,9 @@ class SourceWindow {
       case x.Node.DOCUMENT_NODE :
         h.SpanElement xmldec = new h.SpanElement();
         xmldec.classes.add('source_pi');
-        xmldec.appendText('<?xml version="1.0" encoding="UTF-8"?>');
+        String xmlVersion = (node as x.Document).xmlVersion;
+        String xmlEncoding = (node as x.Document).xmlEncoding;
+        xmldec.appendText('<?xml version="$xmlVersion" encoding="$xmlEncoding"?>');
         html.append(xmldec);
         html.appendText('\n');
         for (x.Node n=node.firstChild; n != null; n=n.nextSibling) {
@@ -97,7 +87,7 @@ class SourceWindow {
             html.appendText('="');
             h.SpanElement attributeValue = new h.SpanElement();
             attributeValue.classes.add('source_attribute_value');
-            attributeValue.appendText(att.nodeValue);
+            _appendTextWithEntities(attributeValue, att.nodeValue);
             html.append(attributeValue);
             html.appendText('"');
           }
@@ -121,31 +111,7 @@ class SourceWindow {
         break;
         
       case x.Node.TEXT_NODE :
-        Map<String, String> cent = <String, String>{
-          '&' : '&amp;',
-          '"' : '&quot;',
-          '<' : '&lt;',
-          '>' : '&gt;'
-        };
-        String s = node.nodeValue;
-        Iterable<String> keys = cent.keys;
-        int p = 0;
-        while (p < s.length) {
-          String c = s[p];
-          if (keys.contains(c)) {
-            if (p > 0)
-              html.appendText(s.substring(0, p));
-            h.SpanElement entity = new h.SpanElement();
-            entity.classes.add('source_entity');
-            entity.appendText(cent[c]);
-            html.append(entity);
-            s = s.substring(p + 1);
-            p = 0;
-          } else
-            p++;
-        }
-        if (s.length > 0)
-          html.appendText(s);
+        _appendTextWithEntities(html, node.nodeValue);
         break;
       
       case x.Node.COMMENT_NODE :
@@ -187,6 +153,33 @@ class SourceWindow {
         html.appendText(node.toString());
         break;
     }
+  }
+  
+  void _appendTextWithEntities(h.Element html, String s) {
+    Map<String, String> cent = <String, String>{
+      '&' : '&amp;',
+      '"' : '&quot;',
+      '<' : '&lt;',
+      '>' : '&gt;'
+    };
+    Iterable<String> keys = cent.keys;
+    int p = 0;
+    while (p < s.length) {
+      String c = s[p];
+      if (keys.contains(c)) {
+        if (p > 0)
+          html.appendText(s.substring(0, p));
+        h.SpanElement entity = new h.SpanElement();
+        entity.classes.add('source_entity');
+        entity.appendText(cent[c]);
+        html.append(entity);
+        s = s.substring(p + 1);
+        p = 0;
+      } else
+        p++;
+    }
+    if (s.length > 0)
+      html.appendText(s);
   }
   
   void close() {

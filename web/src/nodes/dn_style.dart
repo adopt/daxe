@@ -81,7 +81,6 @@ class DNStyle extends DaxeNode {
    * Removes all style from the current selection
    */
   static void selectionToNormal() {
-    //TODO: handle sub-styles
     Position start = new Position.clone(page.getSelectionStart());
     Position end = new Position.clone(page.getSelectionEnd());
     page.cursor.deSelect();
@@ -90,117 +89,155 @@ class DNStyle extends DaxeNode {
     if (start == end)
       return;
     UndoableEdit compound = new UndoableEdit.compound(Strings.get('style.remove_styles'));
-    if (start.dn == end.dn && start.dn is DNText) {
-      // within a single style
-      DaxeNode dn = start.dn;
-      if (dn.parent is DNStyle) {
-        if (start.dnOffset == 0 && end.dnOffset == dn.offsetLength) {
-          String text = dn.nodeValue;
-          DaxeNode styleParent = dn.parent.parent;
-          int styleOffset = styleParent.offsetOf(dn.parent);
-          compound.addSubEdit(new UndoableEdit.insertString(new Position(styleParent, styleOffset), text));
-          compound.addSubEdit(new UndoableEdit.removeNode(dn.parent));
-        } else {
-          String textBefore = dn.nodeValue.substring(0, start.dnOffset);
-          String text = dn.nodeValue.substring(start.dnOffset, end.dnOffset);
-          String textAfter = dn.nodeValue.substring(end.dnOffset);
-          DaxeNode styleParent = dn.parent.parent;
-          int offset = styleParent.offsetOf(dn.parent) + 1;
-          if (textBefore != '') {
-            DNStyle newStyle = NodeFactory.create(dn.parent.ref, 'element');
-            newStyle.appendChild(new DNText(textBefore));
-            compound.addSubEdit(new UndoableEdit.insertNode(new Position(styleParent, offset), newStyle));
-            offset++;
-          }
-          if (textAfter != '') {
-            DNStyle newStyle = NodeFactory.create(dn.parent.ref, 'element');
-            newStyle.appendChild(new DNText(textAfter));
-            compound.addSubEdit(new UndoableEdit.insertNode(new Position(styleParent, offset), newStyle));
-          }
-          if (text != '') {
-            compound.addSubEdit(new UndoableEdit.insertString(new Position(styleParent, offset), text));
-          }
-          compound.addSubEdit(new UndoableEdit.removeNode(dn.parent));
-        }
-      }
-    } else {
-      /* this cannot be tested yet, because selections are not allowed to cut elements
-      // change the beginning
-      if (start.dn is DNText && start.dn.parent is DNStyle && start.dnOffset < start.dn.offsetLength) {
-        String text = start.dn.nodeValue.substring(start.dnOffset);
-        if (start.dnOffset == 0)
-          compound.addSubEdit(new UndoableEdit.removeNode(start.dn.parent));
-        else
-          compound.addSubEdit(new UndoableEdit.removeString(start, text.length));
-        DaxeNode styleParent = start.dn.parent.parent;
-        int styleOffset = styleParent.offsetOf(start.dn.parent);
-        compound.addSubEdit(new UndoableEdit.insertString(new Position(styleParent, styleOffset+1), text));
-      }
-      // change the end
-      if (end.dn is DNText && end.dn.parent is DNStyle && end.dnOffset > 0) {
-        String text = end.dn.nodeValue.substring(0, end.dnOffset);
-        if (start.dnOffset == start.dn.offsetLength)
-          compound.addSubEdit(new UndoableEdit.removeNode(start.dn.parent));
-        else
-          compound.addSubEdit(new UndoableEdit.removeString(new Position(end.dn, 0), text.length));
-        DaxeNode styleParent = end.dn.parent.parent;
-        compound.addSubEdit(new UndoableEdit.insertString(new Position(styleParent, 0), text));
-      }
-      */
-      // change the nodes in between
-      DaxeNode first;
-      if (start.dn is DNText) {
-        if (start.dn.parent is DNStyle)
-          first = start.dn.parent.nextSibling;
-        else
-          first = start.dn.nextSibling;
-      } else if (start.dn is DNStyle)
-        first = start.dn.nextSibling;
-      else
-        first = start.dn.childNodes[start.dnOffset];
-      DaxeNode last;
-      if (end.dn is DNText) {
-        if (end.dn.parent is DNStyle)
-          last = end.dn.parent.previousSibling;
-        else
-          last = end.dn.previousSibling;
-      } else if (end.dn is DNStyle)
-        last = end.dn.previousSibling;
-      else {
-        if (end.dnOffset < end.dn.offsetLength)
-          last = end.dn.childNodes[end.dnOffset].previousSibling;
-        else
-          last = end.dn.lastChild;
-      }
-      // reverse order to avoid text merge problems
-      for (DaxeNode dn = last; dn != null; dn = dn.previousSibling) {
-        nodeToNormal(compound, dn);
-        if (dn == first)
-          break;
-      }
+    // NOTE: even though selections cannot cut elements, there can be selections like <b>1[<i>23</i>45]6</b>
+    DaxeNode ancestor = _commonParent(start.dn, end.dn);
+    DaxeNode pp = ancestor.parent;
+    while (pp != null) {
+      if (pp is DNStyle)
+        ancestor = pp;
+      pp = pp.parent;
     }
+    if (ancestor is DNStyle)
+      ancestor = ancestor.parent;
+    // ancestor is now a common ancestor between start and end, it is not a style and it has no style ancestor
+    Position p1 = new Position(ancestor, 0); // left of the ancestor
+    Position p2 = new Position(ancestor, ancestor.offsetLength); // right of the ancestor
+    DaxeNode before;
+    if (p1 != start)
+      before =_cloneBetween(ancestor, p1, start); // clone tree before selection
+    else
+      before = null;
+    DaxeNode inside =_cloneBetween(ancestor, start, end); // clone tree inside selection
+    DaxeNode after;
+    if (p2 != end)
+      after =_cloneBetween(ancestor, end, p2); // clone tree after selection
+    else
+      after = null;
+    _removeStyles(inside);
+    if (p1.dn == p2.dn && p1.dn is DNText && p1.dnOffset == 0 && p2.dnOffset == p2.dn.offsetLength) {
+      // the text node will disappear, we need another reference
+      p1 = new Position(p1.dn.parent, p1.dn.parent.offsetOf(p1.dn));
+      p2 = new Position(p2.dn.parent, p2.dn.parent.offsetOf(p2.dn) + 1);
+    }
+    compound.addSubEdit(doc.removeBetweenEdit(p1, p2)); // remove everything inside ancestor
+    if (after != null)
+      compound.addSubEdit(doc.insertChildrenEdit(after, p1, checkValidity: false)); // insert right tree at p1
+    compound.addSubEdit(doc.insertChildrenEdit(inside, p1, checkValidity: false)); // insert style-less tree at p1
+    if (before != null)
+      compound.addSubEdit(doc.insertChildrenEdit(before, p1, checkValidity: false)); // insert left tree at p1
     doc.doNewEdit(compound);
   }
   
-  static void nodeToNormal(UndoableEdit edit, DaxeNode dn) {
-    if (dn is DNStyle) {
-      String text = _getText(dn);
-      Position pos = new Position(dn.parent, dn.parent.offsetOf(dn));
-      if (text != null && text != '')
-        edit.addSubEdit(new UndoableEdit.insertString(pos, text));
-      edit.addSubEdit(new UndoableEdit.removeNode(dn));
-    } else {
-      for (DaxeNode child = dn.lastChild; child != null; child = child.previousSibling)
-        nodeToNormal(edit, child);
+  /**
+   * Returns the two nodes' first common ancestor.
+   */
+  static DaxeNode _commonParent(DaxeNode dn1, DaxeNode dn2) {
+    DaxeNode p1 = dn1;
+    while (p1 != null) {
+      DaxeNode p2 = dn2;
+      while (p2 != null) {
+        if (p1 == p2) {
+          return(p1);
+        }
+        if (p2.parent == null)
+          break;
+        p2 = p2.parent;
+      }
+      if (p1.parent == null)
+        break;
+      p1 = p1.parent;
     }
+    return(null);
   }
   
+  /**
+   * Returns a cloned node including everything between p1 and p2 (preserving the styles).
+   */
+  static DaxeNode _cloneBetween(DaxeNode root, Position p1, Position p2) {
+    DaxeNode root2 = new DaxeNode.clone(root);
+    for (DaxeNode dn = root2.firstChild; dn != null; dn = root2.firstChild)
+      root2.removeChild(dn); // could this shallow clone be optimized without requiring another method for several DaxeNodes ?
+    int offset = 0;
+    for (DaxeNode dn=root.firstChild; dn != null; dn=dn.nextSibling) {
+      Position dnstart = new Position(root, offset);
+      Position dnend = new Position(root, offset + 1);
+      if (dnstart >= p1 && dnend <= p2) {
+        DaxeNode dn2 = new DaxeNode.clone(dn);
+        root2.appendChild(dn2);
+      } else if (dnend <= p1 || dnstart >= p2) {
+        // dn is not included at all in the selection
+      } else {
+        if (dn is DNText) {
+          if (dnstart > p1 && dnend > p2) {
+            assert(dn == p2.dn);
+            if (0 < p2.dnOffset)
+              root2.appendChild(new DNText(dn.nodeValue.substring(0, p2.dnOffset)));
+          } else if (dnstart < p1 && dnend < p2) {
+            assert(dn == p1.dn);
+            if (p1.dnOffset < dn.offsetLength)
+              root2.appendChild(new DNText(dn.nodeValue.substring(p1.dnOffset, dn.offsetLength)));
+          } else {
+            // dnstart <= p1 && dnend >= p2
+            int offset1;
+            if (p1.dn == dn)
+              offset1 = p1.dnOffset;
+            else
+              offset1 = 0;
+            int offset2;
+            if (p2.dn == dn)
+              offset2 = p2.dnOffset;
+            else
+              offset2 = dn.offsetLength;
+            if (offset1 < offset2)
+              root2.appendChild(new DNText(dn.nodeValue.substring(offset1, offset2)));
+          }
+        } else {
+          DaxeNode dn2 = _cloneBetween(dn, p1, p2);
+          if ((dn2 is! DNStyle && dn2 is! DNText) || _getText(dn2) != '')
+            root2.appendChild(dn2);
+        }
+      }
+      offset++;
+    }
+    return(root2);
+  }
+  
+  /**
+   * Returns the concatenated descendant text nodes as a String.
+   */
   static String _getText(DaxeNode dn) {
     if (dn is DNText)
       return(dn.nodeValue);
-    else if (dn.firstChild != null)
-      return(_getText(dn.firstChild));
-    else
+    else if (dn.firstChild != null) {
+      StringBuffer sb = new StringBuffer();
+      for (DaxeNode n = dn.firstChild; n != null; n = n.nextSibling) {
+        sb.write(_getText(n));
+      }
+      return(sb.toString());
+    } else
       return('');
+  }
+  
+  /**
+   * Removes all DNStyle descendants from the parent, keeping their contents
+   * (no validity check).
+   */
+  static _removeStyles(DaxeNode parent) {
+    for (DaxeNode dn = parent.firstChild; dn != null; ) {
+      if (dn is DNStyle) {
+        DaxeNode first = dn.firstChild;
+        for (DaxeNode dn2 = dn.firstChild; dn2 != null; ) {
+          DaxeNode next = dn2.nextSibling;
+          parent.insertBefore(dn2, dn);
+          dn2 = next;
+        }
+        parent.removeChild(dn);
+        dn = first;
+      } else {
+        _removeStyles(dn);
+        dn = dn.nextSibling;
+      }
+    }
+    parent.normalize();
   }
 }

@@ -77,7 +77,7 @@ class TextImpl extends NodeImpl implements Text {
   }
   
   String toString() {
-    return(nodeValue);
+    return(NodeImpl._escape(nodeValue));
   }
 }
 

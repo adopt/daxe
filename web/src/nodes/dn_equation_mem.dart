@@ -127,42 +127,26 @@ class DNEquationMem extends DaxeNode {
   }
   
   @override
-  String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.write('<');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    for (DaxeAttr att in attributes) {
-      sb.write(' ');
-      sb.write(att.toString());
-    }
-    sb.write('>');
-    
-    String towrite = _data;
-    while (towrite != '') {
-      if (towrite.length <= 76) {
-        sb.write(towrite);
-        towrite = '';
-      } else {
-        sb.writeln(towrite.substring(0, 76));
-        towrite = towrite.substring(76);
+  x.Node toDOMNode(x.Document domDocument) {
+    x.Element el = domDocument.createElementNS(namespaceURI, nodeName);
+    for (DaxeAttr att in attributes)
+      el.setAttributeNS(att.namespaceURI, att.name, att.value);
+    if (_data != null) {
+      StringBuffer sb = new StringBuffer();
+      String towrite = _data;
+      while (towrite != '') {
+        if (towrite.length <= 76) {
+          sb.write(towrite);
+          towrite = '';
+        } else {
+          sb.writeln(towrite.substring(0, 76));
+          towrite = towrite.substring(76);
+        }
       }
+      el.appendChild(domDocument.createTextNode(sb.toString()));
     }
-    
-    sb.write('</');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    sb.write('>');
-    
-    return(sb.toString());
+    return(el);
   }
-  
 }
 
 

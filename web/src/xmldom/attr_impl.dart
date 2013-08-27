@@ -138,6 +138,6 @@ class AttrImpl extends NodeImpl implements Attr {
   }
   
   String toString() {
-    return('$nodeName="$nodeValue"');
+    return('$nodeName="${NodeImpl._escape(nodeValue)}"');
   }
 }

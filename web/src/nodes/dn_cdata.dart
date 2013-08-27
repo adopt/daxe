@@ -56,13 +56,11 @@ class DNCData extends DaxeNode {
   }
   
   @override
-  String toString() {
-    String value = null;
+  x.Node toDOMNode(x.Document domDocument) {
+    String data = null;
     if (firstChild != null)
-      value = firstChild.nodeValue;
-    if (value == null)
-      value = '';
-    return("<![CDATA[$value]]>");
+      data = firstChild.nodeValue;
+    return(domDocument.createCDATASection(data));
   }
   
   @override

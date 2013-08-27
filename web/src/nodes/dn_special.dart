@@ -64,24 +64,11 @@ class DNSpecial extends DaxeNode {
     return(null);
   }
   
-  String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.write('<');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    sb.write('>');
-    sb.write(_character);
-    sb.write('</');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    sb.write('>');
-    return(sb.toString());
+  @override
+  x.Node toDOMNode(x.Document domDocument) {
+    x.Element el = domDocument.createElementNS(namespaceURI, nodeName);
+    el.appendChild(domDocument.createTextNode(_character));
+    return(el);
   }
 }
 

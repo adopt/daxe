@@ -272,7 +272,7 @@ class DocumentImpl extends NodeImpl implements Document {
       sb.write(' version="$xmlVersion"');
     if (xmlEncoding != null)
       sb.write(' encoding="$xmlEncoding"');
-    sb.write("?>");
+    sb.writeln("?>");
     if (doctype != null)
       sb.write(doctype.toString());
     for (Node n in childNodes) {
@@ -281,6 +281,3 @@ class DocumentImpl extends NodeImpl implements Document {
     return(sb.toString());
   }
 }
-
-
-

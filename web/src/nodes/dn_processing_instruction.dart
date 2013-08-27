@@ -58,13 +58,11 @@ class DNProcessingInstruction extends DaxeNode {
   //TODO: provide a way to create a new PI and to change the target
   
   @override
-  String toString() {
-    String value = null;
+  x.Node toDOMNode(x.Document domDocument) {
+    String data = null;
     if (firstChild != null)
-      value = firstChild.nodeValue;
-    if (value == null)
-      value = '';
-    return("<?$nodeName $value?>");
+      data = firstChild.nodeValue;
+    return(domDocument.createProcessingInstruction(nodeName, data));
   }
 }
 

@@ -74,6 +74,8 @@ abstract class DaxeNode {
       localName = '#cdata-section';
     else if (node.nodeType == x.Node.COMMENT_NODE)
       localName = '#comment';
+    else if (node.nodeType == x.Node.DOCUMENT_NODE)
+      localName = '#document';
     else
       localName = node.localName;
     if (nodeType == DaxeNode.TEXT_NODE)
@@ -169,6 +171,19 @@ abstract class DaxeNode {
   }
   
   /**
+   * Deep clone constructor, using the DOM serialization.
+   */
+  factory DaxeNode.clone(DaxeNode dn) {
+    x.DOMImplementation domimpl = new x.DOMImplementationImpl();
+    x.Document domdoc = domimpl.createDocument(null, null, null);
+    x.Node n = dn.toDOMNode(domdoc);
+    DaxeNode clone = NodeFactory.createFromNode(n, dn.parent);
+    clone.parent = null;
+    return(clone);
+  }
+  
+  
+  /**
    * Id for the corresponding HTML element.
    */
   String get id {
@@ -203,6 +218,10 @@ abstract class DaxeNode {
     }
     buff.write(localName);
     return(buff.toString());
+  }
+  
+  String get namespaceURI {
+    return(_namespaceURI);
   }
   
   /**
@@ -619,59 +638,38 @@ abstract class DaxeNode {
   }
   
   /**
-   * XML serialization. Can be overriden in DaxeNode subclasses.
+   * DOM serialization. Can be overriden in DaxeNode subclasses.
+   */
+  x.Node toDOMNode(x.Document domDocument) {
+    assert(nodeType == ELEMENT_NODE); // the other types are handled in subclasses DNDocument and DNText
+    x.Element el = domDocument.createElementNS(namespaceURI, nodeName);
+    for (DaxeAttr att in attributes)
+      el.setAttributeNS(att.namespaceURI, att.name, att.value);
+    if (newlineInside() || firstChild != null) {
+      if (newlineInside())
+        el.appendChild(domDocument.createTextNode('\n'));
+      for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+        el.appendChild(dn.toDOMNode(domDocument));
+        if (dn.newlineAfter())
+          el.appendChild(domDocument.createTextNode('\n'));
+      }
+      DaxeNode lastNotText = lastChild;
+      while (lastNotText != null && lastNotText is DNText)
+        lastNotText = lastNotText.previousSibling;
+      if (newlineInside() && lastChild != null && (lastNotText == null || !lastNotText.newlineAfter()))
+        el.appendChild(domDocument.createTextNode('\n'));
+    }
+    return(el);
+  }
+  
+  /**
+   * XML serialization. Based on DOM serialization (see [toDOMNode]);
    */
   String toString() {
-    StringBuffer sb = new StringBuffer();
-    switch (nodeType) {
-      case DOCUMENT_NODE :
-        for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
-          sb.write(dn.toString());
-        }
-        break;
-        
-      case ELEMENT_NODE :
-        sb.write('<');
-        if (prefix != null) {
-          sb.write(prefix);
-          sb.write(':');
-        }
-        sb.write(localName);
-        for (DaxeAttr att in attributes) {
-          sb.write(' ');
-          sb.write(att.toString());
-        }
-        if (newlineInside() || firstChild != null) {
-          sb.write('>');
-          if (newlineInside())
-            sb.write('\n');
-          for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
-            sb.write(dn.toString());
-          }
-          DaxeNode lastNotText = lastChild;
-          while (lastNotText != null && lastNotText is DNText)
-            lastNotText = lastNotText.previousSibling;
-          if (newlineInside() && lastChild != null && (lastNotText == null || !lastNotText.newlineAfter()))
-            sb.write('\n');
-          sb.write('</');
-          if (prefix != null) {
-            sb.write(prefix);
-            sb.write(':');
-          }
-          sb.write(localName);
-          sb.write('>');
-        } else {
-          sb.write('/>');
-        }
-        if (newlineAfter())
-          sb.write('\n');
-        break;
-        
-      case TEXT_NODE :
-        sb.write(escape(nodeValue));
-        break;
-    }
-    return(sb.toString());
+    x.DOMImplementation domimpl = new x.DOMImplementationImpl();
+    x.Document domdoc = domimpl.createDocument(null, null, null);
+    x.Node n = toDOMNode(domdoc);
+    return(n.toString());
   }
   
   /// escapes XML character entities for serialization

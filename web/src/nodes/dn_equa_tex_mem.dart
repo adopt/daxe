@@ -154,33 +154,14 @@ class DNEquaTexMem extends DaxeNode {
   }
   
   @override
-  String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.write('<');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    for (DaxeAttr att in attributes) {
-      sb.write(' ');
-      sb.write(att.toString());
-    }
-    sb.write('>');
-    
-    sb.write(_data);
-    
-    sb.write('</');
-    if (prefix != null) {
-      sb.write(prefix);
-      sb.write(':');
-    }
-    sb.write(localName);
-    sb.write('>');
-    
-    return(sb.toString());
+  x.Node toDOMNode(x.Document domDocument) {
+    x.Element el = domDocument.createElementNS(namespaceURI, nodeName);
+    for (DaxeAttr att in attributes)
+      el.setAttributeNS(att.namespaceURI, att.name, att.value);
+    if (_data != null)
+      el.appendChild(domDocument.createTextNode(_data));
+    return(el);
   }
-  
 }
 
 

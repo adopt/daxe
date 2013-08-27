@@ -61,4 +61,9 @@ class DNText extends DaxeNode {
     return(newjn);
   }
   
+  
+  @override
+  x.Node toDOMNode(x.Document domDocument) {
+    return(domDocument.createTextNode(nodeValue));
+  }
 }

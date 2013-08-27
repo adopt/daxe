@@ -77,7 +77,10 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
   }
   
   String toString() {
-    return("<![CDATA[$nodeValue]]>");
+    String value = nodeValue;
+    if (value == null)
+      value = '';
+    return("<![CDATA[$value]]>");
   }
 }
 

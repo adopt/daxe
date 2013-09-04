@@ -34,11 +34,11 @@ class DaxeWXS implements InterfaceSchema {
   // (ils peuvent avoir un attribut name ou un attribut ref)
   final LinkedHashSet<WXSElement> _lTousElements = new LinkedHashSet<WXSElement>();
   Set<WXSSchema> _schemasInclu;
-  HashMap<String, String> _hashTitres;
+  HashMap<String, String> _hashTitles;
   
   
-  DaxeWXS(HashMap<String, String> hashTitresElements) {
-    this._hashTitres = hashTitresElements;
+  DaxeWXS(HashMap<String, String> hashElementTitles) {
+    this._hashTitles = hashElementTitles;
     _schemasInclu = new HashSet<WXSSchema>();
     _espaceVersPrefixe = new HashMap<String, String>();
   }
@@ -701,8 +701,8 @@ class DaxeWXS implements InterfaceSchema {
   }
   
   String _elementTitle(final WXSElement el) {
-    if (_hashTitres[el.getName()] != null)
-      return(_hashTitres[el.getName()]);
+    if (_hashTitles[el.getName()] != null)
+      return(_hashTitles[el.getName()]);
     else
       return(el.getName());
   }

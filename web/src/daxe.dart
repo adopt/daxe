@@ -38,6 +38,7 @@ import 'strings.dart';
 
 import 'interface_schema.dart';
 import 'wxs/wxs.dart' show DaxeWXS, WXSException;
+import 'simple_schema.dart';
 import 'nodes/nodes.dart';
 
 part 'attribute_dialog.dart';

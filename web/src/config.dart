@@ -94,8 +94,7 @@ class Config {
           completer.completeError(new DaxeException("Error: no XML schema is defined in the config file $cfgFilePath"));
           return;
         }
-        assert(false);
-        //_schema = new SchemaSimple(schema_simple, this);
+        _schema = new SimpleSchema(schema_simple, _titlesHash());
         schemaURL = null;
         _buildElementsToNamesCache();
         completer.complete();
@@ -670,8 +669,8 @@ class Config {
       return(true);
     }
     assert(parent.nodeType == DaxeNode.ELEMENT_NODE);
-      //if (_schema is SchemaSimple)
-      //    return(true); // on suppose que le test de sous-élément a déjà été fait
+    if (_schema is SimpleSchema)
+      return(true); // on suppose que le test de sous-élément a déjà été fait
     if (startOffset < 0) {
       logError("Config.insertionPossible: debutSelection < parent.debut");
       return(false);
@@ -734,8 +733,8 @@ class Config {
         !isElementValueValid(parent.ref, parent.firstChild.nodeValue))
       return(false);
     
-    //if (_schema is SchemaSimple)
-    //    return(true); // on suppose que le test de sous-balise a déjà été fait
+    if (_schema is SimpleSchema)
+      return(true); // on suppose que le test de sous-balise a déjà été fait
     if (_schema is DaxeWXS) {
       final List<x.Element> sousElements = new List<x.Element>();
       bool avectexte = false;

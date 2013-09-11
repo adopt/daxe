@@ -487,10 +487,13 @@ abstract class DaxeNode {
    * Sets whether this node is selected by the user or not.
    */
   void setSelected(bool select) {
+    h.Element hn = getHTMLNode();
+    if (hn == null)
+      return;
     if (select)
-      getHTMLNode().classes.add('selected');
+      hn.classes.add('selected');
     else
-      getHTMLNode().classes.remove('selected');
+      hn.classes.remove('selected');
   }
   
   void appendChild(DaxeNode dn) {
@@ -889,7 +892,6 @@ abstract class DaxeNode {
       // not found...
       //print("position not found");
     }
-    //TODO: comment, cdata and PI nodes
     return(new Position(this, offsetLength));
   }
   

@@ -512,32 +512,10 @@ class DaxeDocument {
    * it can have attributes.
    * The insert is added to the edits history so that it can be undone.
    */
-  void insertNewNode(x.Element ref, String nodeType/*, [bool checkValidity=false]*/) {
+  void insertNewNode(x.Element ref, String nodeType) {
     Position pos = page.getSelectionStart();
     if (pos == null)
       return;
-    /* checkValidity is no longer used because menus are grayed out for invalid elements, as with the insert panel
-    if (checkValidity) {
-      Position selectionStart = page.getSelectionStart();
-      Position selectionEnd = page.getSelectionEnd();
-      if (selectionStart.dn != selectionEnd.dn)
-        return; // FIXME: handle this case (used with menus)
-      DaxeNode parent = pos.dn;
-      int startOffset = selectionStart.dnOffset;
-      int endOffset = selectionEnd.dnOffset;
-      if (parent is DNText) {
-        startOffset = parent.parent.offsetOf(parent);
-        endOffset = startOffset;
-        // FIXME: if selectionStart.dnOffset != selectionEnd.dnOffset,
-        // we should check that the parent can have text
-        parent = parent.parent;
-      }
-      if (!doc.cfg.insertIsPossible(parent, startOffset, endOffset, ref)) {
-        h.window.alert(doc.cfg.elementTitle(ref) + ' ' + Strings.get('insert.not_authorized_here'));
-        return;
-      }
-    }
-    */
     DaxeNode seljn = pos.daxeNode;
     DaxeNode dn = NodeFactory.create(ref, nodeType);
     if (nodeType == 'element' && getRootElement() == null) {

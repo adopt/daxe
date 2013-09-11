@@ -18,7 +18,7 @@
 part of nodes;
 
 /**
- * Control for an element with a WXS simple type, used by [DNSimpleType] and [DNForm].
+ * Control for an element or attribute with a WXS simple type, used by [DNSimpleType] and [DNForm].
  */
 class SimpleTypeControl {
   
@@ -27,8 +27,9 @@ class SimpleTypeControl {
   x.Element refAttribute;
   String value;
   String _uniqueName;
-  List<String> values;
+  List<String> validValues;
   List<String> suggestedValues;
+  HashMap<String, String> titleToValue;
   h.Element hcontrol;
   ActionFunction valueChanged;
   bool catchUndo;
@@ -38,12 +39,12 @@ class SimpleTypeControl {
     refAttribute = null;
     _uniqueName = "control$_n";
     _n++;
-    values = doc.cfg.elementValues(refElement);
-    if (values == null || values.length == 0)
+    validValues = doc.cfg.elementValues(refElement);
+    if (validValues == null || validValues.length == 0)
       suggestedValues = doc.cfg.elementSuggestedValues(refElement);
     else {
-      if (!values.contains(''))
-        values.add('');
+      if (!validValues.contains(''))
+        validValues.add('');
     }
     catchUndo = true;
   }
@@ -52,13 +53,13 @@ class SimpleTypeControl {
       {this.valueChanged, this.catchUndo: false}) {
     _uniqueName = "control$_n";
     _n++;
-    values = doc.cfg.attributeValues(refAttribute);
-    if (values == null || values.length == 0)
+    validValues = doc.cfg.attributeValues(refAttribute);
+    if (validValues == null || validValues.length == 0)
       suggestedValues = doc.cfg.attributeSuggestedValues(refElement, refAttribute);
     else {
       String defaultValue = doc.cfg.defaultAttributeValue(refAttribute);
-      if (!values.contains('') && defaultValue == null)
-        values.add('');
+      if (!validValues.contains('') && defaultValue == null)
+        validValues.add('');
     }
   }
   
@@ -66,13 +67,13 @@ class SimpleTypeControl {
     h.SpanElement span = new h.SpanElement();
     bool booleanValues;
     final List<String> lvalbool = ['true', 'false', '1', '0'];
-    if (values == null || values.length != lvalbool.length ||
+    if (validValues == null || validValues.length != lvalbool.length ||
         (value != null && !lvalbool.contains(value))) {
       booleanValues = false;
     } else {
       booleanValues = true;
-      for (int i=0; i<values.length; i++) {
-        if (values[i] != lvalbool[i]) {
+      for (int i=0; i<validValues.length; i++) {
+        if (validValues[i] != lvalbool[i]) {
           booleanValues = false;
           break;
         }
@@ -86,7 +87,7 @@ class SimpleTypeControl {
       cb.checked = (value == 'true' || value == '1');
       cb.onChange.listen((h.Event event) => checkValue(true));
       span.append(cb);
-    } else if (values == null || values.length == 0) {
+    } else if (validValues == null || validValues.length == 0) {
       h.TextInputElement input = new h.TextInputElement();
       hcontrol = input;
       input.size = 40;
@@ -109,11 +110,24 @@ class SimpleTypeControl {
       });
       
       if (suggestedValues != null && suggestedValues.length > 0) {
+        String title;
+        if (refAttribute != null)
+          title = doc.cfg.attributeValueTitle(refElement, refAttribute, value);
+        else
+          title = doc.cfg.elementValueTitle(refElement, value);
+        input.value = title;
         h.DataListElement datalist = new h.DataListElement();
         datalist.id = 'datalist_$_uniqueName';
+        titleToValue = new HashMap<String, String>();
         for (String v in suggestedValues) {
           h.OptionElement option = new h.OptionElement();
-          option.value = v;
+          String title;
+          if (refAttribute != null)
+            title = doc.cfg.attributeValueTitle(refElement, refAttribute, v);
+          else
+            title = doc.cfg.elementValueTitle(refElement, v);
+          option.value = title;
+          titleToValue[title] = v;
           datalist.append(option);
         }
         input.attributes['list'] = 'datalist_$_uniqueName';
@@ -125,16 +139,23 @@ class SimpleTypeControl {
       hcontrol = select;
       if (value == null)
         value = '';
-      for (String v in values) {
+      titleToValue = new HashMap<String, String>();
+      for (String v in validValues) {
         h.OptionElement option = new h.OptionElement();
-        option.text = v;
+        String title;
+        if (refAttribute != null)
+          title = doc.cfg.attributeValueTitle(refElement, refAttribute, v);
+        else
+          title = doc.cfg.elementValueTitle(refElement, v);
+        option.text = title;
+        titleToValue[title] = v;
         if (v == value) {
           option.defaultSelected = true;
           option.selected = true;
         }
         select.append(option);
       }
-      if (!values.contains(value)) {
+      if (!validValues.contains(value)) {
         // add this invalid value
         h.OptionElement option = new h.OptionElement();
         option.text = value;
@@ -179,10 +200,18 @@ class SimpleTypeControl {
     String oldValue = value;
     if (/*hcontrol is h.TextInputElement*/ /* pb with JS: Dart bug 10383 */
         hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'text') {
-      value = (hcontrol as h.TextInputElement).value;
-    } else if (hcontrol is h.SelectElement)
-      value = (hcontrol as h.SelectElement).value;
-    else if (/*hcontrol is h.CheckboxInputElement*/
+      String title = (hcontrol as h.TextInputElement).value;
+      if (titleToValue != null && titleToValue[title] != null)
+        value = titleToValue[title];
+      else
+        value = title;
+    } else if (hcontrol is h.SelectElement) {
+      String title = (hcontrol as h.SelectElement).value;
+      if (titleToValue != null && titleToValue[title] != null)
+        value = titleToValue[title];
+      else
+        value = title;
+    } else if (/*hcontrol is h.CheckboxInputElement*/
         hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'checkbox') {
       bool checked = (hcontrol as h.CheckboxInputElement).checked;
       if (checked)
@@ -211,21 +240,28 @@ class SimpleTypeControl {
   void setValue(String value) {
     this.value = value;
     if (/*hcontrol is h.TextInputElement*/
-        hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'text')
-      (hcontrol as h.TextInputElement).value = value;
-    else if (hcontrol is h.SelectElement) {
-      h.SelectElement select = (hcontrol as h.SelectElement);
+        hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'text') {
+      h.TextInputElement input = hcontrol as h.TextInputElement;
+      if (refAttribute != null)
+        input.value = doc.cfg.attributeValueTitle(refElement, refAttribute, value);
+      else
+        input.value = doc.cfg.elementValueTitle(refElement, value);
+    } else if (hcontrol is h.SelectElement) {
+      h.SelectElement select = hcontrol as h.SelectElement;
       // reset the options to remove invalid values
       while (select.options.length > 0)
         select.options[0].remove();
-      for (String v in values) {
+      for (String v in validValues) {
         h.OptionElement option = new h.OptionElement();
-        option.text = v;
+        if (refAttribute != null)
+          option.text = doc.cfg.attributeValueTitle(refElement, refAttribute, v);
+        else
+          option.text = doc.cfg.elementValueTitle(refElement, v);
         if (v == value)
           option.selected = true;
         select.append(option);
       }
-      if (!values.contains(value)) {
+      if (!validValues.contains(value)) {
         // add this invalid value (will be removed at the next call to setValue with another value)
         h.OptionElement option = new h.OptionElement();
         option.text = value;

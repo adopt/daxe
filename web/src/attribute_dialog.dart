@@ -48,14 +48,17 @@ class AttributeDialog {
     for (x.Element attref in attRefs) {
       h.TableRowElement tr = new h.TableRowElement();
       h.TableCellElement td = new h.TableCellElement();
-      h.ButtonElement bHelp = new h.ButtonElement();
-      bHelp.attributes['type'] = 'button';
-      bHelp.classes.add('help');
-      bHelp.value = '?';
-      bHelp.text = '?';
-      bHelp.title = doc.cfg.attributeDocumentation(ref, attref);
-      bHelp.onClick.listen((h.Event event) => help(attref, ref));
-      td.append(bHelp);
+      String attdoc = doc.cfg.attributeDocumentation(ref, attref);
+      if (attdoc != null) {
+        h.ButtonElement bHelp = new h.ButtonElement();
+        bHelp.attributes['type'] = 'button';
+        bHelp.classes.add('help');
+        bHelp.value = '?';
+        bHelp.text = '?';
+        bHelp.title = attdoc;
+        bHelp.onClick.listen((h.Event event) => help(attref, ref));
+        td.append(bHelp);
+      }
       tr.append(td);
       td = new h.TableCellElement();
       String name = doc.cfg.attributeQualifiedName(ref, attref);

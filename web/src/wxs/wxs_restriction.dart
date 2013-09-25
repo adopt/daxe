@@ -122,10 +122,7 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   
   // from Parent
   List<WXSElement> parentElements() {
-    if (_parent is WXSComplexContent)
-      return((_parent as WXSComplexContent).parentElements());
-    else
-      return(new List<WXSElement>());
+    return(_parent.parentElements());
   }
   
   // from WithSubElements

@@ -1,4 +1,4 @@
-name: Daxe
+name: daxe
 author: Damien Guillaume
 description: Dart XML Editor
 dependencies:
@@ -6,7 +6,3 @@ dependencies:
   crypto: any
   intl: any
   meta: any
-
-#dependencies:
-#  js: any
-#  unittest: any

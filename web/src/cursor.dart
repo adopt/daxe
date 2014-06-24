@@ -33,8 +33,8 @@ class Cursor {
   HashMap<int, ActionFunction> shortcuts;
   
   Cursor() {
-    ta = h.query("#tacursor");
-    caret = h.query("#caret");
+    ta = h.querySelector("#tacursor");
+    caret = h.querySelector("#caret");
     visible = true;
     shortcuts = new HashMap<int, ActionFunction>();
     // FIXME: IE is always intercepting Ctrl-P

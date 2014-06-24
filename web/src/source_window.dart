@@ -191,7 +191,7 @@ class SourceWindow {
   void selectAll() {
     h.Selection selection = h.window.getSelection();
     h.Range r = new h.Range();
-    r.selectNodeContents(h.query('.source_content'));
+    r.selectNodeContents(h.querySelector('.source_content'));
     selection.removeAllRanges();
     selection.addRange(r);
   }

@@ -24,7 +24,7 @@ part of daxe;
 class InsertPanel {
   
   void update(Position pos) {
-    h.Element divInsert = h.query('div#insert');
+    h.Element divInsert = h.querySelector('div#insert');
     for (h.Element child in divInsert.children)
       child.remove();
     if (pos == null)

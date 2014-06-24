@@ -67,16 +67,16 @@ class WXSSchema implements WXSThing {
           _redefines.add(redefine);
           for (WXSThing redefinable in redefine.getRedefinables()) {
             if (redefinable is WXSSimpleType) {
-              final WXSSimpleType simpleType = redefinable as WXSSimpleType;
+              final WXSSimpleType simpleType = redefinable;
               _simpleTypes[simpleType.getName()] = simpleType;
             } else if (redefinable is WXSComplexType) {
-              final WXSComplexType complexType = redefinable as WXSComplexType;
+              final WXSComplexType complexType = redefinable;
               _complexTypes[complexType.getName()] = complexType;
             } else if (redefinable is WXSGroup) {
-              final WXSGroup group = redefinable as WXSGroup;
+              final WXSGroup group = redefinable;
               _groups[group.getName()] = group;
             } else if (redefinable is WXSAttributeGroup) {
-              final WXSAttributeGroup attributeGroup = redefinable as WXSAttributeGroup;
+              final WXSAttributeGroup attributeGroup = redefinable;
               _attributeGroups[attributeGroup.getName()] = attributeGroup;
             }
           }

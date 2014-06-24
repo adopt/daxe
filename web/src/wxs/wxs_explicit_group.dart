@@ -82,7 +82,7 @@ abstract class WXSExplicitGroup extends WXSAnnotated implements WithSubElements,
     final List<WXSElement> liste = new List<WXSElement>();
     for (WithSubElements nestedParticle in _nestedParticles) {
       if (nestedParticle is WXSElement)
-        liste.addAll((nestedParticle as WXSElement).matchingElements());
+        liste.addAll(nestedParticle.matchingElements());
       else
         liste.addAll(nestedParticle.subElements());
     }
@@ -135,11 +135,11 @@ abstract class WXSExplicitGroup extends WXSAnnotated implements WithSubElements,
   bool requiredChild(final WXSElement child) {
     for (WithSubElements nestedParticle in _nestedParticles) {
       if (nestedParticle is WXSElement) {
-        for (WXSElement el in (nestedParticle as WXSElement).matchingElements())
+        for (WXSElement el in nestedParticle.matchingElements())
           if (el == child)
             return((this is WXSSequence || _nestedParticles.length == 1) &&
                 _minOccurs != 0 &&
-                (nestedParticle as WXSElement).getMinOccurs() != 0);
+                nestedParticle.getMinOccurs() != 0);
       } else  {
         bool bb = nestedParticle.requiredChild(child);
         if (bb != null)
@@ -153,9 +153,9 @@ abstract class WXSExplicitGroup extends WXSAnnotated implements WithSubElements,
   bool multipleChildren(final WXSElement child) {
     for (WithSubElements nestedParticle in _nestedParticles) {
       if (nestedParticle is WXSElement) {
-        for (WXSElement el in (nestedParticle as WXSElement).matchingElements())
+        for (WXSElement el in nestedParticle.matchingElements())
           if (el == child)
-            return((nestedParticle as WXSElement).getMaxOccurs() > 1 || _maxOccurs > 1);
+            return(nestedParticle.getMaxOccurs() > 1 || _maxOccurs > 1);
       } else  {
         bool bb = nestedParticle.multipleChildren(child);
         if (bb != null && !bb && _maxOccurs > 1)

@@ -164,10 +164,10 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_type));
       final WXSType wxsType = schema.resolveTypeReference(DaxeWXS._localValue(_type), tns, redefine);
       if (wxsType is WXSComplexType) {
-        _complexType = wxsType as WXSComplexType;
+        _complexType = wxsType;
         _complexType.addReference(this);
       } else if (wxsType is WXSSimpleType)
-        _simpleType = wxsType as WXSSimpleType;
+        _simpleType = wxsType;
     }
     if (_substitutionGroup != null) {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_substitutionGroup));
@@ -242,9 +242,9 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     if (_references != null) {
       for (WXSThing reference in _references) {
         if (reference is WXSElement)
-          liste.addAll((reference as WXSElement).parentElements());
+          liste.addAll(reference.parentElements());
         else if (reference is WXSAny)
-          liste.addAll((reference as WXSAny).parentElements());
+          liste.addAll(reference.parentElements());
       }
     }
     if (_wxsSubstitutionGroup != null)

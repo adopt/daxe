@@ -115,6 +115,7 @@ class Position {
       p1 = p1.parent;
     }
     assert(false); // no common parent ???
+    return(false);
   }
   
   bool operator <=(Position other) {
@@ -278,19 +279,19 @@ class Position {
       if (offset == 0) {
         range.setStart(n, offset);
         range.setEnd(n, s.length);
-        h.Rect r = range.getClientRects().first;
+        h.Rectangle r = range.getClientRects().first;
         pt = new Point(r.left, r.top);
       } else if (s[offset-1] == '\n' || s[offset-1] == ' ') {
         // to the right of a \n or a space
         if (offset == s.length) {
           // ranges always report wrong positions in this case :(
           if (_dn.nextSibling != null && _dn.nextSibling.nodeType == DaxeNode.ELEMENT_NODE) {
-            h.Rect r = (_dn.nextSibling.getHTMLNode()).getClientRects()[0];
+            h.Rectangle r = (_dn.nextSibling.getHTMLNode()).getClientRects()[0];
             pt = new Point(r.left, r.top);
           } else if (s[offset-1] == ' ') {
             range.setStart(n, 0);
             range.setEnd(n, offset);
-            h.Rect r = range.getClientRects().last;
+            h.Rectangle r = range.getClientRects().last;
             pt = new Point(r.right, r.top);
           } else {
             // FIXME: adding a span with text can change a table layout with Firefox, causing wrong results
@@ -300,15 +301,15 @@ class Position {
               hn.append(spos);
             else
               hn.insertBefore(spos, n.nextNode);
-            h.Rect r = spos.getClientRects()[0];
+            h.Rectangle r = spos.getClientRects()[0];
             pt = new Point(r.left, r.top);
             spos.remove();
           }
         } else {
           range.setStart(n, offset);
           range.setEnd(n, offset + 1);
-          List<h.Rect> rects = range.getClientRects();
-          h.Rect r;
+          List<h.Rectangle> rects = range.getClientRects();
+          h.Rectangle r;
           if (s[offset-1] == ' ' && s[offset] == '\n')
             r = rects.first;
           else if (s[offset] == '\n' && rects.length == 3)
@@ -322,7 +323,7 @@ class Position {
       } else {
         range.setStart(n, 0);
         range.setEnd(n, offset);
-        h.Rect r = range.getClientRects().last;
+        h.Rectangle r = range.getClientRects().last;
         pt = new Point(r.right, r.top);
       }
       return(pt);
@@ -334,7 +335,7 @@ class Position {
         h.Element n = children[_dnOffset-1].getHTMLNode();
         if (n == null)
           return(null);
-        h.Rect r;
+        h.Rectangle r;
         if (n is h.ImageElement || n is h.TableRowElement) {
           r = n.getBoundingClientRect();
           return(new Point(r.right, r.top));
@@ -358,10 +359,10 @@ class Position {
           return(new Point(r.left, r.top));
           */
           // this seems to work (top right corner of the last rect of the last child's HTML):
-          List<h.Rect> rects = n.getClientRects();
+          List<h.Rectangle> rects = n.getClientRects();
           if (rects.length == 0)
             return(null);
-          h.Rect r = rects.last;
+          h.Rectangle r = rects.last;
           return(new Point(r.right, r.top));
         }
       } else if (children != null && _dnOffset < children.length) {
@@ -370,14 +371,14 @@ class Position {
         h.Element hn = n.getHTMLNode();
         if (hn == null)
           return(null);
-        h.Rect r = hn.getClientRects()[0];
+        h.Rectangle r = hn.getClientRects()[0];
         Point pt = new Point(r.left, r.top);
         return(pt);
       } else {
         // no child inside _dn
         assert(_dnOffset == 0);
         h.Element hn = _dn.getHTMLContentsNode();
-        h.Rect r = hn.getClientRects()[0];
+        h.Rectangle r = hn.getClientRects()[0];
         Point pt = new Point(r.left, r.top);
         return(pt);
       }

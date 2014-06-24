@@ -95,13 +95,13 @@ class EquationDialog {
   }
   
   void ok(h.MouseEvent event) {
-    h.TextAreaElement ta = h.query('textarea#eqtext');
+    h.TextAreaElement ta = h.querySelector('textarea#eqtext');
     _equationText = ta.value;
     if (_labelName != null) {
-      h.TextInputElement input_label = h.query('input#eqlabel');
+      h.TextInputElement input_label = h.querySelector('input#eqlabel');
       _labelValue = input_label.value;
     }
-    h.query('div#dlg1').remove();
+    h.querySelector('div#dlg1').remove();
     if (event != null)
       event.preventDefault();
     if (_okfct != null)
@@ -129,14 +129,14 @@ class EquationDialog {
   }
   
   void updateDisplay() {
-    h.TextAreaElement ta = h.query('textarea#eqtext');
+    h.TextAreaElement ta = h.querySelector('textarea#eqtext');
     _equationText = ta.value;
     if (_equationText.length > 0 && _equationText.contains('\n')) {
       ta.value = _equationText.replaceAll('\n', '');
       ok(null);
       return;
     }
-    h.CanvasElement canvas = h.query('canvas#eqcanvas');
+    h.CanvasElement canvas = h.querySelector('canvas#eqcanvas');
     StringMathBuilder sb = new StringMathBuilder(_equationText);
     _base.setRootElement(sb.getMathRootElement());
     _base.paint(canvas.context2D);

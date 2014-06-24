@@ -101,9 +101,9 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
       _modele.resolveReferences(schema, redefine);
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        (attrDecl as WXSAttribute).resolveReferences(schema);
+        attrDecl.resolveReferences(schema);
       else if (attrDecl is WXSAttributeGroup)
-        (attrDecl as WXSAttributeGroup).resolveReferences(schema, redefine);
+        attrDecl.resolveReferences(schema, redefine);
     }
   }
   
@@ -196,9 +196,9 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl as WXSAttribute);
+        liste.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll((attrDecl as WXSAttributeGroup).attributes());
+        liste.addAll(attrDecl.attributes());
     }
     return(liste);
   }

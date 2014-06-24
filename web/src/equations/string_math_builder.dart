@@ -434,9 +434,9 @@ class JEQFonction implements JEQ {
   final RegExp namesExpr = new RegExp("^[0-9]+.*\$");
   JEQFonction(final JEQ nom, final List<JEQ> arguments) {
     this.nom = nom;
-    if (nom is JEQVariable && namesExpr.hasMatch((nom as JEQVariable).nom)) {
+    if (nom is JEQVariable && namesExpr.hasMatch(nom.nom)) {
       // un nom de fonction qui commence par des chiffres ?!?
-      (nom as JEQVariable).nom = "?";
+      nom.nom = "?";
     }
     vp = arguments;
     if ((getNomFct() == "unité" || getNomFct() == "unit") && vp.length > 1 && vp[1] != null)
@@ -689,7 +689,7 @@ class JEQFonction implements JEQ {
       // les vecteurs sont affichés en gras quand c'est possible
       final MathElement mp1 = StringMathBuilder.elemOrQuestion(p1);
       if (mp1 is MathIdentifier) {
-        (mp1 as MathIdentifier).setMathvariant("bold");
+        mp1.setMathvariant("bold");
         me = mp1;
       } else if (mp1 is MathSub && mp1.getMathElement(0) is MathIdentifier) {
         (mp1.getMathElement(0) as MathIdentifier).setMathvariant("bold");

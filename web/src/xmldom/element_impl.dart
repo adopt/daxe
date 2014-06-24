@@ -249,7 +249,7 @@ class ElementImpl extends NodeImpl implements Element {
       if (name == '*' || child.nodeName == name)
         nodes.add(child);
       if (child is Element)
-        nodes.addAll((child as Element).getElementsByTagName(name));
+        nodes.addAll(child.getElementsByTagName(name));
     }
     return(nodes);
   }
@@ -332,7 +332,7 @@ class ElementImpl extends NodeImpl implements Element {
       if (child.namespaceURI == namespaceURI && child.localName == localName)
         nodes.add(child);
       if (child is Element)
-        nodes.addAll((child as Element).getElementsByTagNameNS(namespaceURI, localName));
+        nodes.addAll(child.getElementsByTagNameNS(namespaceURI, localName));
     }
     return(nodes);
   }

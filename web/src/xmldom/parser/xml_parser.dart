@@ -207,7 +207,7 @@ class XMLParser {
         for (int i= 1; i < token.matchedTokens.length - 1; i++) {
           Object data = token.matchedTokens[i].data;
           if (data is Attr) {
-            Attr attr = data as Attr;
+            Attr attr = data;
             if (attr.name == 'version')
               doc.xmlVersion = attr.value;
             else if (attr.name == 'encoding') {
@@ -330,7 +330,7 @@ class XMLParser {
         for (int i= 2; i < startTagToken.matchedTokens.length - 1; i++) {
           Object data = startTagToken.matchedTokens[i].data;
           if (data is Attr)
-            el.setAttributeNode(data as Attr);
+            el.setAttributeNode(data);
         }
       }
       if (!empty) {
@@ -344,7 +344,7 @@ class XMLParser {
             } else {
               Object data = tokeni.data;
               if (data is Node)
-                el.appendChild(data as Node);
+                el.appendChild(data);
             }
           }
           // normalize text nodes (but not CDATA sections)
@@ -404,9 +404,9 @@ class XMLParser {
     for (Token token in tokens) {
       Object data = token.data;
       if (data is DocumentType)
-        doc.doctype = (data as DocumentType);
+        doc.doctype = data;
       else if (data is Node)
-        doc.appendChild(data as Node);
+        doc.appendChild(data);
     }
     if (doc.documentElement != null)
       _fixNamespaces(doc.documentElement);

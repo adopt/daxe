@@ -347,6 +347,7 @@ class DNTable extends DaxeNode {
         if (g[x][y] == td)
           return(x);
     assert(false);
+    return(-1);
   }
   
   int getCellY(DNTD td) {
@@ -356,6 +357,7 @@ class DNTable extends DaxeNode {
         if (g[x][y] == td)
           return(y);
     assert(false);
+    return(-1);
   }
   
   List<List<DNTD>> grid() {

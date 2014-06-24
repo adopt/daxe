@@ -180,7 +180,7 @@ class DocumentImpl extends NodeImpl implements Document {
       if (tagname == '*' || child.nodeName == tagname)
         nodes.add(child);
       if (child is Element)
-        nodes.addAll((child as Element).getElementsByTagName(tagname));
+        nodes.addAll(child.getElementsByTagName(tagname));
     }
     return(nodes);
   }
@@ -208,7 +208,7 @@ class DocumentImpl extends NodeImpl implements Document {
       if (child.namespaceURI == namespaceURI && child.localName == localName)
         nodes.add(child);
       if (child is Element)
-        nodes.addAll((child as Element).getElementsByTagNameNS(namespaceURI, localName));
+        nodes.addAll(child.getElementsByTagNameNS(namespaceURI, localName));
     }
     return(nodes);
   }
@@ -229,7 +229,7 @@ class DocumentImpl extends NodeImpl implements Document {
     }
     
     if (source is Attr) {
-      Attr att = source as Attr;
+      Attr att = source;
       att.ownerElement = null;
       att.specified = true;
     }

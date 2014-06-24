@@ -62,9 +62,9 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       _modele.resolveReferences(schema, redefine);
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        (attrDecl as WXSAttribute).resolveReferences(schema);
+        attrDecl.resolveReferences(schema);
       else if (attrDecl is WXSAttributeGroup)
-        (attrDecl as WXSAttributeGroup).resolveReferences(schema, redefine);
+        attrDecl.resolveReferences(schema, redefine);
     }
     if (_base != null) {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_base));
@@ -162,9 +162,9 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl as WXSAttribute);
+        liste.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll((attrDecl as WXSAttributeGroup).attributes());
+        liste.addAll(attrDecl.attributes());
     }
     if (_wxsBase is WXSComplexType) {
       final List<WXSAttribute> listeBase = (_wxsBase as WXSComplexType).attributes();

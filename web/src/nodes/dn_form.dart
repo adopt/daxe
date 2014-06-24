@@ -363,7 +363,7 @@ class DNForm extends DaxeNode {
   @override
   void updateAttributes() {
     h.DivElement div = getHTMLNode();
-    h.TableElement table = h.query("#$id>table");
+    h.TableElement table = h.querySelector("#$id>table");
     int i = 0;
     for (x.Element refAttr in attRefs) {
       String name = doc.cfg.attributeQualifiedName(ref, refAttr);

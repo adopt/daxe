@@ -21,7 +21,7 @@
  */
 library equations;
 
-import 'package:meta/meta.dart';
+//import 'package:meta/meta.dart';
 import 'dart:html' as h;
 import 'dart:math';
 

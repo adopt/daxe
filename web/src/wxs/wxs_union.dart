@@ -53,7 +53,7 @@ class WXSUnion extends WXSAnnotated {
         final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(type));
         final WXSType wxsType = schema.resolveTypeReference(DaxeWXS._localValue(type), tns, redefine);
         if (wxsType is WXSSimpleType)
-          _wxsMemberTypes[i] = wxsType as WXSSimpleType;
+          _wxsMemberTypes[i] = wxsType;
         else {
           _wxsMemberTypes[i] = null;
           final String espaceSchema = _domElement.namespaceURI;

@@ -87,8 +87,8 @@ class MenuBar {
   void docMouseUp(h.MouseEvent event) {
     if (visibleMenu == null)
       return;
-    h.DivElement divMenu = h.query("#menutitle_${visibleMenu.id}");
-    h.Rect r = divMenu.getBoundingClientRect();
+    h.DivElement divMenu = h.querySelector("#menutitle_${visibleMenu.id}");
+    h.Rectangle r = divMenu.getBoundingClientRect();
     if (event.client.x < r.left || event.client.x > r.right ||
         event.client.y < r.top || event.client.y > r.bottom) {
       hideMenu(visibleMenu);
@@ -98,14 +98,14 @@ class MenuBar {
   
   void showMenu(Menu m) {
     visibleMenu = m;
-    h.DivElement divMenu = h.query("#menutitle_${m.id}");
+    h.DivElement divMenu = h.querySelector("#menutitle_${m.id}");
     divMenu.classes.add('selected');
     m.show();
   }
   
   void hideMenu(Menu m) {
     visibleMenu = null;
-    h.DivElement divMenu = h.query("#menutitle_${m.id}");
+    h.DivElement divMenu = h.querySelector("#menutitle_${m.id}");
     divMenu.classes.remove('selected');
     m.hide();
   }

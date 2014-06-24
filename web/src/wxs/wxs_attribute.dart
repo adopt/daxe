@@ -84,7 +84,7 @@ class WXSAttribute extends WXSAnnotated {
           schema.getTargetNamespace() == null || schema.getTargetNamespace() == _domElement.namespaceURI) {
         final WXSType wxsType = schema.resolveTypeReference(DaxeWXS._localValue(_type), tns, null);
         if (wxsType is WXSSimpleType)
-          _simpleType = wxsType as WXSSimpleType;
+          _simpleType = wxsType;
       }
     }
     if (_simpleType == null && _wxsRef != null)

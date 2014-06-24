@@ -27,7 +27,7 @@ import 'dart:html' as h;
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
-import 'package:meta/meta.dart';
+//import 'package:meta/meta.dart';
 
 import '../xmldom/xmldom.dart' as x;
 import '../equations/equations.dart' show EquationDialog, MathBase, StringMathBuilder;

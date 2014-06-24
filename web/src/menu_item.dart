@@ -68,7 +68,7 @@ class MenuItem {
   }
   
   h.Element getHTMLNode() {
-    return(h.query("#menu_$id"));
+    return(h.querySelector("#menu_$id"));
   }
   
   void activate() {
@@ -118,7 +118,7 @@ class MenuItem {
   
   void set title(String title) {
     _title = title;
-    h.TableRowElement tr = h.query("#menu_$id");
+    h.TableRowElement tr = h.querySelector("#menu_$id");
     h.TableCellElement td = tr.nodes.first;
     td.text = title;
   }

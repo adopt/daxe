@@ -48,7 +48,7 @@ class WXSList extends WXSAnnotated {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_itemType));
       final WXSType wxsType = schema.resolveTypeReference(DaxeWXS._localValue(_itemType), tns, redefine);
       if (wxsType is WXSSimpleType)
-        _simpleType = wxsType as WXSSimpleType;
+        _simpleType = wxsType;
       else {
         final String espaceSchema = _domElement.namespaceURI;
         if (espaceSchema != tns)

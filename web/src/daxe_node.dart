@@ -88,7 +88,7 @@ abstract class DaxeNode {
       }
     }
     if (node is x.Element)
-      ref = doc.cfg.getElementRef(node as x.Element, parent == null ? null : parent.ref);
+      ref = doc.cfg.getElementRef(node, parent == null ? null : parent.ref);
     
     if (createChildren) {
       if (node.childNodes != null) {
@@ -325,6 +325,7 @@ abstract class DaxeNode {
       i++;
     }
     assert(false);
+    return(-1);
   }
   
   String getAttribute(String name) {
@@ -734,7 +735,7 @@ abstract class DaxeNode {
             hn.nodes.last is h.SpanElement) {
           // we assume here that the spans are tags, not text with a \n inside
           h.Element span_test = hn.nodes.first;
-          h.Rect box = span_test.getBoundingClientRect();
+          h.Rectangle box = span_test.getBoundingClientRect();
           hnx1 = box.left;
           hny1 = box.top;
           lineHeight = span_test.offset.height.toDouble();
@@ -746,12 +747,12 @@ abstract class DaxeNode {
             hn is h.TableElement || hn is h.ImageElement || hn.classes.contains('form')) {
           // block
           // for DivElement: no span to tag the div: we take the entire div into account
-          h.Rect box = hn.getBoundingClientRect();
+          h.Rectangle box = hn.getBoundingClientRect();
           // FIXME: box is not good for a tr containing a td using rowspan
           hnx1 = box.left;
           hny1 = box.top;
           if (hn.classes.contains('form')) // FIXME: this is a hack !
-            hnx2 = hn.query('table').getBoundingClientRect().right;
+            hnx2 = hn.querySelector('table').getBoundingClientRect().right;
           else
             hnx2 = box.right;
           hny2 = box.bottom;
@@ -759,10 +760,10 @@ abstract class DaxeNode {
         } else if (hn is h.SpanElement && hn.nodes.length == 1 && hn.nodes.first is h.Text &&
             !hn.nodes.first.nodeValue.endsWith('\n')) {
           // text node that does not end with \n
-          List<h.Rect> rects = hn.getClientRects();
+          List<h.Rectangle> rects = hn.getClientRects();
           if (rects.length == 0)
             return(null);
-          h.Rect box = rects.first;
+          h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
           box = rects.last;
@@ -775,10 +776,10 @@ abstract class DaxeNode {
           // span with a text node at the end which does not end with \n
           // note: possibles selections on the text make the tests a bit complex...
           h.Element span_test = hn.nodes.first;
-          List<h.Rect> rects = span_test.getClientRects();
+          List<h.Rectangle> rects = span_test.getClientRects();
           if (rects.length == 0)
             return(null);
-          h.Rect box = rects.first;
+          h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
           span_test = hn.nodes.last;
@@ -802,7 +803,7 @@ abstract class DaxeNode {
             hn.append(span_test);
           else
             hn.insertBefore(span_test, hn.nodes.first);
-          h.Rect box = span_test.getBoundingClientRect();
+          h.Rectangle box = span_test.getBoundingClientRect();
           hnx1 = box.left;
           hny1 = box.top;
           lineHeight = span_test.offset.height.toDouble();
@@ -849,8 +850,8 @@ abstract class DaxeNode {
           if (nodeValue[pp + i] != '\n') {
             range.setStart(ht, i);
             range.setEnd(ht, i+1);
-            List<h.Rect> rects = range.getClientRects();
-            for (h.Rect r in rects) {
+            List<h.Rectangle> rects = range.getClientRects();
+            for (h.Rectangle r in rects) {
               if (i < nodeValue.length - 1 && r.left == r.right &&
                   x < r.left && y < r.bottom) {
                 //print("left of line start after newline");
@@ -876,9 +877,9 @@ abstract class DaxeNode {
             ht.text = "${s.substring(0, i)}|${s.substring(i)}";
             range.setStart(ht, i);
             range.setEnd(ht, i+1);
-            List<h.Rect> rects = range.getClientRects();
+            List<h.Rectangle> rects = range.getClientRects();
             ht.text = s;
-            for (h.Rect r in rects) {
+            for (h.Rectangle r in rects) {
               if (x > r.left && y <= r.bottom) {
                 //print("right of \\n");
                 // to the right of the last character on the line

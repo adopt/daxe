@@ -46,7 +46,7 @@ class WebPage {
       init();
       h.document.title = Strings.get('page.new_document');
     }, onError: (DaxeException ex) {
-      h.Element divdoc = h.query("#doc2");
+      h.Element divdoc = h.querySelector("#doc2");
       divdoc.text = "Error creating the new document: $ex";
     });
   }
@@ -65,13 +65,13 @@ class WebPage {
       init();
       h.document.title = filePath.split('/').last;
     }, onError: (DaxeException ex) {
-      h.Element divdoc = h.query("#doc2");
+      h.Element divdoc = h.querySelector("#doc2");
       divdoc.text = "Error reading the document: $ex";
     });
   }
   
   void init() {
-    h.Element divdoc = h.query("#doc2");
+    h.Element divdoc = h.querySelector("#doc2");
     divdoc.children.clear();
     h.Element elhtml = doc.html();
     divdoc.append(elhtml);
@@ -84,7 +84,7 @@ class WebPage {
     divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));
     divdoc.onMouseUp.listen((h.MouseEvent event) => onMouseUp(event));
     divdoc.onContextMenu.listen((h.MouseEvent event) => onContextMenu(event));
-    h.query("#doc1").onScroll.listen((h.Event event) => onScroll(event));
+    h.querySelector("#doc1").onScroll.listen((h.Event event) => onScroll(event));
     h.document.onMouseUp.listen((h.MouseEvent event) {
       if (contextualMenu != null)
         contextualMouseUp(event);
@@ -116,7 +116,7 @@ class WebPage {
     MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
     editMenu.add(findMenu);
     mbar.insert(editMenu, 1);
-    h.Element divdoc1 = h.query("#doc1");
+    h.Element divdoc1 = h.querySelector("#doc1");
     divdoc1.parent.insertBefore(mbar.html(), divdoc1);
     
     HashMap<String, ActionFunction> shortcuts = new HashMap<String, ActionFunction>();
@@ -131,7 +131,7 @@ class WebPage {
       if (item.shortcut != null && item.action != null)
         shortcuts[item.shortcut] = item.action;
       if (item is Menu)
-        addShortcuts(item as Menu, shortcuts);
+        addShortcuts(item, shortcuts);
     }
   }
   
@@ -376,7 +376,7 @@ class WebPage {
   }
   
   void updatePath() {
-    h.Element div_path = h.query("div#path");
+    h.Element div_path = h.querySelector("div#path");
     if (_cursor.selectionStart == null)
       div_path.text = "";
     else

@@ -142,7 +142,7 @@ class DNEquaTexMem extends DaxeNode {
       Object response = request.response;
       // note : ByteBuffer and Uint8List are in dart:typed_data
       if (response is ByteBuffer) {
-        Uint8List bytes = new Uint8List.view(response as ByteBuffer);
+        Uint8List bytes = new Uint8List.view(response);
         String data = CryptoUtils.bytesToBase64(bytes);
         completer.complete(data);
       } else
@@ -254,14 +254,14 @@ class TeXEquationDialog {
   }
   
   void ok(h.MouseEvent event) {
-    h.TextAreaElement ta = h.query('textarea#eqtext');
+    h.TextAreaElement ta = h.querySelector('textarea#eqtext');
     _equationText = ta.value;
     // we can't always get the image data synchronously, this will be done later
     if (_labelName != null) {
-      h.TextInputElement input_label = h.query('input#eqlabel');
+      h.TextInputElement input_label = h.querySelector('input#eqlabel');
       _labelValue = input_label.value;
     }
-    h.query('div#dlg1').remove();
+    h.querySelector('div#dlg1').remove();
     if (event != null)
       event.preventDefault();
     if (_okfct != null)
@@ -275,7 +275,7 @@ class TeXEquationDialog {
   void updateData() {
     if (_equationText == '')
       return(null);
-    h.ImageElement img = h.query('img#eqimg');
+    h.ImageElement img = h.querySelector('img#eqimg');
     h.CanvasElement canvas = new h.CanvasElement(width: img.width, height: img.height);
     h.CanvasRenderingContext2D context = canvas.context2D;
     context.drawImage(img, 0, 0);
@@ -295,19 +295,19 @@ class TeXEquationDialog {
   }
   
   void updateImg() {
-    h.ImageElement img = h.query('img#eqimg');
+    h.ImageElement img = h.querySelector('img#eqimg');
     img.src = getImgSrc();
   }
   
   void preview(h.MouseEvent event) {
     event.preventDefault();
-    h.TextAreaElement ta = h.query('textarea#eqtext');
+    h.TextAreaElement ta = h.querySelector('textarea#eqtext');
     _equationText = ta.value;
     updateImg();
   }
   
   void checkReturn() {
-    h.TextAreaElement ta = h.query('textarea#eqtext');
+    h.TextAreaElement ta = h.querySelector('textarea#eqtext');
     String text = ta.value;
     if (text.length > 0 && text.contains('\n')) {
       ta.value = text.replaceAll('\n', '');

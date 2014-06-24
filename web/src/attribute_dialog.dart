@@ -136,7 +136,7 @@ class AttributeDialog {
       else if (value != '' || defaultValue != null)
         attributes[name] = new DaxeAttr.NS(namespace, name, value);
     }
-    h.query('div#attributes_dlg').remove();
+    h.querySelector('div#attributes_dlg').remove();
     event.preventDefault();
     List<DaxeAttr> attList = new List.from(attributes.values);
     if (el.getHTMLNode() != null) {
@@ -152,7 +152,7 @@ class AttributeDialog {
   }
   
   void cancel() {
-    h.query('div#attributes_dlg').remove();
+    h.querySelector('div#attributes_dlg').remove();
     page.focusCursor();
   }
   

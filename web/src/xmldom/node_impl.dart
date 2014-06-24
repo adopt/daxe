@@ -71,6 +71,7 @@ abstract class NodeImpl implements Node {
       firstChild = newChild;
     newChild.nextSibling = refChild;
     newChild.previousSibling = refChild.previousSibling;
+    return(newChild);
   }
   
   Node replaceChild(Node newChild, Node oldChild) { // throws DOMException
@@ -94,6 +95,7 @@ abstract class NodeImpl implements Node {
     newChild.previousSibling = oldChild.previousSibling;
     oldChild.parentNode = null;
     childNodes.remove(oldChild);
+    return(oldChild);
   }
   
   Node removeChild(Node oldChild) { // throws DOMException
@@ -113,6 +115,7 @@ abstract class NodeImpl implements Node {
       oldChild.nextSibling.previousSibling = oldChild.previousSibling;
     oldChild.parentNode = null;
     childNodes.remove(oldChild);
+    return(oldChild);
   }
   
   Node appendChild(Node newChild) { // throws DOMException
@@ -146,6 +149,7 @@ abstract class NodeImpl implements Node {
     }
     
     childNodes.add(newChild);
+    return(newChild);
   }
   
   bool hasChildNodes() {

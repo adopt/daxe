@@ -33,7 +33,7 @@ class FindDialog {
       inputFind.focus();
       return;
     }
-    h.Element divdoc = h.query("#doc1");
+    h.Element divdoc = h.querySelector("#doc1");
     divdoc.style.bottom = '10.5em';
     div_find = new h.DivElement();
     div_find.id = 'find_dlg';
@@ -264,7 +264,7 @@ class FindDialog {
   void close() {
     h.DivElement div_find = h.document.getElementById('find_dlg');
     div_find.remove();
-    h.Element divdoc = h.query("#doc1");
+    h.Element divdoc = h.querySelector("#doc1");
     divdoc.style.bottom = '1.5em';
     page.focusCursor();
   }

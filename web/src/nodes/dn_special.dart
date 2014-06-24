@@ -200,12 +200,12 @@ class SpecialDialog {
       return;
     selectedTD.style.border = '1px solid black';
     character = selectedTD.text;
-    h.ButtonElement bOk = h.query('button#special_ok');
+    h.ButtonElement bOk = h.querySelector('button#special_ok');
     bOk.disabled = false;
   }
   
   void ok(h.MouseEvent event) {
-    h.query('div#dlg1').remove();
+    h.querySelector('div#dlg1').remove();
     if (event != null)
       event.preventDefault();
     if (okfct != null)
@@ -213,7 +213,7 @@ class SpecialDialog {
   }
   
   void cancel() {
-    h.query('div#dlg1').remove();
+    h.querySelector('div#dlg1').remove();
     page.focusCursor();
   }
   

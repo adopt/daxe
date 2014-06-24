@@ -62,9 +62,9 @@ class WXSAttributeGroup extends WXSAnnotated implements Parent {
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        (attrDecl as WXSAttribute).resolveReferences(schema);
+        attrDecl.resolveReferences(schema);
       else if (attrDecl is WXSAttributeGroup)
-        (attrDecl as WXSAttributeGroup).resolveReferences(schema, redefine);
+        attrDecl.resolveReferences(schema, redefine);
     }
     if (_ref != null) {
       final String prefixe = DaxeWXS._namePrefix(_ref);
@@ -96,9 +96,9 @@ class WXSAttributeGroup extends WXSAnnotated implements Parent {
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl as WXSAttribute);
+        liste.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll((attrDecl as WXSAttributeGroup).attributes());
+        liste.addAll(attrDecl.attributes());
     }
     return(liste);
   }

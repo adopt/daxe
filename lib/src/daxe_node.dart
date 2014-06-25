@@ -959,6 +959,26 @@ abstract class DaxeNode {
   }
   
   /**
+   * Calls afterInsert for this node and all its descendants.
+   */
+  void callAfterInsert() {
+    afterInsert();
+    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+      dn.callAfterInsert();
+    }
+  }
+  
+  /**
+   * Calls beforeRemove for this node and all its descendants.
+   */
+  void callBeforeRemove() {
+    beforeRemove();
+    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+      dn.callBeforeRemove();
+    }
+  }
+  
+  /**
    * Called after this node was inserted. Does nothing by default.
    */
   void afterInsert() {

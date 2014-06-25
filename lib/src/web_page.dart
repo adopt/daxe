@@ -63,6 +63,7 @@ class WebPage {
     doc.openDocument(filePath, configPath).then( (_) {
       _buildMenus();
       init();
+      doc.dndoc.callAfterInsert();
       h.document.title = filePath.split('/').last;
     }, onError: (DaxeException ex) {
       h.Element divdoc = h.querySelector("#doc2");

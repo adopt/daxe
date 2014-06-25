@@ -54,7 +54,7 @@ class DocumentImpl extends NodeImpl implements Document {
         if (n2 is Element)
           documentElement = n2;
       }
-      if (childNodes.length > 1) {
+      if (childNodes.length > 0) {
         firstChild = childNodes[0];
         lastChild = childNodes[childNodes.length - 1];
       } else {

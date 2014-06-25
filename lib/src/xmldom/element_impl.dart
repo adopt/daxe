@@ -32,7 +32,7 @@ class ElementImpl extends NodeImpl implements Element {
       for (Node n in el.childNodes) {
         childNodes.add(n.cloneNode(deep));
       }
-      if (childNodes.length > 1) {
+      if (childNodes.length > 0) {
         firstChild = childNodes[0];
         lastChild = childNodes[childNodes.length - 1];
       } else {

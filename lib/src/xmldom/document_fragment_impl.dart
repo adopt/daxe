@@ -29,7 +29,7 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
       for (Node n in df.childNodes) {
         childNodes.add(n.cloneNode(deep));
       }
-      if (childNodes.length > 1) {
+      if (childNodes.length > 0) {
         firstChild = childNodes[0];
         lastChild = childNodes[childNodes.length - 1];
       } else {

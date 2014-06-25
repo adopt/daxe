@@ -272,6 +272,7 @@ class UndoableEdit {
         else
           page.moveCursorTo(new Position(dn.parent, dn.parent.offsetOf(dn) + 1));
       }
+      dn.afterInsert();
     }
   }
   
@@ -294,6 +295,7 @@ class UndoableEdit {
         page.moveCursorTo(pos);
       }
     } else {
+      dn.beforeRemove();
       DaxeNode parent = dn.parent;
       assert(parent != null);
       if (pos == null) {

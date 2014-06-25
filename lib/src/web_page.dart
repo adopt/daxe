@@ -136,13 +136,21 @@ class WebPage {
   }
   
   void onMouseDown(h.MouseEvent event) {
+    // do not stop event propagation in some cases:
     if (event.target is h.ImageElement ||
         event.target is h.ButtonElement ||
         event.target is h.TextInputElement ||
         event.target is h.SelectElement)
       return;
+    h.Element parent = event.target;
+    while (parent is h.Element && !parent.classes.contains('dn')) {
+      parent = parent.parent;
+    }
+    if (parent != null && parent.attributes['contenteditable'] == 'true')
+      return;
     if (event.button == 1)
       return;
+    
     event.preventDefault();
     if (event.button == 2) {
       // this is handled in onContextMenu

@@ -731,7 +731,7 @@ abstract class DaxeNode {
         double hnx1, hny1, hnx2, hny2;
         double lineHeight;
         // NOTE: the main problem here is to avoid adding spans to find the position
-        if (hn is h.DivElement && hn.nodes.first is h.SpanElement &&
+        if (hn is h.DivElement && hn.nodes.length > 0 && hn.nodes.first is h.SpanElement &&
             hn.nodes.last is h.SpanElement) {
           // we assume here that the spans are tags, not text with a \n inside
           h.Element span_test = hn.nodes.first;
@@ -957,4 +957,17 @@ abstract class DaxeNode {
     }
     return(null);
   }
+  
+  /**
+   * Called after this node was inserted. Does nothing by default.
+   */
+  void afterInsert() {
+  }
+  
+  /**
+   * Called before this node is removed. Does nothing by default.
+   */
+  void beforeRemove() {
+  }
+  
 }

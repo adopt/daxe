@@ -58,8 +58,7 @@ class WXSAny extends WXSAnnotated implements WithSubElements {
     _elements = new List<WXSElement>();
     _elements.addAll(schema.anies(_namespace));
     for (WXSElement element in _elements)
-      if (element is WXSElement)
-        element.addReference(this);
+      element.addReference(this);
   }
   
   // from WithSubElements

@@ -148,6 +148,7 @@ class SimpleTypeControl {
         else
           title = doc.cfg.elementValueTitle(refElement, v);
         option.text = title;
+        option.value = v;
         titleToValue[title] = v;
         if (v == value) {
           option.defaultSelected = true;
@@ -206,11 +207,7 @@ class SimpleTypeControl {
       else
         value = title;
     } else if (hcontrol is h.SelectElement) {
-      String title = (hcontrol as h.SelectElement).value;
-      if (titleToValue != null && titleToValue[title] != null)
-        value = titleToValue[title];
-      else
-        value = title;
+      value = (hcontrol as h.SelectElement).value;
     } else if (/*hcontrol is h.CheckboxInputElement*/
         hcontrol is h.InputElement && (hcontrol as h.InputElement).type == 'checkbox') {
       bool checked = (hcontrol as h.CheckboxInputElement).checked;

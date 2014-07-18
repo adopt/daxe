@@ -40,20 +40,24 @@ class MenuBar {
     h.DivElement div = new h.DivElement();
     div.classes.add('menubar');
     for (Menu m in menus) {
-      h.DivElement divMenu = new h.DivElement();
-      divMenu.text = m.title;
-      divMenu.id = "menutitle_${m.id}";
-      divMenu.classes.add('menu_title');
-      divMenu.onMouseDown.listen((h.MouseEvent event) => mouseDown(event, m));
-      divMenu.onMouseOver.listen((h.MouseEvent event) => mouseOver(event, m));
-      divMenu.onClick.listen((h.MouseEvent event) => click(m));
-      div.append(divMenu);
-      h.Element dropdown = m.html();
-      dropdown.style.display = 'none';
-      divMenu.append(dropdown);
+      div.append(createMenuDiv(m));
     }
     h.document.onMouseUp.listen((h.MouseEvent event) => docMouseUp(event));
     return(div);
+  }
+  
+  h.DivElement createMenuDiv(Menu m) {
+    h.DivElement divMenu = new h.DivElement();
+    divMenu.text = m.title;
+    divMenu.id = m.itemid;
+    divMenu.classes.add('menu_title');
+    divMenu.onMouseDown.listen((h.MouseEvent event) => mouseDown(event, m));
+    divMenu.onMouseOver.listen((h.MouseEvent event) => mouseOver(event, m));
+    divMenu.onClick.listen((h.MouseEvent event) => click(m));
+    h.Element dropdown = m.htmlMenu();
+    dropdown.style.display = 'none';
+    divMenu.append(dropdown);
+    return(divMenu);
   }
   
   void mouseDown(h.MouseEvent event, Menu m) {
@@ -87,7 +91,7 @@ class MenuBar {
   void docMouseUp(h.MouseEvent event) {
     if (visibleMenu == null)
       return;
-    h.DivElement divMenu = h.querySelector("#menutitle_${visibleMenu.id}");
+    h.DivElement divMenu = h.querySelector("#${visibleMenu.itemid}");
     h.Rectangle r = divMenu.getBoundingClientRect();
     if (event.client.x < r.left || event.client.x > r.right ||
         event.client.y < r.top || event.client.y > r.bottom) {
@@ -98,14 +102,14 @@ class MenuBar {
   
   void showMenu(Menu m) {
     visibleMenu = m;
-    h.DivElement divMenu = h.querySelector("#menutitle_${m.id}");
+    h.DivElement divMenu = h.querySelector("#${m.itemid}");
     divMenu.classes.add('selected');
     m.show();
   }
   
   void hideMenu(Menu m) {
     visibleMenu = null;
-    h.DivElement divMenu = h.querySelector("#menutitle_${m.id}");
+    h.DivElement divMenu = h.querySelector("#${m.itemid}");
     divMenu.classes.remove('selected');
     m.hide();
   }

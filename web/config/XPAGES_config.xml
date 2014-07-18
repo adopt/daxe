@@ -212,13 +212,11 @@
 <PARAMETRE nom="titreAtt" valeur="titre"/>
 </AFFICHAGE_ELEMENT>
 <AFFICHAGE_ELEMENT element="SYMBOLE" type="symbole2"/>
-<AFFICHAGE_ELEMENT element="EQUATION" type="plugin">
-<PARAMETRE nom="classe" valeur="xpages.JEEquationMemoire"/>
+<AFFICHAGE_ELEMENT element="EQUATION" type="equationmem">
 <PARAMETRE nom="srcAtt" valeur="image"/>
 <PARAMETRE nom="texteAtt" valeur="texte"/>
 </AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="EQUATEX" type="plugin">
-<PARAMETRE nom="classe" valeur="xpages.JEEquaTeXMemoire"/>
+<AFFICHAGE_ELEMENT element="EQUATEX" type="equatexmem">
 <PARAMETRE nom="serveur" valeur="//media4.obspm.fr/serveurtex/tex.php"/>
 <PARAMETRE nom="texteAtt" valeur="texte"/>
 <PARAMETRE nom="labelAtt" valeur="label"/>

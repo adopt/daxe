@@ -7,16 +7,24 @@ button {
   padding: 2px;
 }
 
+div#headers {
+  position: absolute;
+  top: 0em;
+  left: 0em;
+  right: 0em;
+  z-index: 5;
+}
+
 div#insert {
   position: absolute;
-  top: 1.7em;
+  top: 4em;
   bottom: 1.5em;
   left: 0em;
   width: 15em;
   overflow: auto;
-  border-right: 1px solid black;
   background-color: #F0F0F0;
   text-align: center;
+  z-index: 1;
 }
 
 div#insert button.insertb {
@@ -25,15 +33,16 @@ div#insert button.insertb {
 
 
 div.menubar {
-  position: absolute;
-  left: 0em;
-  right: 0em;
-  top: 0em;
   background-color: #FFFFFF;
-  color: #000000;
-  border-bottom: 1px solid #000000;
+  color: #000;
+  border-bottom: 1px solid #000;
   cursor: default;
   z-index: 10;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 div.menu_title {
@@ -48,20 +57,34 @@ div.dropdown_menu {
   left: 0px;
   top: 100%;
   width: 20em;
+  z-index: 10;
 }
 
 table.menu {
   border-spacing: 0px;
-  color: #000000;
+  color: #000;
   background-color: #FFFFFF;
-  border: 1px solid #000000;
-  box-shadow: 2px 2px 2px #A0A0A0;
+  border: 1px solid #000;
+  box-shadow: 2px 2px 2px #AAA;
 }
 
 table.menu tr td {
+  position: relative;
   padding-left: 5px;
   padding-right: 5px;
   cursor: default;
+}
+
+table.menu tr.checked td:nth-of-type(2)::after {
+  content: "✓";
+}
+
+div.submenu {
+  position: absolute;
+  left: 100%;
+  top: 0px;
+  width: 20em;
+  z-index: 10;
 }
 
 .disabled {
@@ -69,15 +92,74 @@ table.menu tr td {
 }
 
 
+.toolbar {
+  height: 2em;
+  cursor: default;
+  z-index: 5;
+  padding: 1px;
+  background: linear-gradient(#F5F5F5, #DADADA);
+  box-shadow: 2px 2px 2px #AAA;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.toolbar-box {
+  display: inline-block;
+  line-height: 20px;
+  border: 1px solid #AAA;
+  margin: 0.2em;
+  background: #FAFAFA;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.toolbar-menu {
+  display: inline-block;
+  line-height: 20px;
+  border: 1px solid #AAA;
+  margin: 0.3em;
+  background: #FFFFFF;
+  vertical-align: top;
+}
+
+.toolbar-button {
+  display: inline-block;
+  line-height: 18px;
+  padding: 3px;
+}
+
+.button-disabled {
+  opacity: 0.3;
+}
+
+.button-selected {
+  background-color: #CCC;
+}
+
+.toolbar-button:hover {
+  background-color: #DDD;
+}
+
+.toolbar-button.button-disabled:hover {
+  background-color: transparent;
+}
+
+.toolbar-button img {
+  vertical-align: middle;
+}
+
 div#doc1 {
   position: absolute;
   bottom: 1.5em;
   left: 15em;
   right: 0em;
-  top: 1.7em;
+  top: 4em;
   overflow: auto;
   background-color: #FFFFFF;
-  color: #000000;
+  color: #000;
 }
 
 div#doc2 {
@@ -91,7 +173,7 @@ div#path {
   bottom: 0px;
   width: 100%;
   height: 1.5em;
-  border-top: 1px solid #909090;
+  border-top: 1px solid #999;
   font-family: sans-serif;
   font-size: 85%;
   background-color: #F0F0F0;
@@ -173,6 +255,10 @@ span.end_tag {
 
 .selected span.empty_tag, .selected span.start_tag, .selected span.end_tag {
   background-color: #F05030;
+  color: #FFFFFF;
+}
+.invalid.selected>span.empty_tag, .invalid.selected>span.start_tag, .invalid.selected>span.end_tag {
+  background-color: #F07030;
   color: #FFFFFF;
 }
 
@@ -278,6 +364,7 @@ div.dlg3 table {
 div.help_regexp {
   font-family: monospace;
   margin-bottom: 1em;
+  word-break: break-all;
 }
 
 span.help_list_title {
@@ -413,10 +500,20 @@ ul.list {
   min-height: 1em;
   margin-top: 0em;
   margin-bottom: 0em;
+  margin-left: 0em;
+  padding-left: 1.5em;
 }
 
 img.bullet {
   cursor: default;
+}
+
+/* DNWList */
+ul.wlist li.selected {
+  color: inherit;
+}
+ul.wlist li.selected span {
+  color: #FFFFFF;
 }
 
 /* DNTable */

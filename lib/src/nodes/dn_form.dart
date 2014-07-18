@@ -411,10 +411,14 @@ class DNForm extends DaxeNode {
     bHelp.value = '?';
     bHelp.text = '?';
     if (attributeRef == null) {
-      bHelp.title = doc.cfg.documentation(elementRef);
+      String title = doc.cfg.documentation(elementRef);
+      if (title != null)
+        bHelp.title = title;
       bHelp.onClick.listen((h.Event event) => (new HelpDialog.Element(elementRef)).show());
     } else {
-      bHelp.title = doc.cfg.attributeDocumentation(elementRef, attributeRef);
+      String title = doc.cfg.attributeDocumentation(elementRef, attributeRef);
+      if (title != null)
+        bHelp.title = title;
       bHelp.onClick.listen((h.Event event) => (new HelpDialog.Attribute(attributeRef, elementRef)).show());
     }
     return(bHelp);

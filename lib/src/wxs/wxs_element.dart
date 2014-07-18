@@ -223,33 +223,33 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   List<WXSElement> subElements() {
     if (_sousElements != null)
       return(_sousElements);
-    final List<WXSElement> liste = new List<WXSElement>();
+    final LinkedHashSet<WXSElement> set = new LinkedHashSet<WXSElement>();
     if (_wxsRef != null)
-      liste.addAll(_wxsRef.subElements());
+      set.addAll(_wxsRef.subElements());
     else if (_complexType != null)
-      liste.addAll(_complexType.subElements());
+      set.addAll(_complexType.subElements());
     else if (_simpleType == null && _type == null && _wxsSubstitutionGroup != null)
-      liste.addAll(_wxsSubstitutionGroup.subElements());
-    _sousElements = new List.from(liste);
+      set.addAll(_wxsSubstitutionGroup.subElements());
+    _sousElements = new List.from(set);
     return(_sousElements);
   }
   
   // from Parent
   List<WXSElement> parentElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final LinkedHashSet<WXSElement> set = new LinkedHashSet<WXSElement>();
     if (_parent != null)
-      liste.addAll(_parent.parentElements());
+      set.addAll(_parent.parentElements());
     if (_references != null) {
       for (WXSThing reference in _references) {
         if (reference is WXSElement)
-          liste.addAll(reference.parentElements());
+          set.addAll(reference.parentElements());
         else if (reference is WXSAny)
-          liste.addAll(reference.parentElements());
+          set.addAll(reference.parentElements());
       }
     }
     if (_wxsSubstitutionGroup != null)
-      liste.addAll(_wxsSubstitutionGroup.parentElements());
-    return(new List.from(liste));
+      set.addAll(_wxsSubstitutionGroup.parentElements());
+    return(new List.from(set));
   }
   
   /**

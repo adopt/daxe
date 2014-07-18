@@ -20,7 +20,7 @@ part of nodes;
 /**
  * An equation using the Jaxe syntax. The image is encoded in base64
  * and added as text inside the element.
- * Jaxe display type: to be defined, for now a plugin with the class `xpages.JEEquationMemoire`.
+ * Jaxe display type: equationmem, or a plugin with the class `xpages.JEEquationMemoire`.
  * 
  * * parameter: `texteAtt`: the name of the attribute giving the equation text
  * * parameter: `labelAtt`: the name of the attribute giving the image label
@@ -48,7 +48,7 @@ class DNEquationMem extends DaxeNode {
   
   @override
   h.Element html() {
-    assert(doc.filePath != null);
+    //assert(doc.filePath != null);
     _img = new h.ImageElement();
     _img.attributes['id'] = "$id";
     _img.attributes['class'] = 'dn';

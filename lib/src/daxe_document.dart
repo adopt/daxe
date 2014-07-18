@@ -29,6 +29,7 @@ class DaxeDocument {
   int undoPosition = -1;
   String filePath;
   String saveURL;
+  x.Element hiddenp;
   
   /**
    * Create a new document with the given configuration path.
@@ -37,6 +38,7 @@ class DaxeDocument {
     Completer completer = new Completer();
     cfg = new Config();
     cfg.load(configPath).then((_) {
+      hiddenp = cfg.firstElementWithType('hiddenp');
       filePath = null;
       dndoc = new DNDocument();
       List<x.Element> roots = cfg.rootElements();
@@ -62,6 +64,7 @@ class DaxeDocument {
     Completer completer = new Completer();
     cfg = new Config();
     cfg.load(configPath).then((_) {
+      hiddenp = cfg.firstElementWithType('hiddenp');
       this.filePath = filePath;
       x.DOMParser dp = new x.DOMParser();
       dp.parseFromURL(filePath).then((x.Document xmldoc) {
@@ -241,19 +244,25 @@ class DaxeDocument {
             new Position(dn, start.dnOffset),
             end.dnOffset - start.dnOffset));
       } else {
+        // text nodes have to be removed first to avoid text merging problems
         for (int i = start.dnOffset; i < end.dnOffset; i++) {
-          edit.addSubEdit(new UndoableEdit.removeNode(dn.childAtOffset(i)));
+          if (dn.childAtOffset(i) is DNText)
+            edit.addSubEdit(new UndoableEdit.removeNode(dn.childAtOffset(i)));
+        }
+        for (int i = start.dnOffset; i < end.dnOffset; i++) {
+          if (dn.childAtOffset(i) is! DNText)
+            edit.addSubEdit(new UndoableEdit.removeNode(dn.childAtOffset(i)));
         }
       }
     } else {
+      bool removeFirstNode = false;
       // beginning of the selection
       DaxeNode firstNode;
       if (start.dn.nodeType == DaxeNode.ELEMENT_NODE) {
         firstNode = start.dn.childAtOffset(start.dnOffset);
         Position p2 = new Position(start.dn, start.dnOffset + 1);
-        if (end >= p2) {
-          edit.addSubEdit(new UndoableEdit.removeNode(firstNode));
-        }
+        if (end >= p2)
+          removeFirstNode = true;
       } else {
         firstNode = start.dn;
         if (firstNode.offsetLength - start.dnOffset > 0) {
@@ -280,6 +289,8 @@ class DaxeDocument {
         } else
           break;
       }
+      if (removeFirstNode)
+        edit.addSubEdit(new UndoableEdit.removeNode(firstNode));
       for (DaxeNode next = firstNode.nextSibling; next != null; next = next.nextSibling) {
         Position p1 = new Position(next.parent, next.parent.offsetOf(next));
         if (p1 < end) {
@@ -291,6 +302,125 @@ class DaxeDocument {
       }
     }
     return(edit);
+  }
+  
+  /**
+   * Returns a root DaxeNode with a clone of everything between [start] and [end].
+   * The two positions must not cut a node, except for text nodes
+   * (all the document elements must be either inside or outside the range).
+   */
+  DaxeNode cloneBetween(Position start, Position end) {
+    assert(start < end);
+    DaxeNode parent = start.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    DaxeNode root = NodeFactory.create(parent.ref);
+    if (start.dn == end.dn) {
+      DaxeNode dn = start.dn;
+      if (dn.nodeType == DaxeNode.TEXT_NODE) {
+        root.appendChild(new DNText(dn.nodeValue.substring(start.dnOffset, end.dnOffset)));
+      } else {
+        for (int i = start.dnOffset; i < end.dnOffset; i++) {
+          root.appendChild(new DaxeNode.clone(dn.childAtOffset(i)));
+        }
+      }
+    } else {
+      // beginning of the selection
+      DaxeNode firstNode;
+      if (start.dn.nodeType == DaxeNode.ELEMENT_NODE) {
+        firstNode = start.dn.childAtOffset(start.dnOffset);
+        Position p2 = new Position(start.dn, start.dnOffset + 1);
+        if (end >= p2) {
+          root.appendChild(new DaxeNode.clone(firstNode));
+        }
+      } else {
+        firstNode = start.dn;
+        if (firstNode.offsetLength - start.dnOffset > 0) {
+          root.appendChild(new DNText(
+              firstNode.nodeValue.substring(start.dnOffset, firstNode.offsetLength)));
+        }
+      }
+      // between the first and the end node of the selection
+      for (DaxeNode next = firstNode.nextSibling; next != null; next = next.nextSibling) {
+        Position p1 = new Position(next.parent, next.parent.offsetOf(next));
+        if (p1 < end) {
+          if (next.nodeType != DaxeNode.TEXT_NODE ||
+              (next.nodeType == DaxeNode.TEXT_NODE &&
+              end >= new Position(next.parent, next.parent.offsetOf(next) + 1))) {
+            root.appendChild(new DaxeNode.clone(next));
+          }
+        } else
+          break;
+      }
+      // end of the selection
+      if (end.dn.nodeType == DaxeNode.TEXT_NODE && end.dnOffset > 0) {
+        root.appendChild(new DNText(end.dn.nodeValue.substring(0, end.dnOffset)));
+      }
+    }
+    return(root);
+  }
+  
+  /**
+   * Returns a cloned node of root including everything between p1 and p2.
+   * The interval p1-p2 may cut nodes.
+   * The root attributes are preserved.
+   */
+  DaxeNode cloneCutBetween(DaxeNode root, Position p1, Position p2) {
+    while (p1.dnOffset == p1.dn.offsetLength && p1 < p2) {
+      // to avoid cloning an empty element at the beginning
+      p1 = new Position(p1.dn.parent, p1.dn.parent.offsetOf(p1.dn) + 1);
+    }
+    while (p2.dnOffset == 0 && p2 > p1) {
+      // to avoid cloning an empty element at the end
+      p2 = new Position(p2.dn.parent, p2.dn.parent.offsetOf(p2.dn));
+    }
+    DaxeNode root2 = new DaxeNode.clone(root);
+    // optimization: could this shallow clone be optimized without requiring another method for several DaxeNodes ?
+    // (or we could reuse the children later instead of recloning them)
+    for (DaxeNode dn = root2.firstChild; dn != null; dn = root2.firstChild)
+      root2.removeChild(dn);
+    int offset = 0;
+    for (DaxeNode dn=root.firstChild; dn != null; dn=dn.nextSibling) {
+      Position dnstart = new Position(root, offset);
+      Position dnend = new Position(root, offset + 1);
+      if (dnstart >= p1 && dnend <= p2) {
+        DaxeNode dn2 = new DaxeNode.clone(dn);
+        root2.appendChild(dn2);
+      } else if (dnend <= p1 || dnstart >= p2) {
+        // dn is not included at all in the selection
+      } else {
+        if (dn is DNText) {
+          if (dnstart > p1 && dnend > p2) {
+            assert(dn == p2.dn);
+            if (0 < p2.dnOffset)
+              root2.appendChild(new DNText(dn.nodeValue.substring(0, p2.dnOffset)));
+          } else if (dnstart < p1 && dnend < p2) {
+            assert(dn == p1.dn);
+            if (p1.dnOffset < dn.offsetLength)
+              root2.appendChild(new DNText(dn.nodeValue.substring(p1.dnOffset, dn.offsetLength)));
+          } else {
+            // dnstart <= p1 && dnend >= p2
+            int offset1;
+            if (p1.dn == dn)
+              offset1 = p1.dnOffset;
+            else
+              offset1 = 0;
+            int offset2;
+            if (p2.dn == dn)
+              offset2 = p2.dnOffset;
+            else
+              offset2 = dn.offsetLength;
+            if (offset1 < offset2)
+              root2.appendChild(new DNText(dn.nodeValue.substring(offset1, offset2)));
+          }
+        } else {
+          DaxeNode dn2 = cloneCutBetween(dn, p1, p2);
+          root2.appendChild(dn2);
+        }
+      }
+      offset++;
+    }
+    return(root2);
   }
   
   /**
@@ -307,56 +437,97 @@ class DaxeDocument {
       parent = parent.parent;
     }
     UndoableEdit edit = new UndoableEdit.compound('insertChildren');
-    // reverse order to always use pos as the insert position
-    for (DaxeNode dn in root.childNodes.reversed) {
-      if (checkValidity &&
-          (parent is DNComment || parent is DNCData || parent is DNProcessingInstruction) &&
-          dn is! DNText) {
-        String title;
-        if (dn.ref == null)
-          title = dn.nodeName;
-        else
-          title = doc.cfg.elementTitle(dn.ref);
-        throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_here'));
-      }
-      if (dn is DNText || dn is DNCData) {
-        if (checkValidity && parent.nodeType == DaxeNode.DOCUMENT_NODE)
-          throw new DaxeException(Strings.get('insert.text_not_allowed'));
-        String value = null;
-        if (dn is DNText)
-          value = dn.nodeValue;
-        else if (dn.firstChild != null)
-          value = dn.firstChild.nodeValue;
-        if (value == null)
-          value = '';
-        if (checkValidity && value.trim() != '' && !doc.cfg.canContainText(parent.ref)) {
-          throw new DaxeException(Strings.get('insert.text_not_allowed'));
+    
+    // extract children from the root to avoid text merging under root
+    List<DaxeNode> children = new List<DaxeNode>();
+    while (root.firstChild != null) {
+      children.add(root.firstChild);
+      root.removeChild(root.firstChild);
+    }
+    // inserting non-text nodes first to avoid text merging issues in the target
+    Position insertPos = new Position.clone(pos);
+    for (DaxeNode dn in children) {
+      if (dn is! DNText) {
+        if (checkValidity &&
+            (parent is DNComment || parent is DNCData || parent is DNProcessingInstruction)) {
+          String title;
+          if (dn.ref == null)
+            title = dn.nodeName;
+          else
+            title = cfg.elementTitle(dn.ref);
+          throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_here'));
         }
-        if (dn is DNText)
-          edit.addSubEdit(new UndoableEdit.insertString(pos, dn.nodeValue));
-        else
-          edit.addSubEdit(new UndoableEdit.insertNode(pos, dn));
-      } else {
-        if (checkValidity) {
-          if (parent.nodeType == DaxeNode.DOCUMENT_NODE) {
-            if (!doc.cfg.rootElements().contains(dn.ref))
-              throw new DaxeException(doc.cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
-          } else if (dn is! DNComment && dn is! DNProcessingInstruction) {
-            if (dn.ref == null || !doc.cfg.isSubElement(parent.ref, dn.ref)) {
-              String title;
-              if (dn.ref == null)
-                title = dn.nodeName;
-              else
-                title = doc.cfg.elementTitle(dn.ref);
-              String parentTitle = doc.cfg.elementTitle(parent.ref);
-              throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_inside') + ' ' + parentTitle);
-            }
-            if (!doc.cfg.insertIsPossible(parent, offset, offset, dn.ref)) {
-              throw new DaxeException(doc.cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
+        if (dn is DNCData) {
+          if (checkValidity && parent.nodeType == DaxeNode.DOCUMENT_NODE)
+            throw new DaxeException(Strings.get('insert.text_not_allowed'));
+          String value = null;
+          if (dn.firstChild != null)
+            value = dn.firstChild.nodeValue;
+          if (value == null)
+            value = '';
+          if (checkValidity && value.trim() != '' && !cfg.canContainText(parent.ref)) {
+            throw new DaxeException(Strings.get('insert.text_not_allowed'));
+          }
+          edit.addSubEdit(new UndoableEdit.insertNode(insertPos, dn));
+        } else {
+          if (checkValidity) {
+            if (parent.nodeType == DaxeNode.DOCUMENT_NODE) {
+              if (!cfg.rootElements().contains(dn.ref))
+                throw new DaxeException(cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
+            } else if (dn is! DNComment && dn is! DNProcessingInstruction) {
+              if (dn.ref == null || !cfg.isSubElement(parent.ref, dn.ref)) {
+                String title;
+                if (dn.ref == null)
+                  title = dn.nodeName;
+                else
+                  title = cfg.elementTitle(dn.ref);
+                String parentTitle = cfg.elementTitle(parent.ref);
+                throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_inside') + ' ' + parentTitle);
+              }
+              if (!cfg.insertIsPossible(parent, offset, offset, dn.ref)) {
+                throw new DaxeException(cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
+              }
             }
           }
+          edit.addSubEdit(new UndoableEdit.insertNode(insertPos, dn));
         }
-        edit.addSubEdit(new UndoableEdit.insertNode(pos, dn));
+        if (insertPos.dn is DNText) // after first insert inside a text node
+          insertPos = new Position(parent, offset + 2);
+        else
+          insertPos = new Position(parent, insertPos.dnOffset + 1);
+      }
+    }
+    // Now copy text nodes.
+    // If the first text node merges to the left, it will be taken into
+    // account for the insert positions of the following text nodes.
+    bool merge = false;
+    bool first = true;
+    for (DaxeNode dn in children) {
+      if (dn is DNText) {
+        if (checkValidity && parent.nodeType == DaxeNode.DOCUMENT_NODE)
+          throw new DaxeException(Strings.get('insert.text_not_allowed'));
+        String value = dn.nodeValue;
+        if (value == null)
+          value = '';
+        if (checkValidity && value.trim() != '' && !cfg.canContainText(parent.ref)) {
+          throw new DaxeException(Strings.get('insert.text_not_allowed'));
+        }
+        int insertOffset = offset + children.indexOf(dn);
+        if (pos.dn is DNText)
+          insertOffset++;
+        if (merge)
+          insertOffset--;
+        if (children.length == 1)
+          insertPos = pos; // case of a single text node
+        else
+          insertPos = new Position(parent, insertOffset);
+        if (first) {
+          if (insertOffset > 0 && (pos.dn is DNText ||
+              parent.childAtOffset(insertOffset - 1) is DNText))
+            merge = true;
+          first = false;
+        }
+        edit.addSubEdit(new UndoableEdit.insertString(insertPos, dn.nodeValue));
       }
     }
     return(edit);
@@ -449,6 +620,18 @@ class DaxeDocument {
   }
   
   /**
+   * Combine the last nb edits into a single compound edit.
+   */
+  void combineLastEdits(String title, int nb) {
+    UndoableEdit edit = new UndoableEdit.compound(title);
+    for (int i=edits.length-nb; i<edits.length; i++)
+      edit.addSubEdit(edits[i]);
+    edits.removeRange(edits.length - nb, edits.length);
+    edits.add(edit);
+    undoPosition -= (nb - 1);
+  }
+  
+  /**
    * Called when the user tries to insert text.
    * [shift]: true if the shift key was used.
    */
@@ -470,8 +653,32 @@ class DaxeDocument {
       doc.insertNode(newitem,
           new Position(item.parent, item.parent.offsetOf(item) + 1));
       page.moveCursorTo(new Position(newitem, 0));
+      page.updateAfterPathChange();
+      return;
+    } else if (((selectionStart.dn is DNWItem) ||
+        (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNWItem)) &&
+        selectionStart.dnOffset == selectionStart.dn.offsetLength &&
+        s == '\n' && !shift) {
+      // \n in an item: adding a new list item
+      // TODO: try to move this node-specific code elsewhere
+      DNWItem item;
+      if (selectionStart.dn is DNWItem)
+        item = selectionStart.dn;
+      else
+        item = selectionStart.dn.parent;
+      DNWItem newitem = NodeFactory.create(item.ref);
+      doc.insertNode(newitem,
+          new Position(item.parent, item.parent.offsetOf(item) + 1));
+      page.moveCursorTo(new Position(newitem, 0));
+      page.updateAfterPathChange();
       return;
     }
+    // Handles automatic insertion of hidden paragraphs
+    if (s == '\n' && hiddenp != null) {
+      if (DNHiddenP.handleNewlineOnSelection())
+        return;
+    }
+    // check if text is allowed here
     bool problem = false;
     if (s.trim() != '') {
       DaxeNode parent = selectionStart.dn;
@@ -479,8 +686,19 @@ class DaxeDocument {
         parent = parent.parent;
       if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
         problem = true;
-      else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
-        problem = true;
+      else if (parent.ref != null && !doc.cfg.canContainText(parent.ref)) {
+        if (hiddenp != null && doc.cfg.isSubElement(parent.ref, hiddenp) &&
+            selectionStart == selectionEnd) {
+          // we just need to insert a hidden paragraph
+          DNHiddenP p = new DNHiddenP.fromRef(hiddenp);
+          p.appendChild(new DNText(s));
+          insertNode(p, selectionStart);
+          page.moveCursorTo(new Position(p, p.offsetLength));
+          page.updateAfterPathChange();
+          return;
+        } else
+          problem = true;
+      }
     }
     if (problem) {
       h.window.alert(Strings.get('insert.text_not_allowed'));
@@ -490,7 +708,7 @@ class DaxeDocument {
     if (selectionStart != selectionEnd) {
       selectionStart = new Position.clone(selectionStart);
       selectionEnd = new Position.clone(selectionEnd);
-      page._cursor.deSelect();
+      page.cursor.deSelect();
       removeBetween(selectionStart, selectionEnd);
       remove = true;
       //selectionStart.dn.parent is now null if all the text inside an element was removed
@@ -516,7 +734,6 @@ class DaxeDocument {
     Position pos = page.getSelectionStart();
     if (pos == null)
       return;
-    DaxeNode seljn = pos.daxeNode;
     DaxeNode dn = NodeFactory.create(ref, nodeType);
     if (nodeType == 'element' && getRootElement() == null) {
       cfg.addNamespaceAttributes(dn);
@@ -535,12 +752,12 @@ class DaxeDocument {
    * This method is called by [insertNewNode].
    */
   void insert2(DaxeNode dn, Position pos) {
-    String content = null;
+    DaxeNode content = null;
     if (page.getSelectionStart() != page.getSelectionEnd()) {
-      content = page._cursor.copy();
       Position selectionStart = page.getSelectionStart();
       Position selectionEnd = page.getSelectionEnd();
-      page._cursor.deSelect();
+      content = cloneBetween(selectionStart, selectionEnd);
+      page.cursor.deSelect();
       if (pos.dn is! DNText && pos.dnOffset > 0 &&
           pos.dn.childAtOffset(pos.dnOffset - 1) is DNText) {
         // to prevent a problem if the text to the left of the selection is
@@ -553,27 +770,62 @@ class DaxeDocument {
       if (pos.dn.parent == null)
         pos = page.getSelectionStart();
     }
-    insertNode(dn, pos);
+    bool inserted = false;
+    DaxeNode parent = pos.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    if (parent is DNHiddenP) {
+      DNHiddenP p = parent;
+      if (!cfg.isSubElement(p.ref, dn.ref)) {
+        // The node must be inserted outside of the paragraph.
+        // If there is something in the paragraph to the right of the cursor, it must be
+        // moved into a new paragraph after the inserted node.
+        UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
+        Position pend = new Position(p, p.offsetLength);
+        pend.moveInsideTextNodeIfPossible();
+        if (pos < pend) {
+          DaxeNode clone = cloneBetween(pos, pend);
+          edit.addSubEdit(removeBetweenEdit(pos, pend));
+          DNHiddenP newp = NodeFactory.create(p.ref);
+          edit.addSubEdit(new UndoableEdit.insertNode(
+              new Position(p.parent, p.parent.offsetOf(p) + 1), newp));
+          edit.addSubEdit(insertChildrenEdit(clone, new Position(newp, 0)));
+        }
+        edit.addSubEdit(new UndoableEdit.insertNode(
+            new Position(p.parent, p.parent.offsetOf(p)+1), dn));
+        doNewEdit(edit);
+        inserted = true;
+      }
+    } else if (hiddenp != null && !cfg.isSubElement(parent.ref, dn.ref)) {
+      if (cfg.isSubElement(parent.ref, hiddenp) && cfg.isSubElement(hiddenp, dn.ref)) {
+        // a new paragraph must be created
+        DNHiddenP p = new DNHiddenP.fromRef(hiddenp);
+        p.appendChild(dn);
+        insertNode(p, pos);
+        inserted = true;
+      }
+    }
+    if (!inserted)
+      insertNode(dn, pos);
     Position cursorPos = dn.firstCursorPositionInside();
-    if (cursorPos != null)
-      page.moveCursorTo(cursorPos);
+    if (cursorPos == null)
+      cursorPos = new Position(dn.parent, dn.parent.offsetOf(dn) + 1);
+    page.moveCursorTo(cursorPos);
     page.updateAfterPathChange();
     if (content != null) {
-      if (!page._cursor.paste(content)) {
-        // paste didn't work: undo remove and insert
+      try {
+        if (cursorPos == null)
+          throw new DaxeException(content.toString() + Strings.get('insert.not_authorized_here'));
+        doNewEdit(insertChildrenEdit(content, cursorPos, checkValidity:true));
+        // replace the 3 previous edits by a compound
+        combineLastEdits(Strings.get('undo.insert_element'), 3);
+        page.updateUndoMenus();
+      } on DaxeException catch (ex) {
+        h.window.alert(ex.toString());
+        // inserting content didn't work: undo remove and insert
         undo();
         undo();
         edits.removeRange(edits.length - 2, edits.length);
-        page.updateUndoMenus();
-      } else {
-        // replace the 3 previous edits by a compound
-        UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_element'));
-        edit.addSubEdit(edits[edits.length - 3]);
-        edit.addSubEdit(edits[edits.length - 2]);
-        edit.addSubEdit(edits.last);
-        edits.removeRange(edits.length - 3, edits.length);
-        edits.add(edit);
-        undoPosition -= 2;
         page.updateUndoMenus();
       }
     }
@@ -582,7 +834,7 @@ class DaxeDocument {
   void executeFunction(String functionName, x.Element el) {
     // TODO: pass the parameters in el to the functions
     if (functionName == 'jaxe.FonctionNormal') {
-      DNStyle.selectionToNormal();
+      DNStyle.removeStylesFromSelection();
     } else if (customFunctions[functionName] != null)
       customFunctions[functionName]();
   }
@@ -605,6 +857,15 @@ class DaxeDocument {
       else
         parent = dn;
       refs = cfg.subElements(parent.ref);
+      if (parent is DNHiddenP && parent.parent.ref != null) {
+        LinkedHashSet set = new LinkedHashSet.from(refs);
+        set.addAll(cfg.subElements(parent.parent.ref));
+        refs = new List.from(set);
+      } else if (doc.cfg.isSubElement(parent.ref, hiddenp)) {
+        LinkedHashSet set = new LinkedHashSet.from(refs);
+        set.addAll(cfg.subElements(hiddenp));
+        refs = new List.from(set);
+      }
     }
     return(refs);
   }
@@ -634,6 +895,26 @@ class DaxeDocument {
     for (x.Element ref in allowed) {
       if (doc.cfg.insertIsPossible(startParent, startOffset, endOffset, ref))
         list.add(ref);
+    }
+    if (startParent is DNHiddenP && startParent.parent.ref != null) {
+      int offset = startParent.parent.offsetOf(startParent) + 1;
+      LinkedHashSet set = new LinkedHashSet.from(list);
+      for (x.Element ref in allowed) {
+        if (!set.contains(ref)) {
+          if (doc.cfg.insertIsPossible(startParent.parent, offset, offset, ref))
+            set.add(ref);
+        }
+      }
+      list = new List.from(set);
+    } else if (hiddenp != null && list.contains(hiddenp)) {
+      LinkedHashSet set = new LinkedHashSet.from(list);
+      for (x.Element ref in allowed) {
+        if (!set.contains(ref)) {
+          if (doc.cfg.isSubElement(hiddenp, ref))
+            set.add(ref);
+        }
+      }
+      list = new List.from(set);
     }
     return(list);
   }

@@ -35,7 +35,7 @@ class DNItem extends DaxeNode {
     h.LIElement li = new h.LIElement();
     li.id = "$id";
     li.classes.add('dn');
-    h.ImageElement bullet1 = new h.ImageElement(src: 'images/bullet1.png', width: 13, height: 13);
+    h.ImageElement bullet1 = new h.ImageElement(src: 'packages/daxe/images/bullet1.png', width: 13, height: 13);
     bullet1.classes.add('bullet');
     List<x.Element> attRefs = doc.cfg.elementAttributes(ref);
     if (attRefs != null && attRefs.length > 0)
@@ -55,7 +55,7 @@ class DNItem extends DaxeNode {
       dn = dn.nextSibling;
     }
     li.append(contents);
-    h.ImageElement bullet2 = new h.ImageElement(src: 'images/bullet2.png', width: 13, height: 13);
+    h.ImageElement bullet2 = new h.ImageElement(src: 'packages/daxe/images/bullet2.png', width: 13, height: 13);
     bullet2.classes.add('bullet');
     if (attRefs != null && attRefs.length > 0)
       bullet2.onClick.listen((h.MouseEvent event) => attributeDialog());

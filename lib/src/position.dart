@@ -18,400 +18,103 @@
 part of daxe;
 
 /**
- * A position in the XML document, created with a parent node and offset within this node.
+ * A position in the XML document.
  */
-class Position {
-  DaxeNode _dn;
-  int _dnOffset; // offset within _dn (a child counts for 1 offset)
-  // for text nodes, _dnOffset is the offset within the string
+abstract class Position {
   
-  Position(DaxeNode node, int offset) {
-    assert(node != null);
-    assert(offset >= 0);
-    _dn = node;
-    _dnOffset = offset;
+  factory Position(DaxeNode node, int offset) {
+    return(new NodeOffsetPosition(node, offset));
   }
   
-  Position.fromHTML(h.Node offsetNode, int offsetValue) {
-    _dnOffset = offsetValue;
-    if (offsetNode.nodeType == DaxeNode.TEXT_NODE) {
-      _dn = doc.getNodeById(offsetNode.parent.attributes['id']);
-    } else {
-      h.Element el = offsetNode as h.Element;
-      _dn = doc.getNodeById(el.attributes['id']);
-      //todo: fix _dnOffset
-    }
-    assert(_dn != null);
-    assert(_dn.nodeType == DaxeNode.TEXT_NODE);
+  factory Position.fromLeft(int leftOffset) {
+    return(new LeftOffsetPosition(leftOffset));
   }
   
-  Position.clone(Position pos) {
-    _dn = pos.dn;
-    _dnOffset = pos.dnOffset;
+  factory Position.fromRight(int rightOffset) {
+    return(new RightOffsetPosition(rightOffset));
+  }
+  
+  factory Position.nodeOffsetPosition(Position pos) {
+    if (pos is NodeOffsetPosition)
+      return(new NodeOffsetPosition.clone(pos));
+    else if (pos is LeftOffsetPosition)
+      return(new NodeOffsetPosition.fromLeftOffsetPosition(pos));
+    else if (pos is RightOffsetPosition)
+      return(new NodeOffsetPosition.fromRightOffsetPosition(pos));
+  }
+  
+  factory Position.leftOffsetPosition(Position pos) {
+    if (pos is NodeOffsetPosition)
+      return(new LeftOffsetPosition.fromNodeOffsetPosition(pos));
+    else if (pos is LeftOffsetPosition)
+      return(new LeftOffsetPosition.clone(pos));
+    else if (pos is RightOffsetPosition)
+      return(new LeftOffsetPosition.fromRightOffsetPosition(pos));
+  }
+  
+  factory Position.rightOffsetPosition(Position pos) {
+    if (pos is NodeOffsetPosition)
+      return(new RightOffsetPosition.fromNodeOffsetPosition(pos));
+    else if (pos is LeftOffsetPosition)
+      return(new RightOffsetPosition.fromLeftOffsetPosition(pos));
+    else if (pos is RightOffsetPosition)
+      return(new RightOffsetPosition.clone(pos));
+  }
+  
+  factory Position.clone(Position pos) {
+    if (pos is NodeOffsetPosition)
+      return(new NodeOffsetPosition(pos.dn, pos.dnOffset));
+    else if (pos is LeftOffsetPosition)
+      return(new LeftOffsetPosition(pos.leftOffset));
+    else if (pos is RightOffsetPosition)
+      return(new RightOffsetPosition(pos.rightOffset));
   }
   
   /**
    * Returns the parent node for this position.
    */
-  DaxeNode get daxeNode {
-    return(_dn);
-  }
-  
-  /**
-   * Returns the parent node for this position.
-   */
-  DaxeNode get dn {
-    return(_dn);
-  }
-  
-  h.Element get htmlNode {
-    return(_dn.getHTMLNode());
-  }
-  
-  int get htmlOffset {
-    // todo: fix for !next
-    String v = _dn.nodeValue;
-    int offset = _dnOffset;
-    return(offset);
-  }
+  DaxeNode get dn;
   
   /**
    * Returns the offset within the parent node.
    */
-  int get dnOffset {
-    return(_dnOffset);
-  }
+  int get dnOffset;
   
-  int get hashCode {
-    int result = 17;
-    result = 37 * result + _dn.hashCode;
-    result = 37 * result + _dnOffset.hashCode;
-    return result;
-  }
+  /**
+   * Returns the left offset in the document.
+   */
+  int get leftOffset;
   
-  bool operator ==(Position other) {
-    return(_dn == other.dn && _dnOffset == other.dnOffset);
-  }
+  /**
+   * Returns the right offset in the document.
+   */
+  int get rightOffset;
   
-  bool operator <(Position other) {
-    DaxeNode cp = null;
-    DaxeNode p1 = _dn;
-    double offset1 = _dnOffset.toDouble();
-    while (p1 != null) {
-      DaxeNode p2 = other.dn;
-      double offset2 = other.dnOffset.toDouble();
-      while (p2 != null) {
-        if (p1 == p2) {
-          return(offset1 < offset2);
-        }
-        if (p2.parent == null)
-          break;
-        offset2 = p2.parent.offsetOf(p2) + 0.5;
-        p2 = p2.parent;
-      }
-      if (p1.parent == null)
-        break;
-      offset1 = p1.parent.offsetOf(p1) + 0.5;
-      p1 = p1.parent;
-    }
-    assert(false); // no common parent ???
-    return(false);
-  }
+  bool operator ==(Position other);
   
-  bool operator <=(Position other) {
-    return(this < other || this == other);
-  }
+  bool operator <(Position other);
   
-  bool operator >(Position other) {
-    return(!(this == other || this < other));
-  }
+  bool operator <=(Position other);
   
-  bool operator >=(Position other) {
-    return(this > other || this == other);
-  }
+  bool operator >(Position other);
   
-  void move(int offset) {
-    moveInsideTextNodeIfPossible();
-    if (offset < 0 && _dnOffset + offset >= 0 && _dn.nodeType != DaxeNode.TEXT_NODE) {
-      Position pos = _dn.childNodes[_dnOffset - 1].lastCursorPositionInside();
-      if (pos != null) {
-        _dn = pos.dn;
-        _dnOffset = pos.dnOffset;
-      } else {
-        _dnOffset = _dnOffset - 1;
-      }
-    } else if (_dnOffset + offset < 0) {
-      DaxeNode prev = _dn.previousSibling;
-      if (prev != null && _dn.nodeType == DaxeNode.TEXT_NODE) {
-        Position pos = prev.lastCursorPositionInside();
-        if (pos != null) {
-          _dn = pos.dn;
-          _dnOffset = pos.dnOffset;
-        } else {
-          _dn = prev.parent;
-          _dnOffset = prev.parent.offsetOf(prev);
-        }
-      } else {
-        if (_dn.parent == null)
-          return;
-        if (_dn.nodeType == DaxeNode.TEXT_NODE && _dn.parent.parent != null) {
-          if (_dn.parent.previousSibling != null && _dn.parent.previousSibling.nodeType == DaxeNode.TEXT_NODE) {
-            _dnOffset = _dn.parent.previousSibling.offsetLength;
-            _dn = _dn.parent.previousSibling;
-          } else {
-            _dnOffset = _dn.parent.parent.offsetOf(_dn.parent);
-            _dn = _dn.parent.parent;
-          }
-        } else {
-          _dnOffset = _dn.parent.offsetOf(_dn);
-          _dn = _dn.parent;
-        }
-      }
-    } else if (_dn.nodeValue == null || _dnOffset + offset > _dn.nodeValue.length) {
-      if ((_dn.nodeType == DaxeNode.ELEMENT_NODE || _dn.nodeType == DaxeNode.DOCUMENT_NODE) &&
-          _dn.offsetLength > _dnOffset) {
-        Position pos = dn.childNodes[_dnOffset].firstCursorPositionInside();
-        if (pos != null) {
-          _dn = pos.dn;
-          _dnOffset = pos.dnOffset;
-        } else {
-          _dnOffset = _dnOffset + 1;
-        }
-      } else {
-        DaxeNode next = _dn.nextSibling;
-        if (next != null && _dn.nodeType == DaxeNode.TEXT_NODE) {
-          Position pos = next.firstCursorPositionInside();
-          if (pos != null) {
-            _dn = pos.dn;
-            _dnOffset = pos.dnOffset;
-          } else {
-            _dn = next.parent;
-            _dnOffset = next.parent.offsetOf(next) + 1;
-          }
-        } else if (_dn.parent != null) {
-          if (_dn.nodeType == DaxeNode.TEXT_NODE && _dn.parent.parent != null) {
-            _dnOffset = _dn.parent.parent.offsetOf(_dn.parent) + 1;
-            _dn = _dn.parent.parent;
-          } else {
-            _dnOffset = _dn.parent.offsetOf(_dn) + 1;
-            _dn = _dn.parent;
-          }
-        }
-      }
-    } else {
-      _dnOffset += offset;
-    }
-    moveInsideTextNodeIfPossible();
-  }
+  bool operator >=(Position other);
   
-  void moveInsideTextNodeIfPossible() {
-    if (_dn.nodeType == DaxeNode.ELEMENT_NODE && _dnOffset > 0 &&
-        _dn.childNodes[_dnOffset - 1].nodeType == DaxeNode.TEXT_NODE) {
-      _dn = _dn.childNodes[_dnOffset - 1];
-      _dnOffset = _dn.offsetLength;
-    } else if (_dn.nodeType == DaxeNode.ELEMENT_NODE &&
-        _dnOffset < _dn.offsetLength &&
-        _dn.childAtOffset(_dnOffset).nodeType == DaxeNode.TEXT_NODE) {
-      _dn = _dn.childAtOffset(_dnOffset);
-      _dnOffset = 0;
-    } else if (_dnOffset == 0 && _dn.firstChild != null &&
-        _dn.firstChild.nodeType == DaxeNode.TEXT_NODE) {
-      _dn = _dn.firstChild;
-    }
-  }
+  /**
+   * Moves the position by the offset, not counting movements to enter or exit a text node.
+   */
+  void move(int offset);
+  
+  void moveInsideTextNodeIfPossible();
   
   /**
    * offset top-left coordinates for the position
    */
-  Point positionOnScreen() {
-    if (_dn.nodeType == DaxeNode.TEXT_NODE) {
-      h.Element hn = _dn.getHTMLContentsNode();
-      if (hn == null || hn.nodes.length == 0)
-        return(null);
-      assert(hn.nodes.first is h.Text);
-      h.Text n = hn.nodes.first;
-      int offset = htmlOffset;
-      String s = n.text;
-      assert(s.length != 0);
-      /*
-      h.Text n2 = new h.Text(s.substring(offset));
-      if (s.length == offset)
-        n2.text = "|";
-      n.text = s.substring(0, offset);
-      h.SpanElement spos = new h.SpanElement();
-      spos.append(n2);
-      if (n.nextNode == null)
-        n.parent.append(spos);
-      else
-        n.parent.insertBefore(spos, n.nextNode);
-      h.Rect r = spos.getClientRects()[0];
-      Point pt = new Point(r.left, r.top);
-      spos.remove();
-      */
-      // changing the text might induce
-      // layout changes which move the position (for instance in a table cell)
-      // -> we add a span on the text after the cursor
-      /*
-      Point pt;
-      if (offset != 0) {
-        n.text = s.substring(0, offset);
-        h.SpanElement spos = new h.SpanElement();
-        spos.appendText(s.substring(offset));
-        if (n.nextNode == null)
-          n.parent.append(spos);
-        else
-          n.parent.insertBefore(spos, n.nextNode);
-        h.Rect r = spos.getClientRects()[0];
-        pt = new Point(r.left, r.top);
-        spos.remove();
-        n.text = s;
-      } else {
-        h.Rect r = n.parent.getClientRects()[0];
-        pt = new Point(r.left, r.top);
-      }
-      // new problem: wrong position when the cursor is before an hyphen inside
-      // a broken word at the end of the line
-      */
-      // trying with Range...
-      // this does not work in the case of an element following a line breaking space
-      h.Range range = new h.Range();
-      Point pt;
-      if (offset == 0) {
-        range.setStart(n, offset);
-        range.setEnd(n, s.length);
-        h.Rectangle r = range.getClientRects().first;
-        pt = new Point(r.left, r.top);
-      } else if (s[offset-1] == '\n' || s[offset-1] == ' ') {
-        // to the right of a \n or a space
-        if (offset == s.length) {
-          // ranges always report wrong positions in this case :(
-          if (_dn.nextSibling != null && _dn.nextSibling.nodeType == DaxeNode.ELEMENT_NODE) {
-            h.Rectangle r = (_dn.nextSibling.getHTMLNode()).getClientRects()[0];
-            pt = new Point(r.left, r.top);
-          } else if (s[offset-1] == ' ') {
-            range.setStart(n, 0);
-            range.setEnd(n, offset);
-            h.Rectangle r = range.getClientRects().last;
-            pt = new Point(r.right, r.top);
-          } else {
-            // FIXME: adding a span with text can change a table layout with Firefox, causing wrong results
-            h.SpanElement spos = new h.SpanElement();
-            spos.appendText("|");
-            if (n.nextNode == null)
-              hn.append(spos);
-            else
-              hn.insertBefore(spos, n.nextNode);
-            h.Rectangle r = spos.getClientRects()[0];
-            pt = new Point(r.left, r.top);
-            spos.remove();
-          }
-        } else {
-          range.setStart(n, offset);
-          range.setEnd(n, offset + 1);
-          List<h.Rectangle> rects = range.getClientRects();
-          h.Rectangle r;
-          if (s[offset-1] == ' ' && s[offset] == '\n')
-            r = rects.first;
-          else if (s[offset] == '\n' && rects.length == 3)
-            r = rects[1];
-          else if (s[offset-1] == '\n' && s[offset] == '\n' && rects.length == 2) // IE
-            r = rects.first;
-          else
-            r = rects.last;
-          pt = new Point(r.left, r.top);
-        }
-      } else {
-        range.setStart(n, 0);
-        range.setEnd(n, offset);
-        h.Rectangle r = range.getClientRects().last;
-        pt = new Point(r.right, r.top);
-      }
-      return(pt);
-      
-    } else { // not in a text node:
-      List<DaxeNode> children = _dn.childNodes;
-      if (children != null && _dnOffset > 0 && _dnOffset == children.length) {
-        // at the end of the children
-        h.Element n = children[_dnOffset-1].getHTMLNode();
-        if (n == null)
-          return(null);
-        h.Rectangle r;
-        if (n is h.ImageElement || n is h.TableRowElement) {
-          r = n.getBoundingClientRect();
-          return(new Point(r.right, r.top));
-        } else if (n is h.DivElement || n is h.TableElement || n is h.UListElement || n is h.LIElement) {
-          r = n.getBoundingClientRect();
-          return(new Point(r.left, r.bottom));
-        } else {
-          /*
-          // FIXME: adding a span with text can change a table layout with Firefox, causing wrong results
-          h.SpanElement spos = new h.SpanElement();
-          spos.append(new h.Text("|"));
-          n.append(spos);
-          List<h.Rect> rects = spos.getClientRects();
-          if (rects.length > 0)
-            r = rects[0];
-          else
-            r = null;
-          spos.remove();
-          if (r == null)
-            return(null);
-          return(new Point(r.left, r.top));
-          */
-          // this seems to work (top right corner of the last rect of the last child's HTML):
-          List<h.Rectangle> rects = n.getClientRects();
-          if (rects.length == 0)
-            return(null);
-          h.Rectangle r = rects.last;
-          return(new Point(r.right, r.top));
-        }
-      } else if (children != null && _dnOffset < children.length) {
-        // within the children
-        DaxeNode n = children[_dnOffset];
-        h.Element hn = n.getHTMLNode();
-        if (hn == null)
-          return(null);
-        h.Rectangle r = hn.getClientRects()[0];
-        Point pt = new Point(r.left, r.top);
-        return(pt);
-      } else {
-        // no child inside _dn
-        assert(_dnOffset == 0);
-        h.Element hn = _dn.getHTMLContentsNode();
-        h.Rectangle r = hn.getClientRects()[0];
-        Point pt = new Point(r.left, r.top);
-        return(pt);
-      }
-    }
-  }
+  Point positionOnScreen();
   
-  String xPath() {
-    String s = "";
-    DaxeNode n = _dn;
-    while (n != null) {
-      String spos = "";
-      if (n.parent != null) {
-        int position = 1;
-        for (DaxeNode n2 = n.parent.firstChild; n2 != null; n2 = n2.nextSibling) {
-          if (n2 == n)
-            break;
-          if (n2.nodeType == DaxeNode.ELEMENT_NODE && n2.nodeName == n.nodeName)
-            position++;
-        }
-        spos = "[$position]";
-      }
-      if (n.nodeType == DaxeNode.ELEMENT_NODE)
-        s = "${n.nodeName}$spos/$s";
-      else if (n.nodeType == DaxeNode.TEXT_NODE)
-        s = "#text";
-      n = n.parent;
-    }
-    return("/$s");
-  }
+  String xPath();
   
-  String toString() {
-    return("[Position ${_dn.nodeName} ${_dnOffset}]");
-  }
+  String toString();
 }
 
 /**

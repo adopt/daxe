@@ -30,10 +30,13 @@ class TextMetrics {
   double actualBoundingBoxDescent;
   
   TextMetrics(final String s, final String font) {
-    h.Element text = new h.Element.html('<span style="font: $font">$s</span>');
-    h.Element block = new h.Element.html('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+    h.SpanElement text = new h.SpanElement();
+    text.setAttribute('style', "font: $font");
+    text.text = s;
+    h.DivElement block = new h.DivElement();
+    block.setAttribute('style', 'display: inline-block; width: 1px; height: 0px;');
     
-    h.Element div = new h.Element.html('<div></div>');
+    h.DivElement div = new h.DivElement();
     div.append(text);
     div.append(block);
     

@@ -17,6 +17,7 @@
 
 part of nodes;
 
+// TODO: add parameter typeListe
 /**
  * A bulleted list containing item nodes.
  * Jaxe display type: 'liste' (list)
@@ -27,8 +28,7 @@ class DNList extends DaxeNode {
   
   DNList.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     init();
-    // this is causing problems with paste, appending an item
-    // after a new insert would require a new method in DaxeNode...
+    // this is causing problems with item paste, use DNList.withOneEmptyItem instead
     //if (_itemref != null)
     //  appendChild(new DNItem.fromRef(_itemref));
   }
@@ -36,6 +36,12 @@ class DNList extends DaxeNode {
   DNList.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
     init();
     fixLineBreaks();
+  }
+  
+  DNList.withOneEmptyItem(x.Element elementRef) : super.fromRef(elementRef) {
+    init();
+    if (_itemref != null)
+      appendChild(new DNItem.fromRef(_itemref));
   }
   
   void init() {
@@ -55,7 +61,6 @@ class DNList extends DaxeNode {
       div.classes.add('invalid');
     div.append(_b1.html());
     h.UListElement list = new h.UListElement();
-    //list.classes.add('indent');
     list.classes.add('list');
     DaxeNode dn = firstChild;
     while (dn != null) {

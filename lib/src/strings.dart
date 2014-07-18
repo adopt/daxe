@@ -30,7 +30,7 @@ import 'package:intl/intl_browser.dart'; // or intl-standalone (see findSystemLo
  */
 class Strings {
   
-  static String resourcePath = "LocalStrings";
+  static String resourcePath = "packages/daxe/LocalStrings";
   static HashMap<String, String> map = null;
   static String systemLocale;
   static const defaultLocale = 'en';

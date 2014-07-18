@@ -87,8 +87,15 @@ abstract class DaxeNode {
         attributes.add(new DaxeAttr.fromNode(n));
       }
     }
-    if (node is x.Element)
+    if (node is x.Element) {
       ref = doc.cfg.getElementRef(node, parent == null ? null : parent.ref);
+      if (ref == null && parent != null) {
+        // could not find a reference when taking the parent into account
+        // there is probably an error in the document, but we will try to use
+        // another reference by ignoring the parent
+        ref = doc.cfg.elementReference(localName);
+      }
+    }
     
     if (createChildren) {
       if (node.childNodes != null) {
@@ -203,8 +210,8 @@ abstract class DaxeNode {
    */
   h.Element getHTMLContentsNode() {
     h.Element hn = getHTMLNode();
-    if (hn != null && !hn.nodes.isEmpty && hn.nodes.first is h.Element)
-      hn = hn.nodes.first;
+    if (hn != null && !hn.nodes.isEmpty && hn.firstChild is h.Element)
+      hn = hn.firstChild;
     return(hn);
   }
   
@@ -508,6 +515,7 @@ abstract class DaxeNode {
   
   /**
    * Inserts [newdn] as a child of this node before [beforedn].
+   * beforedn may be null, in which case it is inserted as the last child.
    */
   void insertBefore(DaxeNode newdn, DaxeNode beforedn) {
     assert(beforedn == null || this == beforedn.parent);
@@ -731,15 +739,16 @@ abstract class DaxeNode {
         double hnx1, hny1, hnx2, hny2;
         double lineHeight;
         // NOTE: the main problem here is to avoid adding spans to find the position
-        if (hn is h.DivElement && hn.nodes.length > 0 && hn.nodes.first is h.SpanElement &&
-            hn.nodes.last is h.SpanElement) {
-          // we assume here that the spans are tags, not text with a \n inside
-          h.Element span_test = hn.nodes.first;
+        if (hn is h.DivElement && hn.nodes.length > 0 &&
+            hn.firstChild is h.SpanElement && (hn.firstChild as h.SpanElement).classes.contains('start_tag') &&
+            hn.lastChild is h.SpanElement&& (hn.lastChild as h.SpanElement).classes.contains('end_tag')) {
+          // the spans are tags
+          h.Element span_test = hn.firstChild;
           h.Rectangle box = span_test.getBoundingClientRect();
           hnx1 = box.left;
           hny1 = box.top;
           lineHeight = span_test.offset.height.toDouble();
-          span_test = hn.nodes.last;
+          span_test = hn.lastChild;
           box = span_test.getBoundingClientRect();
           hnx2 = box.right;
           hny2 = box.bottom;
@@ -757,8 +766,8 @@ abstract class DaxeNode {
             hnx2 = box.right;
           hny2 = box.bottom;
           lineHeight = box.height;
-        } else if (hn is h.SpanElement && hn.nodes.length == 1 && hn.nodes.first is h.Text &&
-            !hn.nodes.first.nodeValue.endsWith('\n')) {
+        } else if (hn is h.SpanElement && hn.nodes.length == 1 && hn.firstChild is h.Text &&
+            !hn.firstChild.nodeValue.endsWith('\n')) {
           // text node that does not end with \n
           List<h.Rectangle> rects = hn.getClientRects();
           if (rects.length == 0)
@@ -770,19 +779,19 @@ abstract class DaxeNode {
           hnx2 = box.right;
           hny2 = box.bottom;
           lineHeight = box.height;
-        } else if (hn.nodes.first is h.Element && hn.nodes.last is h.SpanElement &&
-            hn.nodes.last.nodes.last is h.Text &&
-            !hn.nodes.last.nodes.last.nodeValue.endsWith('\n')) {
+        } else if (hn.firstChild is h.Element && hn.lastChild is h.SpanElement &&
+            hn.lastChild.lastChild is h.Text &&
+            !hn.lastChild.lastChild.nodeValue.endsWith('\n')) {
           // span with a text node at the end which does not end with \n
           // note: possibles selections on the text make the tests a bit complex...
-          h.Element span_test = hn.nodes.first;
+          h.Element span_test = hn.firstChild;
           List<h.Rectangle> rects = span_test.getClientRects();
           if (rects.length == 0)
             return(null);
           h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
-          span_test = hn.nodes.last;
+          span_test = hn.lastChild;
           rects = span_test.getClientRects();
           if (rects.length == 0)
             return(null);
@@ -802,19 +811,25 @@ abstract class DaxeNode {
           if (hn.nodes.isEmpty)
             hn.append(span_test);
           else
-            hn.insertBefore(span_test, hn.nodes.first);
+            hn.insertBefore(span_test, hn.firstChild);
           h.Rectangle box = span_test.getBoundingClientRect();
           hnx1 = box.left;
           hny1 = box.top;
           lineHeight = span_test.offset.height.toDouble();
           span_test.remove();
-          hn.append(span_test);
+          if (hn is h.LIElement) {
+            h.Node lastDescendant = hn;
+            while (lastDescendant.firstChild != null && lastDescendant.lastChild is! h.Text)
+              lastDescendant = lastDescendant.lastChild;
+            lastDescendant.append(span_test);
+          } else
+            hn.append(span_test);
           box = span_test.getBoundingClientRect();
           hnx2 = box.left;
           hny2 = box.bottom;
           span_test.remove();
         }
-        if ((y < hny1 + lineHeight && (y < hny1 || (x < hnx1 && hn is! h.LIElement)))) {
+        if ((y < hny1 + lineHeight && (y < hny1 || (x < hnx1 && hn is! h.LIElement && dn is! DNHiddenP)))) {
           // position is before this child
           return(pos);
         }
@@ -840,7 +855,7 @@ abstract class DaxeNode {
         if (hn is h.Text)
           ht = hn;
         else if (hn is h.Element) // selection span
-          ht = hn.nodes.first;
+          ht = hn.firstChild;
         else
           continue;
         h.Range range = new h.Range();

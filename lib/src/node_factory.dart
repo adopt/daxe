@@ -45,6 +45,14 @@ class NodeFactory {
         (x.Element ref) => new DNDivision.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNDivision.fromNode(node, parent)
     );
+    NodeFactory.addDisplayType('equationmem',
+        (x.Element ref) => new DNEquationMem.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNEquationMem.fromNode(node, parent)
+    );
+    NodeFactory.addDisplayType('equatexmem',
+        (x.Element ref) => new DNEquaTexMem.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNEquaTexMem.fromNode(node, parent)
+    );
     NodeFactory.addDisplayType('item',
         (x.Element ref) => new DNItem.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNItem.fromNode(node, parent)
@@ -61,6 +69,10 @@ class NodeFactory {
         (x.Element ref) => new DNForm.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNForm.fromNode(node, parent)
     );
+    NodeFactory.addDisplayType('hiddenp',
+        (x.Element ref) => new DNHiddenP.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNHiddenP.fromNode(node, parent)
+    );
     NodeFactory.addDisplayType('string',
         (x.Element ref) => new DNString.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNString.fromNode(node, parent)
@@ -68,6 +80,10 @@ class NodeFactory {
     NodeFactory.addDisplayType('style',
         (x.Element ref) => new DNStyle.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNStyle.fromNode(node, parent)
+    );
+    NodeFactory.addDisplayType('stylespan',
+        (x.Element ref) => new DNStyleSpan.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNStyleSpan.fromNode(node, parent)
     );
     NodeFactory.addDisplayType('symbole2',
         (x.Element ref) => new DNSpecial.fromRef(ref),
@@ -96,6 +112,14 @@ class NodeFactory {
     NodeFactory.addDisplayType('zone',
         (x.Element ref) => new DNArea.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNArea.fromNode(node, parent)
+    );
+    NodeFactory.addDisplayType('witem',
+        (x.Element ref) => new DNWItem.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNWItem.fromNode(node, parent)
+    );
+    NodeFactory.addDisplayType('wlist',
+        (x.Element ref) => new DNWList.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNWList.fromNode(node, parent)
     );
   }
   

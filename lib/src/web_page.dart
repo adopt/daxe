@@ -28,6 +28,7 @@ class WebPage {
   MenuBar mbar;
   MenuItem undoMenu, redoMenu;
   Menu contextualMenu;
+  Toolbar toolbar;
   Position lastClickPosition;
   DateTime lastClickTime;
   bool selectionByWords; // double-click+drag
@@ -97,37 +98,41 @@ class WebPage {
     Menu fileMenu = new Menu(Strings.get('menu.file'));
     MenuItem item;
     if (doc.saveURL != null) {
-      item = new MenuItem(Strings.get('menu.save'), () => save(), shortcut: 'S');
+      item = new MenuItem(Strings.get('menu.save'), (MenuItem mItem) => save(), shortcut: 'S');
       fileMenu.add(item);
     }
     //item = new MenuItem(Strings.get('menu.open'), () => openMenu());
     //fileMenu.add(item);
-    item = new MenuItem(Strings.get('menu.source'), () => showSource());
+    item = new MenuItem(Strings.get('menu.source'), (MenuItem mItem) => showSource());
     fileMenu.add(item);
-    item = new MenuItem(Strings.get('menu.validation'), () => (new ValidationDialog()).show());
+    item = new MenuItem(Strings.get('menu.validation'), (MenuItem mItem) => (new ValidationDialog()).show());
     fileMenu.add(item);
     mbar.insert(fileMenu, 0);
     Menu editMenu = new Menu(Strings.get('menu.edit'));
-    undoMenu = new MenuItem(Strings.get('undo.undo'), () => doc.undo(), shortcut: 'Z');
+    undoMenu = new MenuItem(Strings.get('undo.undo'), (MenuItem mItem) => doc.undo(), shortcut: 'Z');
     undoMenu.enabled = false;
     editMenu.add(undoMenu);
-    redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
+    redoMenu = new MenuItem(Strings.get('undo.redo'), (MenuItem mItem) => doc.redo(), shortcut: 'Y');
     redoMenu.enabled = false;
     editMenu.add(redoMenu);
-    MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
+    MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), (MenuItem mItem) => (new FindDialog()).show(), shortcut: 'F');
     editMenu.add(findMenu);
     mbar.insert(editMenu, 1);
-    h.Element divdoc1 = h.querySelector("#doc1");
-    divdoc1.parent.insertBefore(mbar.html(), divdoc1);
     
-    HashMap<String, ActionFunction> shortcuts = new HashMap<String, ActionFunction>();
+    h.Element headers = h.querySelector("#headers");
+    headers.append(mbar.html());
+    
+    toolbar = new Toolbar(doc.cfg);
+    headers.append(toolbar.html());
+    
+    HashMap<String, MenuAction> shortcuts = new HashMap<String, MenuAction>();
     for (Menu menu in mbar.menus) {
       addShortcuts(menu, shortcuts);
     }
     _cursor.setShortcuts(shortcuts);
   }
   
-  addShortcuts(Menu menu, HashMap<String, ActionFunction> shortcuts) {
+  addShortcuts(Menu menu, HashMap<String, MenuAction> shortcuts) {
     for (MenuItem item in menu.items) {
       if (item.shortcut != null && item.action != null)
         shortcuts[item.shortcut] = item.action;
@@ -266,30 +271,39 @@ class WebPage {
   }
   
   void showContextualMenu(h.MouseEvent event) {
-    if (doc.cfg == null || _cursor.selectionStart.daxeNode == null)
+    if (doc.cfg == null || _cursor.selectionStart.dn == null)
       return;
     DaxeNode parent;
-    if (_cursor.selectionStart.daxeNode is DNText)
-      parent = _cursor.selectionStart.daxeNode.parent;
+    if (_cursor.selectionStart.dn is DNText)
+      parent = _cursor.selectionStart.dn.parent;
     else
-      parent = _cursor.selectionStart.daxeNode;
+      parent = _cursor.selectionStart.dn;
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     contextualMenu = new Menu(null);
+    List<x.Element> toolbarRefs;
+    if (toolbar != null)
+      toolbarRefs = toolbar.elementRefs();
+    else
+      toolbarRefs = null;
     for (x.Element ref in validRefs) {
+      if (toolbarRefs != null && toolbarRefs.contains(ref))
+        continue;
+      if (doc.hiddenp != null && ref == doc.hiddenp)
+        continue;
       String name = doc.cfg.elementName(ref);
       String title = doc.cfg.menuTitle(name);
-      MenuItem item = new MenuItem(title, () => doc.insertNewNode(ref, 'element'));
+      MenuItem item = new MenuItem(title, (MenuItem mItem) => doc.insertNewNode(ref, 'element'));
       contextualMenu.add(item);
     }
     contextualMenu.addSeparator();
     if (parent.ref != null) {
       String title = doc.cfg.menuTitle(parent.nodeName);
       title = "${Strings.get('contextual.help_about_element')} $title";
-      contextualMenu.add(new MenuItem(title, () =>
+      contextualMenu.add(new MenuItem(title, (MenuItem mItem) =>
           (new HelpDialog.Element(parent.ref)).show()));
     }
-    h.DivElement div = contextualMenu.html();
+    h.DivElement div = contextualMenu.htmlMenu();
     div.style.position = 'fixed';
     div.style.display = 'block';
     div.style.left = "${event.client.x}px";
@@ -298,7 +312,7 @@ class WebPage {
   }
   
   void contextualMouseUp(h.MouseEvent event) {
-    h.DivElement div = contextualMenu.getHTMLNode();
+    h.DivElement div = contextualMenu.getMenuHTMLNode();
     div.remove();
     contextualMenu = null;
     event.preventDefault();
@@ -355,31 +369,37 @@ class WebPage {
   }
   
   void updateAfterPathChange() {
-    updateInsertPanel();
-    updateMenus();
-    updatePath();
-  }
-  
-  void updateInsertPanel() {
-    _insertP.update(_cursor.selectionStart);
-  }
-  
-  void updateMenus() {
+    if (_cursor.selectionStart == null)
+      return;
     DaxeNode parent = _cursor.selectionStart.dn;
     if (parent is DNText)
       parent = parent.parent;
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
+    _insertP.update(parent, refs, validRefs);
+    updateMenusAndToolbar(parent, validRefs);
+    updatePath();
+  }
+  
+  void updateMenusAndToolbar(DaxeNode parent, List<x.Element> validRefs) {
     List<Menu> menus = mbar.menus;
     for (Menu m in menus) {
-      for (MenuItem item in m.items) {
-        if (item.data is x.Element) {
-          x.Element ref = item.data;
-          if (validRefs.contains(ref))
-            item.enable();
-          else
-            item.disable();
-        }
+      _updateMenu(m, validRefs);
+    }
+    if (toolbar != null)
+      toolbar.update(parent, validRefs);
+  }
+  
+  void _updateMenu(Menu m, List<x.Element> validRefs) {
+    for (MenuItem item in m.items) {
+      if (item is Menu) {
+        _updateMenu(item, validRefs);
+      } else if (item.data is x.Element) {
+        x.Element ref = item.data;
+        if (validRefs.contains(ref))
+          item.enable();
+        else
+          item.disable();
       }
     }
   }
@@ -409,6 +429,23 @@ class WebPage {
     }
     undoMenu.title = doc.getUndoTitle();
     redoMenu.title = doc.getRedoTitle();
+    if (toolbar != null) {
+      for (ToolbarButton button in toolbar.buttons) {
+        if (button.data == "undo") {
+          if (doc.isUndoPossible())
+            button.enable();
+          else
+            button.disable();
+          button.title = doc.getUndoTitle();
+        } else if (button.data == "redo") {
+          if (doc.isRedoPossible())
+            button.enable();
+          else
+            button.disable();
+          button.title = doc.getRedoTitle();
+        }
+      }
+    }
   }
   
   void save() {

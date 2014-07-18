@@ -324,6 +324,14 @@ class XMLParser {
       bool empty = (token.matchedTokens[0].id == 'EMPTY_ELEMENT');
       Token startTagToken = token.matchedTokens[0];
       String name = startTagToken.matchedTokens[1].matchedString;
+      if (!empty) {
+        // check that the end tag matches the start tag
+        // (this could be disabled for speed, assuming documents are well-formed)
+        Token endTagToken = token.matchedTokens[token.matchedTokens.length - 1];
+        String endName = endTagToken.matchedTokens[1].matchedString;
+        if (endName != name)
+          throw new Exception("End tag not matching start tag: $endName != $name");
+      }
       Element el = new ElementImpl.NS(doc, null, name);
       int nbAttributes = startTagToken.matchedTokens.length - 3;
       if (nbAttributes > 0) {

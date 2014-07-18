@@ -17,38 +17,44 @@
 
 part of daxe;
 
+typedef void MenuAction(MenuItem mItem);
+
 class MenuItem {
-  static int idcount = 0;
-  String id;
+  static int itemidcount = 0;
+  String itemid;
   String _title;
   Menu parent;
-  ActionFunction action;
+  MenuAction action;
   String shortcut;
   Object data;
   bool enabled;
   bool is_separator;
   String toolTipText;
+  bool checked;
   
   MenuItem(this._title, this.action, {this.shortcut, this.data}) {
-    this.id = "menu_$idcount";
-    idcount++;
+    this.itemid = "item_$itemidcount";
+    itemidcount++;
     parent = null;
     enabled = true;
     is_separator = false;
+    checked = false;
   }
   
   MenuItem.separator() {
     is_separator = true;
+    enabled = false;
+    checked = false;
   }
   
-  h.Element html() {
+  h.Element htmlItem() {
     h.TableRowElement tr = new h.TableRowElement();
     if (is_separator) {
       h.TableCellElement td = new h.TableCellElement();
       td.appendText('-');
       tr.append(td);
     } else {
-      tr.attributes['id'] = "menu_$id";
+      tr.attributes['id'] = itemid;
       h.TableCellElement td = new h.TableCellElement();
       td.text = _title;
       td.onMouseUp.listen((h.MouseEvent event) => activate());
@@ -58,6 +64,11 @@ class MenuItem {
       td = new h.TableCellElement();
       if (this.shortcut != null)
         td.text = "Ctrl+$shortcut";
+      td.onMouseUp.listen((h.MouseEvent event) => activate());
+      td.onMouseOver.listen((h.MouseEvent event) => select());
+      td.onMouseOut.listen((h.MouseEvent event) => deselect());
+      if (checked)
+        tr.classes.add('checked');
       tr.append(td);
       if (!enabled)
         tr.classes.add('disabled');
@@ -67,42 +78,69 @@ class MenuItem {
     return(tr);
   }
   
-  h.Element getHTMLNode() {
-    return(h.querySelector("#menu_$id"));
+  h.Element getItemHTMLNode() {
+    return(h.querySelector("#$itemid"));
   }
   
   void activate() {
     if (!enabled)
       return;
-    action();
+    action(this);
   }
   
   void select() {
     if (!enabled)
       return;
-    h.Element tr = getHTMLNode();
+    h.Element tr = getItemHTMLNode();
     tr.classes.add('selected');
+    if (this is Menu) {
+      (this as Menu).show();
+    }
+    parent.deselectOtherItems(this);
   }
   
   void deselect() {
     if (!enabled)
       return;
-    h.Element tr = getHTMLNode();
+    h.Element tr = getItemHTMLNode();
     if (tr != null)
       tr.classes.remove('selected');
+    if (this is Menu) {
+      (this as Menu).hide();
+    }
   }
   
   void disable() {
+    if (!enabled)
+      return;
     enabled = false;
-    h.Element tr = getHTMLNode();
+    h.Element tr = getItemHTMLNode();
     tr.classes.remove('selected');
     tr.classes.add('disabled');
   }
   
   void enable() {
+    if (enabled)
+      return;
     enabled = true;
-    h.Element tr = getHTMLNode();
+    h.Element tr = getItemHTMLNode();
     tr.classes.remove('disabled');
+  }
+  
+  void check() {
+    if (checked)
+      return;
+    checked = true;
+    h.Element tr = getItemHTMLNode();
+    tr.classes.add('checked');
+  }
+  
+  void uncheck() {
+    if (!checked)
+      return;
+    checked = false;
+    h.Element tr = getItemHTMLNode();
+    tr.classes.remove('checked');
   }
   
   /*
@@ -118,7 +156,7 @@ class MenuItem {
   
   void set title(String title) {
     _title = title;
-    h.TableRowElement tr = h.querySelector("#menu_$id");
+    h.TableRowElement tr = h.querySelector("#$itemid");
     h.TableCellElement td = tr.nodes.first;
     td.text = title;
   }

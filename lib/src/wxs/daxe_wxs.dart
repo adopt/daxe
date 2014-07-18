@@ -200,12 +200,12 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<String> namespaceList() {
-    final List<String> liste = new List<String>();
+    final LinkedHashSet<String> set = new LinkedHashSet<String>();
     if (_schema.getTargetNamespace() != null)
-      liste.add(_schema.getTargetNamespace());
+      set.add(_schema.getTargetNamespace());
     for (final String s in _espaceVersPrefixe.keys)
-      liste.add(s);
-    return(new List.from(liste));
+      set.add(s);
+    return(new List.from(set));
   }
   
   // from InterfaceSchema

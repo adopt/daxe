@@ -21,7 +21,7 @@ part of nodes;
  * An equation using the TeX syntax. The image is encoded in base64
  * and added as text inside the element.
  * Requires a TeX equation server specified in the config file.
- * Jaxe display type: to be defined, for now a plugin with the class `xpages.JEEquaTeXMemoire`.
+ * Jaxe display type: equatexmem, or a plugin with the class `xpages.JEEquaTeXMemoire`.
  * 
  * * parameter: `serveur`: the URL for the tex.php script converting equations into images
  * * parameter: `texteAtt`: the name of the attribute giving the equation text
@@ -52,7 +52,7 @@ class DNEquaTexMem extends DaxeNode {
   
   @override
   h.Element html() {
-    assert(doc.filePath != null);
+    //assert(doc.filePath != null);
     _img = new h.ImageElement();
     _img.attributes['id'] = "$id";
     _img.attributes['class'] = 'dn';

@@ -30,13 +30,13 @@ class Cursor {
   bool visible;
   static const Duration delay = const Duration(milliseconds: 700);
   Timer timer;
-  HashMap<int, ActionFunction> shortcuts;
+  HashMap<int, MenuAction> shortcuts;
   
   Cursor() {
     ta = h.querySelector("#tacursor");
     caret = h.querySelector("#caret");
     visible = true;
-    shortcuts = new HashMap<int, ActionFunction>();
+    shortcuts = new HashMap<int, MenuAction>();
     // FIXME: IE is always intercepting Ctrl-P
     ta.onKeyUp.listen((h.KeyboardEvent event) => keyUp(event));
     ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
@@ -44,7 +44,7 @@ class Cursor {
     newTimer();
   }
   
-  void setShortcuts(HashMap<String, ActionFunction> stringShortcuts) {
+  void setShortcuts(HashMap<String, MenuAction> stringShortcuts) {
     HashMap<String, int> mappings = new HashMap<String, int>();
     mappings['A'] = h.KeyCode.A;
     mappings['B'] = h.KeyCode.B;
@@ -240,7 +240,7 @@ class Cursor {
    */
   void left() {
     deSelect();
-    selectionStart.move(-1);
+    selectionStart = previousCaretPosition(selectionStart);
     selectionEnd = new Position.clone(selectionStart);
     updateCaretPosition(true);
     page.updateAfterPathChange();
@@ -251,7 +251,7 @@ class Cursor {
    */
   void right() {
     Position end = new Position.clone(selectionEnd);
-    end.move(1);
+    end = nextCaretPosition(end);
     deSelect();
     selectionStart = new Position.clone(end);
     selectionEnd = new Position.clone(end);
@@ -308,7 +308,7 @@ class Cursor {
    */
   void shiftLeft() {
     Position start = new Position.clone(selectionStart);
-    start.move(-1);
+    start = previousCaretPosition(start);
     setSelection(start, selectionEnd);
   }
   
@@ -317,7 +317,7 @@ class Cursor {
    */
   void shiftRight() {
     Position end = new Position.clone(selectionEnd);
-    end.move(1);
+    end = nextCaretPosition(end);
     setSelection(selectionStart, end);
   }
   
@@ -362,15 +362,38 @@ class Cursor {
    */
   void backspace() {
     if (selectionStart == selectionEnd) {
-      // FIXME: this doesn't work with tables
-      selectionStart.move(-1);
-      // if this is the end of a style, do not remove the whole node, just the last character
+      // if this is the beginning of a text, style or hidden paragraph, remove something before
+      // instead of the text, style or paragraph (unless it's empty)
       DaxeNode dn = selectionStart.dn;
-      if (dn is DNText && dn.parent is DNStyle && dn.offsetLength > 1 &&
-          dn.offsetLength == selectionStart.dnOffset) {
-        selectionStart.move(-1);
+      int offset = selectionStart.dnOffset;
+      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == 0 &&
+          dn.offsetLength > 0) {
+        offset = dn.parent.offsetOf(dn);
+        dn = dn.parent;
       }
+      if (dn is! DNText && offset > 0) {
+        // move inside previous text, style or paragraph, unless 2 paragraphs need to be merged
+        DaxeNode prev = dn.childAtOffset(offset - 1);
+        if (prev is DNText || prev is DNStyle || (prev is DNHiddenP &&
+            (offset == dn.offsetLength || dn.childAtOffset(offset) is! DNHiddenP))) {
+          dn = dn.childAtOffset(offset - 1);
+          offset = dn.offsetLength;
+          if (dn is! DNText && offset > 0)
+            prev = dn.childAtOffset(offset - 1);
+          else
+            prev = null;
+        }
+      }
+      // if this is the end of a style or hidden paragraph with a character inside,
+      // do not remove the whole node, just the last character
+      while ((dn is DNStyle || dn is DNHiddenP) && dn.offsetLength == offset &&
+          dn.firstChild != null) {
+        dn = dn.lastChild;
+        offset = dn.offsetLength;
+      }
+      selectionStart = new Position(dn, offset);
       selectionEnd = new Position.clone(selectionStart);
+      selectionStart.move(-1);
       removeChar(selectionStart);
     } else {
       removeSelection();
@@ -383,24 +406,177 @@ class Cursor {
    */
   void suppr() {
     if (selectionStart == selectionEnd) {
-      // if this is the beginning of a style, do not remove the whole node, just the first character
+      // if this is the beginning of a style or hidden paragraph with a character inside,
+      // do not remove the whole node, just the first character
       DaxeNode next = null;
       DaxeNode dn = selectionStart.dn;
       int offset = selectionStart.dnOffset;
       if (dn is! DNText && offset < dn.offsetLength)
-        next = dn.childNodes[offset];
+        next = dn.childAtOffset(offset);
       else if (dn is DNText && dn.offsetLength == offset &&
           dn.nextSibling != null)
         next = dn.nextSibling;
-      if (next is DNStyle && next.firstChild is DNText) {
-        selectionStart.move(1);
-        selectionEnd = new Position.clone(selectionStart);
+      if (next is DNStyle || next is DNHiddenP) {
+        while (next.firstChild is DNStyle || next.firstChild is DNHiddenP)
+          next = next.firstChild;
+        if (next.firstChild is DNText) {
+          selectionStart = new Position(next.firstChild, 0);
+          selectionEnd = new Position.clone(selectionStart);
+        }
       }
+      // if this is the end of a text, style or hidden paragraph, remove something afterwards
+      // instead of the text, style or paragraph (unless it's empty)
+      dn = selectionStart.dn;
+      offset = selectionStart.dnOffset;
+      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == dn.offsetLength &&
+          dn.offsetLength > 0) {
+        offset = dn.parent.offsetOf(dn) + 1;
+        dn = dn.parent;
+        if (offset < dn.offsetLength) {
+          // move inside next style or text node
+          next = dn.childAtOffset(offset);
+          while (next is DNText || next is DNStyle) {
+            dn = dn.childAtOffset(offset);
+            offset = 0;
+            if (dn is! DNText && offset < dn.offsetLength)
+              next = dn.childAtOffset(offset);
+            else
+              next = null;
+          }
+        }
+      }
+      selectionStart = new Position(dn, offset);
+      selectionEnd = new Position.clone(selectionStart);
       removeChar(selectionStart);
     } else {
       removeSelection();
     }
     page.updateAfterPathChange();
+  }
+  
+  Position nextCaretPosition(Position pos) {
+    if (pos.dn is DNDocument && pos.dnOffset == pos.dn.offsetLength)
+      return(pos);
+    DaxeNode dn = pos.dn;
+    int offset = pos.dnOffset;
+    // when at the end, get out of text/style/hidden paragraph
+    while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == dn.offsetLength) {
+      offset = dn.parent.offsetOf(dn) + 1;
+      dn = dn.parent;
+    }
+    // if the node at offset is a text or style, move inside
+    DaxeNode nodeAtOffset;
+    if (dn.firstChild != null && offset < dn.offsetLength)
+      nodeAtOffset = dn.childAtOffset(offset);
+    else
+      nodeAtOffset = null;
+    while (nodeAtOffset is DNText || nodeAtOffset is DNStyle) {
+      dn = nodeAtOffset;
+      offset = 0;
+      if (dn.firstChild != null && offset < dn.offsetLength)
+        nodeAtOffset = dn.childAtOffset(offset);
+      else
+        nodeAtOffset = null;
+    }
+    // move position by +1
+    if (offset == dn.offsetLength) {
+      // get out of the node
+      offset = dn.parent.offsetOf(dn) + 1;
+      dn = dn.parent;
+    } else if (dn is DNText) {
+      // move in the text
+      offset++;
+    } else {
+      // enter the node
+      dn = dn.childAtOffset(offset);
+      // when just entering a node, move to the first cursor position inside
+      Position first = dn.firstCursorPositionInside();
+      if (first != null) {
+        dn = first.dn;
+        offset = first.dnOffset;
+      } else {
+        // if there is none, move after this node
+        offset = dn.parent.offsetOf(dn) + 1;
+        dn = dn.parent;
+      }
+    }
+    // move inside text/style/hidden paragraph at current offset
+    if (dn.firstChild != null && offset < dn.offsetLength)
+      nodeAtOffset = dn.childAtOffset(offset);
+    else
+      nodeAtOffset = null;
+    while (nodeAtOffset is DNText || nodeAtOffset is DNStyle || nodeAtOffset is DNHiddenP) {
+      dn = nodeAtOffset;
+      offset = 0;
+      if (dn.firstChild != null && offset < dn.offsetLength)
+        nodeAtOffset = dn.childAtOffset(offset);
+      else
+        nodeAtOffset = null;
+    }
+    return(new Position(dn, offset));
+  }
+  
+  Position previousCaretPosition(Position pos) {
+    if (pos.dn is DNDocument && pos.dnOffset == 0)
+      return(pos);
+    DaxeNode dn = pos.dn;
+    int offset = pos.dnOffset;
+    // when at the beginning, get out of text/style/hidden paragraph
+    while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == 0) {
+      offset = dn.parent.offsetOf(dn);
+      dn = dn.parent;
+    }
+    // if the node before is a text or style, move inside
+    DaxeNode nodeBefore;
+    if (dn.firstChild != null && offset > 0)
+      nodeBefore = dn.childAtOffset(offset - 1);
+    else
+      nodeBefore = null;
+    while (nodeBefore is DNText || nodeBefore is DNStyle) {
+      dn = nodeBefore;
+      offset = dn.offsetLength;
+      if (dn.firstChild != null && offset > 0)
+        nodeBefore = dn.childAtOffset(offset - 1);
+      else
+        nodeBefore = null;
+    }
+    // move position by -1
+    if (offset == 0) {
+      // get out of the node
+      offset = dn.parent.offsetOf(dn);
+      dn = dn.parent;
+    } else if (dn is DNText) {
+      // move in the text
+      offset--;
+    } else {
+      // enter the node
+      dn = dn.childAtOffset(offset-1);
+      offset = dn.offsetLength;
+      // when just entering a node, move to the last cursor position inside
+      Position last = dn.lastCursorPositionInside();
+      if (last != null) {
+        dn = last.dn;
+        offset = last.dnOffset;
+      } else {
+        // if there is none, move before this node
+        offset = dn.parent.offsetOf(dn);
+        dn = dn.parent;
+      }
+    }
+    // move inside text/style/hidden paragraph before current offset
+    if (dn.firstChild != null && offset > 0)
+      nodeBefore = dn.childAtOffset(offset - 1);
+    else
+      nodeBefore = null;
+    while (nodeBefore is DNText || nodeBefore is DNStyle || nodeBefore is DNHiddenP) {
+      dn = nodeBefore;
+      offset = dn.offsetLength;
+      if (dn.firstChild != null && offset > 0)
+        nodeBefore = dn.childAtOffset(offset - 1);
+      else
+        nodeBefore = null;
+    }
+    return(new Position(dn, offset));
   }
   
   /**
@@ -759,6 +935,7 @@ class Cursor {
    * Removes the first character or Daxe node coming after the cursor.
    */
   void removeChar(Position pos) {
+    DaxeNode toremove;
     if (pos.dn.nodeType == DaxeNode.TEXT_NODE &&
         pos.dn.offsetLength < pos.dnOffset + 1 &&
         pos.dn.nextSibling != null) {
@@ -769,38 +946,75 @@ class Cursor {
         current = current.parent;
         next = current.nextSibling;
       }
-      DaxeNode toremove = next;
+      toremove = next;
       if (toremove.nodeType == DaxeNode.TEXT_NODE && toremove.parent != null &&
           toremove.offsetLength == 1)
         toremove = toremove.parent;
-      if (!toremove.userCannotRemove)
-        doc.removeNode(toremove);
     } else if (pos.dn.nodeType == DaxeNode.TEXT_NODE &&
         pos.dn.offsetLength < pos.dnOffset + 1 &&
         pos.dn.nextSibling == null) {
       // remove pos.dn's parent
-      DaxeNode toremove = pos.dn;
+      toremove = pos.dn;
       if (toremove.parent != null)
         toremove = toremove.parent;
-      //pos.move(-pos.dnOffset - 1);
-      if (!toremove.userCannotRemove)
-        doc.removeNode(toremove);
+      if (toremove is DNHiddenP) {
+        if (toremove.nextSibling is DNHiddenP) {
+          // merge the paragraphs
+          DNHiddenP p1 = toremove;
+          DNHiddenP p2 = toremove.nextSibling;
+          p1.merge(p2);
+        } else {
+          // remove something just after this character
+          Position after = new Position.clone(pos);
+          after.move(1);
+          if (after > pos)
+            removeChar(after);
+        }
+        return;
+      }
     } else if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE && pos.dn.offsetLength < pos.dnOffset + 1) {
       // remove pos.dn
-      DaxeNode toremove = pos.dn;
-      //pos.move(-pos.dnOffset - 1);
-      if (!toremove.userCannotRemove)
-        doc.removeNode(toremove);
+      toremove = pos.dn;
     } else if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE ||
         pos.dn.nodeType == DaxeNode.DOCUMENT_NODE) {
-      DaxeNode toremove = pos.dn.childAtOffset(pos.dnOffset);
-      if (toremove == null)
+      toremove = pos.dn.childAtOffset(pos.dnOffset);
+      if (toremove is DNHiddenP) {
+        if (toremove.previousSibling is DNHiddenP) {
+          // merge the paragraphs
+          DNHiddenP p1 = toremove.previousSibling;
+          DNHiddenP p2 = toremove;
+          p1.merge(p2);
+          return;
+        } else if (toremove.offsetLength > 0) {
+          // remove something just before this character
+          Position before = new Position.clone(pos);
+          before.move(-1);
+          if (before < pos)
+            removeChar(before);
+          return;
+        }
+      }
+      if (toremove == null) {
         h.window.alert("I'm sorry Dave, I'm afraid I can't do that.");
-      else if (!toremove.userCannotRemove)
-        doc.removeNode(toremove);
+        return;
+      }
+    } else if (pos.dn.nodeType == DaxeNode.TEXT_NODE &&
+        pos.dnOffset == 0 && pos.dn.offsetLength == 1 &&
+        pos.dn.parent is DNStyle && pos.dn.parent.offsetLength == 1) {
+      // remove the style node
+      toremove = pos.dn.parent;
+      while (toremove.parent is DNStyle && toremove.parent.offsetLength == 1)
+        toremove = toremove.parent;
     } else {
       doc.removeString(pos, 1);
+      return;
     }
+    if (toremove is DNWItem && toremove.parent.offsetLength == 1) {
+      // remove the whole DNWList when the last DNWItem inside is removed
+      toremove = toremove.parent;
+    }
+    if (!toremove.userCannotRemove)
+      doc.removeNode(toremove);
   }
   
   /**
@@ -812,7 +1026,23 @@ class Cursor {
     Position start = new Position.clone(selectionStart);
     Position end = new Position.clone(selectionEnd);
     deSelect();
-    doc.removeBetween(start, end);
+    if (start.dn is DNWList && start.dn == end.dn && start.dnOffset == 0 &&
+        end.dnOffset == end.dn.offsetLength) {
+      // all DNWItem will be removed, the whole DNWList must be removed instead
+      doc.removeNode(start.dn);
+    } else
+      doc.removeBetween(start, end);
+  }
+  
+  /**
+   * Refresh display
+   */
+  void refresh() {
+    Position start = selectionStart;
+    Position end = selectionEnd;
+    selectionStart = null;
+    selectionEnd = null;
+    setSelection(start, end);
   }
   
   /**
@@ -869,7 +1099,21 @@ class Cursor {
       x.DOMParser dp = new x.DOMParser();
       tmpdoc = dp.parseFromString("<root>$s</root>");
     } on x.DOMException catch(ex) {
-      // this is not XML, it is inserted as string
+      // this is not XML, it is inserted as string if it is possible
+      bool problem = false;
+      if (s.trim() != '') {
+        DaxeNode parent = selectionStart.dn;
+        if (parent.nodeType == DaxeNode.TEXT_NODE)
+          parent = parent.parent;
+        if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
+          problem = true;
+        else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
+          problem = true;
+      }
+      if (problem) {
+        h.window.alert(Strings.get('insert.text_not_allowed'));
+        return(false);
+      }
       doc.insertString(selectionStart, s);
       return(true);
     }
@@ -892,7 +1136,6 @@ class Cursor {
       return(false);
     }
     doc.doNewEdit(edit);
-    // FIXME: the cursor is not at the right position afterwards (because of the reverse insert order in insertChildrenEdit)
     return(true);
   }
 }

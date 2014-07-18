@@ -23,11 +23,10 @@
  * The URL must have the file and config parameters with the path to the XML file and Jaxe config file.
  * It can also have a save parameter with the path to a server script to save the document.
  */
-import '../lib/daxe.dart' as d;
+import 'package:daxe/daxe.dart' as d;
 
 
 void main() {
   // custom display types and functions could be added here in another application
-  
   d.main();
 }

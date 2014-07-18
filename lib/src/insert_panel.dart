@@ -23,18 +23,13 @@ part of daxe;
  */
 class InsertPanel {
   
-  void update(Position pos) {
+  void update(DaxeNode parent, List<x.Element> refs, List<x.Element> validRefs) {
     h.Element divInsert = h.querySelector('div#insert');
     for (h.Element child in divInsert.children)
       child.remove();
-    if (pos == null)
-      return;
     Config cfg = doc.cfg;
     if (cfg == null)
       return;
-    DaxeNode parent = pos.daxeNode;
-    if (parent.nodeType == DaxeNode.TEXT_NODE)
-      parent = parent.parent;
     if (parent.nodeType == DaxeNode.ELEMENT_NODE && parent.ref != null) {
       divInsert.append(_makeHelpButton(parent.ref));
       String name = cfg.elementName(parent.ref);
@@ -43,9 +38,16 @@ class InsertPanel {
       divInsert.append(span);
       divInsert.append(new h.HRElement());
     }
-    List<x.Element> refs = doc.elementsAllowedUnder(parent);
-    List<x.Element> validRefs = doc.validElementsInSelection(refs);
+    List<x.Element> toolbarRefs;
+    if (page.toolbar != null)
+      toolbarRefs = page.toolbar.elementRefs();
+    else
+      toolbarRefs = null;
     for (x.Element ref in refs) {
+      if (toolbarRefs != null && toolbarRefs.contains(ref))
+        continue;
+      if (doc.hiddenp != null && ref == doc.hiddenp)
+        continue;
       divInsert.append(_makeHelpButton(ref));
       h.ButtonElement button = new h.ButtonElement();
       button.attributes['type'] = 'button';
@@ -67,7 +69,9 @@ class InsertPanel {
     bHelp.classes.add('help');
     bHelp.value = '?';
     bHelp.text = '?';
-    bHelp.title = doc.cfg.documentation(ref);
+    String documentation = doc.cfg.documentation(ref);
+    if (documentation != null)
+      bHelp.title = documentation;
     bHelp.onClick.listen((h.Event event) => help(ref));
     return(bHelp);
   }

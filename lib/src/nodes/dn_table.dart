@@ -148,7 +148,7 @@ class DNTable extends DaxeNode {
     h.ButtonElement bMergeRight = new h.ButtonElement();
     bMergeRight.attributes['type'] = 'button';
     h.ImageElement img = new h.ImageElement();
-    img.src = 'images/mergeright.png';
+    img.src = 'packages/daxe/images/mergeright.png';
     bMergeRight.append(img);
     bMergeRight.onClick.listen((h.MouseEvent event) => mergeRight());
     bMergeRight.style.marginRight = '0.2em';
@@ -158,7 +158,7 @@ class DNTable extends DaxeNode {
     h.ButtonElement bSplitX = new h.ButtonElement();
     bSplitX.attributes['type'] = 'button';
     img = new h.ImageElement();
-    img.src = 'images/splitx.png';
+    img.src = 'packages/daxe/images/splitx.png';
     bSplitX.append(img);
     bSplitX.onClick.listen((h.MouseEvent event) => splitX());
     bSplitX.style.marginRight = '0.2em';
@@ -168,7 +168,7 @@ class DNTable extends DaxeNode {
     h.ButtonElement bMergeBottom = new h.ButtonElement();
     bMergeBottom.attributes['type'] = 'button';
     img = new h.ImageElement();
-    img.src = 'images/mergebottom.png';
+    img.src = 'packages/daxe/images/mergebottom.png';
     bMergeBottom.append(img);
     bMergeBottom.onClick.listen((h.MouseEvent event) => mergeBottom());
     bMergeBottom.style.marginRight = '0.2em';
@@ -178,7 +178,7 @@ class DNTable extends DaxeNode {
     h.ButtonElement bSplitY = new h.ButtonElement();
     bSplitY.attributes['type'] = 'button';
     img = new h.ImageElement();
-    img.src = 'images/splity.png';
+    img.src = 'packages/daxe/images/splity.png';
     bSplitY.append(img);
     bSplitY.onClick.listen((h.MouseEvent event) => splitY());
     bSplitY.style.marginRight = '0.2em';

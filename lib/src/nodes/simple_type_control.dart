@@ -89,6 +89,7 @@ class SimpleTypeControl {
       span.append(cb);
     } else if (validValues == null || validValues.length == 0) {
       h.TextInputElement input = new h.TextInputElement();
+      input.spellcheck = false;
       hcontrol = input;
       input.size = 40;
       if (value == null)

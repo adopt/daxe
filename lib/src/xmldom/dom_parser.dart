@@ -111,6 +111,10 @@ class DOMParser {
   
   Document parseFromString(String s) { // throws DOMException
     XMLParser parser = new XMLParser();
-    return(parser.parseString(s));
+    try {
+      return(parser.parseString(s));
+    } on Exception catch(ex) {
+      throw new DOMException(ex.toString());
+    }
   }
 }

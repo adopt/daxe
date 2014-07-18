@@ -414,7 +414,7 @@ class Config {
             logError("Erreur: MENU_INSERTION: pas de référence pour '$nom' dans le schéma");
         } else
           refElement = null;
-        item = new MenuItem(titre, () => doc.insertNewNode(refElement, typeNoeud), shortcut: shortcut, data: refElement);
+        item = new MenuItem(titre, (MenuItem mItem) => doc.insertNewNode(refElement, typeNoeud), shortcut: shortcut, data: refElement);
         menu.add(item);
         String itemdoc = documentation(refElement);
         if (itemdoc != null) {
@@ -426,7 +426,7 @@ class Config {
         final String classe = fonction.getAttribute("classe");
         final String nom = fonction.getAttribute("nom");
         final String titre = menuTitle(nom);
-        item = new MenuItem(titre, () => doc.executeFunction(classe, fonction), shortcut: shortcut);
+        item = new MenuItem(titre, (MenuItem mItem) => doc.executeFunction(classe, fonction), shortcut: shortcut);
         menu.add(item);
         String itemdoc = menuDocumentation(nom);
         if (itemdoc != null) {
@@ -605,6 +605,8 @@ class Config {
    */
   bool isSubElement(final x.Element parentRef, final x.Element childRef) {
     final List<x.Element> enfants = subElements(parentRef);
+    if (enfants == null)
+      return(false);
     return(enfants.contains(childRef));
   }
   
@@ -1044,6 +1046,22 @@ class Config {
   }
   
   /**
+   * Returns the references of the elements with the given display type in the config file.
+   */
+  List<x.Element> elementstWithType(final String displayType) {
+    if (_cfgroot == null)
+      return(null);
+    List<x.Element> list = new List<x.Element>();
+    x.Element affel = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    while (affel != null) {
+      if (displayType == affel.getAttribute("type"))
+        list.add(elementReference(affel.getAttribute("element")));
+      affel = _nextElement(affel, "AFFICHAGE_ELEMENT");
+    }
+    return(list);
+  }
+  
+  /**
    * Returns the value of an element display parameter.
    * @param elementRef element reference
    * @param parameterName parameter name
@@ -1387,13 +1405,14 @@ class Config {
   }
   
   /**
-   * Formats the documentation in HTML, with additionnal line breaks to avoid long lines.
+   * Formats the documentation in HTML.
    */
   static String formatDoc(final String documentation) {
     String doc = documentation;
     doc = doc.replaceAll("&", "&amp;");
     doc = doc.replaceAll("<", "&lt;");
     doc = doc.replaceAll(">", "&gt;");
+    /*
     if (doc.length > 100) {
       int p = 0;
       for (int i=0; i<doc.length; i++) {
@@ -1404,6 +1423,7 @@ class Config {
           p = i;
       }
     }
+    */
     doc = doc.replaceAll("\n", "<br>");
     return(doc);
   }

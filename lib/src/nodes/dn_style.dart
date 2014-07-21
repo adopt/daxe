@@ -89,6 +89,14 @@ class DNStyle extends DaxeNode {
     return(null);
   }
   
+  bool matches(DNStyle dn) {
+    if (this is DNStyleSpan && dn is DNStyleSpan)
+      return(css == dn.css);
+    if (this is DNStyleSpan || dn is DNStyleSpan)
+      return(false);
+    return(ref == dn.ref);
+  }
+  
   /**
    * Removes all styles or one style from the current selection
    */
@@ -351,11 +359,10 @@ class DNStyle extends DaxeNode {
       DaxeNode previous = testStart.dn.previousSibling; 
       if (previous is DNStyle && _matchingCss(previous, styleRef, css)) {
         p1 = new Position(previous.parent, previous.parent.offsetOf(previous));
-        int newStartLeftOffset = testStart.leftOffset;
-        newStartLeftOffset -= 2;
+        newStart = new Position.leftOffsetPosition(testStart);
+        newStart.move(-2);
         if (previous.lastChild is DNText)
-          newStartLeftOffset--;
-        newStart = new Position.fromLeft(newStartLeftOffset);
+          newStart.move(-1);
       }
     }
     Position p2 = end;
@@ -366,11 +373,10 @@ class DNStyle extends DaxeNode {
       DaxeNode next = testStart.dn.nextSibling; 
       if (next is DNStyle && _matchingCss(next, styleRef, css)) {
         p2 = new Position(next.parent, next.parent.offsetOf(next) + 1);
-        int newEndRightOffset = testEnd.rightOffset;
-        newEndRightOffset += 2;
+        newEnd = new Position.rightOffsetPosition(testEnd);
+        newEnd.move(2);
         if (next.firstChild is DNText)
-          newEndRightOffset++;
-        newEnd = new Position.fromRight(newEndRightOffset);
+          newEnd.move(1);
       }
     }
     DaxeNode clone = doc.cloneBetween(p1, p2);
@@ -478,6 +484,43 @@ class DNStyle extends DaxeNode {
       page.cursor.setSelection(ep2.start, ep2.end);
       page.updateAfterPathChange();
     }
+  }
+  
+  /**
+   * Merge the styles at Position if possible, or returns null.
+   */
+  static EditAndNewPositions mergeAt(Position pos) {
+    DNStyle leftStyle = null, rightStyle = null;
+    if (pos.dn is DNStyle && pos.dnOffset == pos.dn.offsetLength)
+      leftStyle = pos.dn;
+    else if (pos.dn is DNText && pos.dnOffset == pos.dn.offsetLength && pos.dn.parent is DNStyle &&
+        pos.dn.parent.offsetOf(pos.dn) == pos.dn.parent.offsetLength)
+      leftStyle = pos.dn.parent;
+    else if (pos.dn is! DNText && pos.dnOffset > 0 && pos.dn.offsetLength > 0 &&
+        pos.dn.childAtOffset(pos.dnOffset - 1) is DNStyle)
+      leftStyle = pos.dn.childAtOffset(pos.dnOffset - 1);
+    if (pos.dn is DNStyle && pos.dnOffset == 0)
+      rightStyle= pos.dn;
+    else if (pos.dn is DNText && pos.dnOffset == 0 && pos.dn.parent is DNStyle &&
+        pos.dn.parent.offsetOf(pos.dn) == 0)
+      rightStyle = pos.dn.parent;
+    else if (pos.dn is! DNText && pos.dnOffset < pos.dn.offsetLength && pos.dn.offsetLength > 0 &&
+        pos.dn.childAtOffset(pos.dnOffset) is DNStyle)
+      rightStyle = pos.dn.childAtOffset(pos.dnOffset);
+    if (leftStyle == null || rightStyle == null)
+      return(null);
+    if (!leftStyle.matches(rightStyle))
+      return(null);
+    Position newPos;
+    if (leftStyle.lastChild is DNText && rightStyle.firstChild is DNText)
+      newPos = new Position(leftStyle.lastChild, leftStyle.lastChild.offsetLength);
+    else
+      newPos = new Position(leftStyle, leftStyle.offsetLength);
+    UndoableEdit edit = new UndoableEdit.compound('merge');
+    edit.addSubEdit(new UndoableEdit.removeNode(rightStyle));
+    DaxeNode clone = new DaxeNode.clone(rightStyle);
+    edit.addSubEdit(doc.insertChildrenEdit(clone, new Position(leftStyle, leftStyle.offsetLength)));
+    return(new EditAndNewPositions(edit, newPos, new Position.clone(newPos)));
   }
 }
 

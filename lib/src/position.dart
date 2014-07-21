@@ -101,7 +101,7 @@ abstract class Position {
   bool operator >=(Position other);
   
   /**
-   * Moves the position by the offset, not counting movements to enter or exit a text node.
+   * Moves the position right by the offset, counting movements to enter or exit a text node.
    */
   void move(int offset);
   

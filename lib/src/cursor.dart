@@ -975,6 +975,15 @@ class Cursor {
     } else if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE && pos.dn.offsetLength < pos.dnOffset + 1) {
       // remove pos.dn
       toremove = pos.dn;
+      if (toremove is DNHiddenP) {
+        if (toremove.nextSibling is DNHiddenP) {
+          // merge the paragraphs
+          DNHiddenP p1 = toremove;
+          DNHiddenP p2 = toremove.nextSibling;
+          p1.merge(p2);
+        }
+        return;
+      }
     } else if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE ||
         pos.dn.nodeType == DaxeNode.DOCUMENT_NODE) {
       toremove = pos.dn.childAtOffset(pos.dnOffset);
@@ -1007,14 +1016,29 @@ class Cursor {
         toremove = toremove.parent;
     } else {
       doc.removeString(pos, 1);
+      // merge styles if possible
+      EditAndNewPositions ep = DNStyle.mergeAt(selectionStart);
+      if (ep != null) {
+        doc.doNewEdit(ep.edit);
+        doc.combineLastEdits(Strings.get('undo.remove_text'), 2);
+        setSelection(ep.start, ep.end);
+      }
       return;
     }
     if (toremove is DNWItem && toremove.parent.offsetLength == 1) {
       // remove the whole DNWList when the last DNWItem inside is removed
       toremove = toremove.parent;
     }
-    if (!toremove.userCannotRemove)
+    if (!toremove.userCannotRemove) {
       doc.removeNode(toremove);
+      // merge styles if possible
+      EditAndNewPositions ep = DNStyle.mergeAt(selectionStart);
+      if (ep != null) {
+        doc.doNewEdit(ep.edit);
+        doc.combineLastEdits(Strings.get('undo.remove_element'), 2);
+        setSelection(ep.start, ep.end);
+      }
+    }
   }
   
   /**
@@ -1030,8 +1054,16 @@ class Cursor {
         end.dnOffset == end.dn.offsetLength) {
       // all DNWItem will be removed, the whole DNWList must be removed instead
       doc.removeNode(start.dn);
-    } else
+    } else {
       doc.removeBetween(start, end);
+      // merge styles if possible
+      EditAndNewPositions ep = DNStyle.mergeAt(start);
+      if (ep != null) {
+        doc.doNewEdit(ep.edit);
+        doc.combineLastEdits(Strings.get('undo.remove'), 2);
+        setSelection(ep.start, ep.end);
+      }
+    }
   }
   
   /**

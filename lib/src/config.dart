@@ -414,7 +414,7 @@ class Config {
             logError("Erreur: MENU_INSERTION: pas de référence pour '$nom' dans le schéma");
         } else
           refElement = null;
-        item = new MenuItem(titre, (MenuItem mItem) => doc.insertNewNode(refElement, typeNoeud), shortcut: shortcut, data: refElement);
+        item = new MenuItem(titre, () => doc.insertNewNode(refElement, typeNoeud), shortcut: shortcut, data: refElement);
         menu.add(item);
         String itemdoc = documentation(refElement);
         if (itemdoc != null) {
@@ -426,7 +426,7 @@ class Config {
         final String classe = fonction.getAttribute("classe");
         final String nom = fonction.getAttribute("nom");
         final String titre = menuTitle(nom);
-        item = new MenuItem(titre, (MenuItem mItem) => doc.executeFunction(classe, fonction), shortcut: shortcut);
+        item = new MenuItem(titre, () => doc.executeFunction(classe, fonction), shortcut: shortcut);
         menu.add(item);
         String itemdoc = menuDocumentation(nom);
         if (itemdoc != null) {

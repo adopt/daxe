@@ -17,14 +17,12 @@
 
 part of daxe;
 
-typedef void MenuAction(MenuItem mItem);
-
 class MenuItem {
   static int itemidcount = 0;
   String itemid;
   String _title;
   Menu parent;
-  MenuAction action;
+  ActionFunction action;
   String shortcut;
   Object data;
   bool enabled;
@@ -85,7 +83,7 @@ class MenuItem {
   void activate() {
     if (!enabled)
       return;
-    action(this);
+    action();
   }
   
   void select() {

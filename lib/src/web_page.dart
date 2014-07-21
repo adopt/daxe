@@ -98,24 +98,24 @@ class WebPage {
     Menu fileMenu = new Menu(Strings.get('menu.file'));
     MenuItem item;
     if (doc.saveURL != null) {
-      item = new MenuItem(Strings.get('menu.save'), (MenuItem mItem) => save(), shortcut: 'S');
+      item = new MenuItem(Strings.get('menu.save'), () => save(), shortcut: 'S');
       fileMenu.add(item);
     }
     //item = new MenuItem(Strings.get('menu.open'), () => openMenu());
     //fileMenu.add(item);
-    item = new MenuItem(Strings.get('menu.source'), (MenuItem mItem) => showSource());
+    item = new MenuItem(Strings.get('menu.source'), () => showSource());
     fileMenu.add(item);
-    item = new MenuItem(Strings.get('menu.validation'), (MenuItem mItem) => (new ValidationDialog()).show());
+    item = new MenuItem(Strings.get('menu.validation'), () => (new ValidationDialog()).show());
     fileMenu.add(item);
     mbar.insert(fileMenu, 0);
     Menu editMenu = new Menu(Strings.get('menu.edit'));
-    undoMenu = new MenuItem(Strings.get('undo.undo'), (MenuItem mItem) => doc.undo(), shortcut: 'Z');
+    undoMenu = new MenuItem(Strings.get('undo.undo'), () => doc.undo(), shortcut: 'Z');
     undoMenu.enabled = false;
     editMenu.add(undoMenu);
-    redoMenu = new MenuItem(Strings.get('undo.redo'), (MenuItem mItem) => doc.redo(), shortcut: 'Y');
+    redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
     redoMenu.enabled = false;
     editMenu.add(redoMenu);
-    MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), (MenuItem mItem) => (new FindDialog()).show(), shortcut: 'F');
+    MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
     editMenu.add(findMenu);
     mbar.insert(editMenu, 1);
     
@@ -124,20 +124,23 @@ class WebPage {
     
     toolbar = new Toolbar(doc.cfg);
     headers.append(toolbar.html());
+    HashMap<String, ActionFunction> shortcuts = new HashMap<String, ActionFunction>();
+    for (ToolbarButton button in toolbar.buttons)
+      if (button.shortcut != null)
+        shortcuts[button.shortcut] = button.action;
     
-    HashMap<String, MenuAction> shortcuts = new HashMap<String, MenuAction>();
     for (Menu menu in mbar.menus) {
-      addShortcuts(menu, shortcuts);
+      addMenuShortcuts(menu, shortcuts);
     }
     _cursor.setShortcuts(shortcuts);
   }
   
-  addShortcuts(Menu menu, HashMap<String, MenuAction> shortcuts) {
+  addMenuShortcuts(Menu menu, HashMap<String, ActionFunction> shortcuts) {
     for (MenuItem item in menu.items) {
       if (item.shortcut != null && item.action != null)
         shortcuts[item.shortcut] = item.action;
       if (item is Menu)
-        addShortcuts(item, shortcuts);
+        addMenuShortcuts(item, shortcuts);
     }
   }
   
@@ -293,14 +296,14 @@ class WebPage {
         continue;
       String name = doc.cfg.elementName(ref);
       String title = doc.cfg.menuTitle(name);
-      MenuItem item = new MenuItem(title, (MenuItem mItem) => doc.insertNewNode(ref, 'element'));
+      MenuItem item = new MenuItem(title, () => doc.insertNewNode(ref, 'element'));
       contextualMenu.add(item);
     }
     contextualMenu.addSeparator();
     if (parent.ref != null) {
       String title = doc.cfg.menuTitle(parent.nodeName);
       title = "${Strings.get('contextual.help_about_element')} $title";
-      contextualMenu.add(new MenuItem(title, (MenuItem mItem) =>
+      contextualMenu.add(new MenuItem(title, () =>
           (new HelpDialog.Element(parent.ref)).show()));
     }
     h.DivElement div = contextualMenu.htmlMenu();

@@ -17,20 +17,19 @@
 
 part of daxe;
 
-typedef void ButtonAction(ToolbarButton button);
-
 class ToolbarButton {
   static int idcount = 0;
   String _title;
   String iconFilename;
-  ButtonAction action;
+  ActionFunction action;
   Object data;
   String id;
   bool enabled;
   bool selected;
   StreamSubscription<h.MouseEvent> listener;
+  String shortcut;
   
-  ToolbarButton(this._title, this.iconFilename, this.action, {this.data, this.enabled:true}) {
+  ToolbarButton(this._title, this.iconFilename, this.action, {this.data, this.enabled:true, this.shortcut}) {
     selected = false;
     id = "button_$idcount";
     idcount++;
@@ -48,7 +47,7 @@ class ToolbarButton {
     h.ImageElement img = new h.ImageElement();
     img.setAttribute('src', 'packages/daxe/images/toolbar/' + iconFilename);
     if (enabled)
-      listener = div.onClick.listen((h.MouseEvent event) => action(this));
+      listener = div.onClick.listen((h.MouseEvent event) => action());
     div.append(img);
     return(div);
   }
@@ -82,7 +81,7 @@ class ToolbarButton {
     enabled = true;
     h.Element div = getHTMLNode();
     div.classes.remove('button-disabled');
-    listener = div.onClick.listen((h.MouseEvent event) => action(this));
+    listener = div.onClick.listen((h.MouseEvent event) => action());
   }
   
   void select() {

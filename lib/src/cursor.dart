@@ -30,13 +30,13 @@ class Cursor {
   bool visible;
   static const Duration delay = const Duration(milliseconds: 700);
   Timer timer;
-  HashMap<int, MenuAction> shortcuts;
+  HashMap<int, ActionFunction> shortcuts;
   
   Cursor() {
     ta = h.querySelector("#tacursor");
     caret = h.querySelector("#caret");
     visible = true;
-    shortcuts = new HashMap<int, MenuAction>();
+    shortcuts = new HashMap<int, ActionFunction>();
     // FIXME: IE is always intercepting Ctrl-P
     ta.onKeyUp.listen((h.KeyboardEvent event) => keyUp(event));
     ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
@@ -44,7 +44,7 @@ class Cursor {
     newTimer();
   }
   
-  void setShortcuts(HashMap<String, MenuAction> stringShortcuts) {
+  void setShortcuts(HashMap<String, ActionFunction> stringShortcuts) {
     HashMap<String, int> mappings = new HashMap<String, int>();
     mappings['A'] = h.KeyCode.A;
     mappings['B'] = h.KeyCode.B;

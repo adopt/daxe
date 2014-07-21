@@ -26,18 +26,18 @@ class Toolbar {
     if (doc.saveURL != null) {
       ToolbarBox documentBox = new ToolbarBox();
       documentBox.add(new ToolbarButton(Strings.get('menu.save'), 'document_save.png',
-          (ToolbarButton button) => page.save()));
+          () => page.save()));
       items.add(documentBox);
     }
     ToolbarBox historyBox = new ToolbarBox();
     historyBox.add(new ToolbarButton(Strings.get('undo.undo'), 'history_undo.png',
-        (ToolbarButton button) => doc.undo(), data:"undo", enabled:false));
+        () => doc.undo(), data:"undo", enabled:false));
     historyBox.add(new ToolbarButton(Strings.get('undo.redo'), 'history_redo.png',
-        (ToolbarButton button) => doc.redo(), data:"redo", enabled:false));
+        () => doc.redo(), data:"redo", enabled:false));
     items.add(historyBox);
     ToolbarBox findBox = new ToolbarBox();
     findBox.add(new ToolbarButton(Strings.get('find.find_replace'), 'find.png',
-        (ToolbarButton button) => (new FindDialog()).show()));
+        () => (new FindDialog()).show()));
     items.add(findBox);
     if (cfg != null) {
       // Buttons to insert new elements
@@ -69,31 +69,33 @@ class Toolbar {
       if (ulRef != null || olRef != null) {
         ToolbarBox listBox = new ToolbarBox();
         if (ulRef != null) {
-          listBox.add(new ToolbarButton(_documentationFor(ulRef), 'ul.png',
-              (ToolbarButton button) {
+          ToolbarButton button = new ToolbarButton(_documentationFor(ulRef), 'ul.png',
+              null, data:new ToolbarStyleInfo(ulRef, null, null));
+          button.action = () {
             if (button.selected)
               DNWList.riseLevel();
             else
               DNWList.addList((button.data as ToolbarStyleInfo).ref);
-            },
-              data:new ToolbarStyleInfo(ulRef, null, null)));
+          };
+          listBox.add(button);
         }
         if (olRef != null) {
-          listBox.add(new ToolbarButton(_documentationFor(olRef), 'ol.png',
-              (ToolbarButton button) {
+          ToolbarButton button = new ToolbarButton(_documentationFor(olRef), 'ol.png',
+              null, data:new ToolbarStyleInfo(olRef, null, null));
+          button.action = () {
             if (button.selected)
               DNWList.riseLevel();
             else
               DNWList.addList((button.data as ToolbarStyleInfo).ref);
-            },
-              data:new ToolbarStyleInfo(olRef, null, null)));
+          };
+          listBox.add(button);
         }
         listBox.add(new ToolbarButton(Strings.get('toolbar.rise_list_level'), 'list_rise_level.png',
-            (ToolbarButton button) => DNWList.riseLevel(), data:'rise_list_level'));
+            () => DNWList.riseLevel(), data:'rise_list_level'));
         if (doc.cfg.isSubElement(DNWList.findItemRef(ulRef), ulRef) ||
             doc.cfg.isSubElement(DNWList.findItemRef(olRef), olRef))
           listBox.add(new ToolbarButton(Strings.get('toolbar.lower_list_level'), 'list_lower_level.png',
-              (ToolbarButton button) => DNWList.lowerLevel(), data:'lower_list_level'));
+              () => DNWList.lowerLevel(), data:'lower_list_level'));
         items.add(listBox);
       }
       // Style buttons
@@ -104,9 +106,9 @@ class Toolbar {
         if (dtype == 'style') {
           String style = cfg.elementParameterValue(ref, 'style', null);
           if (style == 'GRAS') {
-            _addStyleButton(cfg, styleBox, ref, 'style_bold.png');
+            _addStyleButton(cfg, styleBox, ref, 'style_bold.png', 'B');
           } else if (style == 'ITALIQUE') {
-            _addStyleButton(cfg, styleBox, ref, 'style_italic.png');
+            _addStyleButton(cfg, styleBox, ref, 'style_italic.png', 'I');
           } else if (style == 'EXPOSANT') {
             _addStyleButton(cfg, styleBox, ref, 'style_superscript.png');
           } else if (style == 'INDICE') {
@@ -120,7 +122,7 @@ class Toolbar {
       }
       if (styleBox.length > 0) {
         styleBox.add(new ToolbarButton(Strings.get('toolbar.remove_styles'), 'remove_styles.png',
-            (ToolbarButton button) => DNStyle.removeStylesFromSelection(), data:"remove_styles"));
+            () => DNStyle.removeStylesFromSelection(), data:"remove_styles"));
         items.add(styleBox);
       }
       if (doc.hiddenp != null) {
@@ -172,7 +174,9 @@ class Toolbar {
       if (cssUnit != null)
         cssValueWithUnit += cssUnit;
       String css = "$cssName: $cssValueWithUnit";
-      MenuItem menuItem = new MenuItem(cssValue, (MenuItem menuItem) {
+      MenuItem menuItem = new MenuItem(cssValue, null,
+          data:new ToolbarStyleInfo(styleRef, cssName, cssValueWithUnit));
+      menuItem.action = () {
         if (menuItem.checked) {
           Position start = page.getSelectionStart();
           Position end = page.getSelectionEnd();
@@ -189,7 +193,7 @@ class Toolbar {
         } else {
           DNStyle.removeAndApplyStyleToSelection(styleRef, cssName, css);
         }
-      }, data:new ToolbarStyleInfo(styleRef, cssName, cssValueWithUnit));
+      };
       menu.add(menuItem);
     }
     ToolbarMenu tbmenu = new ToolbarMenu(menu);
@@ -204,42 +208,47 @@ class Toolbar {
   }
   
   _addInsertButton(Config cfg, ToolbarBox box, x.Element ref, String icon) {
-    box.add(new ToolbarButton(_documentationFor(ref), icon,
-        (ToolbarButton button) => doc.insertNewNode(ref, 'element'),
-        data:new ToolbarStyleInfo(ref, null, null)));
+    ToolbarButton button = new ToolbarButton(_documentationFor(ref), icon,
+        () => doc.insertNewNode(ref, 'element'),
+        data:new ToolbarStyleInfo(ref, null, null));
+    box.add(button);
   }
   
-  _addStyleButton(Config cfg, ToolbarBox box, x.Element ref, String icon) {
-    box.add(new ToolbarButton(_documentationFor(ref), icon,
-        (ToolbarButton button) {
-        if (button.selected) {
-          Position start = page.getSelectionStart();
-          Position end = page.getSelectionEnd();
-          if (start == end && start.dn is DNText && start.dn.parent.ref == ref &&
-              start.dnOffset == start.dn.offsetLength && start.dn.nextSibling == null) {
-            // we are at the end of the style
-            // just move the cursor position outside of the style
-            DaxeNode styleNode = start.dn.parent;
-            page.moveCursorTo(new Position(styleNode.parent, styleNode.parent.offsetOf(styleNode)+1));
-            page.updateAfterPathChange();
-          } else
-            DNStyle.removeStylesFromSelection(ref);
-        } else {
-          DNStyle.applyStyleInsideSelection(ref);
-        }
-      }, data:new ToolbarStyleInfo(ref, null, null)));
+  _addStyleButton(Config cfg, ToolbarBox box, x.Element ref, String icon, [String shortcut=null]) {
+    ToolbarButton button = new ToolbarButton(_documentationFor(ref), icon, null,
+        data:new ToolbarStyleInfo(ref, null, null), shortcut:shortcut);
+    button.action = () {
+      if (button.selected) {
+        Position start = page.getSelectionStart();
+        Position end = page.getSelectionEnd();
+        if (start == end && start.dn is DNText && start.dn.parent.ref == ref &&
+            start.dnOffset == start.dn.offsetLength && start.dn.nextSibling == null) {
+          // we are at the end of the style
+          // just move the cursor position outside of the style
+          DaxeNode styleNode = start.dn.parent;
+          page.moveCursorTo(new Position(styleNode.parent, styleNode.parent.offsetOf(styleNode)+1));
+          page.updateAfterPathChange();
+        } else
+          DNStyle.removeStylesFromSelection(ref);
+      } else {
+        DNStyle.applyStyleInsideSelection(ref);
+      }
+    };
+    box.add(button);
   }
   
   _addParagraphCssButton(ToolbarBox alignBox, String cssName, String cssValue,
                          String title, String icon) {
-    alignBox.add(new ToolbarButton(title, icon,
-        (ToolbarButton button) {
+    ToolbarButton button = new ToolbarButton(title, icon,
+        null, data:new ToolbarStyleInfo(doc.hiddenp, cssName, cssValue));
+    button.action = () {
       if (button.selected) {
         DNHiddenP.removeStyleFromSelection(cssName);
       } else {
         DNHiddenP.applyStyleToSelection(cssName, '$cssName: $cssValue');
       }
-    }, data:new ToolbarStyleInfo(doc.hiddenp, cssName, cssValue)));
+    };
+    alignBox.add(button);
   }
   
   add(ToolbarItem item) {

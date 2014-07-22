@@ -796,7 +796,7 @@ class DaxeDocument {
         doNewEdit(edit);
         inserted = true;
       }
-    } else if (hiddenp != null && !cfg.isSubElement(parent.ref, dn.ref)) {
+    } else if (hiddenp != null && parent.ref != null && !cfg.isSubElement(parent.ref, dn.ref)) {
       if (cfg.isSubElement(parent.ref, hiddenp) && cfg.isSubElement(hiddenp, dn.ref)) {
         // a new paragraph must be created
         DNHiddenP p = new DNHiddenP.fromRef(hiddenp);

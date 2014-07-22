@@ -713,34 +713,34 @@ class Cursor {
     // fix selection start and end for styles (different positions look the same for the user)
     // and to keep only the elements entirely inside the selection
     // move the start and end positions out of text and style if possible
-    while ((selectionStart.dn is DNText || selectionStart.dn is DNStyle) &&
+    while ((selectionStart.dn is DNText || selectionStart.dn is DNStyle || selectionStart.dn is DNHiddenP) &&
         selectionStart.dnOffset == 0) {
       selectionStart = new Position(selectionStart.dn.parent,
           selectionStart.dn.parent.offsetOf(selectionStart.dn));
     }
-    while ((selectionStart.dn is DNText || selectionStart.dn is DNStyle) &&
+    while ((selectionStart.dn is DNText || selectionStart.dn is DNStyle || selectionStart.dn is DNHiddenP) &&
         selectionStart.dnOffset == selectionStart.dn.offsetLength) {
       selectionStart = new Position(selectionStart.dn.parent,
           selectionStart.dn.parent.offsetOf(selectionStart.dn) + 1);
     }
-    while ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle) &&
+    while ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle || selectionEnd.dn is DNHiddenP) &&
         selectionEnd.dnOffset == selectionEnd.dn.offsetLength) {
       selectionEnd = new Position(selectionEnd.dn.parent,
           selectionEnd.dn.parent.offsetOf(selectionEnd.dn) + 1);
     }
-    while ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle) &&
+    while ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle || selectionEnd.dn is DNHiddenP) &&
         selectionEnd.dnOffset == 0) {
       selectionEnd = new Position(selectionEnd.dn.parent,
           selectionEnd.dn.parent.offsetOf(selectionEnd.dn));
     }
     // now move positions closer if possible
     if (selectionStart != selectionEnd) {
-      if ((selectionStart.dn is DNText || selectionStart.dn is DNStyle) &&
+      if ((selectionStart.dn is DNText || selectionStart.dn is DNStyle || selectionStart.dn is DNHiddenP) &&
           selectionStart.dnOffset == selectionStart.dn.offsetLength) {
         DaxeNode next = selectionStart.dn.nextNode();
         selectionStart = new Position(next.parent, next.parent.offsetOf(next));
       }
-      if ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle) &&
+      if ((selectionEnd.dn is DNText || selectionEnd.dn is DNStyle || selectionEnd.dn is DNHiddenP) &&
           selectionEnd.dnOffset == 0) {
         DaxeNode prev = selectionEnd.dn.previousNode();
         selectionEnd = new Position(prev.parent, prev.parent.offsetOf(prev) + 1);

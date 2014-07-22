@@ -1,5 +1,6 @@
 body {
   line-height: 1.5em;
+  color: black;
   background-color: #FFFFFF;
 }
 
@@ -566,6 +567,12 @@ table.special_dlg {
 }
 
 /* DNForm */
+td.shrink {
+  white-space: nowrap;
+}
+.expand {
+  width: 99%;
+}
 span.form_title {
   position: relative;
   top: 3px;
@@ -605,15 +612,17 @@ div.form td {
   padding-right: 3px;
 }
 
-/*
-td.form_field {
+/* DNFormField */
+.form_field {
+  width: 100%;
+  min-height: 1em;
   background-color: white;
   border-top: 2px solid #A0A0A0;
   border-left: 2px solid #A0A0A0;
   border-right: 2px solid #F5F5F5;
   border-bottom: 2px solid #F5F5F5;
 }
-*/
+
 
 select.invalid {
   border: 1px solid #F00000;

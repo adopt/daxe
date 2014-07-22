@@ -102,7 +102,7 @@ class DNForm extends DaxeNode {
   
   @override
   h.Element html() {
-    h.ButtonElement bHelp = _makeHelpButton(ref, null);
+    h.ButtonElement bHelp = makeHelpButton(ref, null);
     
     if (simpleField) {
       h.TableRowElement tr = new h.TableRowElement();
@@ -110,10 +110,12 @@ class DNForm extends DaxeNode {
       tr.classes.add('dn');
       
       h.TableCellElement td = new h.TableCellElement();
+      td.classes.add('shrink');
       td.append(bHelp);
       tr.append(td);
       
       td = new h.TableCellElement();
+      td.classes.add('shrink');
       td.text = doc.cfg.elementTitle(ref);
       if (doc.cfg.requiredElement(parent.ref, ref))
         td.classes.add('required');
@@ -161,6 +163,7 @@ class DNForm extends DaxeNode {
       div.append(spanTitle);
       
       h.TableElement table = new h.TableElement();
+      table.classes.add('expand');
       for (x.Element refAttr in attRefs) {
         table.append(attributeHTML(refAttr));
       }
@@ -215,11 +218,13 @@ class DNForm extends DaxeNode {
     h.TableRowElement tr = new h.TableRowElement();
     
     h.TableCellElement td = new h.TableCellElement();
-    h.ButtonElement bHelp = _makeHelpButton(ref, refAttr);
+    td.classes.add('shrink');
+    h.ButtonElement bHelp = makeHelpButton(ref, refAttr);
     td.append(bHelp);
     tr.append(td);
     
     td = new h.TableCellElement();
+    td.classes.add('shrink');
     td.text = doc.cfg.attributeTitle(ref, refAttr);
     if (doc.cfg.requiredAttribute(ref, refAttr))
       td.classes.add('required');
@@ -228,6 +233,7 @@ class DNForm extends DaxeNode {
     tr.append(td);
     
     td = new h.TableCellElement();
+    td.classes.add('expand');
     String value = getAttribute(name);
     String defaultValue = doc.cfg.defaultAttributeValue(refAttr);
     if (value == null) {
@@ -240,10 +246,14 @@ class DNForm extends DaxeNode {
     attributeControl = new SimpleTypeControl.forAttribute(ref, refAttr, value,
         valueChanged: () => changeAttributeValue(refAttr, attributeControl), catchUndo: true);
     attributeControls[name] = attributeControl;
-    td.append(attributeControl.html());
+    h.Element ht = attributeControl.html();
+    if (ht.firstChild is h.TextInputElement)
+      (ht.firstChild as h.TextInputElement).classes.add('form_field');
+    td.append(ht);
     tr.append(td);
     
     td = new h.TableCellElement();
+    td.classes.add('shrink');
     tr.append(td);
     
     return(tr);
@@ -275,7 +285,7 @@ class DNForm extends DaxeNode {
       int colspan;
       if (dn is! DNForm) {
         td = new h.TableCellElement();
-        h.ButtonElement bHelp = _makeHelpButton(dn.ref, null);
+        h.ButtonElement bHelp = makeHelpButton(dn.ref, null);
         td.append(bHelp);
         tr.append(td);
         colspan = 2;
@@ -292,6 +302,7 @@ class DNForm extends DaxeNode {
   
   void addPlusMinusButtons(h.TableRowElement tr, DaxeNode dn) {
     h.TableCellElement td = new h.TableCellElement();
+    td.classes.add('shrink');
     if (doc.cfg.getSchema().multipleChildren(ref, dn.ref)) {
       if (dn.nextSibling == null || dn.nextSibling.ref != dn.ref) { // last node with this reference
         if (dn.firstChild != null || dn is! DNForm) {
@@ -404,7 +415,7 @@ class DNForm extends DaxeNode {
     return(el);
   }
   
-  h.ButtonElement _makeHelpButton(final x.Element elementRef, final x.Element attributeRef) {
+  static h.ButtonElement makeHelpButton(final x.Element elementRef, final x.Element attributeRef) {
     h.ButtonElement bHelp = new h.ButtonElement();
     bHelp.attributes['type'] = 'button';
     bHelp.classes.add('help');

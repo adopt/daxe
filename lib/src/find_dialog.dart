@@ -133,6 +133,11 @@ class FindDialog {
     
     div_find.append(form);
     h.document.body.append(div_find);
+    div_find.onKeyDown.listen((h.KeyboardEvent event) {
+      if (event.keyCode == h.KeyCode.ESC) {
+        close();
+      }
+    });
     inputFind.focus();
   }
   

@@ -204,6 +204,8 @@ class DNHiddenP extends DaxeNode {
     if (current is DNHiddenP)
       list.add(current);
     // using DaxeNode.nextNode() to iterate through the nodes between start and end
+    if (current.parent == null)
+      return(list);
     Position nextPos = new Position(current.parent, current.parent.offsetOf(current)+1);
     while (nextPos < end) {
       current = current.nextNode();

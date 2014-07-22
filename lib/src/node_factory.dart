@@ -41,6 +41,10 @@ class NodeFactory {
   
   static void addCoreDisplayTypes() {
     // add core types in the nodes library
+    NodeFactory.addDisplayType('champ',
+        (x.Element ref) => new DNFormField.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNFormField.fromNode(node, parent)
+    );
     NodeFactory.addDisplayType('division',
         (x.Element ref) => new DNDivision.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNDivision.fromNode(node, parent)

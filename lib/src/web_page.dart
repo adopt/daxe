@@ -299,10 +299,17 @@ class WebPage {
       MenuItem item = new MenuItem(title, () => doc.insertNewNode(ref, 'element'));
       contextualMenu.add(item);
     }
-    contextualMenu.addSeparator();
     if (parent.ref != null) {
-      String title = doc.cfg.menuTitle(parent.nodeName);
-      title = "${Strings.get('contextual.help_about_element')} $title";
+      String elementTitle = doc.cfg.menuTitle(parent.nodeName);
+      List<x.Element> attRefs = doc.cfg.elementAttributes(parent.ref);
+      if (attRefs != null && attRefs.length > 0) {
+        contextualMenu.addSeparator();
+        String title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
+        contextualMenu.add(new MenuItem(title, () =>
+            parent.attributeDialog()));
+      }
+      contextualMenu.addSeparator();
+      String title = "${Strings.get('contextual.help_about_element')} $elementTitle";
       contextualMenu.add(new MenuItem(title, () =>
           (new HelpDialog.Element(parent.ref)).show()));
     }

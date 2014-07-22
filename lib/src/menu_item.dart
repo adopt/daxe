@@ -49,7 +49,7 @@ class MenuItem {
     h.TableRowElement tr = new h.TableRowElement();
     if (is_separator) {
       h.TableCellElement td = new h.TableCellElement();
-      td.appendText('-');
+      td.append(new h.HRElement());
       tr.append(td);
     } else {
       tr.attributes['id'] = itemid;

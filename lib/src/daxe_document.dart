@@ -60,7 +60,7 @@ class DaxeDocument {
    * If a 404 occurs, create a new document with the config instead
    * (so that it can be saved at the given path)
    */
-  Future openDocument(String filePath, String configPath) {
+  Future openDocument(String filePath, String configPath, {bool removeIndents: true}) {
     Completer completer = new Completer();
     cfg = new Config();
     cfg.load(configPath).then((_) {
@@ -68,6 +68,8 @@ class DaxeDocument {
       this.filePath = filePath;
       x.DOMParser dp = new x.DOMParser();
       dp.parseFromURL(filePath).then((x.Document xmldoc) {
+        if (removeIndents)
+          removeWhitespace(xmldoc.documentElement);
         dndoc = NodeFactory.createFromNode(xmldoc, null);
         completer.complete();
       }, onError: (x.DOMException ex) {
@@ -925,4 +927,132 @@ class DaxeDocument {
   Position findPosition(num x, num y) {
     return(dndoc.findPosition(x, y));
   }
+  
+  /**
+   * Recusively removes needless whitespaces in the element.
+   */
+  void removeWhitespace(final x.Element el) {
+    _removeWhitespace(el, null, false, true);
+  }
+  
+  void _removeWhitespace(final x.Element el, final x.Element refParent, final bool spacePreserveParent,
+                      final bool fteParent) {
+    bool spacePreserve;
+    final String xmlspace = el.getAttribute("xml:space");
+    if (xmlspace == "preserve")
+      spacePreserve = true;
+    else if (xmlspace == "default")
+      spacePreserve = false;
+    else
+      spacePreserve = spacePreserveParent;
+    x.Element refElement;
+    if (cfg != null) {
+      refElement = cfg.getElementRef(el, refParent);
+      if (refElement != null && xmlspace == "") {
+        final List<x.Element> attributs = cfg.elementAttributes(refElement);
+        for (x.Element attref in attributs) {
+          if (cfg.attributeName(attref) == "space" &&
+              cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
+            final String defaut = cfg.defaultAttributeValue(attref);
+            if (defaut == "preserve")
+              spacePreserve = true;
+            else if (defaut == "default")
+              spacePreserve = false;
+            break;
+          }
+        }
+      }
+    } else
+      refElement = null;
+    final bool fte = _isFirstTextElement(el, refElement, refParent, fteParent);
+    for (x.Node n = el.firstChild; n != null; n = n.nextSibling) {
+      if (n.nodeType == x.Node.ELEMENT_NODE)
+        _removeWhitespace(n as x.Element, refElement, spacePreserve, fte);
+      else if (!spacePreserve && n.nodeType == x.Node.TEXT_NODE) {
+        String s = n.nodeValue;
+        
+        // on ne retire pas les blancs s'il n'y a que du blanc dans l'élément
+        if (n.nextSibling == null && n.previousSibling == null && s.trim() == "")
+          break;
+        
+        if (fte && n.parentNode.firstChild == n && refParent != null) {
+          // retire espaces au début si le texte est au début de l'élément
+          int ifin = 0;
+          while (ifin < s.length && (s[ifin] == ' ' || s[ifin] == '\t'))
+            ifin++;
+          if (ifin > 0)
+            s = s.substring(ifin);
+        }
+        
+        // retire les espaces après les retours à la ligne
+        int idebut = s.indexOf("\n ");
+        int idebuttab = s.indexOf("\n\t");
+        if (idebuttab != -1 && (idebut == -1 || idebuttab < idebut))
+          idebut = idebuttab;
+        while (idebut != -1) {
+          int ifin = idebut;
+          while (ifin + 1 < s.length && (s[ifin + 1] == ' ' || s[ifin + 1] == '\t'))
+            ifin++;
+          s = s.substring(0, idebut+1) + s.substring(ifin+1);
+          idebut = s.indexOf("\n ");
+          idebuttab = s.indexOf("\n\t");
+          if (idebuttab != -1 && (idebut == -1 || idebuttab < idebut))
+            idebut = idebuttab;
+        }
+        
+        // condense les espaces partout
+        idebut = s.indexOf("  ");
+        while (idebut != -1) {
+          int ifin = idebut;
+          while (ifin + 1 < s.length && s[ifin + 1] == ' ')
+            ifin++;
+          s = s.substring(0, idebut) + s.substring(ifin);
+          idebut = s.indexOf("  ");
+        }
+        
+        // mise à jour du noeud
+        if (s.length == 0) {
+          x.Node n2 = n.previousSibling;
+          el.removeChild(n);
+          if (n2 == null)
+            n2 = el.firstChild;
+          n = n2;
+          if (n == null)
+            break;
+        } else
+          n.nodeValue = s;
+      }
+    }
+  }
+  
+  // renvoie false s'il ne faut pas retirer les espaces au début de l'élément
+  bool _isFirstTextElement(final x.Element el, final x.Element refEl, final x.Element refParent,
+                           final bool fteParent) {
+    if (refEl == null)
+      return true;
+    if (refParent == null || !cfg.canContainText(refEl) || !cfg.canContainText(refParent))
+      return true;
+    x.Node prevNode = el.previousSibling;
+    while (prevNode != null) {
+      if (prevNode.nodeType == x.Node.TEXT_NODE) {
+        final String prevText = prevNode.nodeValue;
+        if (!(prevText.endsWith(" ") || prevText.endsWith("\n")))
+          return false;
+        return true;
+      } else if (prevNode.nodeType == x.Node.ELEMENT_NODE) {
+        final x.Node lc = prevNode.lastChild;
+        if (lc != null && lc.nodeType == x.Node.TEXT_NODE) {
+          final String prevText = lc.nodeValue;
+          if (!(prevText.endsWith(" ") || prevText.endsWith("\n")))
+            return false;
+        }
+        return true;
+      }
+      prevNode = prevNode.previousSibling;
+    }
+    if (prevNode == null)
+      return fteParent;
+    return true;
+  }
+
 }

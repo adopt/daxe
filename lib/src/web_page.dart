@@ -52,7 +52,7 @@ class WebPage {
     });
   }
   
-  void openDocument(String filePath, String configPath) {
+  void openDocument(String filePath, String configPath, {bool removeIndents: true}) {
     // workarounds for Dart bug 12143, should be removed once this is fixed
     // see http://code.google.com/p/dart/issues/detail?id=12143
     // -> fixed in r26106

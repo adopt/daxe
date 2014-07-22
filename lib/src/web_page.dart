@@ -227,11 +227,14 @@ class WebPage {
   }
   
   void onMouseUp(h.MouseEvent event) {
-    if (event.target is h.ImageElement ||
+    /*
+     this interferes with selection, why was it there again ?
+     if (event.target is h.ImageElement ||
         event.target is h.ButtonElement ||
         event.target is h.TextInputElement ||
         event.target is h.SelectElement)
       return;
+    */
     if (!selectionByWords)
       selectionEnd = Cursor.findPosition(event);
     lastClickPosition = null;
@@ -300,16 +303,17 @@ class WebPage {
       contextualMenu.add(item);
     }
     if (parent.ref != null) {
+      contextualMenu.addSeparator();
       String elementTitle = doc.cfg.menuTitle(parent.nodeName);
+      String title = "${Strings.get('contextual.select_element')} $elementTitle";
+      contextualMenu.add(new MenuItem(title, () => selectNode(parent)));
       List<x.Element> attRefs = doc.cfg.elementAttributes(parent.ref);
       if (attRefs != null && attRefs.length > 0) {
-        contextualMenu.addSeparator();
-        String title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
+        title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
         contextualMenu.add(new MenuItem(title, () =>
             parent.attributeDialog()));
       }
-      contextualMenu.addSeparator();
-      String title = "${Strings.get('contextual.help_about_element')} $elementTitle";
+      title = "${Strings.get('contextual.help_about_element')} $elementTitle";
       contextualMenu.add(new MenuItem(title, () =>
           (new HelpDialog.Element(parent.ref)).show()));
     }

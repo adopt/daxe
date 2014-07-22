@@ -1,5 +1,5 @@
 body {
-  line-height: 1.5em;
+  line-height: 1.5;
   color: black;
   background-color: #FFFFFF;
 }
@@ -222,9 +222,11 @@ span.empty_tag, span.start_tag, span.end_tag, span.simple_type {
   font-size: 85%;
   color: #000000;
   background-color: #FFFFB0;
-  border: 1px solid #505050;
+  border: 1px solid #707070;
   margin-left: 2px;
   margin-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -236,14 +238,14 @@ span.empty_tag, span.start_tag, span.end_tag, span.simple_type {
 }
 
 span.empty_tag {
-  padding-left: 1px;
-  padding-right: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 span.start_tag {
   border-top-right-radius: 0.6em;
   border-bottom-right-radius: 0.6em;
-  padding-left: 1px;
+  padding-left: 2px;
   padding-right: 0.5em;
 }
 
@@ -251,10 +253,10 @@ span.end_tag {
   border-top-left-radius: 0.6em;
   border-bottom-left-radius: 0.6em;
   padding-left: 0.5em;
-  padding-right: 1px;
+  padding-right: 2px;
 }
 
-.selected span.empty_tag, .selected span.start_tag, .selected span.end_tag {
+.selected span.empty_tag, .selected span.start_tag, .selected span.end_tag, span.selected.simple_type {
   background-color: #F05030;
   color: #FFFFFF;
 }
@@ -274,6 +276,13 @@ span.end_tag {
 
 span.start_tag img, span.empty_tag img {
   vertical-align: middle;
+}
+span.start_tag img:hover, span.empty_tag img:hover {
+  background-color: #F0F0B0;
+}
+.selected span.empty_tag img:hover, .selected span.start_tag img:hover,
+.selected span.end_tag img:hover, span.selected.simple_type img:hover {
+  background-color: #F07050;
 }
 
 span.long {
@@ -398,6 +407,11 @@ div.help_list_div {
 
 ul#help_list {
   margin-top: 0px;
+}
+
+li.help_selectable:hover {
+  cursor: default;
+  color: #30A0F0;
 }
 
 /* find */

@@ -122,7 +122,7 @@ class HelpDialog {
       h.LIElement li = new h.LIElement();
       li.text = doc.cfg.elementTitle(parentRef);
       li.onClick.listen((h.MouseEvent event) => switchToElement(parentRef));
-      li.style.cursor = 'default';
+      li.classes.add('help_selectable');
       ul.append(li);
     }
   }
@@ -143,7 +143,7 @@ class HelpDialog {
       h.LIElement li = new h.LIElement();
       li.text = doc.cfg.elementTitle(childRef);
       li.onClick.listen((h.MouseEvent event) => switchToElement(childRef));
-      li.style.cursor = 'default';
+      li.classes.add('help_selectable');
       ul.append(li);
     }
   }

@@ -52,7 +52,7 @@ class Tag {
     if (_dn.ref != null) {
       List<x.Element> attRefs = doc.cfg.elementAttributes(_dn.ref);
       if (_type != END && attRefs != null && attRefs.length > 0) {
-        h.ImageElement img = new h.ImageElement(src:'packages/daxe/images/attributes.png', width:16, height:15);
+        h.ImageElement img = new h.ImageElement(src:'packages/daxe/images/attributes.png', width:16, height:16);
         img.onClick.listen((h.MouseEvent event) => attributeButton(event));
         span.append(img);
       }

@@ -808,26 +808,37 @@ abstract class DaxeNode {
           // causing wrong results and side effects
           h.Element span_test = new h.Element.tag('span');
           span_test.append(new h.Text("|"));
-          if (hn.nodes.isEmpty)
+          if (hn.nodes.length == 1 && hn.firstChild is h.BRElement) {
             hn.append(span_test);
-          else
-            hn.insertBefore(span_test, hn.firstChild);
-          h.Rectangle box = span_test.getBoundingClientRect();
-          hnx1 = box.left;
-          hny1 = box.top;
-          lineHeight = span_test.offset.height.toDouble();
-          span_test.remove();
-          if (hn is h.LIElement) {
-            h.Node lastDescendant = hn;
-            while (lastDescendant.firstChild != null && lastDescendant.lastChild is! h.Text)
-              lastDescendant = lastDescendant.lastChild;
-            lastDescendant.append(span_test);
-          } else
-            hn.append(span_test);
-          box = span_test.getBoundingClientRect();
-          hnx2 = box.left;
-          hny2 = box.bottom;
-          span_test.remove();
+            h.Rectangle box = span_test.getBoundingClientRect();
+            hnx1 = -1.0;
+            hny1 = box.top;
+            lineHeight = span_test.offset.height.toDouble();
+            hnx2 = -1.0;
+            hny2 = box.bottom;
+            span_test.remove();
+          } else {
+            if (hn.nodes.isEmpty)
+              hn.append(span_test);
+            else
+              hn.insertBefore(span_test, hn.firstChild);
+            h.Rectangle box = span_test.getBoundingClientRect();
+            hnx1 = box.left;
+            hny1 = box.top;
+            lineHeight = span_test.offset.height.toDouble();
+            span_test.remove();
+            if (hn is h.LIElement) {
+              h.Node lastDescendant = hn;
+              while (lastDescendant.firstChild != null && lastDescendant.lastChild is! h.Text)
+                lastDescendant = lastDescendant.lastChild;
+              lastDescendant.append(span_test);
+            } else
+              hn.append(span_test);
+            box = span_test.getBoundingClientRect();
+            hnx2 = box.left;
+            hny2 = box.bottom;
+            span_test.remove();
+          }
         }
         if ((y < hny1 + lineHeight && (y < hny1 || (x < hnx1 && hn is! h.LIElement && dn is! DNHiddenP)))) {
           // position is before this child

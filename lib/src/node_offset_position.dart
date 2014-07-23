@@ -298,7 +298,7 @@ class NodeOffsetPosition implements Position {
           h.SpanElement spos = new h.SpanElement();
           spos.append(new h.Text("|"));
           n.append(spos);
-          List<h.Rect> rects = spos.getClientRects();
+          List<h.Rectangle> rects = spos.getClientRects();
           if (rects.length > 0)
             r = rects[0];
           else
@@ -343,7 +343,10 @@ class NodeOffsetPosition implements Position {
         // no child inside _dn
         assert(_dnOffset == 0);
         h.Element hn = _dn.getHTMLContentsNode();
-        h.Rectangle r = hn.getClientRects()[0];
+        List<h.Rectangle> rects = hn.getClientRects();
+        if (rects.length == 0)
+          return(null);
+        h.Rectangle r = rects[0];
         Point pt = new Point(r.left, r.top);
         return(pt);
       }

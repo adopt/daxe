@@ -269,7 +269,7 @@ class Cursor {
       return;
     Position pos2 = selectionStart;
     while (pos2 == selectionStart) {
-      pt.y = pt.y - 5;
+      pt.y = pt.y - 7;
       pos2 = doc.findPosition(pt.x, pt.y);
       pos2.moveInsideTextNodeIfPossible();
     }
@@ -291,7 +291,7 @@ class Cursor {
       return;
     Position pos2 = selectionStart;
     while (pos2 == selectionStart) {
-      pt.y = pt.y + 5;
+      pt.y = pt.y + 14;
       pos2 = doc.findPosition(pt.x, pt.y);
       pos2.moveInsideTextNodeIfPossible();
     }

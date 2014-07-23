@@ -48,6 +48,7 @@ part 'dn_form.dart';
 part 'dn_form_field.dart';
 part 'dn_hidden_p.dart';
 part 'dn_item.dart';
+part 'dn_line_break.dart';
 part 'dn_list.dart';
 part 'parent_updating_dn_text.dart';
 part 'dn_processing_instruction.dart';

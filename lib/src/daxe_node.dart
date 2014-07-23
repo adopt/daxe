@@ -737,7 +737,7 @@ abstract class DaxeNode {
         if (hn == null)
           continue;
         double hnx1, hny1, hnx2, hny2;
-        double lineHeight;
+        double topLineHeight, bottomLineHeight;
         // NOTE: the main problem here is to avoid adding spans to find the position
         if (hn is h.DivElement && hn.nodes.length > 0 &&
             hn.firstChild is h.SpanElement && (hn.firstChild as h.SpanElement).classes.contains('start_tag') &&
@@ -747,11 +747,12 @@ abstract class DaxeNode {
           h.Rectangle box = span_test.getBoundingClientRect();
           hnx1 = box.left;
           hny1 = box.top;
-          lineHeight = span_test.offset.height.toDouble();
+          topLineHeight = span_test.offset.height.toDouble();
           span_test = hn.lastChild;
           box = span_test.getBoundingClientRect();
           hnx2 = box.right;
           hny2 = box.bottom;
+          bottomLineHeight = span_test.offset.height.toDouble();
         } else if (hn is h.DivElement || hn is h.TableCellElement || hn is h.TableRowElement ||
             hn is h.TableElement || hn is h.ImageElement || hn.classes.contains('form')) {
           // block
@@ -765,7 +766,7 @@ abstract class DaxeNode {
           else
             hnx2 = box.right;
           hny2 = box.bottom;
-          lineHeight = box.height;
+          topLineHeight = bottomLineHeight = box.height;
         } else if (hn is h.SpanElement && hn.nodes.length == 1 && hn.firstChild is h.Text &&
             !hn.firstChild.nodeValue.endsWith('\n')) {
           // text node that does not end with \n
@@ -775,10 +776,11 @@ abstract class DaxeNode {
           h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
+          topLineHeight = box.height;
           box = rects.last;
           hnx2 = box.right;
           hny2 = box.bottom;
-          lineHeight = box.height;
+          bottomLineHeight = box.height;
         } else if (hn.firstChild is h.Element && hn.lastChild is h.SpanElement &&
             hn.lastChild.lastChild is h.Text &&
             !hn.lastChild.lastChild.nodeValue.endsWith('\n')) {
@@ -791,6 +793,7 @@ abstract class DaxeNode {
           h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
+          topLineHeight = box.height;
           span_test = hn.lastChild;
           rects = span_test.getClientRects();
           if (rects.length == 0)
@@ -798,7 +801,7 @@ abstract class DaxeNode {
           box = rects.last;
           hnx2 = box.right;
           hny2 = box.bottom;
-          lineHeight = box.height;
+          bottomLineHeight = box.height;
         } else {
           // NOTE: for a span, getBoundingClientRect and getClientRects return a wrong bottom when
           // there are \n inside (except maybe with IE), so we can't even use them on hn to avoid
@@ -813,7 +816,7 @@ abstract class DaxeNode {
             h.Rectangle box = span_test.getBoundingClientRect();
             hnx1 = -1.0;
             hny1 = box.top;
-            lineHeight = span_test.offset.height.toDouble();
+            topLineHeight = bottomLineHeight = span_test.offset.height.toDouble();
             hnx2 = -1.0;
             hny2 = box.bottom;
             span_test.remove();
@@ -825,7 +828,7 @@ abstract class DaxeNode {
             h.Rectangle box = span_test.getBoundingClientRect();
             hnx1 = box.left;
             hny1 = box.top;
-            lineHeight = span_test.offset.height.toDouble();
+            topLineHeight = span_test.offset.height.toDouble();
             span_test.remove();
             if (hn is h.LIElement) {
               h.Node lastDescendant = hn;
@@ -837,14 +840,16 @@ abstract class DaxeNode {
             box = span_test.getBoundingClientRect();
             hnx2 = box.left;
             hny2 = box.bottom;
+            bottomLineHeight = span_test.offset.height.toDouble();
             span_test.remove();
           }
         }
-        if ((y < hny1 + lineHeight && (y < hny1 || (x < hnx1 && hn is! h.LIElement && dn is! DNHiddenP)))) {
+        if ((y < hny1 + topLineHeight && (y < hny1 || (x < hnx1 && hn is! h.LIElement &&
+            dn is! DNHiddenP)))) {
           // position is before this child
           return(pos);
         }
-        if (y > hny2 - lineHeight && (y > hny2 || (x > hnx2 && hn is! h.LIElement))) {
+        if (y > hny2 - bottomLineHeight && (y > hny2 || (x > hnx2 && hn is! h.LIElement))) {
           // position is after this child
           pos = new Position(this, offsetOf(dn) + 1);
         } else {
@@ -906,9 +911,16 @@ abstract class DaxeNode {
             List<h.Rectangle> rects = range.getClientRects();
             ht.text = s;
             for (h.Rectangle r in rects) {
+              /*
               if (x > r.left && y <= r.bottom) {
                 //print("right of \\n");
                 // to the right of the last character on the line
+                return(new Position(this, pp + i));
+              }
+              */
+              // changed for Chromium, TODO: check with Firefox and IE
+              if (y <= r.bottom) {
+                // before the line bottom
                 return(new Position(this, pp + i));
               }
             }

@@ -264,10 +264,18 @@ class NodeOffsetPosition implements Position {
             r = rects.first;
           else if (s[offset] == '\n' && rects.length == 3)
             r = rects[1];
-          else if (s[offset-1] == '\n' && s[offset] == '\n' && rects.length == 2) // IE
+          else if (h.window.navigator.userAgent.toLowerCase().indexOf('msie') >= 0 &&
+              s[offset-1] == '\n' && s[offset] == '\n' && rects.length == 2) // IE
             r = rects.first;
-          else
+          else {
+            // preferable use a Rectangle with a width (useful in the case of 1\n2\n with Chromium)
             r = rects.last;
+            for (h.Rectangle ri in rects)
+              if (ri.width > 0) {
+                r = ri;
+                break;
+              }
+          }
           pt = new Point(r.left, r.top);
         }
       } else {

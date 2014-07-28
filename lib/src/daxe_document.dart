@@ -965,18 +965,24 @@ class DaxeDocument {
     } else
       refElement = null;
     final bool fte = _isFirstTextElement(el, refElement, refParent, fteParent);
-    for (x.Node n = el.firstChild; n != null; n = n.nextSibling) {
+    // remove all newlines inside if the parent accepts hidden paragraphs inside
+    bool removeAllNewlines = false;
+    removeAllNewlines = cfg != null && hiddenp != null && refElement != null &&
+        cfg.isSubElement(refElement, hiddenp);
+    x.Node next;
+    for (x.Node n = el.firstChild; n != null; n = next) {
+      next = n.nextSibling;
       if (n.nodeType == x.Node.ELEMENT_NODE)
         _removeWhitespace(n as x.Element, refElement, spacePreserve, fte);
       else if (!spacePreserve && n.nodeType == x.Node.TEXT_NODE) {
         String s = n.nodeValue;
         
-        // on ne retire pas les blancs s'il n'y a que du blanc dans l'élément
+        // whitespace is not removed if there is only whitespace in the element
         if (n.nextSibling == null && n.previousSibling == null && s.trim() == "")
           break;
         
         if (fte && n.parentNode.firstChild == n && refParent != null) {
-          // retire espaces au début si le texte est au début de l'élément
+          // remove whitespace at the beginning if the text node is the first child of the element
           int ifin = 0;
           while (ifin < s.length && (s[ifin] == ' ' || s[ifin] == '\t'))
             ifin++;
@@ -984,7 +990,7 @@ class DaxeDocument {
             s = s.substring(ifin);
         }
         
-        // retire les espaces après les retours à la ligne
+        // remove spaces after newlines
         int idebut = s.indexOf("\n ");
         int idebuttab = s.indexOf("\n\t");
         if (idebuttab != -1 && (idebut == -1 || idebuttab < idebut))
@@ -1000,7 +1006,16 @@ class DaxeDocument {
             idebut = idebuttab;
         }
         
-        // condense les espaces partout
+        // remove newlines everywhere if the parent accepts hidden paragraphs inside
+        if (removeAllNewlines) {
+          for (int i=0; i<s.length; i++)
+            if (s[i] == '\n') {
+              s = s.substring(0, i) + s.substring(i+1);
+              i--;
+            }
+        }
+        
+        // condense spaces everywhere
         idebut = s.indexOf("  ");
         while (idebut != -1) {
           int ifin = idebut;
@@ -1010,22 +1025,18 @@ class DaxeDocument {
           idebut = s.indexOf("  ");
         }
         
-        // mise à jour du noeud
-        if (s.length == 0) {
-          x.Node n2 = n.previousSibling;
+        // update the node
+        if (s.length == 0)
           el.removeChild(n);
-          if (n2 == null)
-            n2 = el.firstChild;
-          n = n2;
-          if (n == null)
-            break;
-        } else
+        else
           n.nodeValue = s;
       }
     }
   }
   
-  // renvoie false s'il ne faut pas retirer les espaces au début de l'élément
+  /**
+   * Returns false if whitespaces should not be removed at the start of the element.
+   */
   bool _isFirstTextElement(final x.Element el, final x.Element refEl, final x.Element refParent,
                            final bool fteParent) {
     if (refEl == null)

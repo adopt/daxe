@@ -371,6 +371,12 @@ class Cursor {
         removeChar(selectionStart);
         return;
       }
+      // same thing for newlineInside
+      if (dn is DNText && offset == 0 && dn.nodeValue[0] == '\n' &&
+          dn.previousSibling == null && dn.parent.newlineInside()) {
+        removeChar(selectionStart);
+        return;
+      }
       // if this is the beginning of a text, style or hidden paragraph, remove something before
       // instead of the text, style or paragraph (unless it's empty)
       while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == 0 &&
@@ -1162,9 +1168,11 @@ class Cursor {
     x.Element root = tmpdoc.documentElement;
     // to call fixLineBreaks(), we need a real DaxeNode for the "root", with the right ref
     DaxeNode dnRoot = NodeFactory.create(parent.ref);
-    for (x.Node n in root.childNodes) {
-      DaxeNode dn = NodeFactory.createFromNode(n, dnRoot);
-      dnRoot.appendChild(dn);
+    if (root.childNodes != null) {
+      for (x.Node n in root.childNodes) {
+        DaxeNode dn = NodeFactory.createFromNode(n, dnRoot);
+        dnRoot.appendChild(dn);
+      }
     }
     dnRoot.fixLineBreaks();
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));

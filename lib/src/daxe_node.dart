@@ -809,6 +809,7 @@ abstract class DaxeNode {
           // Using an empty span does not work.
           // FIXME: adding a span with text can change a table layout with Firefox,
           // causing wrong results and side effects
+          // -> TODO: test WORD JOINER ("\u2060") instead of "|"
           h.Element span_test = new h.Element.tag('span');
           span_test.append(new h.Text("|"));
           if (hn.nodes.length == 1 && hn.firstChild is h.BRElement) {

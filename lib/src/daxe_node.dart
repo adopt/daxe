@@ -776,11 +776,11 @@ abstract class DaxeNode {
           h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
-          topLineHeight = box.height;
+          topLineHeight = box.height * 1.4;
           box = rects.last;
           hnx2 = box.right;
           hny2 = box.bottom;
-          bottomLineHeight = box.height;
+          bottomLineHeight = box.height * 1.4;
         } else if (hn.firstChild is h.Element && hn.lastChild is h.SpanElement &&
             hn.lastChild.lastChild is h.Text &&
             !hn.lastChild.lastChild.nodeValue.endsWith('\n')) {
@@ -793,7 +793,7 @@ abstract class DaxeNode {
           h.Rectangle box = rects.first;
           hnx1 = box.left;
           hny1 = box.top;
-          topLineHeight = box.height;
+          topLineHeight = box.height * 1.3;
           span_test = hn.lastChild;
           rects = span_test.getClientRects();
           if (rects.length == 0)
@@ -801,7 +801,7 @@ abstract class DaxeNode {
           box = rects.last;
           hnx2 = box.right;
           hny2 = box.bottom;
-          bottomLineHeight = box.height;
+          bottomLineHeight = box.height * 1.3;
         } else {
           // NOTE: for a span, getBoundingClientRect and getClientRects return a wrong bottom when
           // there are \n inside (except maybe with IE), so we can't even use them on hn to avoid
@@ -816,7 +816,7 @@ abstract class DaxeNode {
             h.Rectangle box = span_test.getBoundingClientRect();
             hnx1 = -1.0;
             hny1 = box.top;
-            topLineHeight = bottomLineHeight = span_test.offset.height.toDouble();
+            topLineHeight = bottomLineHeight = span_test.offset.height.toDouble() * 1.4;
             hnx2 = -1.0;
             hny2 = box.bottom;
             span_test.remove();
@@ -828,7 +828,8 @@ abstract class DaxeNode {
             h.Rectangle box = span_test.getBoundingClientRect();
             hnx1 = box.left;
             hny1 = box.top;
-            topLineHeight = span_test.offset.height.toDouble();
+            // note: maybe we should use CSS line-height here, but it is hard to get the value
+            topLineHeight = span_test.offset.height.toDouble() * 1.4;
             span_test.remove();
             if (hn is h.LIElement) {
               h.Node lastDescendant = hn;
@@ -840,16 +841,16 @@ abstract class DaxeNode {
             box = span_test.getBoundingClientRect();
             hnx2 = box.left;
             hny2 = box.bottom;
-            bottomLineHeight = span_test.offset.height.toDouble();
+            bottomLineHeight = span_test.offset.height.toDouble() * 1.4;
             span_test.remove();
           }
         }
-        if ((y < hny1 + topLineHeight && (y < hny1 || (x < hnx1 && hn is! h.LIElement &&
+        if ((y < hny1 + topLineHeight && (y < hny1 - 1 || (x < hnx1 + 1 && hn is! h.LIElement &&
             dn is! DNHiddenP)))) {
           // position is before this child
           return(pos);
         }
-        if (y > hny2 - bottomLineHeight && (y > hny2 || (x > hnx2 && hn is! h.LIElement))) {
+        if (y > hny2 - bottomLineHeight && (y > hny2 + 1 || (x > hnx2 - 1 && hn is! h.LIElement))) {
           // position is after this child
           pos = new Position(this, offsetOf(dn) + 1);
         } else {

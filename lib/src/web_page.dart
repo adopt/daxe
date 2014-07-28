@@ -115,6 +115,7 @@ class WebPage {
     redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
     redoMenu.enabled = false;
     editMenu.add(redoMenu);
+    editMenu.add(new MenuItem(Strings.get('menu.select_all'), () => selectAll(), shortcut: 'A'));
     MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
     editMenu.add(findMenu);
     mbar.insert(editMenu, 1);
@@ -380,6 +381,10 @@ class WebPage {
     _cursor.moveTo(p1); // to scroll
     _cursor.setSelection(p1, p2);
     updateAfterPathChange();
+  }
+  
+  void selectAll() {
+    _cursor.setSelection(new Position(doc.dndoc, 0), new Position(doc.dndoc, doc.dndoc.offsetLength));
   }
   
   void updateAfterPathChange() {

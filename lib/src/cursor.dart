@@ -362,10 +362,17 @@ class Cursor {
    */
   void backspace() {
     if (selectionStart == selectionEnd) {
-      // if this is the beginning of a text, style or hidden paragraph, remove something before
-      // instead of the text, style or paragraph (unless it's empty)
       DaxeNode dn = selectionStart.dn;
       int offset = selectionStart.dnOffset;
+      // if the cursor is at a newline after a node with an automatic (not DOM) newline,
+      // the user probably wants to remove the newline instead of the previous node.
+      if (dn is DNText && offset == 0 && dn.nodeValue[0] == '\n' &&
+          dn.previousSibling != null && dn.previousSibling.newlineAfter()) {
+        removeChar(selectionStart);
+        return;
+      }
+      // if this is the beginning of a text, style or hidden paragraph, remove something before
+      // instead of the text, style or paragraph (unless it's empty)
       while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == 0 &&
           dn.offsetLength > 0) {
         offset = dn.parent.offsetOf(dn);

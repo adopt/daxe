@@ -326,6 +326,8 @@ class NodeOffsetPosition implements Position {
       } else if (children != null && _dnOffset < children.length) {
         // within the children
         h.Element hn = children[_dnOffset].getHTMLNode();
+        if (hn == null)
+          return(null);
         if (_dnOffset > 0) {
           h.Element hn1 = children[_dnOffset - 1].getHTMLNode();
           h.Element hn2 = hn;
@@ -340,23 +342,23 @@ class NodeOffsetPosition implements Position {
               return(new Point(r.right, r.top));
             }
           }
-          hn = hn2;
+          h.Rectangle r1 = hn1.getBoundingClientRect();
+          h.Rectangle r2 = hn2.getBoundingClientRect();
+          return(new Point(r2.left, (r1.bottom + r2.top)/2));
         }
-        if (hn == null)
-          return(null);
         h.Rectangle r = hn.getClientRects()[0];
-        Point pt = new Point(r.left, r.top);
-        return(pt);
+        return(new Point(r.left, r.top));
       } else {
         // no child inside _dn
         assert(_dnOffset == 0);
         h.Element hn = _dn.getHTMLContentsNode();
+        if (hn == null)
+          return(null);
         List<h.Rectangle> rects = hn.getClientRects();
         if (rects.length == 0)
           return(null);
         h.Rectangle r = rects[0];
-        Point pt = new Point(r.left, r.top);
-        return(pt);
+        return(new Point(r.left, r.top));
       }
     }
   }

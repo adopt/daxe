@@ -53,6 +53,10 @@ div.menu_title {
   padding-right: 0.5em;
 }
 
+.menu_title .disabled {
+  color: #AAA;
+}
+
 div.dropdown_menu {
   position: absolute;
   left: 0px;

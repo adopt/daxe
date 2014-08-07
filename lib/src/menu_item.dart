@@ -115,6 +115,7 @@ class MenuItem {
     h.Element tr = getItemHTMLNode();
     tr.classes.remove('selected');
     tr.classes.add('disabled');
+    parent.checkEnabled();
   }
   
   void enable() {
@@ -123,6 +124,7 @@ class MenuItem {
     enabled = true;
     h.Element tr = getItemHTMLNode();
     tr.classes.remove('disabled');
+    parent.checkEnabled();
   }
   
   void check() {

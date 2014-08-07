@@ -38,8 +38,10 @@ class Menu extends MenuItem {
     h.TableCellElement td = new h.TableCellElement();
     td.text = _title;
     td.onMouseOver.listen((h.MouseEvent event) {
-      select();
-      show();
+      if (enabled) {
+        select();
+        show();
+      }
     });
     tr.append(td);
     td = new h.TableCellElement();
@@ -50,8 +52,10 @@ class Menu extends MenuItem {
     divSubMenu.style.display = 'none';
     td.append(divSubMenu);
     td.onMouseOver.listen((h.MouseEvent event) {
-      select();
-      show();
+      if (enabled) {
+        select();
+        show();
+      }
     });
     tr.append(td);
     if (!enabled)
@@ -128,6 +132,26 @@ class Menu extends MenuItem {
       if (firstNode is h.Text)
         firstNode.text = title;
     }
+  }
+  
+  void checkEnabled() {
+    bool en = false;
+    for (MenuItem item in items) {
+      if (item.enabled) {
+        en = true;
+        break;
+      }
+    }
+    if (en == enabled)
+      return;
+    h.Element el = h.querySelector("#$itemid");
+    if (en)
+      el.classes.remove('disabled');
+    else
+      el.classes.add('disabled');
+    enabled = en;
+    if (parent != null)
+      parent.checkEnabled();
   }
   
   /*

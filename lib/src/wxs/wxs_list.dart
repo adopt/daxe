@@ -62,7 +62,7 @@ class WXSList extends WXSAnnotated {
       return(false);
     if (value == null)
       return(false);
-    final List<String> items = value.trim().split("\\s");
+    final List<String> items = value.trim().split(new RegExp(r"\s+"));
     for (String item in items) {
       if (_simpleType != null) {
         if (!_simpleType.validValue(item))

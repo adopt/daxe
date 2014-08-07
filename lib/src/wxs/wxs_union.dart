@@ -37,7 +37,7 @@ class WXSUnion extends WXSAnnotated {
         _simpleTypes.add(new WXSSimpleType(n as Element, null, schema));
     }
     if (el.hasAttribute("memberTypes"))
-      _memberTypes = (el.getAttribute("memberTypes")).split("\\s");
+      _memberTypes = (el.getAttribute("memberTypes")).split(new RegExp(r"\s+"));
     
     _domElement = el;
     _wxsMemberTypes = null;

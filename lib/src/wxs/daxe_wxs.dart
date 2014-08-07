@@ -645,7 +645,7 @@ class DaxeWXS implements InterfaceSchema {
       }
     } else {
       // liste d'espaces de noms séparés par des espaces
-      final HashSet<String> espaces = new HashSet.from(namespace.split("\\s"));
+      final HashSet<String> espaces = new HashSet.from(namespace.split(new RegExp(r"\s+")));
       if (espaces.contains("##targetNamespace")) {
         espaces.remove("##targetNamespace");
         espaces.add(targetNamespace);

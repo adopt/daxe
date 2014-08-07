@@ -156,11 +156,16 @@ class Toolbar {
         List<String> fonts = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'];
         ToolbarMenu tbmenu = _makeStyleToolbarMenu(Strings.get('toolbar.font'), "font-family", fonts);
         items.add(tbmenu);
+        /*
+        A size menu is a bad idea: larger font sizes are used for titles and it is
+        important to be able to extract titles automatically
+        
         // Size menu
         List<String> sizes = ['8', '9', '10', '11', '12', '14', '16', '18',
                               '20', '24', '28', '32', '36', '48', '72'];
         tbmenu = _makeStyleToolbarMenu(Strings.get('toolbar.size'), "font-size", sizes, "px");
         items.add(tbmenu);
+        */
       }
     }
   }

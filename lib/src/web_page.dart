@@ -41,35 +41,37 @@ class WebPage {
     selectionByWords = false;
   }
   
-  void newDocument(String configPath) {
+  Future newDocument(String configPath) {
+    Completer completer = new Completer();
     doc.newDocument(configPath).then( (_) {
       _buildMenus();
       init();
       h.document.title = Strings.get('page.new_document');
+      completer.complete();
     }, onError: (DaxeException ex) {
       h.Element divdoc = h.querySelector("#doc2");
-      divdoc.text = "Error creating the new document: $ex";
+      String msg = "Error creating the new document: $ex";
+      divdoc.text = msg;
+      completer.completeError(msg);
     });
+    return(completer.future);
   }
   
-  void openDocument(String filePath, String configPath, {bool removeIndents: true}) {
-    // workarounds for Dart bug 12143, should be removed once this is fixed
-    // see http://code.google.com/p/dart/issues/detail?id=12143
-    // -> fixed in r26106
-    //filePath = '' + filePath;
-    //doc.saveURL = '${doc.saveURL}';
-    //if (doc.saveURL == '' || doc.saveURL == 'null')
-    //  doc.saveURL = null;
-    
+  Future openDocument(String filePath, String configPath, {bool removeIndents: true}) {
+    Completer completer = new Completer();
     doc.openDocument(filePath, configPath).then( (_) {
       _buildMenus();
       init();
       doc.dndoc.callAfterInsert();
       h.document.title = filePath.split('/').last;
+      completer.complete();
     }, onError: (DaxeException ex) {
       h.Element divdoc = h.querySelector("#doc2");
-      divdoc.text = "Error reading the document: $ex";
+      String msg = "Error reading the document: $ex";
+      divdoc.text = msg;
+      completer.completeError(msg);
     });
+    return(completer.future);
   }
   
   void init() {

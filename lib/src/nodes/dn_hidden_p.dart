@@ -257,7 +257,7 @@ class DNHiddenP extends DaxeNode {
     
     if (selectionStart.dn == selectionEnd.dn && textParent is! DNHiddenP &&
         doc.cfg.insertIsPossible(textParent, offset, offset, doc.hiddenp)) {
-      // There is no paragraph, we need to create two.
+      // There is no paragraph, we need to create one or two.
       // Enclose all possible text and markup to the left of selectionStart
       // in a new hidden paragraph,
       // and create another one afterwards with what can be moved inside
@@ -313,14 +313,17 @@ class DNHiddenP extends DaxeNode {
         edit.addSubEdit(doc.removeBetweenEdit(pStart, pEnd));
       }
       
-      // create the first paragraph
-      DNHiddenP p1 = NodeFactory.create(doc.hiddenp);
-      edit.addSubEdit(new UndoableEdit.insertNode(pStart, p1));
-      if (cloneLeft != null)
+      int p2offset = startOffset;
+      
+      // create the first paragraph if necessary
+      if (cloneLeft != null) {
+        DNHiddenP p1 = NodeFactory.create(doc.hiddenp);
+        edit.addSubEdit(new UndoableEdit.insertNode(pStart, p1));
         edit.addSubEdit(doc.insertChildrenEdit(cloneLeft, new Position(p1, 0)));
+        p2offset++;
+      }
       
       // create the second paragraph
-      int p2offset = startOffset + 1;
       DNHiddenP p2 = NodeFactory.create(doc.hiddenp);
       edit.addSubEdit(new UndoableEdit.insertNode(
           new Position(textParent, p2offset), p2));

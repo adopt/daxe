@@ -284,6 +284,8 @@ class SimpleTypeControl {
       // this works in Chromium but not Firefox :
       //input.onFocus.first.then((h.Event event) => input.selectionStart = input.selectionEnd = input.value.length);
       //input.focus();
+    } else if (hcontrol != null) {
+      hcontrol.focus();
     }
   }
 }

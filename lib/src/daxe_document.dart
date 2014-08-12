@@ -751,9 +751,10 @@ class DaxeDocument {
    * after the attribute dialog has been validated (if there are attributes).
    * If there is a selection, its contents are moved inside the new element.
    * The whole operation is added to the document history so that it can be undone.
+   * Returns true if the insert worked.
    * This method is called by [insertNewNode].
    */
-  void insert2(DaxeNode dn, Position pos) {
+  bool insert2(DaxeNode dn, Position pos) {
     DaxeNode content = null;
     if (page.getSelectionStart() != page.getSelectionEnd()) {
       Position selectionStart = page.getSelectionStart();
@@ -818,10 +819,46 @@ class DaxeDocument {
       try {
         if (cursorPos == null)
           throw new DaxeException(content.toString() + Strings.get('insert.not_authorized_here'));
+        if (hiddenp != null) {
+          // do not put a hidden paragraph where it is not allowed (remove one level)
+          DaxeNode next;
+          for (DaxeNode dn2=content.firstChild; dn2 != null; dn2=next) {
+            next = dn2.nextSibling;
+            if (dn2.ref == hiddenp && !doc.cfg.isSubElement(dn.ref, hiddenp)) {
+              DaxeNode next2;
+              for (DaxeNode dn3=dn2.firstChild; dn3 != null; dn3=next2) {
+                next2 = dn3.nextSibling;
+                dn2.removeChild(dn3);
+                content.insertBefore(dn3, dn2);
+              }
+              content.removeChild(dn2);
+            }
+          }
+          // add hidden paragraphs if necessary
+          if (doc.cfg.isSubElement(dn.ref, hiddenp)) {
+            for (DaxeNode dn2=content.firstChild; dn2 != null; dn2=next) {
+              next = dn2.nextSibling;
+              if (dn2.ref != hiddenp &&
+                  ((dn2 is DNText && !cfg.canContainText(dn.ref)) ||
+                  (!doc.cfg.isSubElement(dn.ref, dn2.ref) &&
+                      doc.cfg.isSubElement(hiddenp, dn2.ref)))) {
+                content.removeChild(dn2);
+                if (dn2.previousSibling != null && dn2.previousSibling.ref == hiddenp) {
+                  dn2.previousSibling.appendChild(dn2);
+                } else {
+                  DNHiddenP p = new DNHiddenP.fromRef(hiddenp);
+                  p.appendChild(dn2);
+                  content.insertBefore(p, next);
+                }
+              }
+            }
+          }
+        }
         doNewEdit(insertChildrenEdit(content, cursorPos, checkValidity:true));
         // replace the 3 previous edits by a compound
         combineLastEdits(Strings.get('undo.insert_element'), 3);
         page.updateUndoMenus();
+        return(true);
       } on DaxeException catch (ex) {
         h.window.alert(ex.toString());
         // inserting content didn't work: undo remove and insert
@@ -829,8 +866,10 @@ class DaxeDocument {
         undo();
         edits.removeRange(edits.length - 2, edits.length);
         page.updateUndoMenus();
+        return(false);
       }
     }
+    return(true);
   }
   
   void executeFunction(String functionName, x.Element el) {

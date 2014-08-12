@@ -430,10 +430,24 @@ class WebPage {
         _updateMenu(item, validRefs);
       } else if (item.data is x.Element) {
         x.Element ref = item.data;
-        if (validRefs.contains(ref))
+        String elementName = doc.cfg.elementName(ref);
+        bool found = false;
+        for (x.Element vref in validRefs) {
+          if (doc.cfg.elementName(vref) == elementName) {
+            found = true;
+            if (vref != ref) {
+              // this can happen if 2 different elements have the same name
+              item.data = vref;
+              item.action = () => doc.insertNewNode(vref, 'element');
+            }
+            break;
+          }
+        }
+        if (found)
           item.enable();
         else
           item.disable();
+        
       }
     }
   }

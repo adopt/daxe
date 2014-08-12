@@ -26,6 +26,7 @@ class MenuItem {
   String shortcut;
   Object data;
   bool enabled;
+  bool selected;
   bool is_separator;
   String toolTipText;
   bool checked;
@@ -35,6 +36,7 @@ class MenuItem {
     itemidcount++;
     parent = null;
     enabled = true;
+    selected = false;
     is_separator = false;
     checked = false;
   }
@@ -43,6 +45,7 @@ class MenuItem {
     is_separator = true;
     enabled = false;
     checked = false;
+    selected = false;
   }
   
   h.Element htmlItem() {
@@ -56,14 +59,20 @@ class MenuItem {
       h.TableCellElement td = new h.TableCellElement();
       td.text = _title;
       td.onMouseUp.listen((h.MouseEvent event) => activate());
-      td.onMouseOver.listen((h.MouseEvent event) => select());
+      td.onMouseOver.listen((h.MouseEvent event) {
+        if (enabled)
+          select();
+      });
       td.onMouseOut.listen((h.MouseEvent event) => deselect());
       tr.append(td);
       td = new h.TableCellElement();
       if (this.shortcut != null)
         td.text = "Ctrl+$shortcut";
       td.onMouseUp.listen((h.MouseEvent event) => activate());
-      td.onMouseOver.listen((h.MouseEvent event) => select());
+      td.onMouseOver.listen((h.MouseEvent event) {
+        if (enabled)
+          select();
+      });
       td.onMouseOut.listen((h.MouseEvent event) => deselect());
       if (checked)
         tr.classes.add('checked');
@@ -87,8 +96,9 @@ class MenuItem {
   }
   
   void select() {
-    if (!enabled)
+    if (selected)
       return;
+    selected = true;
     h.Element tr = getItemHTMLNode();
     tr.classes.add('selected');
     if (this is Menu) {
@@ -98,8 +108,9 @@ class MenuItem {
   }
   
   void deselect() {
-    if (!enabled)
+    if (!selected)
       return;
+    selected = false;
     h.Element tr = getItemHTMLNode();
     if (tr != null)
       tr.classes.remove('selected');

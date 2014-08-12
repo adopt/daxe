@@ -22,20 +22,20 @@ part of daxe;
  */
 class WebPage {
   static const int doubleClickTime = 400; // maximum time between the clicks, in milliseconds
-  InsertPanel _insertP;
   Cursor _cursor;
   Position selectionStart, selectionEnd;
   MenuBar mbar;
   MenuItem undoMenu, redoMenu;
   Menu contextualMenu;
   Toolbar toolbar;
+  LeftPanel _left;
   Position lastClickPosition;
   DateTime lastClickTime;
   bool selectionByWords; // double-click+drag
   
   WebPage() {
-    _insertP = new InsertPanel();
     _cursor = new Cursor();
+    _left = new LeftPanel();
     lastClickPosition = null;
     lastClickTime = null;
     selectionByWords = false;
@@ -46,10 +46,11 @@ class WebPage {
     doc.newDocument(configPath).then( (_) {
       _buildMenus();
       init();
+      _left.selectInsertPanel();
       h.document.title = Strings.get('page.new_document');
       completer.complete();
     }, onError: (DaxeException ex) {
-      h.Element divdoc = h.querySelector("#doc2");
+      h.Element divdoc = h.document.getElementById('doc2');
       String msg = "Error creating the new document: $ex";
       divdoc.text = msg;
       completer.completeError(msg);
@@ -62,11 +63,12 @@ class WebPage {
     doc.openDocument(filePath, configPath).then( (_) {
       _buildMenus();
       init();
+      _left.selectTreePanel();
       doc.dndoc.callAfterInsert();
       h.document.title = filePath.split('/').last;
       completer.complete();
     }, onError: (DaxeException ex) {
-      h.Element divdoc = h.querySelector("#doc2");
+      h.Element divdoc = h.document.getElementById('doc2');
       String msg = "Error reading the document: $ex";
       divdoc.text = msg;
       completer.completeError(msg);
@@ -75,8 +77,9 @@ class WebPage {
   }
   
   void init() {
-    h.Element divdoc = h.querySelector("#doc2");
+    h.Element divdoc = h.document.getElementById('doc2');
     divdoc.children.clear();
+    h.document.body.append(_left.html());
     h.Element elhtml = doc.html();
     divdoc.append(elhtml);
     
@@ -88,7 +91,7 @@ class WebPage {
     divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));
     divdoc.onMouseUp.listen((h.MouseEvent event) => onMouseUp(event));
     divdoc.onContextMenu.listen((h.MouseEvent event) => onContextMenu(event));
-    h.querySelector("#doc1").onScroll.listen((h.Event event) => onScroll(event));
+    h.document.getElementById('doc1').onScroll.listen((h.Event event) => onScroll(event));
     h.document.onMouseUp.listen((h.MouseEvent event) {
       if (contextualMenu != null)
         contextualMouseUp(event);
@@ -122,7 +125,7 @@ class WebPage {
     editMenu.add(findMenu);
     mbar.insert(editMenu, 1);
     
-    h.Element headers = h.querySelector("#headers");
+    h.Element headers = h.document.getElementById('headers');
     headers.append(mbar.html());
     
     toolbar = new Toolbar(doc.cfg);
@@ -376,6 +379,16 @@ class WebPage {
     _cursor.focus();
   }
   
+  void scrollToNode(DaxeNode dn) {
+    Position startPos = new Position(dn.parent, dn.parent.offsetOf(dn));
+    Point pt = startPos.positionOnScreen();
+    if (pt == null)
+      return;
+    h.DivElement doc1 = h.document.getElementById('doc1'); 
+    int doctop = doc1.offset.top;
+    doc1.scrollTop += pt.y.toInt() - doctop - 10;
+  }
+  
   void selectNode(DaxeNode dn) {
     int offset = dn.parent.offsetOf(dn);
     Position p1 = new Position(dn.parent, offset);
@@ -397,7 +410,7 @@ class WebPage {
       parent = parent.parent;
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
-    _insertP.update(parent, refs, validRefs);
+    _left.update(parent, refs, validRefs);
     updateMenusAndToolbar(parent, validRefs);
     updatePath();
   }
@@ -426,7 +439,7 @@ class WebPage {
   }
   
   void updatePath() {
-    h.Element div_path = h.querySelector("div#path");
+    h.Element div_path = h.document.getElementById('path');
     if (_cursor.selectionStart == null)
       div_path.text = "";
     else

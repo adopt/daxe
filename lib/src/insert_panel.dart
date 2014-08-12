@@ -24,7 +24,7 @@ part of daxe;
 class InsertPanel {
   
   void update(DaxeNode parent, List<x.Element> refs, List<x.Element> validRefs) {
-    h.Element divInsert = h.querySelector('div#insert');
+    h.Element divInsert = h.document.getElementById('insert');
     for (h.Element child in divInsert.children)
       child.remove();
     Config cfg = doc.cfg;

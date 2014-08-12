@@ -8,7 +8,7 @@ button {
   padding: 2px;
 }
 
-div#headers {
+#headers {
   position: absolute;
   top: 0em;
   left: 0em;
@@ -16,19 +16,115 @@ div#headers {
   z-index: 5;
 }
 
-div#insert {
+#left_panel {
   position: absolute;
   top: 4em;
   bottom: 1.5em;
   left: 0em;
   width: 15em;
-  overflow: auto;
-  background-color: #F0F0F0;
-  text-align: center;
   z-index: 1;
+  background-color: #F0F0F0;
 }
 
-div#insert button.insertb {
+#tab_buttons {
+  position: absolute;
+  top: 0em;
+  left: 0em;
+  right: 0em;
+  border-bottom: 1px solid #555;
+  background-color: #F5F5F5;
+  z-index: 3;
+}
+
+.tab_button {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  vertical-align: bottom;
+  border: 1px solid #555;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background-color: #F5F5F5;
+  border-top-left-radius: 0.4em;
+  border-top-right-radius: 0.4em;
+  cursor: default;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.tab_button:hover {
+  background-color: #DDD;
+}
+
+.tab_button.selected {
+  border-bottom: 1px solid #F0F0F0;
+  background-color: #F0F0F0;
+  color: black;
+}
+
+#insert {
+  position: absolute;
+  top: 2em;
+  bottom: 0em;
+  left: 0em;
+  width: 15em;
+  overflow: auto;
+  text-align: center;
+  background-color: #F0F0F0;
+}
+
+#tree {
+  position: absolute;
+  top: 2em;
+  bottom: 0em;
+  left: 0em;
+  width: 15em;
+  overflow: auto;
+  background-color: #F0F0F0;
+  white-space: pre;
+}
+
+.tree_div {
+  position: relative;
+  margin-left: 0.5em;
+}
+
+.expand_button {
+  position: absolute;
+  left: -0.7em;
+  top: 0px;
+  display: inline-block;
+  width: 0.5em;
+  padding-left: 1px;
+  padding-right: 1px;
+  margin-right: 2px;
+  text-align: center;
+  cursor: default;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.expand_button:hover {
+  background-color: #DDD;
+}
+
+.tree_node_title {
+  cursor: default;
+}
+
+.tree_node_title:hover {
+  background-color: #DDD;
+}
+
+#insert button.insertb {
   width: 80%
 }
 

@@ -24,48 +24,77 @@ class TreePanel {
   List<DaxeNode> expanded;
   List<DaxeNode> collapsed;
   List<DaxeNode> existing;
+  bool firstUpdate;
   
   TreePanel() {
     expanded = new List<DaxeNode>();
     collapsed = new List<DaxeNode>();
+    firstUpdate = true;
   }
   
   void update() {
     h.DivElement treeDiv = h.document.getElementById('tree');
     treeDiv.children.clear();
     DaxeNode root = doc.getRootElement();
-    existing = new List<DaxeNode>();
+    if (firstUpdate) {
+      firstUpdate = false;
+      _initialExpand();
+    }
     if (root != null)
       displayTree(root, treeDiv);
     
-    // remove references of deleted nodes
-    for (int i=0; i<expanded.length; i++) {
-      DaxeNode dn = expanded[i];
-      if (!existing.contains(dn)) {
-        expanded.remove(dn);
-        i--;
+    _removeDeleted();
+  }
+  
+  bool hasNonTextChild(DaxeNode dn) {
+    for (DaxeNode child = dn.firstChild; child != null; child=child.nextSibling) {
+      if (child is! DNText) {
+        return(true);
       }
     }
-    for (int i=0; i<collapsed.length; i++) {
-      DaxeNode dn = collapsed[i];
-      if (!existing.contains(dn)) {
-        collapsed.remove(dn);
-        i--;
+    return(false);
+  }
+  
+  /**
+   * After opening a document, expand only root or the first level under root.
+   */
+  void _initialExpand() {
+    DaxeNode root = doc.getRootElement();
+    if (root != null && hasNonTextChild(root)) {
+      expanded.add(root);
+      if (root.offsetLength > 10) {
+        for (DaxeNode dn = root.firstChild; dn != null; dn=dn.nextSibling) {
+          if (dn is! DNText && hasNonTextChild(dn)) {
+            _addToListRecursively(collapsed, dn);
+          }
+        }
+      } else {
+        for (DaxeNode dn = root.firstChild; dn != null; dn=dn.nextSibling) {
+          if (dn is! DNText && hasNonTextChild(dn)) {
+            expanded.add(dn);
+            for (DaxeNode child = dn.firstChild; child != null; child=child.nextSibling) {
+              if (child is! DNText && hasNonTextChild(child)) {
+                _addToListRecursively(collapsed, child);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  void _addToListRecursively(List<DaxeNode> list, DaxeNode dn) {
+    list.add(dn);
+    for (DaxeNode child = dn.firstChild; child != null; child=child.nextSibling) {
+      if (child is! DNText && hasNonTextChild(child)) {
+        _addToListRecursively(list, child);
       }
     }
   }
   
   void displayTree(DaxeNode dn, h.DivElement parentDiv) {
-    existing.add(dn);
     h.DivElement div = new h.DivElement();
     div.classes.add('tree_div');
-    bool subElement = false;
-    for (DaxeNode child = dn.firstChild; child != null; child=child.nextSibling) {
-      if (child is! DNText) {
-        subElement = true;
-        break;
-      }
-    }
     h.SpanElement titleSpan = new h.SpanElement();
     titleSpan.classes.add('tree_node_title');
     if (dn.ref != null)
@@ -73,12 +102,12 @@ class TreePanel {
     else
       titleSpan.appendText(dn.nodeName);
     titleSpan.onClick.listen((h.MouseEvent event) => page.scrollToNode(dn));
-    if (!subElement) {
+    if (!hasNonTextChild(dn)) {
       div.append(titleSpan);
     } else {
       bool bexp = expanded.contains(dn);
       if (!bexp && !collapsed.contains(dn)) {
-        bexp = true; // expanded by default
+        bexp = true; // new node expanded by default
         expanded.add(dn);
       }
       h.SpanElement expandButton = new h.SpanElement();
@@ -117,6 +146,30 @@ class TreePanel {
         hn = next;
       }
       expandButton.text = '+';
+    }
+  }
+  
+  /**
+   * Remove references of deleted nodes
+   */
+  void _removeDeleted() {
+    DaxeNode root = doc.getRootElement();
+    existing = new List<DaxeNode>();
+    if (root != null && hasNonTextChild(root))
+      _addToListRecursively(existing, root);
+    for (int i=0; i<expanded.length; i++) {
+      DaxeNode dn = expanded[i];
+      if (!existing.contains(dn)) {
+        expanded.remove(dn);
+        i--;
+      }
+    }
+    for (int i=0; i<collapsed.length; i++) {
+      DaxeNode dn = collapsed[i];
+      if (!existing.contains(dn)) {
+        collapsed.remove(dn);
+        i--;
+      }
     }
   }
 }

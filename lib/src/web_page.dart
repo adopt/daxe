@@ -293,6 +293,21 @@ class WebPage {
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     contextualMenu = new Menu(null);
+    if (parent.ref != null) {
+      String elementTitle = doc.cfg.menuTitle(parent.nodeName);
+      String title = "${Strings.get('contextual.select_element')} $elementTitle";
+      contextualMenu.add(new MenuItem(title, () => selectNode(parent)));
+      List<x.Element> attRefs = doc.cfg.elementAttributes(parent.ref);
+      if (attRefs != null && attRefs.length > 0) {
+        title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
+        contextualMenu.add(new MenuItem(title, () =>
+            parent.attributeDialog()));
+      }
+      title = "${Strings.get('contextual.help_about_element')} $elementTitle";
+      contextualMenu.add(new MenuItem(title, () =>
+          (new HelpDialog.Element(parent.ref)).show()));
+      contextualMenu.addSeparator();
+    }
     List<x.Element> toolbarRefs;
     if (toolbar != null)
       toolbarRefs = toolbar.elementRefs();
@@ -307,21 +322,6 @@ class WebPage {
       String title = doc.cfg.menuTitle(name);
       MenuItem item = new MenuItem(title, () => doc.insertNewNode(ref, 'element'));
       contextualMenu.add(item);
-    }
-    if (parent.ref != null) {
-      contextualMenu.addSeparator();
-      String elementTitle = doc.cfg.menuTitle(parent.nodeName);
-      String title = "${Strings.get('contextual.select_element')} $elementTitle";
-      contextualMenu.add(new MenuItem(title, () => selectNode(parent)));
-      List<x.Element> attRefs = doc.cfg.elementAttributes(parent.ref);
-      if (attRefs != null && attRefs.length > 0) {
-        title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
-        contextualMenu.add(new MenuItem(title, () =>
-            parent.attributeDialog()));
-      }
-      title = "${Strings.get('contextual.help_about_element')} $elementTitle";
-      contextualMenu.add(new MenuItem(title, () =>
-          (new HelpDialog.Element(parent.ref)).show()));
     }
     h.DivElement div = contextualMenu.htmlMenu();
     div.style.position = 'fixed';

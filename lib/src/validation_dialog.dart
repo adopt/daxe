@@ -47,11 +47,18 @@ class ValidationDialog {
       h.UListElement ul = new h.UListElement();
       for (DaxeNode dn in invalid) {
         h.LIElement li = new h.LIElement();
-        String title = doc.cfg.elementTitle(dn.ref);
-        if (title == null)
-          title = dn.nodeName;
+        String title;
+        if (dn.ref != null)
+          title = doc.cfg.elementTitle(dn.ref);
+        else
+          title = null;
         Position pos = new Position(dn, 0);
-        li.appendText("$title ${pos.xPath()}");
+        String itemText;
+        if (title != null)
+          itemText = "$title ${pos.xPath()}";
+        else
+          itemText = pos.xPath();
+        li.appendText(itemText);
         li.onClick.listen((h.MouseEvent event) => select(dn));
         li.style.cursor = 'default';
         ul.append(li);

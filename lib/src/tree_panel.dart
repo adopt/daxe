@@ -110,11 +110,21 @@ class TreePanel {
         bexp = true; // new node expanded by default
         expanded.add(dn);
       }
-      h.SpanElement expandButton = new h.SpanElement();
-      expandButton.classes.add('expand_button');
-      expandButton.appendText(bexp ? '-' : '+');
-      expandButton.onClick.listen((h.MouseEvent event) => expand(dn, div));
-      div.append(expandButton);
+      if (dn.parent != doc.dndoc) {
+        h.SpanElement expandButton = new h.SpanElement();
+        expandButton.classes.add('expand_button');
+        h.ImageElement img = new h.ImageElement(width:9, height:9);
+        if (bexp) {
+          expandButton.classes.add('expanded');
+          img.src = 'packages/daxe/images/expanded_tree.png';
+        } else {
+          expandButton.classes.add('collapsed');
+          img.src = 'packages/daxe/images/collapsed_tree.png';
+        }
+        expandButton.append(img);
+        expandButton.onClick.listen((h.MouseEvent event) => expand(dn, div));
+        div.append(expandButton);
+      }
       div.append(titleSpan);
       if (bexp) {
         for (DaxeNode child = dn.firstChild; child != null; child=child.nextSibling)
@@ -127,14 +137,17 @@ class TreePanel {
   
   void expand(DaxeNode dn, h.DivElement div) {
     h.SpanElement expandButton = div.firstChild;
-    if (expandButton.text == '+') {
+    if (expandButton.classes.contains('collapsed')) {
       // expand
       collapsed.remove(dn);
       expanded.add(dn);
       for (DaxeNode child = dn.firstChild; child != null; child=child.nextSibling)
         if (child is! DNText)
           displayTree(child, div);
-      expandButton.text = '-';
+      expandButton.classes.remove('collapsed');
+      expandButton.classes.add('expanded');
+      h.ImageElement img = expandButton.firstChild;
+      img.src = 'packages/daxe/images/expanded_tree.png';
     } else {
       // collapse
       expanded.remove(dn);
@@ -145,7 +158,10 @@ class TreePanel {
         hn.remove();
         hn = next;
       }
-      expandButton.text = '+';
+      expandButton.classes.remove('expanded');
+      expandButton.classes.add('collapsed');
+      h.ImageElement img = expandButton.firstChild;
+      img.src = 'packages/daxe/images/collapsed_tree.png';
     }
   }
   

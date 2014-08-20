@@ -20,23 +20,24 @@ part of daxe;
 class Toolbar {
   List<ToolbarItem> items;
   List<x.Element> cacheRefs = null;
+  static final String iconPath = 'packages/daxe/images/toolbar/';
   
   Toolbar([Config cfg]) {
     items = new List<ToolbarItem>();
     if (doc.saveURL != null) {
       ToolbarBox documentBox = new ToolbarBox();
-      documentBox.add(new ToolbarButton(Strings.get('menu.save'), 'document_save.png',
+      documentBox.add(new ToolbarButton(Strings.get('menu.save'), iconPath + 'document_save.png',
           () => page.save()));
       items.add(documentBox);
     }
     ToolbarBox historyBox = new ToolbarBox();
-    historyBox.add(new ToolbarButton(Strings.get('undo.undo'), 'history_undo.png',
+    historyBox.add(new ToolbarButton(Strings.get('undo.undo'), iconPath + 'history_undo.png',
         () => doc.undo(), data:"undo", enabled:false));
-    historyBox.add(new ToolbarButton(Strings.get('undo.redo'), 'history_redo.png',
+    historyBox.add(new ToolbarButton(Strings.get('undo.redo'), iconPath + 'history_redo.png',
         () => doc.redo(), data:"redo", enabled:false));
     items.add(historyBox);
     ToolbarBox findBox = new ToolbarBox();
-    findBox.add(new ToolbarButton(Strings.get('find.find_replace'), 'find.png',
+    findBox.add(new ToolbarButton(Strings.get('find.find_replace'), iconPath + 'find.png',
         () => (new FindDialog()).show()));
     items.add(findBox);
     if (cfg != null) {
@@ -44,23 +45,23 @@ class Toolbar {
       ToolbarBox insertBox = new ToolbarBox();
       x.Element ref = cfg.firstElementWithType('fichier');
       if (ref != null) {
-        _addInsertButton(cfg, insertBox, ref, 'insert_image.png');
+        _addInsertButton(cfg, insertBox, ref, iconPath + 'insert_image.png');
       }
       ref = cfg.firstElementWithType('equationmem');
       if (ref != null) {
-        _addInsertButton(cfg, insertBox, ref, 'equation.png');
+        _addInsertButton(cfg, insertBox, ref, iconPath + 'equation.png');
       }
       ref = cfg.firstElementWithType('symbole2');
       if (ref != null) {
-        _addInsertButton(cfg, insertBox, ref, 'insert_symbol.png');
+        _addInsertButton(cfg, insertBox, ref, iconPath + 'insert_symbol.png');
       }
       ref = cfg.firstElementWithType('tabletexte');
       if (ref != null) {
-        _addInsertButton(cfg, insertBox, ref, 'insert_table.png');
+        _addInsertButton(cfg, insertBox, ref, iconPath + 'insert_table.png');
       }
       ref = cfg.firstElementWithType('liste');
       if (ref != null) {
-        _addInsertButton(cfg, insertBox, ref, 'ul.png');
+        _addInsertButton(cfg, insertBox, ref, iconPath + 'ul.png');
       }
       items.add(insertBox);
       // List buttons
@@ -69,7 +70,7 @@ class Toolbar {
       if (ulRef != null || olRef != null) {
         ToolbarBox listBox = new ToolbarBox();
         if (ulRef != null) {
-          ToolbarButton button = new ToolbarButton(_documentationFor(ulRef), 'ul.png',
+          ToolbarButton button = new ToolbarButton(_documentationFor(ulRef), iconPath + 'ul.png',
               null, data:new ToolbarStyleInfo(ulRef, null, null));
           button.action = () {
             if (button.selected)
@@ -80,7 +81,7 @@ class Toolbar {
           listBox.add(button);
         }
         if (olRef != null) {
-          ToolbarButton button = new ToolbarButton(_documentationFor(olRef), 'ol.png',
+          ToolbarButton button = new ToolbarButton(_documentationFor(olRef), iconPath + 'ol.png',
               null, data:new ToolbarStyleInfo(olRef, null, null));
           button.action = () {
             if (button.selected)
@@ -90,11 +91,11 @@ class Toolbar {
           };
           listBox.add(button);
         }
-        listBox.add(new ToolbarButton(Strings.get('toolbar.rise_list_level'), 'list_rise_level.png',
+        listBox.add(new ToolbarButton(Strings.get('toolbar.rise_list_level'), iconPath + 'list_rise_level.png',
             () => DNWList.riseLevel(), data:'rise_list_level'));
         if (doc.cfg.isSubElement(DNWList.findItemRef(ulRef), ulRef) ||
             doc.cfg.isSubElement(DNWList.findItemRef(olRef), olRef))
-          listBox.add(new ToolbarButton(Strings.get('toolbar.lower_list_level'), 'list_lower_level.png',
+          listBox.add(new ToolbarButton(Strings.get('toolbar.lower_list_level'), iconPath + 'list_lower_level.png',
               () => DNWList.lowerLevel(), data:'lower_list_level'));
         items.add(listBox);
       }
@@ -106,22 +107,22 @@ class Toolbar {
         if (dtype == 'style') {
           String style = cfg.elementParameterValue(ref, 'style', null);
           if (style == 'GRAS') {
-            _addStyleButton(cfg, styleBox, ref, 'style_bold.png', 'B');
+            _addStyleButton(cfg, styleBox, ref, iconPath + 'style_bold.png', 'B');
           } else if (style == 'ITALIQUE') {
-            _addStyleButton(cfg, styleBox, ref, 'style_italic.png', 'I');
+            _addStyleButton(cfg, styleBox, ref, iconPath + 'style_italic.png', 'I');
           } else if (style == 'EXPOSANT') {
-            _addStyleButton(cfg, styleBox, ref, 'style_superscript.png');
+            _addStyleButton(cfg, styleBox, ref, iconPath + 'style_superscript.png');
           } else if (style == 'INDICE') {
-            _addStyleButton(cfg, styleBox, ref, 'style_subscript.png');
+            _addStyleButton(cfg, styleBox, ref, iconPath + 'style_subscript.png');
           } else if (style == 'BARRE') {
-            _addStyleButton(cfg, styleBox, ref, 'style_strikethrough.png');
+            _addStyleButton(cfg, styleBox, ref, iconPath + 'style_strikethrough.png');
           } else if (style == 'SOULIGNE') {
-            _addStyleButton(cfg, styleBox, ref, 'style_underline.png');
+            _addStyleButton(cfg, styleBox, ref, iconPath + 'style_underline.png');
           }
         }
       }
       if (styleBox.length > 0) {
-        styleBox.add(new ToolbarButton(Strings.get('toolbar.remove_styles'), 'remove_styles.png',
+        styleBox.add(new ToolbarButton(Strings.get('toolbar.remove_styles'), iconPath + 'remove_styles.png',
             () => DNStyle.removeStylesFromSelection(), data:"remove_styles"));
         items.add(styleBox);
       }
@@ -140,13 +141,13 @@ class Toolbar {
         if (found) {
           ToolbarBox alignBox = new ToolbarBox();
           _addParagraphCssButton(alignBox, 'text-align', 'left',
-              Strings.get('toolbar.align_left'), 'align_left.png');
+              Strings.get('toolbar.align_left'), iconPath + 'align_left.png');
           _addParagraphCssButton(alignBox, 'text-align', 'right',
-              Strings.get('toolbar.align_right'), 'align_right.png');
+              Strings.get('toolbar.align_right'), iconPath + 'align_right.png');
           _addParagraphCssButton(alignBox, 'text-align', 'center',
-              Strings.get('toolbar.align_center'), 'align_center.png');
+              Strings.get('toolbar.align_center'), iconPath + 'align_center.png');
           _addParagraphCssButton(alignBox, 'text-align', 'justify',
-              Strings.get('toolbar.align_justify'), 'align_justify.png');
+              Strings.get('toolbar.align_justify'), iconPath + 'align_justify.png');
           items.add(alignBox);
         }
       }

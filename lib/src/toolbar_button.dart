@@ -45,7 +45,7 @@ class ToolbarButton {
       div.classes.add('button-selected');
     div.setAttribute('title', _title);
     h.ImageElement img = new h.ImageElement();
-    img.setAttribute('src', 'packages/daxe/images/toolbar/' + iconFilename);
+    img.setAttribute('src', iconFilename);
     if (enabled)
       listener = div.onClick.listen((h.MouseEvent event) => action());
     div.append(img);

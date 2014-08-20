@@ -80,6 +80,16 @@ class WebPage {
     h.Element divdoc = h.document.getElementById('doc2');
     divdoc.children.clear();
     h.document.body.append(_left.html());
+    
+    // adjust positions when the toolbar is on more than 1 lines
+    // (this cannot be done with CSS)
+    // images are still loading, the toolbar will expand...
+    new Timer(const Duration(seconds: 2), () {
+      _adjustPositionsUnderToolbar();
+    });
+    h.window.onResize.listen((h.Event event) => _adjustPositionsUnderToolbar());
+    
+    // insert document content
     h.Element elhtml = doc.html();
     divdoc.append(elhtml);
     
@@ -96,6 +106,14 @@ class WebPage {
       if (contextualMenu != null)
         contextualMouseUp(event);
     });
+  }
+  
+  void _adjustPositionsUnderToolbar() {
+    h.Element toolbarElement = h.querySelector('.toolbar');
+    num y = toolbarElement.getBoundingClientRect().bottom;
+    String cssTop = (y.round() + 2).toString() + "px";
+    h.document.getElementById('left_panel').style.top = cssTop;
+    h.document.getElementById('doc1').style.top = cssTop;
   }
   
   void _buildMenus() {

@@ -194,7 +194,6 @@ div.submenu {
 
 
 .toolbar {
-  height: 2em;
   cursor: default;
   z-index: 5;
   padding: 1px;
@@ -215,6 +214,7 @@ div.submenu {
   background: #FAFAFA;
   border-radius: 5px;
   overflow: hidden;
+  vertical-align: top;
 }
 
 .toolbar-menu {

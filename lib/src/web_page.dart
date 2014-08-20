@@ -293,6 +293,7 @@ class WebPage {
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
     contextualMenu = new Menu(null);
+    bool addSeparator = false;
     if (parent.ref != null) {
       String elementTitle = doc.cfg.menuTitle(parent.nodeName);
       String title = "${Strings.get('contextual.select_element')} $elementTitle";
@@ -306,18 +307,41 @@ class WebPage {
       title = "${Strings.get('contextual.help_about_element')} $elementTitle";
       contextualMenu.add(new MenuItem(title, () =>
           (new HelpDialog.Element(parent.ref)).show()));
-      contextualMenu.addSeparator();
+      addSeparator = true;
+    }
+    if (doc.hiddendiv != null) {
+      DaxeNode dndiv = parent;
+      while (dndiv != null && dndiv is! DNHiddenDiv)
+        dndiv = dndiv.parent;
+      if (dndiv != null) {
+        if (addSeparator)
+          contextualMenu.addSeparator();
+        String elementTitle = doc.cfg.menuTitle(dndiv.nodeName);
+        List<x.Element> attRefs = doc.cfg.elementAttributes(dndiv.ref);
+        if (attRefs != null && attRefs.length > 0) {
+          String title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
+          contextualMenu.add(new MenuItem(title, () =>
+              dndiv.attributeDialog()));
+        }
+        contextualMenu.add(new MenuItem(Strings.get('div.remove'), () =>
+            (dndiv as DNHiddenDiv).removeDiv()));
+        addSeparator = true;
+      }
     }
     List<x.Element> toolbarRefs;
     if (toolbar != null)
       toolbarRefs = toolbar.elementRefs();
     else
       toolbarRefs = null;
+    bool first = true;
     for (x.Element ref in validRefs) {
       if (toolbarRefs != null && toolbarRefs.contains(ref))
         continue;
       if (doc.hiddenp != null && ref == doc.hiddenp)
         continue;
+      if (first && addSeparator)
+        contextualMenu.addSeparator();
+      first = false;
       String name = doc.cfg.elementName(ref);
       String title = doc.cfg.menuTitle(name);
       MenuItem item = new MenuItem(title, () => doc.insertNewNode(ref, 'element'));

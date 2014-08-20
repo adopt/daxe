@@ -49,9 +49,15 @@ class Tag {
     span.classes.add(classe);
     if (_long)
       span.classes.add('long');
-    if (_dn.ref != null) {
-      List<x.Element> attRefs = doc.cfg.elementAttributes(_dn.ref);
-      if (_type != END && attRefs != null && attRefs.length > 0) {
+    if (_type != END) {
+      bool hasAttributes;
+      if (_dn.ref != null) {
+        List<x.Element> attRefs = doc.cfg.elementAttributes(_dn.ref);
+        hasAttributes = (attRefs != null && attRefs.length > 0);
+      } else {
+        hasAttributes = true; // who knows ?
+      }
+      if (hasAttributes) {
         h.ImageElement img = new h.ImageElement(src:'packages/daxe/images/attributes.png', width:16, height:16);
         img.onClick.listen((h.MouseEvent event) => attributeButton(event));
         span.append(img);

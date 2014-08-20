@@ -377,9 +377,9 @@ class Cursor {
         removeChar(selectionStart);
         return;
       }
-      // if this is the beginning of a text, style or hidden paragraph, remove something before
-      // instead of the text, style or paragraph (unless it's empty)
-      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == 0 &&
+      // if this is the beginning of a text, style, hidden paragraph or hidden div, remove something
+      // before instead of the text, style, paragraph or div (unless it's empty)
+      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP || dn is DNHiddenDiv) && offset == 0 &&
           dn.offsetLength > 0) {
         offset = dn.parent.offsetOf(dn);
         dn = dn.parent;
@@ -387,7 +387,7 @@ class Cursor {
       if (dn is! DNText && offset > 0) {
         // move inside previous text, style or paragraph, unless 2 paragraphs need to be merged
         DaxeNode prev = dn.childAtOffset(offset - 1);
-        if (prev is DNText || prev is DNStyle || (prev is DNHiddenP &&
+        if (prev is DNText || prev is DNStyle || prev is DNHiddenDiv || (prev is DNHiddenP &&
             (offset == dn.offsetLength || dn.childAtOffset(offset) is! DNHiddenP))) {
           dn = dn.childAtOffset(offset - 1);
           offset = dn.offsetLength;
@@ -399,7 +399,7 @@ class Cursor {
       }
       // if this is the end of a style or hidden paragraph with a character inside,
       // do not remove the whole node, just the last character
-      while ((dn is DNStyle || dn is DNHiddenP) && dn.offsetLength == offset &&
+      while ((dn is DNStyle || dn is DNHiddenP || dn is DNHiddenDiv) && dn.offsetLength == offset &&
           dn.firstChild != null) {
         dn = dn.lastChild;
         offset = dn.offsetLength;
@@ -419,7 +419,7 @@ class Cursor {
    */
   void suppr() {
     if (selectionStart == selectionEnd) {
-      // if this is the beginning of a style or hidden paragraph with a character inside,
+      // if this is the beginning of a style, hidden paragraph or hidden div with a character inside,
       // do not remove the whole node, just the first character
       DaxeNode next = null;
       DaxeNode dn = selectionStart.dn;
@@ -429,8 +429,8 @@ class Cursor {
       else if (dn is DNText && dn.offsetLength == offset &&
           dn.nextSibling != null)
         next = dn.nextSibling;
-      if (next is DNStyle || next is DNHiddenP) {
-        while (next.firstChild is DNStyle || next.firstChild is DNHiddenP)
+      if (next is DNStyle || next is DNHiddenP || next is DNHiddenDiv) {
+        while (next.firstChild is DNStyle || next.firstChild is DNHiddenP || next.firstChild is DNHiddenDiv)
           next = next.firstChild;
         if (next.firstChild is DNText) {
           selectionStart = new Position(next.firstChild, 0);
@@ -441,8 +441,8 @@ class Cursor {
       // instead of the text, style or paragraph (unless it's empty)
       dn = selectionStart.dn;
       offset = selectionStart.dnOffset;
-      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == dn.offsetLength &&
-          dn.offsetLength > 0) {
+      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP || dn is DNHiddenDiv) &&
+          offset == dn.offsetLength && dn.offsetLength > 0) {
         offset = dn.parent.offsetOf(dn) + 1;
         dn = dn.parent;
         if (offset < dn.offsetLength) {

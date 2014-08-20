@@ -319,7 +319,9 @@ div.indent {
 span.empty_tag, span.start_tag, span.end_tag, span.simple_type {
   font-family: sans-serif;
   font-weight: normal;
+  font-style: normal;
   font-size: 85%;
+  text-align: left;
   color: #000000;
   background-color: #FFFFB0;
   border: 1px solid #707070;
@@ -656,6 +658,12 @@ form.table_buttons {
   border-left: 1px solid #000000;
   border-right: 1px solid #000000;
   box-shadow: 2px 0px 2px #A0A0A0;
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: medium;
+  text-align: left;
+  color: black;
 }
 
 td.header {
@@ -705,6 +713,15 @@ span.form_title {
 
 .selected span.form_title {
   background-color: #50A0FF;
+}
+
+div.form {
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: medium;
+  text-align: left;
+  color: black;
 }
 
 div.form table {

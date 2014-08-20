@@ -77,6 +77,10 @@ class NodeFactory {
         (x.Element ref) => new DNForm.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNForm.fromNode(node, parent)
     );
+    NodeFactory.addDisplayType('hiddendiv',
+        (x.Element ref) => new DNHiddenDiv.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNHiddenDiv.fromNode(node, parent)
+    );
     NodeFactory.addDisplayType('hiddenp',
         (x.Element ref) => new DNHiddenP.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNHiddenP.fromNode(node, parent)

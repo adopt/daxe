@@ -30,6 +30,7 @@ class DaxeDocument {
   String filePath;
   String saveURL;
   x.Element hiddenp;
+  x.Element hiddendiv;
   
   /**
    * Create a new document with the given configuration path.
@@ -39,6 +40,7 @@ class DaxeDocument {
     cfg = new Config();
     cfg.load(configPath).then((_) {
       hiddenp = cfg.firstElementWithType('hiddenp');
+      hiddendiv = cfg.firstElementWithType('hiddendiv');
       filePath = null;
       dndoc = new DNDocument();
       List<x.Element> roots = cfg.rootElements();
@@ -65,6 +67,7 @@ class DaxeDocument {
     cfg = new Config();
     cfg.load(configPath).then((_) {
       hiddenp = cfg.firstElementWithType('hiddenp');
+      hiddendiv = cfg.firstElementWithType('hiddendiv');
       this.filePath = filePath;
       x.DOMParser dp = new x.DOMParser();
       dp.parseFromURL(filePath).then((x.Document xmldoc) {
@@ -740,10 +743,7 @@ class DaxeDocument {
     if (nodeType == 'element' && getRootElement() == null) {
       cfg.addNamespaceAttributes(dn);
     }
-    if (nodeType == 'element' && doc.cfg.elementAttributes(ref).length > 0)
-      dn.attributeDialog(() => insert2(dn, pos));
-    else
-      insert2(dn, pos);
+    dn.newNodeCreationUI(() => insert2(dn, pos));
   }
   
   /**

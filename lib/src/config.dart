@@ -1355,7 +1355,7 @@ class Config {
       return(titre);
     final String nom = elementName(elementRef);
     if (nom == null) {
-      logError("Config.titreElement : pas de nom pour $elementRef");
+      logError("Config.elementTitle : no name for $elementRef");
       return(null);
     }
     final List<x.Element> lstrings = _stringsElements();

@@ -705,9 +705,25 @@ abstract class DaxeNode {
       hel.classes.add('invalid');
   }
   
+  /**
+   * This method is called when the user creates a new node, before it is inserted.
+   * By default, it displays the attribute dialog when there are attributes.
+   */
+  void newNodeCreationUI(ActionFunction okfct) {
+    if (ref != null && doc.cfg.elementAttributes(ref).length > 0)
+      attributeDialog(() => okfct());
+    else
+      okfct();
+  }
+  
   void attributeDialog([ActionFunction okfct]) {
-    AttributeDialog dlg = new AttributeDialog(this, okfct);
-    dlg.show();
+    if (ref != null) {
+      AttributeDialog dlg = new AttributeDialog(this, okfct);
+      dlg.show();
+    } else {
+      UnknownElementDialog dlg = new UnknownElementDialog(this, okfct);
+      dlg.show();
+    }
   }
   
   Position findPosition(num x, num y) {

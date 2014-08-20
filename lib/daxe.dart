@@ -72,6 +72,7 @@ part 'src/toolbar_button.dart';
 part 'src/toolbar_style_info.dart';
 part 'src/tree_panel.dart';
 part 'src/undoable_edit.dart';
+part 'src/unknown_element_dialog.dart';
 part 'src/validation_dialog.dart';
 part 'src/web_page.dart';
 

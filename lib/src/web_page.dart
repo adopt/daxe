@@ -83,11 +83,8 @@ class WebPage {
     
     // adjust positions when the toolbar is on more than 1 lines
     // (this cannot be done with CSS)
-    // images are still loading, the toolbar will expand...
-    new Timer(const Duration(seconds: 2), () {
-      _adjustPositionsUnderToolbar();
-    });
-    h.window.onResize.listen((h.Event event) => _adjustPositionsUnderToolbar());
+    adjustPositionsUnderToolbar();
+    h.window.onResize.listen((h.Event event) => adjustPositionsUnderToolbar());
     
     // insert document content
     h.Element elhtml = doc.html();
@@ -108,9 +105,9 @@ class WebPage {
     });
   }
   
-  void _adjustPositionsUnderToolbar() {
-    h.Element toolbarElement = h.querySelector('.toolbar');
-    num y = toolbarElement.getBoundingClientRect().bottom;
+  void adjustPositionsUnderToolbar() {
+    h.Element headers = h.document.getElementById('headers');
+    num y = headers.getBoundingClientRect().bottom;
     String cssTop = (y.round() + 2).toString() + "px";
     h.document.getElementById('left_panel').style.top = cssTop;
     h.document.getElementById('doc1').style.top = cssTop;

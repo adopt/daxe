@@ -28,8 +28,11 @@ class ToolbarButton {
   bool selected;
   StreamSubscription<h.MouseEvent> listener;
   String shortcut;
+  int iconWidth;
+  int iconHeight;
   
-  ToolbarButton(this._title, this.iconFilename, this.action, {this.data, this.enabled:true, this.shortcut}) {
+  ToolbarButton(this._title, this.iconFilename, this.action,
+      {this.data, this.enabled:true, this.shortcut, this.iconWidth:16, this.iconHeight:16}) {
     selected = false;
     id = "button_$idcount";
     idcount++;
@@ -45,7 +48,9 @@ class ToolbarButton {
       div.classes.add('button-selected');
     div.setAttribute('title', _title);
     h.ImageElement img = new h.ImageElement();
-    img.setAttribute('src', iconFilename);
+    img.src = iconFilename;
+    img.width = iconWidth;
+    img.height = iconHeight;
     if (enabled)
       listener = div.onClick.listen((h.MouseEvent event) => action());
     div.append(img);

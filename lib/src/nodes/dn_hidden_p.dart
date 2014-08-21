@@ -81,29 +81,13 @@ class DNHiddenP extends DaxeNode {
   }
   
   @override
-  bool newlineAfter() {
+  bool get noDelimiter {
     return(true);
   }
   
-  void merge(DNHiddenP p2) {
-    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
-    DaxeNode clone;
-    Position clonep1 = new Position(p2, 0);
-    Position clonep2 = new Position(p2, p2.offsetLength);
-    if (clonep2 > clonep1)
-      clone = doc.cloneBetween(clonep1, clonep2);
-    else
-      clone = null;
-    edit.addSubEdit(new UndoableEdit.removeNode(p2));
-    if (clone != null)
-      edit.addSubEdit(doc.insertChildrenEdit(clone, new Position(this, offsetLength)));
-    Position futureCursorPos;
-    if (lastChild is DNText)
-      futureCursorPos = new Position(lastChild, lastChild.offsetLength);
-    else
-      futureCursorPos = new Position(this, offsetLength);
-    doc.doNewEdit(edit);
-    page.moveCursorTo(futureCursorPos);
+  @override
+  bool newlineAfter() {
+    return(true);
   }
   
   void set css(String value) {
@@ -337,4 +321,5 @@ class DNHiddenP extends DaxeNode {
     }
     return(false);
   }
+  
 }

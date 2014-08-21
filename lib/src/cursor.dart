@@ -364,6 +364,8 @@ class Cursor {
     if (selectionStart == selectionEnd) {
       DaxeNode dn = selectionStart.dn;
       int offset = selectionStart.dnOffset;
+      if (dn is DNDocument && offset == 0)
+        return;
       // if the cursor is at a newline after a node with an automatic (not DOM) newline,
       // the user probably wants to remove the newline instead of the previous node.
       if (dn is DNText && offset == 0 && dn.nodeValue[0] == '\n' &&
@@ -377,18 +379,45 @@ class Cursor {
         removeChar(selectionStart);
         return;
       }
-      // if this is the beginning of a text, style, hidden paragraph or hidden div, remove something
-      // before instead of the text, style, paragraph or div (unless it's empty)
-      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP || dn is DNHiddenDiv) && offset == 0 &&
-          dn.offsetLength > 0) {
+      // if this is the beginning of a node with no delimiter, remove something
+      // before instead of the node with no delimiter (unless it's empty)
+      bool justMovedOutOfBlockWithNoDelimiter = false;
+      while (dn != null && dn.noDelimiter && offset == 0 && dn.offsetLength > 0) {
+        if (dn.noDelimiter && dn.block)
+          justMovedOutOfBlockWithNoDelimiter = true;
+        else
+          justMovedOutOfBlockWithNoDelimiter = false;
         offset = dn.parent.offsetOf(dn);
         dn = dn.parent;
       }
       if (dn is! DNText && offset > 0) {
-        // move inside previous text, style or paragraph, unless 2 paragraphs need to be merged
         DaxeNode prev = dn.childAtOffset(offset - 1);
-        if (prev is DNText || prev is DNStyle || prev is DNHiddenDiv || (prev is DNHiddenP &&
-            (offset == dn.offsetLength || dn.childAtOffset(offset) is! DNHiddenP))) {
+        if (justMovedOutOfBlockWithNoDelimiter) {
+        // if we're at the beginning of a paragraph and the previous element could
+        // go inside, move all the previous elements that can inside the paragraph
+          DaxeNode next = dn.childAtOffset(offset);
+          assert(next.noDelimiter && next.block);
+          if (prev.ref != next.ref && !prev.block &&
+              ((prev is DNText && doc.cfg.canContainText(next.ref)) ||
+                  (prev.ref != null && doc.cfg.isSubElement(next.ref, prev.ref)))) {
+            mergeBlockWithPreviousNodes(next);
+            return;
+          }
+        }
+        // if the previous node is a paragraph and the next node can move inside,
+        // move all the following non-block nodes that can inside.
+        if (prev.noDelimiter && prev.block && offset < dn.offsetLength) {
+          DaxeNode next = dn.childAtOffset(offset);
+          if (prev.ref != next.ref && !next.block &&
+              ((next is DNText && doc.cfg.canContainText(prev.ref)) ||
+              (next.ref != null && doc.cfg.isSubElement(prev.ref, next.ref)))) {
+            mergeBlockWithNextNodes(prev);
+            return;
+          }
+        }
+        // move inside previous node with no delimiter, unless 2 paragraphs need to be merged
+        if (prev.noDelimiter && (!prev.block ||
+            (offset == dn.offsetLength || dn.childAtOffset(offset).ref != prev.ref))) {
           dn = dn.childAtOffset(offset - 1);
           offset = dn.offsetLength;
           if (dn is! DNText && offset > 0)
@@ -397,9 +426,9 @@ class Cursor {
             prev = null;
         }
       }
-      // if this is the end of a style or hidden paragraph with a character inside,
-      // do not remove the whole node, just the last character
-      while ((dn is DNStyle || dn is DNHiddenP || dn is DNHiddenDiv) && dn.offsetLength == offset &&
+      // if this is the end of a node with no delimiter with a character inside,
+      // do not remove the whole node, just the last character (except for text nodes)
+      while ((dn is! DNText && dn.noDelimiter) && dn.offsetLength == offset &&
           dn.firstChild != null) {
         dn = dn.lastChild;
         offset = dn.offsetLength;
@@ -419,43 +448,47 @@ class Cursor {
    */
   void suppr() {
     if (selectionStart == selectionEnd) {
-      // if this is the beginning of a style, hidden paragraph or hidden div with a character inside,
-      // do not remove the whole node, just the first character
-      DaxeNode next = null;
+      if (selectionStart.dn is DNDocument && selectionStart.dnOffset == selectionStart.dn.offsetLength)
+        return;
       DaxeNode dn = selectionStart.dn;
       int offset = selectionStart.dnOffset;
-      if (dn is! DNText && offset < dn.offsetLength)
-        next = dn.childAtOffset(offset);
-      else if (dn is DNText && dn.offsetLength == offset &&
-          dn.nextSibling != null)
-        next = dn.nextSibling;
-      if (next is DNStyle || next is DNHiddenP || next is DNHiddenDiv) {
-        while (next.firstChild is DNStyle || next.firstChild is DNHiddenP || next.firstChild is DNHiddenDiv)
-          next = next.firstChild;
-        if (next.firstChild is DNText) {
-          selectionStart = new Position(next.firstChild, 0);
-          selectionEnd = new Position.clone(selectionStart);
-        }
-      }
-      // if this is the end of a text, style or hidden paragraph, remove something afterwards
-      // instead of the text, style or paragraph (unless it's empty)
-      dn = selectionStart.dn;
-      offset = selectionStart.dnOffset;
-      while ((dn is DNText || dn is DNStyle || dn is DNHiddenP || dn is DNHiddenDiv) &&
-          offset == dn.offsetLength && dn.offsetLength > 0) {
+      // if at the end, get out of nodes with no delimiter (unless empty)
+      while (dn.noDelimiter && offset == dn.offsetLength && dn.offsetLength > 0) {
         offset = dn.parent.offsetOf(dn) + 1;
         dn = dn.parent;
-        if (offset < dn.offsetLength) {
-          // move inside next style or text node
-          next = dn.childAtOffset(offset);
-          while (next is DNText || next is DNStyle) {
-            dn = dn.childAtOffset(offset);
-            offset = 0;
-            if (dn is! DNText && offset < dn.offsetLength)
-              next = dn.childAtOffset(offset);
-            else
-              next = null;
+      }
+      if (dn is! DNText && offset > 0 && offset < dn.offsetLength) {
+        DaxeNode next = dn.childAtOffset(offset);
+        DaxeNode prev = dn.childAtOffset(offset-1);
+        // if we're at the end of a paragraph and the next element could
+        // go inside, move all the next elements that can inside the paragraph
+        if (prev.noDelimiter && prev.block && next.ref != prev.ref && !next.block &&
+            ((next is DNText && doc.cfg.canContainText(prev.ref)) ||
+                (next.ref != null && doc.cfg.isSubElement(prev.ref, next.ref)))) {
+          mergeBlockWithNextNodes(prev);
+          return;
+        }
+        // if the next node is a paragraph and the previous node can move inside,
+        // move all the previous non-block nodes that can inside.
+        if (next.noDelimiter && next.block && next.ref != prev.ref && !prev.block) {
+          if ((prev is DNText && doc.cfg.canContainText(next.ref)) ||
+              (prev.ref != null && doc.cfg.isSubElement(next.ref, prev.ref))) {
+            mergeBlockWithPreviousNodes(next);
+            return;
           }
+        }
+      }
+      // move inside next node with no delimiter unless 2 paragraphs need to be merged
+      if (dn is! DNText && offset < dn.offsetLength) {
+        DaxeNode next = dn.childAtOffset(offset);
+        while (next != null && next.noDelimiter && (!next.block ||
+            (offset == 0 || dn.childAtOffset(offset-1).ref != next.ref))) {
+          dn = next;
+          offset = 0;
+          if (dn is! DNText && offset < dn.offsetLength)
+            next = dn.childAtOffset(offset);
+          else
+            next = null;
         }
       }
       selectionStart = new Position(dn, offset);
@@ -472,8 +505,8 @@ class Cursor {
       return(pos);
     DaxeNode dn = pos.dn;
     int offset = pos.dnOffset;
-    // when at the end, get out of text/style/hidden paragraph
-    while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == dn.offsetLength) {
+    // when at the end, get out of non-block nodes with no delimiter
+    while (dn != null && dn.noDelimiter && offset == dn.offsetLength && !dn.block) {
       offset = dn.parent.offsetOf(dn) + 1;
       dn = dn.parent;
     }
@@ -483,7 +516,7 @@ class Cursor {
       nodeAtOffset = dn.childAtOffset(offset);
     else
       nodeAtOffset = null;
-    while (nodeAtOffset is DNText || nodeAtOffset is DNStyle) {
+    while (nodeAtOffset != null && nodeAtOffset.noDelimiter && !nodeAtOffset.block) {
       dn = nodeAtOffset;
       offset = 0;
       if (dn.firstChild != null && offset < dn.offsetLength)
@@ -491,11 +524,20 @@ class Cursor {
       else
         nodeAtOffset = null;
     }
-    // move position by +1
+    
+    // visible change of position
+    // consecutive moves between blocks with no delimiter are not considered cursor moves
+    bool noDelimiterBlockMove = false;
     if (offset == dn.offsetLength) {
       // get out of the node
+      noDelimiterBlockMove = (dn.noDelimiter && dn.block);
       offset = dn.parent.offsetOf(dn) + 1;
       dn = dn.parent;
+      while (noDelimiterBlockMove && dn.noDelimiter && dn.block && offset == dn.offsetLength) {
+        // get out of other no delimiter block nodes
+        offset = dn.parent.offsetOf(dn) + 1;
+        dn = dn.parent;
+      }
     } else if (dn is DNText) {
       // move in the text
       offset++;
@@ -507,18 +549,21 @@ class Cursor {
       if (first != null) {
         dn = first.dn;
         offset = first.dnOffset;
+        noDelimiterBlockMove = (dn.noDelimiter && dn.block);
       } else {
         // if there is none, move after this node
         offset = dn.parent.offsetOf(dn) + 1;
         dn = dn.parent;
       }
     }
-    // move inside text/style/hidden paragraph at current offset
+    
+    // move inside non-block nodes with no delimiter at current offset
     if (dn.firstChild != null && offset < dn.offsetLength)
       nodeAtOffset = dn.childAtOffset(offset);
     else
       nodeAtOffset = null;
-    while (nodeAtOffset is DNText || nodeAtOffset is DNStyle || nodeAtOffset is DNHiddenP) {
+    while (nodeAtOffset != null && nodeAtOffset.noDelimiter &&
+        (!nodeAtOffset.block || noDelimiterBlockMove)) {
       dn = nodeAtOffset;
       offset = 0;
       if (dn.firstChild != null && offset < dn.offsetLength)
@@ -534,8 +579,8 @@ class Cursor {
       return(pos);
     DaxeNode dn = pos.dn;
     int offset = pos.dnOffset;
-    // when at the beginning, get out of text/style/hidden paragraph
-    while ((dn is DNText || dn is DNStyle || dn is DNHiddenP) && offset == 0) {
+    // when at the beginning, get out of non-block nodes with no delimiter
+    while (dn != null && dn.noDelimiter && offset == 0 && !dn.block) {
       offset = dn.parent.offsetOf(dn);
       dn = dn.parent;
     }
@@ -545,7 +590,7 @@ class Cursor {
       nodeBefore = dn.childAtOffset(offset - 1);
     else
       nodeBefore = null;
-    while (nodeBefore is DNText || nodeBefore is DNStyle) {
+    while (nodeBefore != null && nodeBefore.noDelimiter && !nodeBefore.block) {
       dn = nodeBefore;
       offset = dn.offsetLength;
       if (dn.firstChild != null && offset > 0)
@@ -553,11 +598,20 @@ class Cursor {
       else
         nodeBefore = null;
     }
-    // move position by -1
+    
+    // visible change of position
+    // consecutive moves between blocks with no delimiter are not considered cursor moves
+    bool noDelimiterBlockMove = false;
     if (offset == 0) {
       // get out of the node
+      noDelimiterBlockMove = (dn.noDelimiter && dn.block);
       offset = dn.parent.offsetOf(dn);
       dn = dn.parent;
+      while (noDelimiterBlockMove && dn.noDelimiter && dn.block && offset == 0) {
+        // get out of other no delimiter block nodes
+        offset = dn.parent.offsetOf(dn);
+        dn = dn.parent;
+      }
     } else if (dn is DNText) {
       // move in the text
       offset--;
@@ -570,18 +624,21 @@ class Cursor {
       if (last != null) {
         dn = last.dn;
         offset = last.dnOffset;
+        noDelimiterBlockMove = (dn.noDelimiter && dn.block);
       } else {
         // if there is none, move before this node
         offset = dn.parent.offsetOf(dn);
         dn = dn.parent;
       }
     }
-    // move inside text/style/hidden paragraph before current offset
+    
+    // move inside non-block nodes with no delimiter before current offset
     if (dn.firstChild != null && offset > 0)
       nodeBefore = dn.childAtOffset(offset - 1);
     else
       nodeBefore = null;
-    while (nodeBefore is DNText || nodeBefore is DNStyle || nodeBefore is DNHiddenP) {
+    while (nodeBefore != null && nodeBefore.noDelimiter &&
+        (!nodeBefore.block || noDelimiterBlockMove)) {
       dn = nodeBefore;
       offset = dn.offsetLength;
       if (dn.firstChild != null && offset > 0)
@@ -970,12 +1027,10 @@ class Cursor {
       toremove = pos.dn;
       if (toremove.parent != null)
         toremove = toremove.parent;
-      if (toremove is DNHiddenP) {
-        if (toremove.nextSibling is DNHiddenP) {
-          // merge the paragraphs
-          DNHiddenP p1 = toremove;
-          DNHiddenP p2 = toremove.nextSibling;
-          p1.merge(p2);
+      if (toremove.noDelimiter && toremove.block) {
+        if (toremove.nextSibling.ref == toremove.ref) {
+          // merge the blocks with no delimiter
+          mergeBlocks(toremove, toremove.nextSibling);
         } else {
           // remove something just after this character
           Position after = new Position.clone(pos);
@@ -988,24 +1043,20 @@ class Cursor {
     } else if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE && pos.dn.offsetLength < pos.dnOffset + 1) {
       // remove pos.dn
       toremove = pos.dn;
-      if (toremove is DNHiddenP) {
-        if (toremove.nextSibling is DNHiddenP) {
-          // merge the paragraphs
-          DNHiddenP p1 = toremove;
-          DNHiddenP p2 = toremove.nextSibling;
-          p1.merge(p2);
+      if (toremove.noDelimiter && toremove.block) {
+        if (toremove.nextSibling.ref == toremove.ref) {
+          // merge the blocks with no delimiter
+          mergeBlocks(toremove, toremove.nextSibling);
+          return;
         }
-        return;
       }
     } else if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE ||
         pos.dn.nodeType == DaxeNode.DOCUMENT_NODE) {
       toremove = pos.dn.childAtOffset(pos.dnOffset);
-      if (toremove is DNHiddenP) {
-        if (toremove.previousSibling is DNHiddenP) {
-          // merge the paragraphs
-          DNHiddenP p1 = toremove.previousSibling;
-          DNHiddenP p2 = toremove;
-          p1.merge(p2);
+      if (toremove.noDelimiter && toremove.block) {
+        if (toremove.previousSibling.ref == toremove.ref) {
+          // merge the blocks with no delimiter
+          mergeBlocks(toremove.previousSibling, toremove);
           return;
         } else if (toremove.offsetLength > 0) {
           // remove something just before this character
@@ -1191,5 +1242,84 @@ class Cursor {
     }
     doc.doNewEdit(edit);
     return(true);
+  }
+  
+  void mergeBlocks(DaxeNode dn1, DaxeNode dn2) {
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
+    DaxeNode clone;
+    Position clonep1 = new Position(dn2, 0);
+    Position clonep2 = new Position(dn2, dn2.offsetLength);
+    if (clonep2 > clonep1)
+      clone = doc.cloneBetween(clonep1, clonep2);
+    else
+      clone = null;
+    edit.addSubEdit(new UndoableEdit.removeNode(dn2));
+    if (clone != null)
+      edit.addSubEdit(doc.insertChildrenEdit(clone, new Position(dn1, dn1.offsetLength)));
+    Position futureCursorPos;
+    if (dn1.lastChild is DNText)
+      futureCursorPos = new Position(dn1.lastChild, dn1.lastChild.offsetLength);
+    else
+      futureCursorPos = new Position(dn1, dn1.offsetLength);
+    doc.doNewEdit(edit);
+    page.moveCursorTo(futureCursorPos);
+  }
+  
+  void mergeBlockWithPreviousNodes(DaxeNode dn) {
+    assert(dn.previousSibling != null);
+    int offset = dn.parent.offsetOf(dn);
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
+    // clone the nodes that will move into the paragraph
+    int startOffset = offset;
+    bool withText = doc.cfg.canContainText(dn.ref);
+    while (startOffset > 0) {
+      DaxeNode child = dn.parent.childAtOffset(startOffset-1);
+      if (child.block || (child is DNText && !withText) ||
+          (child.ref != null && !doc.cfg.isSubElement(dn.ref, child.ref)))
+        break;
+      startOffset--;
+    }
+    Position pStart = new Position(dn.parent, startOffset);
+    Position currentPos = new Position(dn.parent, offset);
+    assert (pStart < currentPos);
+    DaxeNode cloneLeft = doc.cloneCutBetween(dn.parent, pStart, currentPos);
+    edit.addSubEdit(doc.removeBetweenEdit(pStart, currentPos));
+    edit.addSubEdit(doc.insertChildrenEdit(cloneLeft, new Position(dn, 0)));
+    Position futureCursorPos = new Position(dn, 0);
+    futureCursorPos.moveInsideTextNodeIfPossible();
+    futureCursorPos = new Position.rightOffsetPosition(futureCursorPos);
+    doc.doNewEdit(edit);
+    moveTo(futureCursorPos);
+    page.updateAfterPathChange();
+    return;
+  }
+  
+  void mergeBlockWithNextNodes(DaxeNode dn) {
+    assert(dn.nextSibling != null);
+    int offset = dn.parent.offsetOf(dn.nextSibling);
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
+    // clone the nodes that will move into the paragraph
+    int endOffset = offset;
+    bool withText = doc.cfg.canContainText(dn.ref);
+    while (endOffset < dn.parent.offsetLength) {
+      DaxeNode child = dn.parent.childAtOffset(endOffset);
+      if (child.block || (child is DNText && !withText) ||
+          (child.ref != null && !doc.cfg.isSubElement(dn.ref, child.ref)))
+        break;
+      endOffset++;
+    }
+    Position pEnd = new Position(dn.parent, endOffset);
+    Position currentPos = new Position(dn.parent, offset);
+    assert (currentPos < pEnd);
+    DaxeNode cloneRight = doc.cloneCutBetween(dn.parent, currentPos, pEnd);
+    edit.addSubEdit(doc.removeBetweenEdit(currentPos, pEnd));
+    edit.addSubEdit(doc.insertChildrenEdit(cloneRight, new Position(dn, dn.offsetLength)));
+    Position futureCursorPos = new Position(dn, dn.offsetLength);
+    futureCursorPos.moveInsideTextNodeIfPossible();
+    futureCursorPos = new Position.leftOffsetPosition(futureCursorPos);
+    doc.doNewEdit(edit);
+    moveTo(futureCursorPos);
+    page.updateAfterPathChange();
+    return;
   }
 }

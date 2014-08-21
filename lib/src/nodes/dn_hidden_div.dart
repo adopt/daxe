@@ -82,6 +82,11 @@ class DNHiddenDiv extends DaxeNode {
     return(true);
   }
   
+  @override
+  bool get noDelimiter {
+    return(true);
+  }
+  
   void set css(String value) {
     setAttribute(_styleAtt, value);
   }

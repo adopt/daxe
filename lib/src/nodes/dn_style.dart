@@ -81,6 +81,11 @@ class DNStyle extends DaxeNode {
       return(getHTMLNode().nodes[1]);
   }
   
+  @override
+  bool get noDelimiter {
+    return(true);
+  }
+  
   void set css(String css) {
     assert(false);
   }

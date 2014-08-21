@@ -66,4 +66,10 @@ class DNText extends DaxeNode {
   x.Node toDOMNode(x.Document domDocument) {
     return(domDocument.createTextNode(nodeValue));
   }
+  
+  @override
+  bool get noDelimiter {
+    return(true);
+  }
+  
 }

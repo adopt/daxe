@@ -245,6 +245,27 @@ abstract class DaxeNode {
   }
   
   /**
+   * Returns true if this node does not have delimiters such as tags or a box.
+   * This affects cursor behavior (for instance, a backspace after a tag removes the node,
+   * and 2 blocks with the same ref can be merged when a backspace is used
+   * at the beginning of the second block)
+   */
+  bool get noDelimiter {
+    return(false);
+  }
+  
+  /**
+   * Returns true if this node is displayed like a block
+   * (such as area, division or hiddenp, with line breaks).
+   */
+  bool get block {
+    // this is only a guess, it should be subclassed to be safe
+    if (newlineAfter())
+      return(true);
+    return(getHTMLNode() is h.DivElement);
+  }
+  
+  /**
    * The child nodes in a convenient list.
    */
   List<DaxeNode> get childNodes {

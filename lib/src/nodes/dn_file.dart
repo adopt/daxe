@@ -40,16 +40,16 @@ class DNFile extends DaxeNode {
   h.Element html() {
     assert(doc.filePath != null);
     _img = new h.ImageElement();
-    _img.attributes['id'] = "$id";
-    _img.attributes['class'] = 'dn';
+    _img.id = "$id";
+    _img.classes.add('dn');
     String folder = '';
     String xmlFilePath = doc.filePath;
     int ind = xmlFilePath.lastIndexOf('/');
     if (ind != -1)
       folder = xmlFilePath.substring(0, ind + 1);
     String src = "$folder${getAttribute(_srcAtt)}";
-    _img.attributes['src'] = src;
-    _img.attributes['alt'] = getAttribute(_srcAtt);
+    _img.src = src;
+    _img.alt = getAttribute(_srcAtt);
     _img.onLoad.listen((h.Event event) => imageLoaded());
     _img.onClick.listen((h.MouseEvent event) => attributeDialog());
     return(_img);

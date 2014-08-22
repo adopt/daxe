@@ -17,11 +17,15 @@
 
 part of daxe;
 
+typedef void UpdateButtonState(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,
+                               List<x.Element> validRefs, List<x.Element> ancestorRefs);
+
 class ToolbarButton {
   static int idcount = 0;
   String _title;
   String iconFilename;
   ActionFunction action;
+  UpdateButtonState update;
   Object data;
   String id;
   bool enabled;
@@ -31,7 +35,7 @@ class ToolbarButton {
   int iconWidth;
   int iconHeight;
   
-  ToolbarButton(this._title, this.iconFilename, this.action,
+  ToolbarButton(this._title, this.iconFilename, this.action, this.update,
       {this.data, this.enabled:true, this.shortcut, this.iconWidth:16, this.iconHeight:16}) {
     selected = false;
     id = "button_$idcount";

@@ -17,11 +17,15 @@
 
 part of daxe;
 
+typedef void UpdateMenuState(ToolbarMenu tbmenu, DaxeNode parent, DaxeNode selectedNode,
+                               List<x.Element> validRefs, List<x.Element> ancestorRefs);
+
 class ToolbarMenu extends ToolbarItem {
   Menu menu;
   String title;
+  UpdateMenuState update;
   
-  ToolbarMenu(this.menu) {
+  ToolbarMenu(this.menu, this.update) {
     title = menu.title;
   }
   

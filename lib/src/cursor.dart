@@ -1073,10 +1073,10 @@ class Cursor {
       }
     } else if (pos.dn.nodeType == DaxeNode.TEXT_NODE &&
         pos.dnOffset == 0 && pos.dn.offsetLength == 1 &&
-        pos.dn.parent is DNStyle && pos.dn.parent.offsetLength == 1) {
+        pos.dn.parent.noDelimiter && pos.dn.parent.offsetLength == 1) {
       // remove the style node
       toremove = pos.dn.parent;
-      while (toremove.parent is DNStyle && toremove.parent.offsetLength == 1)
+      while (toremove.parent.noDelimiter && toremove.parent.offsetLength == 1)
         toremove = toremove.parent;
     } else {
       doc.removeString(pos, 1);

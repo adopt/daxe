@@ -35,6 +35,7 @@ import '../strings.dart' show Strings;
 import '../../daxe.dart' show doc, page, ActionFunction, DaxeAttr, DaxeNode, DaxeException, HelpDialog,
   NodeFactory, Position, Tag, UndoableEdit;
 
+part 'dn_anchor.dart';
 part 'dn_area.dart';
 part 'dn_cdata.dart';
 part 'dn_comment.dart';
@@ -48,6 +49,7 @@ part 'dn_form.dart';
 part 'dn_form_field.dart';
 part 'dn_hidden_div.dart';
 part 'dn_hidden_p.dart';
+part 'dn_hr.dart';
 part 'dn_item.dart';
 part 'dn_line_break.dart';
 part 'dn_list.dart';

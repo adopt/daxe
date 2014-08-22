@@ -41,95 +41,143 @@ class NodeFactory {
   
   static void addCoreDisplayTypes() {
     // add core types in the nodes library
-    NodeFactory.addDisplayType('br',
-        (x.Element ref) => new DNLineBreak.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNLineBreak.fromNode(node, parent)
+    addDisplayType('anchor',
+        (x.Element ref) => new DNAnchor.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNAnchor.fromNode(node, parent)
     );
-    NodeFactory.addDisplayType('champ',
-        (x.Element ref) => new DNFormField.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNFormField.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('division',
-        (x.Element ref) => new DNDivision.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNDivision.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('equationmem',
-        (x.Element ref) => new DNEquationMem.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNEquationMem.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('equatexmem',
-        (x.Element ref) => new DNEquaTexMem.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNEquaTexMem.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('item',
-        (x.Element ref) => new DNItem.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNItem.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('liste',
-        (x.Element ref) => new DNList.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNList.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('fichier',
-        (x.Element ref) => new DNFile.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNFile.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('formulaire',
-        (x.Element ref) => new DNForm.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNForm.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('hiddendiv',
-        (x.Element ref) => new DNHiddenDiv.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNHiddenDiv.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('hiddenp',
-        (x.Element ref) => new DNHiddenP.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNHiddenP.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('string',
-        (x.Element ref) => new DNString.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNString.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('style',
-        (x.Element ref) => new DNStyle.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNStyle.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('stylespan',
-        (x.Element ref) => new DNStyleSpan.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNStyleSpan.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('symbole2',
-        (x.Element ref) => new DNSpecial.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('table',
-        (x.Element ref) => new DNTable.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('tabletexte',
-        (x.Element ref) => new DNTable.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('texte',
-        null,
-        (x.Node node, DaxeNode parent) => new DNText.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('typesimple',
-        (x.Element ref) => new DNSimpleType.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNSimpleType.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('vide',
-        (x.Element ref) => new DNEmpty.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNEmpty.fromNode(node, parent)
-    );
-    NodeFactory.addDisplayType('zone',
+    addDisplayType('area',
         (x.Element ref) => new DNArea.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNArea.fromNode(node, parent)
     );
-    NodeFactory.addDisplayType('witem',
+    addDisplayType('br',
+        (x.Element ref) => new DNLineBreak.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNLineBreak.fromNode(node, parent)
+    );
+    addDisplayType('champ',
+        (x.Element ref) => new DNFormField.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNFormField.fromNode(node, parent)
+    );
+    addDisplayType('division',
+        (x.Element ref) => new DNDivision.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNDivision.fromNode(node, parent)
+    );
+    addDisplayType('empty',
+        (x.Element ref) => new DNEmpty.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNEmpty.fromNode(node, parent)
+    );
+    addDisplayType('equationmem',
+        (x.Element ref) => new DNEquationMem.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNEquationMem.fromNode(node, parent)
+    );
+    addDisplayType('equatexmem',
+        (x.Element ref) => new DNEquaTexMem.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNEquaTexMem.fromNode(node, parent)
+    );
+    addDisplayType('field',
+        (x.Element ref) => new DNFormField.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNFormField.fromNode(node, parent)
+    );
+    addDisplayType('hr',
+          (x.Element ref) => new DNHr.fromRef(ref),
+          (x.Node node, DaxeNode parent) => new DNHr.fromNode(node, parent)
+      );
+    addDisplayType('item',
+        (x.Element ref) => new DNItem.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNItem.fromNode(node, parent)
+    );
+    addDisplayType('list',
+        (x.Element ref) => new DNList.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNList.fromNode(node, parent)
+    );
+    addDisplayType('liste',
+        (x.Element ref) => new DNList.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNList.fromNode(node, parent)
+    );
+    addDisplayType('fichier',
+        (x.Element ref) => new DNFile.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNFile.fromNode(node, parent)
+    );
+    addDisplayType('file',
+        (x.Element ref) => new DNFile.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNFile.fromNode(node, parent)
+    );
+    addDisplayType('form',
+        (x.Element ref) => new DNForm.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNForm.fromNode(node, parent)
+    );
+    addDisplayType('formulaire',
+        (x.Element ref) => new DNForm.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNForm.fromNode(node, parent)
+    );
+    addDisplayType('hiddendiv',
+        (x.Element ref) => new DNHiddenDiv.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNHiddenDiv.fromNode(node, parent)
+    );
+    addDisplayType('hiddenp',
+        (x.Element ref) => new DNHiddenP.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNHiddenP.fromNode(node, parent)
+    );
+    addDisplayType('simpletype',
+        (x.Element ref) => new DNSimpleType.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNSimpleType.fromNode(node, parent)
+    );
+    addDisplayType('string',
+        (x.Element ref) => new DNString.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNString.fromNode(node, parent)
+    );
+    addDisplayType('style',
+        (x.Element ref) => new DNStyle.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNStyle.fromNode(node, parent)
+    );
+    addDisplayType('stylespan',
+        (x.Element ref) => new DNStyleSpan.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNStyleSpan.fromNode(node, parent)
+    );
+    addDisplayType('symbol2',
+        (x.Element ref) => new DNSpecial.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
+    );
+    addDisplayType('symbole2',
+        (x.Element ref) => new DNSpecial.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
+    );
+    addDisplayType('table',
+        (x.Element ref) => new DNTable.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
+    );
+    addDisplayType('texttable',
+        (x.Element ref) => new DNTable.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
+    );
+    addDisplayType('tabletexte',
+        (x.Element ref) => new DNTable.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
+    );
+    addDisplayType('text',
+        null,
+        (x.Node node, DaxeNode parent) => new DNText.fromNode(node, parent)
+    );
+    addDisplayType('texte',
+        null,
+        (x.Node node, DaxeNode parent) => new DNText.fromNode(node, parent)
+    );
+    addDisplayType('typesimple',
+        (x.Element ref) => new DNSimpleType.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNSimpleType.fromNode(node, parent)
+    );
+    addDisplayType('vide',
+        (x.Element ref) => new DNEmpty.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNEmpty.fromNode(node, parent)
+    );
+    addDisplayType('zone',
+        (x.Element ref) => new DNArea.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNArea.fromNode(node, parent)
+    );
+    addDisplayType('witem',
         (x.Element ref) => new DNWItem.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNWItem.fromNode(node, parent)
     );
-    NodeFactory.addDisplayType('wlist',
+    addDisplayType('wlist',
         (x.Element ref) => new DNWList.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNWList.fromNode(node, parent)
     );

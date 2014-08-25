@@ -121,8 +121,6 @@ class WebPage {
       item = new MenuItem(Strings.get('menu.save'), () => save(), shortcut: 'S');
       fileMenu.add(item);
     }
-    //item = new MenuItem(Strings.get('menu.open'), () => openMenu());
-    //fileMenu.add(item);
     item = new MenuItem(Strings.get('menu.source'), () => showSource());
     fileMenu.add(item);
     item = new MenuItem(Strings.get('menu.validation'), () => (new ValidationDialog()).show());
@@ -542,52 +540,6 @@ class WebPage {
       h.window.alert(Strings.get('save.error') + ': ' + ex.message);
     });
   }
-  /*
-  It is not possible with Dart to get a real file path, so an open menu cannot be implemented.
-  see http://code.google.com/p/dart/issues/detail?id=12061
-  
-  void openMenu() {
-    
-//    FileOpenDialog dlg;
-//    dlg = new FileOpenDialog(() {
-//      h.File f = dlg.getFile();
-//      String configPath = 'config/XPAGES_config.xml'; // for testing
-//      String url = h.Url.createObjectUrl(f); // NOT GOOD !
-//      // this is not the real URL, but how can we get to it ?
-//      // it will require special permissions...
-//      openDocument(url, configPath);
-//    });
-//    dlg.show();
-    
-    // note: using js.scoped in a packaged app requires the inclusion of
-    // packages/js/dart_interop.js in the main html file.
-    js.scoped(() {
-      var chrome = js.context.chrome;
-      //print("chrome = ${chrome.runtime.id}");
-      chrome.fileSystem.chooseEntry(js.map({'type': 'openWritableFile'}),
-          new js.Callback.once((var fileEntry) {
-        // fileEntry.fullPath does not give the real URL, just a temporary path in the (virtual) fileSystem
-        // chrome.runtime.getURL(fileEntry.fullPath) return a "chrome-extension://" URL
-        // getDisplayPath returns the real path, but it uses ~ shortcuts, making it useless to get the real URL
-        // fileEntry.toURL() returns nothing (see https://code.google.com/p/chromium/issues/detail?id=148788 )
-        print('fullPath: ' + fileEntry.fullPath);
-        print('toURL: ' + fileEntry.toURL());
-        
-//        var chrome = js.context.chrome;
-//        String url = chrome.runtime.getURL(fileEntry.fullPath);
-//        print('url:'+url);
-        
-        
-//        var chrome = js.context.chrome;
-//        chrome.fileSystem.getDisplayPath(fileEntry, new js.Callback.once((var displayPath) {
-//          String configPath = 'config/XPAGES_config.xml'; // for testing
-//          print(displayPath);
-//        }));
-        
-      }));
-    });
-  }
-  */
   
   void showSource() {
     //String data = encodeUriComponent(doc.toString());

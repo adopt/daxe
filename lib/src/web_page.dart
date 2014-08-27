@@ -27,6 +27,7 @@ class WebPage {
   MenuBar mbar;
   MenuItem undoMenu, redoMenu;
   Menu contextualMenu;
+  h.Point ctxMenuPos;
   Toolbar toolbar;
   LeftPanel _left;
   Position lastClickPosition;
@@ -100,8 +101,11 @@ class WebPage {
     divdoc.onContextMenu.listen((h.MouseEvent event) => onContextMenu(event));
     h.document.getElementById('doc1').onScroll.listen((h.Event event) => onScroll(event));
     h.document.onMouseUp.listen((h.MouseEvent event) {
-      if (contextualMenu != null)
-        contextualMouseUp(event);
+      if (contextualMenu != null) {
+        if (event.client != ctxMenuPos)
+          closeContextualMenu();
+        event.preventDefault();
+      }
     });
   }
   
@@ -164,6 +168,8 @@ class WebPage {
   }
   
   void onMouseDown(h.MouseEvent event) {
+    if (contextualMenu != null)
+      closeContextualMenu();
     // do not stop event propagation in some cases:
     if (event.target is h.ImageElement ||
         event.target is h.ButtonElement ||
@@ -298,6 +304,7 @@ class WebPage {
   void showContextualMenu(h.MouseEvent event) {
     if (doc.cfg == null || _cursor.selectionStart.dn == null)
       return;
+    ctxMenuPos = event.client;
     DaxeNode parent;
     if (_cursor.selectionStart.dn is DNText)
       parent = _cursor.selectionStart.dn.parent;
@@ -368,11 +375,11 @@ class WebPage {
     h.document.body.append(div);
   }
   
-  void contextualMouseUp(h.MouseEvent event) {
+  void closeContextualMenu() {
     h.DivElement div = contextualMenu.getMenuHTMLNode();
     div.remove();
     contextualMenu = null;
-    event.preventDefault();
+    ctxMenuPos = null;
   }
   
   

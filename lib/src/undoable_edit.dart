@@ -219,6 +219,11 @@ class UndoableEdit {
       if (update) {
         pos.dn.updateHTML();
         page.moveCursorTo(new Position(pos.dn, pos.dnOffset + text.length));
+        if (pos.dn.previousSibling == null && pos.dn.nextSibling == null) {
+          // the parent might be a simple type
+          // NOTE: this might slow down text input
+          pos.dn.parent.updateValidity();
+        }
       }
     } else {
       DaxeNode parent = pos.dn;
@@ -293,6 +298,11 @@ class UndoableEdit {
       if (update) {
         pos.dn.updateHTML();
         page.moveCursorTo(pos);
+        if (pos.dn.previousSibling == null && pos.dn.nextSibling == null) {
+          // the parent might be a simple type
+          // NOTE: this might slow down text input
+          pos.dn.parent.updateValidity();
+        }
       }
     } else {
       dn.callBeforeRemove();

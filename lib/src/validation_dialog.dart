@@ -79,6 +79,7 @@ class ValidationDialog {
     div2.append(div3);
     div1.append(div2);
     h.document.body.append(div1);
+    bOk.focus();
   }
   
   List<DaxeNode> invalidElements(DaxeNode dn) {

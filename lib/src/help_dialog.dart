@@ -106,6 +106,8 @@ class HelpDialog {
     
     if (attributeRef == null)
       fillChildren();
+    
+    bOk.focus();
   }
   
   void fillParents() {

@@ -54,6 +54,7 @@ class SourceWindow {
     div1.append(divWindow);
     
     h.document.body.append(div1);
+    bOk.focus();
   }
   
   void addNode(x.Node node, h.Element html) {

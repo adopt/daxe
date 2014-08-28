@@ -179,7 +179,12 @@ class DaxeWXS implements InterfaceSchema {
     final WXSElement element = _hRefElementVersWXS[elementRef];
     if (element == null)
       return(null);
-    return(element.getDocumentation());
+    String doc = element.getDocumentation();
+    if (doc != null)
+      return(doc);
+    if (element._complexType != null)
+      return(element._complexType.getDocumentation());
+    return(null);
   }
   
   // from InterfaceSchema

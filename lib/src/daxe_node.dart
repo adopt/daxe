@@ -871,7 +871,8 @@ abstract class DaxeNode {
             span_test.remove();
             if (hn is h.LIElement) {
               h.Node lastDescendant = hn;
-              while (lastDescendant.firstChild != null && lastDescendant.lastChild is! h.Text)
+              while (lastDescendant.firstChild != null && lastDescendant.lastChild is! h.Text &&
+                  lastDescendant.lastChild is! h.ImageElement)
                 lastDescendant = lastDescendant.lastChild;
               lastDescendant.append(span_test);
             } else

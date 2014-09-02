@@ -330,6 +330,23 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     return(null);
   }
   
+  List<String> suggestedValues() {
+    if (_fixed != null) {
+      final List<String> fixedval = new List<String>();
+      fixedval.add(_fixed);
+      return(fixedval);
+    }
+    if (_simpleType != null)
+      return(_simpleType.suggestedValues());
+    else if (_complexType != null)
+      return(_complexType.suggestedValues());
+    else if (_type != null)
+      return(DaxeWXS._booleanValues(_type, _domElement));
+    else if (_simpleType == null && _wxsSubstitutionGroup != null)
+      return(_wxsSubstitutionGroup.suggestedValues());
+    return(null);
+  }
+  
   List<WXSAttribute> attributes() {
     if (_wxsRef != null)
       return(_wxsRef.attributes());

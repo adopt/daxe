@@ -38,6 +38,12 @@ abstract class WXSType {
   List<String> possibleValues();
   
   /**
+   * Returns a list of values to suggest the user for this type if it is a simple type or a complex type with simple content.
+   * Returns null if there is no interesting value to suggest.
+   */
+  List<String> suggestedValues();
+  
+  /**
    * Returns true if the value is valid for the simple type or the complex type with simple content.
    */
   bool validValue(final String value);

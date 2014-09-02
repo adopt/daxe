@@ -196,6 +196,14 @@ class DaxeWXS implements InterfaceSchema {
   }
   
   // from InterfaceSchema
+  List<String> suggestedElementValues(final Element elementRef) {
+    final WXSElement element = _hRefElementVersWXS[elementRef];
+    if (element == null)
+      return(null);
+    return(element.suggestedValues());
+  }
+  
+  // from InterfaceSchema
   bool elementValueIsValid(final Element elementRef, final String value) {
     final WXSElement element = _hRefElementVersWXS[elementRef];
     if (element == null)
@@ -452,6 +460,16 @@ class DaxeWXS implements InterfaceSchema {
       return(null);
     }
     return(attribut.possibleValues());
+  }
+  
+  // from InterfaceSchema
+  List<String> suggestedAttributeValues(final Element attributeRef) {
+    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
+    if (attribut == null) {
+      print("DaxeWXS: listeValeursAttribut: référence attribut inconnue: $attributeRef");
+      return(null);
+    }
+    return(attribut.suggestedValues());
   }
   
   // from InterfaceSchema

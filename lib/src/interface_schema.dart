@@ -73,6 +73,14 @@ abstract class InterfaceSchema {
   List<String> elementValues(final Element elementRef);
   
   /**
+   * Returns a list of values to suggest to the user for an element.
+   * This is only useful when there is an infinite number of possible values.
+   * Returns null if there is no interesting value to suggest,
+   * or if the element does not have a simple type.
+   */
+  List<String> suggestedElementValues(final Element elementRef);
+  
+  /**
    * Returns true if the given value is a valid value for the element.
    */
   bool elementValueIsValid(final Element elementRef, final String value);
@@ -180,6 +188,13 @@ abstract class InterfaceSchema {
    * Returns null if there are an infinity of possible values.
    */
   List<String> attributeValues(final Element attributeRef);
+  
+  /**
+   * Returns a list of values to suggest to the user for an attribute.
+   * This is only useful when there is an infinite number of possible values.
+   * Returns null if there is no interesting value to suggest.
+   */
+  List<String> suggestedAttributeValues(final Element attributeRef);
   
   /**
    * Returns an attribute default value.

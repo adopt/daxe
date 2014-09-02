@@ -188,6 +188,13 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
     return(null);
   }
   
+  // from WXSType
+  List<String> suggestedValues() {
+    if (_simpleContent != null)
+      return(_simpleContent.suggestedValues());
+    return(null);
+  }
+  
   List<WXSAttribute> attributes() {
     if (_simpleContent != null)
       return(_simpleContent.attributes());

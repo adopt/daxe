@@ -84,6 +84,15 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
   }
   
   // from WXSType
+  List<String> suggestedValues() {
+    if (_restriction != null)
+      return(_restriction.suggestedValues());
+    if (_union != null)
+      return(_union.suggestedValues());
+    return(null);
+  }
+  
+  // from WXSType
   bool validValue(final String value) {
     if (_restriction != null)
       return(_restriction.validValue(value));

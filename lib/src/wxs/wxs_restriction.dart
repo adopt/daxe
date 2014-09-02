@@ -163,6 +163,10 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
     return(liste);
   }
   
+  List<String> suggestedValues() {
+    return(possibleValues());
+  }
+  
   List<WXSAttribute> attributes() {
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {

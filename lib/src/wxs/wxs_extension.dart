@@ -158,6 +158,14 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     return(null);
   }
   
+  List<String> suggestedValues() {
+    if (_wxsBase != null)
+      return(_wxsBase.suggestedValues());
+    else if (_base != null)
+      return(DaxeWXS._booleanValues(_base, _domElement));
+    return(null);
+  }
+  
   List<WXSAttribute> attributes() {
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {

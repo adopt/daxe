@@ -164,6 +164,22 @@ class WXSAttribute extends WXSAnnotated {
     return(null);
   }
   
+  List<String> suggestedValues() {
+    if (_fixed != null) {
+      final List<String> fixedval = new List<String>();
+      fixedval.add(_fixed);
+      return(fixedval);
+    }
+    if (_schema.getTargetNamespace() != null && _schema.getTargetNamespace() == _domElement.namespaceURI &&
+        DaxeWXS._localValue(_type) == "bool")
+      return(DaxeWXS._booleanValues(_type, _domElement)); // cas du superschéma
+    if (_simpleType != null)
+      return(_simpleType.suggestedValues());
+    else if (_type != null)
+      return(DaxeWXS._booleanValues(_type, _domElement));
+    return(null);
+  }
+  
   String defaultValue() {
     if (_defaultAtt != null)
       return(_defaultAtt);

@@ -37,18 +37,15 @@ class SimpleSchema implements InterfaceSchema {
     _buildElementDefCache();
   }
   
-  // from InterfaceSchema
   bool elementInSchema(final Element elementRef) {
     Document domdoc = elementRef.ownerDocument;
     return(domdoc == _schemaRoot.ownerDocument);
   }
   
-  // from InterfaceSchema
   Element elementReferenceByName(final String name) {
     return(_elementDefCache[name]);
   }
   
-  // from InterfaceSchema
   Element elementReference(final Element el, final Element parentRef) {
     String name;
     if (el.prefix == null)
@@ -58,57 +55,50 @@ class SimpleSchema implements InterfaceSchema {
     return(elementReferenceByName(name));
   }
   
-  // from InterfaceSchema
   String elementName(final Element elementRef) {
     return(_elementNamesCache[elementRef]);
   }
   
-  // from InterfaceSchema
   String elementNamespace(final Element elementRef) {
     return(null);
   }
   
-  // from InterfaceSchema
   String elementPrefix(final Element elementRef) {
     return(null);
   }
   
-  // from InterfaceSchema
   String elementDocumentation(final Element elementRef) {
     return(null);
   }
   
-  // from InterfaceSchema
   List<String> elementValues(final Element elementRef) {
     return(null);
   }
   
-  // from InterfaceSchema
+  List<String> suggestedElementValues(final Element elementRef) {
+    return(null);
+  }
+  
   bool elementValueIsValid(final Element elementRef, final String value) {
     return(true);
   }
   
-  // from InterfaceSchema
   List<String> namespaceList() {
     return(null);
   }
   
-  // from InterfaceSchema
   bool hasNamespace(final String namespace) {
     return(namespace == null);
   }
   
-  // from InterfaceSchema
   String namespacePrefix(final String ns) {
     return(null);
   }
   
-  // from InterfaceSchema
   String getTargetNamespace() {
     return(null);
   }
   
-  // from InterfaceSchema
   List<Element> elementsOutsideNamespace(final String namespace) {
     if (namespace == null)
       return(new List<Element>());
@@ -116,32 +106,26 @@ class SimpleSchema implements InterfaceSchema {
       return(allElements());
   }
   
-  // from InterfaceSchema
   List<Element> elementsWithinNamespaces(final Set<String> namespaces) {
     return(new List<Element>());
   }
   
-  // from InterfaceSchema
   List<Element> allElements() {
     return(new List.from(_elementNamesCache.keys));
   }
   
-  // from InterfaceSchema
   List<Element> rootElements() {
     return(allElements());
   }
   
-  // from InterfaceSchema
   bool requiredElement(final Element parentRef, final Element childRef) {
     return(false);
   }
   
-  // from InterfaceSchema
   bool multipleChildren(final Element parentRef, final Element childRef) {
     return(true);
   }
   
-  // from InterfaceSchema
   List<Element> subElements(final Element parentRef) {
     final List<Element> liste = new List<Element>();
     final List<Node> lsousel = parentRef.getElementsByTagName('SOUS-ELEMENT');
@@ -163,7 +147,6 @@ class SimpleSchema implements InterfaceSchema {
     return(liste);
   }
   
-  // from InterfaceSchema
   String regularExpression(final Element parentRef, final bool modevisu, final bool modevalid) {
     final List<Element> lsousb = subElements(parentRef);
     final StringBuffer expr = new StringBuffer();
@@ -189,7 +172,6 @@ class SimpleSchema implements InterfaceSchema {
     return(expr.toString());
   }
   
-  // from InterfaceSchema
   List<Element> parentElements(final Element elementRef) {
     final List<Element> liste = new List<Element>();
     if (elementRef.nodeName == 'ELEMENT') {
@@ -221,7 +203,6 @@ class SimpleSchema implements InterfaceSchema {
     return(liste);
   }
   
-  // from InterfaceSchema
   List<Element> elementAttributes(final Element elementRef) {
     final List<Node> latt = elementRef.getElementsByTagName('ATTRIBUT');
     final List<Element> l = new List<Element>();
@@ -230,33 +211,27 @@ class SimpleSchema implements InterfaceSchema {
     return(l);
   }
   
-  // from InterfaceSchema
   String attributeName(final Element attributeRef) {
     return(attributeRef.getAttribute('nom'));
   }
   
-  // from InterfaceSchema
   String attributeNamespace(final Element attributeRef) {
     return(null);
   }
   
-  // from InterfaceSchema
   String attributeDocumentation(final Element attributeRef) {
     return(null);
   }
   
-  // from InterfaceSchema
   String attributeNamespaceByName(final String attributeName) {
     return(null);
   }
   
-  // from InterfaceSchema
   bool attributeIsRequired(final Element refParent, final Element attributeRef) {
     final String presence = attributeRef.getAttribute('presence');
     return(presence == 'obligatoire');
   }
   
-  // from InterfaceSchema
   List<String> attributeValues(final Element attributeRef) {
     final List<Node> lval = attributeRef.getElementsByTagName('VALEUR');
     if (lval.length == 0)
@@ -270,12 +245,14 @@ class SimpleSchema implements InterfaceSchema {
     return(liste);
   }
   
-  // from InterfaceSchema
+  List<String> suggestedAttributeValues(final Element attributeRef) {
+    return(null);
+  }
+  
   String defaultAttributeValue(final Element attributeRef) {
     return(null);
   }
   
-  // from InterfaceSchema
   attributeIsValid(final Element attributeRef, final String value) {
     final String presence = attributeRef.getAttribute('presence');
     bool required = (presence == 'obligatoire');
@@ -287,16 +264,15 @@ class SimpleSchema implements InterfaceSchema {
     return(true);
   }
   
-  // from InterfaceSchema
   Element attributeParent(final Element attributeRef) {
     return(attributeRef.parentNode as Element);
   }
   
-  // from InterfaceSchema
   bool canContainText(final Element elementRef) {
     final String texte  = elementRef.getAttribute('texte');
     return(texte == 'autorise');
   }
+  
   
   /**
    * Builds a cache for element definitions and names

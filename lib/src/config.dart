@@ -1169,48 +1169,60 @@ class Config {
   
   /**
    * Returns the list of suggested values for a given element.
-   * Returns null if no display type is defined for the element.
+   * Returns null if there is no suggestion.
    */
   List<String> elementSuggestedValues(final x.Element elementRef) {
+    final Set<String> set = new LinkedHashSet<String>();
+    List<String> schemaSuggestions = _schema.suggestedElementValues(elementRef);
+    if (schemaSuggestions != null)
+      set.addAll(_schema.suggestedElementValues(elementRef));
     final x.Element affel = getElementDisplay(elementName(elementRef));
-    if (affel == null)
-      return(null);
-    final List<String> liste = new List<String>();
-    x.Element vs = _findElement(affel, "VALEUR_SUGGEREE");
-    while (vs != null) {
-      final String v = _dom_elementValue(vs);
-      if (v != null)
-        liste.add(v);
-      vs = _nextElement(vs, "VALEUR_SUGGEREE");
+    if (affel != null) {
+      x.Element vs = _findElement(affel, "VALEUR_SUGGEREE");
+      while (vs != null) {
+        final String v = _dom_elementValue(vs);
+        if (v != null)
+          set.add(v);
+        vs = _nextElement(vs, "VALEUR_SUGGEREE");
+      }
     }
-    return(liste);
+    if (set.length == 0)
+      return(null);
+    else
+      return(set.toList());
   }
   
   /**
-   * Returns the list of suggested values in the config for an attribute,
+   * Returns the list of suggested values for an attribute,
    * based on the parent element reference and the attribute reference.
-   * Returns null if no display type is defined for the attribute.
+   * Returns null if there is no suggestion.
    */
   List<String> attributeSuggestedValues(final x.Element parentRef, final x.Element attributeRef) {
+    final Set<String> set = new LinkedHashSet<String>();
+    List<String> schemaSuggestions = _schema.suggestedAttributeValues(attributeRef);
+    if (schemaSuggestions != null)
+      set.addAll(schemaSuggestions);
     final x.Element affel = getElementDisplay(elementName(parentRef));
-    if (affel == null)
-      return(null);
-    final List<String> liste = new List<String>();
-    final String nomAtt = attributeName(attributeRef);
-    x.Element aa = _findElement(affel, "AFFICHAGE_ATTRIBUT");
-    while (aa != null) {
-      if (aa.getAttribute("attribut") == nomAtt) {
-        x.Element vs = _findElement(aa, "VALEUR_SUGGEREE");
-        while (vs != null) {
-          final String v = _dom_elementValue(vs);
-          if (v != null)
-            liste.add(v);
-          vs = _nextElement(vs, "VALEUR_SUGGEREE");
+    if (affel != null) {
+      final String nomAtt = attributeName(attributeRef);
+      x.Element aa = _findElement(affel, "AFFICHAGE_ATTRIBUT");
+      while (aa != null) {
+        if (aa.getAttribute("attribut") == nomAtt) {
+          x.Element vs = _findElement(aa, "VALEUR_SUGGEREE");
+          while (vs != null) {
+            final String v = _dom_elementValue(vs);
+            if (v != null)
+              set.add(v);
+            vs = _nextElement(vs, "VALEUR_SUGGEREE");
+          }
         }
+        aa = _nextElement(aa, "AFFICHAGE_ATTRIBUT");
       }
-      aa = _nextElement(aa, "AFFICHAGE_ATTRIBUT");
     }
-    return(liste);
+    if (set.length == 0)
+      return(null);
+    else
+      return(set.toList());
   }
   
   

@@ -97,6 +97,36 @@ class WXSUnion extends WXSAnnotated {
     return(liste);
   }
   
+  List<String> suggestedValues() {
+    final List<String> liste = new List<String>();
+    if (_memberTypes != null) {
+      for (int i=0; i<_memberTypes.length; i++) {
+        if (_wxsMemberTypes[i] != null) {
+          final List<String> lv = _wxsMemberTypes[i].possibleValues();
+          if (lv != null)
+            liste.addAll(lv);
+        } else {
+          final String type = _memberTypes[i];
+          final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(type));
+          final String espaceSchema = _domElement.namespaceURI;
+          if (espaceSchema == tns) {
+            final List<String> lv = DaxeWXS._booleanValues(type, _domElement);
+            if (lv != null)
+              liste.addAll(lv);
+          }
+        }
+      }
+    }
+    for (WXSSimpleType st in _simpleTypes) {
+      final List<String> listest = st.possibleValues();
+      if (listest != null)
+        liste.addAll(listest);
+    }
+    if (liste.length == 0)
+      return(null);
+    return(liste);
+  }
+  
   bool validValue(final String value) {
     if (_memberTypes != null) {
       for (int i=0; i<_memberTypes.length; i++) {

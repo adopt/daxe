@@ -53,6 +53,14 @@ class WXSSimpleContent extends WXSAnnotated {
     return(null);
   }
   
+  List<String> suggestedValues() {
+    if (_restriction != null)
+      return(_restriction.suggestedValues());
+    else if (_extension != null)
+      return(_extension.suggestedValues());
+    return(null);
+  }
+  
   List<WXSAttribute> attributes() {
     if (_restriction != null)
       return(_restriction.attributes());

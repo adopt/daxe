@@ -22,11 +22,13 @@ class AttributeDialog {
   x.Element ref;
   List<x.Element> attRefs;
   HashMap<x.Element, SimpleTypeControl> controls;
+  HashMap<DaxeAttr, h.TextInputElement> unknownAttributeFields;
   ActionFunction okfct;
   
   AttributeDialog(this.el, [this.okfct]) {
     ref = el.ref;
     controls = new HashMap<x.Element, SimpleTypeControl>();
+    unknownAttributeFields = null;
   }
   
   void show() {
@@ -88,6 +90,36 @@ class AttributeDialog {
       tr.append(td);
       table.append(tr);
     }
+    for (DaxeAttr att in el.attributes) {
+      bool found = false;
+      for (x.Element attref in controls.keys) {
+        if (att.localName == doc.cfg.attributeName(attref) &&
+            att.namespaceURI == doc.cfg.attributeNamespace(attref)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        if (unknownAttributeFields == null)
+          unknownAttributeFields = new HashMap<DaxeAttr, h.TextInputElement>();
+        h.TextInputElement input = new h.TextInputElement();
+        input.spellcheck = false;
+        input.size = 40;
+        input.value = att.value;
+        input.classes.add('invalid');
+        unknownAttributeFields[att] = input;
+        h.TableRowElement tr = new h.TableRowElement();
+        h.TableCellElement td = new h.TableCellElement();
+        tr.append(td);
+        td = new h.TableCellElement();
+        td.appendText(att.name);
+        tr.append(td);
+        td = new h.TableCellElement();
+        td.append(input);
+        tr.append(td);
+        table.append(tr);
+      }
+    }
     form.append(table);
     h.DivElement div_buttons = new h.DivElement();
     div_buttons.classes.add('buttons');
@@ -135,6 +167,18 @@ class AttributeDialog {
         attributes.remove(name);
       else if (value != '' || defaultValue != null)
         attributes[name] = new DaxeAttr.NS(namespace, name, value);
+    }
+    if (unknownAttributeFields != null) {
+      for (DaxeAttr att in unknownAttributeFields.keys) {
+        h.TextInputElement input = unknownAttributeFields[att];
+        String name = att.name;
+        String value = input.value;
+        String namespace = att.namespaceURI;
+        if (value == '')
+          attributes.remove(name);
+        else
+          attributes[name] = new DaxeAttr.NS(namespace, name, value);
+      }
     }
     h.querySelector('div#attributes_dlg').remove();
     event.preventDefault();

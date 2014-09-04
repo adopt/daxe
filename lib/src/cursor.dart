@@ -754,14 +754,16 @@ class Cursor {
    * Obtains the focus.
    */
   void focus() {
-    show();
+    if (visible)
+      show();
     ta.focus();
   }
   
   setSelection(Position start, Position end) {
     if (selectionStart == start && selectionEnd == end) {
-      if (start == end)
-        focus();
+      if (start == end) {
+        updateCaretPosition(false);
+      }
       return;
     }
     deSelect();

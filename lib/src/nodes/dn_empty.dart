@@ -53,4 +53,9 @@ class DNEmpty extends DaxeNode {
   Position lastCursorPositionInside() {
     return(null);
   }
+  
+  @override
+  h.Element getHTMLContentsNode() {
+    return(null);
+  }
 }

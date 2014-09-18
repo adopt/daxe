@@ -24,7 +24,7 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   // ou: (group|all|choice|sequence)?, (attribute|attributeGroup)*
   WXSSimpleType _simpleType = null;
   List<WXSFacet> _facets;
-  WithSubElements _modele = null; // WXSGroup | WXSAll | WXSChoice | WXSSequence
+  WithSubElements _model = null; // WXSGroup | WXSAll | WXSChoice | WXSSequence
   List<WXSThing> _attrDecls; // attrDecls: (attribute|attributeGroup)*
   String _base = null;
   
@@ -66,13 +66,13 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
         else if (localName == "pattern")
           _facets.add(new WXSFacet(n as Element));
         else if (localName == "group")
-          _modele = new WXSGroup(n as Element, this, schema);
+          _model = new WXSGroup(n as Element, this, schema);
         else if (localName == "all")
-          _modele = new WXSAll(n as Element, this, schema);
+          _model = new WXSAll(n as Element, this, schema);
         else if (localName == "choice")
-          _modele = new WXSChoice(n as Element, this, schema);
+          _model = new WXSChoice(n as Element, this, schema);
         else if (localName == "sequence")
-          _modele = new WXSSequence(n as Element, this, schema);
+          _model = new WXSSequence(n as Element, this, schema);
         else if (localName == "attribute")
           _attrDecls.add(new WXSAttribute(n as Element, this, schema));
         else if (localName == "attributeGroup")
@@ -90,8 +90,8 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_simpleType != null)
       _simpleType.resolveReferences(schema, redefine);
-    if (_modele != null)
-      _modele.resolveReferences(schema, redefine);
+    if (_model != null)
+      _model.resolveReferences(schema, redefine);
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
         attrDecl.resolveReferences(schema);
@@ -107,16 +107,16 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   // from WithSubElements
   List<WXSElement> allElements() {
     final List<WXSElement> liste = new List<WXSElement>();
-    if (_modele != null)
-      liste.addAll(_modele.allElements());
+    if (_model != null)
+      liste.addAll(_model.allElements());
     return(liste);
   }
   
   // from WithSubElements
   List<WXSElement> subElements() {
     final List<WXSElement> liste = new List<WXSElement>();
-    if (_modele != null)
-      liste.addAll(_modele.subElements());
+    if (_model != null)
+      liste.addAll(_model.subElements());
     return(liste);
   }
   
@@ -130,24 +130,24 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   
   // from WithSubElements
   String regularExpression() {
-    if (_modele != null)
-      return(_modele.regularExpression());
+    if (_model != null)
+      return(_model.regularExpression());
     return(null);
   }
   
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
     // renvoie null si l'enfant n'en est pas un
-    if (_modele != null)
-      return(_modele.requiredChild(child));
+    if (_model != null)
+      return(_model.requiredChild(child));
     return(null);
   }
   
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
     // renvoie null si l'enfant n'en est pas un
-    if (_modele != null)
-      return(_modele.multipleChildren(child));
+    if (_model != null)
+      return(_model.multipleChildren(child));
     return(null);
   }
   
@@ -199,15 +199,15 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   
   // from WithSubElements
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
-    if (_modele == null)
+    if (_model == null)
       return(start);
-    return(_modele.validate(subElements, start, insertion));
+    return(_model.validate(subElements, start, insertion));
   }
   
   // from WithSubElements
   bool isOptionnal() {
-    if (_modele != null)
-      return(_modele.isOptionnal());
+    if (_model != null)
+      return(_model.isOptionnal());
     return(true);
   }
   

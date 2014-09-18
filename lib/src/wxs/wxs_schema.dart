@@ -38,7 +38,7 @@ class WXSSchema implements WXSThing {
   DaxeWXS _jwxs;
   List<WXSSchema> _includedSchemas;
   WXSSchema _parentSchema;
-  HashMap<String, String> _namespaceToPrefix; // associations espace de noms -> préfixe
+  HashMap<String, String> _namespaceToPrefix;
   
   
   WXSSchema(final Element el, final String url, final DaxeWXS jwxs, final WXSSchema schemaParent) {
@@ -189,12 +189,12 @@ class WXSSchema implements WXSThing {
     return(_namespaceToPrefix[ns]);
   }
   
-  String prefixNamespace(final String prefixe) {
-    if (prefixe == null)
+  String prefixNamespace(final String prefix) {
+    if (prefix == null)
       return(null);
-    for (String espace in _namespaceToPrefix.keys) {
-      if (prefixe == _namespaceToPrefix[espace])
-        return(espace);
+    for (String namespace in _namespaceToPrefix.keys) {
+      if (prefix == _namespaceToPrefix[namespace])
+        return(namespace);
     }
     return(null);
   }
@@ -234,19 +234,20 @@ class WXSSchema implements WXSThing {
     return(_resolveReference(localName, namespace, null, null, 'WXSAttribute') as WXSAttribute);
   }
   
-  WXSThing _resolveReference(final String localName, final String namespace, final HashSet<WXSSchema> exclure, final WXSThing redefine, final String classe) {
+  WXSThing _resolveReference(final String localName, final String namespace, final HashSet<WXSSchema> exclude,
+                             final WXSThing redefine, final String classe) {
     if (localName == null)
       return(null);
-    HashSet<WXSSchema> exclure2 = null;
-    if (_parentSchema != null && (exclure == null || !exclure.contains(_parentSchema))) {
-      if (exclure2 == null) {
-        if (exclure == null)
-          exclure2 = new HashSet<WXSSchema>();
+    HashSet<WXSSchema> exclude2 = null;
+    if (_parentSchema != null && (exclude == null || !exclude.contains(_parentSchema))) {
+      if (exclude2 == null) {
+        if (exclude == null)
+          exclude2 = new HashSet<WXSSchema>();
         else
-          exclure2 = exclure;
-        exclure2.add(this);
+          exclude2 = exclude;
+        exclude2.add(this);
       }
-      final WXSThing thing = _parentSchema._resolveReference(localName, namespace, exclure2, redefine, classe);
+      final WXSThing thing = _parentSchema._resolveReference(localName, namespace, exclude2, redefine, classe);
       if (thing != null)
         return(thing);
     }
@@ -271,15 +272,15 @@ class WXSSchema implements WXSThing {
         return(thing);
     }
     for (WXSSchema schemaInclu in _includedSchemas) {
-      if (exclure == null || !exclure.contains(schemaInclu)) {
-        if (exclure2 == null) {
-          if (exclure == null)
-            exclure2 = new HashSet<WXSSchema>();
+      if (exclude == null || !exclude.contains(schemaInclu)) {
+        if (exclude2 == null) {
+          if (exclude == null)
+            exclude2 = new HashSet<WXSSchema>();
           else
-            exclure2 = exclure;
-          exclure2.add(this);
+            exclude2 = exclude;
+          exclude2.add(this);
         }
-        final WXSThing thing = schemaInclu._resolveReference(localName, namespace, exclure2, redefine, classe);
+        final WXSThing thing = schemaInclu._resolveReference(localName, namespace, exclude2, redefine, classe);
         if (thing  != null)
           return(thing);
       }

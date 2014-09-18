@@ -21,7 +21,7 @@ part of wxs;
 class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
   
   // (group|all|choice|sequence)?, (attribute|attributeGroup)*
-  WithSubElements _modele = null; // WXSGroup | WXSAll | WXSChoice | WXSSequence
+  WithSubElements _model = null; // WXSGroup | WXSAll | WXSChoice | WXSSequence
   List<WXSThing> _attrDecls; // attrDecls: (attribute|attributeGroup)*
   String _base = null;
   WXSType _wxsBase = null;
@@ -36,13 +36,13 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "group")
-          _modele = new WXSGroup(n as Element, this, schema);
+          _model = new WXSGroup(n as Element, this, schema);
         else if (n.localName == "all")
-          _modele = new WXSAll(n as Element, this, schema);
+          _model = new WXSAll(n as Element, this, schema);
         else if (n.localName == "choice")
-          _modele = new WXSChoice(n as Element, this, schema);
+          _model = new WXSChoice(n as Element, this, schema);
         else if (n.localName == "sequence")
-          _modele = new WXSSequence(n as Element, this, schema);
+          _model = new WXSSequence(n as Element, this, schema);
         else if (n.localName == "attribute")
           _attrDecls.add(new WXSAttribute(n as Element, this, schema));
         else if (n.localName == "attributeGroup")
@@ -58,8 +58,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
   
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
-    if (_modele != null)
-      _modele.resolveReferences(schema, redefine);
+    if (_model != null)
+      _model.resolveReferences(schema, redefine);
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
         attrDecl.resolveReferences(schema);
@@ -77,8 +77,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
   // from WithSubElements
   List<WXSElement> allElements() {
     final List<WXSElement> liste = new List<WXSElement>();
-    if (_modele != null)
-      liste.addAll(_modele.allElements());
+    if (_model != null)
+      liste.addAll(_model.allElements());
     return(liste);
   }
   
@@ -87,8 +87,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     final List<WXSElement> liste = new List<WXSElement>();
     if (_wxsBase is WXSComplexType)
       liste.addAll((_wxsBase as WXSComplexType).subElements());
-    if (_modele != null)
-      liste.addAll(_modele.subElements());
+    if (_model != null)
+      liste.addAll(_model.subElements());
     return(liste);
   }
   
@@ -108,8 +108,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     else
       erBase = null;
     String erModele;
-    if (_modele != null)
-      erModele = _modele.regularExpression();
+    if (_model != null)
+      erModele = _model.regularExpression();
     else
       erModele = null;
     if (erBase == null && erModele == null)
@@ -130,8 +130,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     if (bb1 != null && bb1)
       return(bb1);
     bool bb2 = null;
-    if (_modele != null)
-      bb2 = _modele.requiredChild(child);
+    if (_model != null)
+      bb2 = _model.requiredChild(child);
     if (bb2 != null && bb2)
       return(bb2);
     return(bb1 != null ? bb1 : bb2);
@@ -145,8 +145,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     if (bb1 != null && bb1)
       return(bb1);
     bool bb2 = null;
-    if (_modele != null)
-      bb2 = _modele.multipleChildren(child);
+    if (_model != null)
+      bb2 = _model.multipleChildren(child);
     return(bb1 != null ? bb1 : bb2);
   }
   
@@ -202,9 +202,9 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       if (pos == start && !insertion && !(_wxsBase as WXSComplexType).isOptionnal())
         return(start);
     }
-    if (_modele != null) {
-      int pos2 = _modele.validate(subElements, pos, insertion);
-      if (pos2 == pos && !insertion && !_modele.isOptionnal())
+    if (_model != null) {
+      int pos2 = _model.validate(subElements, pos, insertion);
+      if (pos2 == pos && !insertion && !_model.isOptionnal())
         return(start);
       pos = pos2;
     }
@@ -215,8 +215,8 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
   bool isOptionnal() {
     if (_wxsBase is WXSComplexType && !(_wxsBase as WXSComplexType).isOptionnal())
       return(false);
-    if (_modele != null)
-      return(_modele.isOptionnal());
+    if (_model != null)
+      return(_model.isOptionnal());
     return(true);
   }
   

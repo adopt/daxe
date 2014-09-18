@@ -25,22 +25,26 @@ part of wxs;
 class DaxeWXS implements InterfaceSchema {
   
   WXSSchema _schema;
-  final HashMap<Element, WXSElement> _hRefElementVersWXS = new HashMap<Element, WXSElement>(); // lien références éléments -> éléments WXS
-  final HashMap<Element, WXSAttribute> _hRefAttributVersWXS = new HashMap<Element, WXSAttribute>(); // lien références attributs -> attributs WXS
-  final HashMap<String, List<WXSElement>> _hNomVersWXS = new HashMap<String, List<WXSElement>>(); // lien noms -> objets WXS
-  HashMap<String, String> _espaceVersPrefixe; // associations espaces de noms -> préfixes
+  /** map: element reference -> WXS element */
+  final HashMap<Element, WXSElement> _hElementRefToWXS = new HashMap<Element, WXSElement>();
+  /** map: attribute reference -> WXS attribute */
+  final HashMap<Element, WXSAttribute> _hAttributeRefToWXS = new HashMap<Element, WXSAttribute>();
+  /** map: name -> WXS object */
+  final HashMap<String, List<WXSElement>> _hNameToWXS = new HashMap<String, List<WXSElement>>();
+  /** map: namespace -> prefix */
+  HashMap<String, String> _namespaceToPrefix;
   
-  // liste de tous les éléments WXS (pas forcément directement sous xs:schema)
-  // (ils peuvent avoir un attribut name ou un attribut ref)
-  final LinkedHashSet<WXSElement> _lTousElements = new LinkedHashSet<WXSElement>();
-  Set<WXSSchema> _schemasInclu;
+  /** list of all WXS elements (not necessarily directly under xs:schema)
+  (they can have a name attribute or a ref attribute) */
+  final LinkedHashSet<WXSElement> _lAllElements = new LinkedHashSet<WXSElement>();
+  Set<WXSSchema> _includedSchemas;
   HashMap<String, String> _hashTitles;
   
   
   DaxeWXS(HashMap<String, String> hashElementTitles) {
     this._hashTitles = hashElementTitles;
-    _schemasInclu = new HashSet<WXSSchema>();
-    _espaceVersPrefixe = new HashMap<String, String>();
+    _includedSchemas = new HashSet<WXSSchema>();
+    _namespaceToPrefix = new HashMap<String, String>();
   }
   
   Future load(final String schemaURL) {
@@ -48,28 +52,28 @@ class DaxeWXS implements InterfaceSchema {
     _readDocument(schemaURL).then((Element documentElement) {
       _schema = new WXSSchema(documentElement, schemaURL, this, null);
       _addNamespaces(_schema, null, null);
-      _schemasInclu.add(_schema);
+      _includedSchemas.add(_schema);
       _schema._inclusions().then((_) {
-        for (final WXSSchema sch in _schemasInclu)
-          _lTousElements.addAll(sch.allElements());
-        for (final WXSSchema sch in _schemasInclu)
-          sch._resolveReferences(); // WXSAny.resolveReferences() a besoin de cet objet DaxeWXS, c'est donc appelé plus tard
-        for (WXSElement element in _lTousElements) {
-          _hRefElementVersWXS[element.getDOMElement()] = element;
+        for (final WXSSchema sch in _includedSchemas)
+          _lAllElements.addAll(sch.allElements());
+        for (final WXSSchema sch in _includedSchemas)
+          sch._resolveReferences(); // WXSAny.resolveReferences() needs this DaxeWXS object, so it is called later
+        for (WXSElement element in _lAllElements) {
+          _hElementRefToWXS[element.getDOMElement()] = element;
           if (element.getName() != null && element.getRef() == null) {
-            List<WXSElement> listeWXS = _hNomVersWXS[element.getName()];
+            List<WXSElement> listeWXS = _hNameToWXS[element.getName()];
             if (listeWXS == null) {
               listeWXS = new List<WXSElement>();
-              _hNomVersWXS[element.getName()] = listeWXS;
+              _hNameToWXS[element.getName()] = listeWXS;
             }
             listeWXS.add(element);
           }
         }
-        for (WXSElement element in _lTousElements) {
+        for (WXSElement element in _lAllElements) {
           final List<WXSAttribute> attributs = element.attributes();
           if (attributs != null) {
             for (WXSAttribute attribut in attributs)
-              _hRefAttributVersWXS[attribut.getDOMElement()] = attribut;
+              _hAttributeRefToWXS[attribut.getDOMElement()] = attribut;
           }
         }
         completer.complete();
@@ -82,12 +86,12 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   bool elementInSchema(final Element elementRef) {
-    return(_hRefElementVersWXS[elementRef] != null);
+    return(_hElementRefToWXS[elementRef] != null);
   }
   
   // from InterfaceSchema
   Element elementReferenceByName(final String name) {
-    final List<WXSElement> listeWXS = _hNomVersWXS[name];
+    final List<WXSElement> listeWXS = _hNameToWXS[name];
     if (listeWXS == null)
       return(null);
     return(listeWXS[0].getDOMElement());
@@ -95,7 +99,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<Element> elementReferencesByName(final String name) {
-    final List<WXSElement> listeWXS = _hNomVersWXS[name];
+    final List<WXSElement> listeWXS = _hNameToWXS[name];
     if (listeWXS == null)
       return(null);
     List<Element> refs = new List<Element>();
@@ -107,53 +111,33 @@ class DaxeWXS implements InterfaceSchema {
   // from InterfaceSchema
   Element elementReference(final Element el, final Element parentRef) {
     if (parentRef == null) {
-      // pour les éléments racine: il faut éviter les définitions locales
-      String nom;
+      // for root elements: local definitions should be avoided
+      String name;
       if (el.prefix == null)
-        nom = el.nodeName;
+        name = el.nodeName;
       else
-        nom = el.localName;
+        name = el.localName;
       final String espace = el.namespaceURI;
-      for (final WXSSchema sch in _schemasInclu) {
+      for (final WXSSchema sch in _includedSchemas) {
         for (final WXSElement topel in sch.getTopElements()) {
           if (topel.getRef() == null && !topel.getAbstract() &&
-              nom == topel.getName() && espace == topel.getNamespace())
+              name == topel.getName() && espace == topel.getNamespace())
             return(topel.getDOMElement());
         }
       }
-      print("JaxeWXS: referenceElement: pas d'élément racine correspondant dans le schéma pour $nom");
+      print("JaxeWXS: elementReference: no matching root element in the schema for $name");
       return(null);
     }
-    /*
-     C'était pour le cas où parentRef n'était pas donné en paramètre, mais ce n'est plus possible:
-     parentRef est maintenant obligatoire (le changement a été effectué parce-qu'il n'est plus
-     possible d'utiliser "?parentRef" en Dart, et donc on ne peut plus distinguer un null passé explicitement
-     d'un paramètre optionnel qui n'est pas passé en paramètre)
-     
-     else if (parentRef == null) {
-      String nom, prefixe;
-      prefixe = el.prefix;
-      if (prefixe == null)
-        nom = el.tagName;
-      else
-        nom = el.localName;
-      final String espace = el.namespaceURI;
-      final WXSElement element = _findFirstElement(nom, espace);
-      if (element != null)
-        return(element.getDOMElement());
-      return(null);
-    }
-    */
-    final WXSElement wxsParent = _hRefElementVersWXS[parentRef];
+    final WXSElement wxsParent = _hElementRefToWXS[parentRef];
     if (wxsParent == null) {
-      print("DaxeWXS: referenceElement: référence élément inconnue: $parentRef");
+      print("DaxeWXS: elementReference: unknown element reference: $parentRef");
       return(null);
     }
     final List<WXSElement> liste = wxsParent.subElements();
-    final String nom = el.localName;
-    final String espace = el.namespaceURI;
+    final String name = el.localName;
+    final String namespace = el.namespaceURI;
     for (final WXSElement element in liste) {
-      if (element.getName() == nom && element.getNamespace() == espace)
+      if (element.getName() == name && element.getNamespace() == namespace)
         return(element.getDOMElement());
     }
     return(null);
@@ -161,9 +145,9 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   String elementName(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null) {
-      print("DaxeWXS: nomElement: référence élément inconnue: $elementRef");
+      print("DaxeWXS: elementName: unknown element reference: $elementRef");
       return(null);
     }
     return(element.getName());
@@ -171,7 +155,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   String elementNamespace(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null)
       return(null);
     return(element.getNamespace());
@@ -179,15 +163,15 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   String elementPrefix(final Element elementRef) {
-    final String espace = elementNamespace(elementRef);
-    if (espace == null)
+    final String namespace = elementNamespace(elementRef);
+    if (namespace == null)
       return(null);
-    return(_espaceVersPrefixe[espace]);
+    return(_namespaceToPrefix[namespace]);
   }
   
   // from InterfaceSchema
   String elementDocumentation(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null)
       return(null);
     String doc = element.getDocumentation();
@@ -200,7 +184,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<String> elementValues(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null)
       return(null);
     return(element.possibleValues());
@@ -208,7 +192,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<String> suggestedElementValues(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null)
       return(null);
     return(element.suggestedValues());
@@ -216,7 +200,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   bool elementValueIsValid(final Element elementRef, final String value) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null)
       return(false);
     return(element.validValue(value));
@@ -227,7 +211,7 @@ class DaxeWXS implements InterfaceSchema {
     final LinkedHashSet<String> set = new LinkedHashSet<String>();
     if (_schema.getTargetNamespace() != null)
       set.add(_schema.getTargetNamespace());
-    for (final String s in _espaceVersPrefixe.keys)
+    for (final String s in _namespaceToPrefix.keys)
       set.add(s);
     return(new List.from(set));
   }
@@ -238,16 +222,16 @@ class DaxeWXS implements InterfaceSchema {
     if (namespace == null) {
       if (targetNamespace == null || targetNamespace == "")
         return(true);
-      if (_espaceVersPrefixe.containsKey(""))
+      if (_namespaceToPrefix.containsKey(""))
         return(true);
-      // cas des éléments locaux sans espace de noms :
+      // case of local elements without a namespace :
       final bool qualified = ("qualified" == _schema.getElementFormDefault());
       if (!qualified)
         return(true);
     } else {
       if (namespace == targetNamespace)
         return(true);
-      if (_espaceVersPrefixe.containsKey(namespace))
+      if (_namespaceToPrefix.containsKey(namespace))
         return(true);
     }
     return(false);
@@ -255,7 +239,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   String namespacePrefix(final String ns) {
-    return(_espaceVersPrefixe[ns]);
+    return(_namespaceToPrefix[ns]);
   }
   
   // from InterfaceSchema
@@ -266,7 +250,7 @@ class DaxeWXS implements InterfaceSchema {
   // from InterfaceSchema
   List<Element> elementsOutsideNamespace(final String namespace) {
     final List<Element> liste = new List<Element>();
-    for (final WXSElement el in _lTousElements) {
+    for (final WXSElement el in _lAllElements) {
       if (el.getName() != null && el.getRef() == null && !el.getAbstract()) {
         final String tns = el.getNamespace();
         if (tns != null && tns != namespace)
@@ -279,7 +263,7 @@ class DaxeWXS implements InterfaceSchema {
   // from InterfaceSchema
   List<Element> elementsWithinNamespaces(final Set<String> namespaces) {
     final List<Element> liste = new List<Element>();
-    for (final WXSElement el in _lTousElements) {
+    for (final WXSElement el in _lAllElements) {
       if (el.getName() != null && el.getRef() == null && !el.getAbstract()) {
         final String tns = el.getNamespace();
         if (tns != null && namespaces.contains(tns))
@@ -292,7 +276,7 @@ class DaxeWXS implements InterfaceSchema {
   // from InterfaceSchema
   List<Element> allElements() {
     final List<Element> liste = new List<Element>();
-    for (final WXSElement el in _lTousElements) {
+    for (final WXSElement el in _lAllElements) {
       if (el.getName() != null && el.getRef() == null && !el.getAbstract())
         liste.add(el.getDOMElement());
     }
@@ -302,7 +286,7 @@ class DaxeWXS implements InterfaceSchema {
   // from InterfaceSchema
   List<Element> rootElements() {
     final List<Element> liste = new List<Element>();
-    for (final WXSSchema sch in _schemasInclu) {
+    for (final WXSSchema sch in _includedSchemas) {
       for (final WXSElement el in sch.getTopElements()) {
         if (el.getName() != null && el.getRef() == null && !el.getAbstract())
           liste.add(el.getDOMElement());
@@ -313,42 +297,42 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   bool requiredElement(final Element parentRef, final Element childRef) {
-    final WXSElement parent = _hRefElementVersWXS[parentRef];
+    final WXSElement parent = _hElementRefToWXS[parentRef];
     if (parent == null) {
       print("DaxeWXS: requiredElement: unknown element reference: $parentRef");
       return(false);
     }
-    final WXSElement enfant = _hRefElementVersWXS[childRef];
-    if (enfant == null) {
+    final WXSElement child = _hElementRefToWXS[childRef];
+    if (child == null) {
       print("DaxeWXS: requiredElement: unknown element reference: $childRef");
       return(false);
     }
-    bool bb = parent.requiredChild(enfant);
+    bool bb = parent.requiredChild(child);
     return(bb != null && bb);
   }
   
   // from InterfaceSchema
   bool multipleChildren(final Element parentRef, final Element childRef) {
-    final WXSElement parent = _hRefElementVersWXS[parentRef];
+    final WXSElement parent = _hElementRefToWXS[parentRef];
     if (parent == null) {
-      print("DaxeWXS: enfantsMultiples: référence élément inconnue: $parentRef");
+      print("DaxeWXS: multipleChildren: unknown element reference: $parentRef");
       return(false);
     }
-    final WXSElement enfant = _hRefElementVersWXS[childRef];
-    if (enfant == null) {
-      print("DaxeWXS: enfantsMultiples: référence élément inconnue: $childRef");
+    final WXSElement child = _hElementRefToWXS[childRef];
+    if (child == null) {
+      print("DaxeWXS: multipleChildren: unknown element reference: $childRef");
       return(false);
     }
-    bool bb = parent.multipleChildren(enfant);
+    bool bb = parent.multipleChildren(child);
     return(bb != null && bb);
   }
   
   // from InterfaceSchema
   List<Element> subElements(final Element parentRef) {
     // à faire: cache
-    final WXSElement parent = _hRefElementVersWXS[parentRef];
+    final WXSElement parent = _hElementRefToWXS[parentRef];
     if (parent == null) {
-      print("DaxeWXS: listeSousElements: référence élément inconnue: $parentRef");
+      print("DaxeWXS: subElements: unknown element reference: $parentRef");
       return(null);
     }
     final List<WXSElement> sousElements = parent.subElements();
@@ -366,9 +350,9 @@ class DaxeWXS implements InterfaceSchema {
    */
   // from InterfaceSchema
   String regularExpression(final Element parentRef, final bool modevisu, final bool modevalid) {
-    final WXSElement parent = _hRefElementVersWXS[parentRef];
+    final WXSElement parent = _hElementRefToWXS[parentRef];
     if (parent == null) {
-      print("DaxeWXS: expressionReguliere: référence élément inconnue: $parentRef");
+      print("DaxeWXS: regularExpression: unknown element reference: $parentRef");
       return(null);
     }
     return(parent.elementRegularExpression()); // on utilise toujours modevisu=true et modevalid=true
@@ -376,9 +360,9 @@ class DaxeWXS implements InterfaceSchema {
     
   // from InterfaceSchema
   List<Element> parentElements(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null) {
-      print("DaxeWXS: listeElementsParents: référence élément inconnue: $elementRef");
+      print("DaxeWXS: parentElements: unknown element reference: $elementRef");
       return(null);
     }
     final List<WXSElement> parents = element.parentElements();
@@ -390,58 +374,58 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<Element> elementAttributes(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null) {
-      print("DaxeWXS: listeAttributs: référence élément inconnue: $elementRef");
+      print("DaxeWXS: elementAttributes: unknown element reference: $elementRef");
       return(null);
     }
-    final List<WXSAttribute> attributs = element.attributes();
+    final List<WXSAttribute> attributes = element.attributes();
     final List<Element> liste = new List<Element>();
-    for (WXSAttribute attribut in attributs)
-      liste.add(attribut.getDOMElement());
+    for (WXSAttribute attribute in attributes)
+      liste.add(attribute.getDOMElement());
     return(liste);
   }
   
   // from InterfaceSchema
   String attributeName(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: nomAttribut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: attributeName: unknown attribute reference: $attributeRef");
       return(null);
     }
-    return(attribut.getName());
+    return(attribute.getName());
   }
   
   // from InterfaceSchema
   String attributeNamespace(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: espaceAttribut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: attributeNamespace: unknown attribute reference: $attributeRef");
       return(null);
     }
-    return(attribut.getNamespace());
+    return(attribute.getNamespace());
   }
   
   // from InterfaceSchema
   String attributeDocumentation(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: documentationAttribut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: attributeDocumentation: unknown attribute reference: $attributeRef");
       return(null);
     }
-    return(attribut.getDocumentation());
+    return(attribute.getDocumentation());
   }
   
   // from InterfaceSchema
   String attributeNamespaceByName(final String attributeName) {
     if (attributeName == null)
       return(null);
-    final String prefixe = _namePrefix(attributeName);
-    if (prefixe == null)
+    final String prefix = _namePrefix(attributeName);
+    if (prefix == null)
       return(null);
-    if (prefixe == "xml")
+    if (prefix == "xml")
       return("http://www.w3.org/XML/1998/namespace");
-    return(_schema.prefixNamespace(prefixe));
+    return(_schema.prefixNamespace(prefix));
   }
   
   /**
@@ -450,12 +434,12 @@ class DaxeWXS implements InterfaceSchema {
    * It is better to use attributeIsRequired.
    */
   bool isRequired(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: estObligatoire: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: isRequired: unknown attribute reference: $attributeRef");
       return(false);
     }
-    return(attribut.getUse() == "required");
+    return(attribute.getUse() == "required");
   }
   
   // from InterfaceSchema
@@ -465,53 +449,53 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<String> attributeValues(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: listeValeursAttribut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: attributeValues: unknown attribute reference: $attributeRef");
       return(null);
     }
-    return(attribut.possibleValues());
+    return(attribute.possibleValues());
   }
   
   // from InterfaceSchema
   List<String> suggestedAttributeValues(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: listeValeursAttribut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: suggestedAttributeValues: unknown attribute reference: $attributeRef");
       return(null);
     }
-    return(attribut.suggestedValues());
+    return(attribute.suggestedValues());
   }
   
   // from InterfaceSchema
   String defaultAttributeValue(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: valeurParDefaut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: defaultAttributeValue: unknown attribute reference: $attributeRef");
       return(null);
     }
-    return(attribut.defaultValue());
+    return(attribute.defaultValue());
   }
   
   // from InterfaceSchema
   bool attributeIsValid(final Element attributeRef, final String value) {
     // à refaire avec les classes WXS
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: attributValide: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: attributeIsValid: unknown attribute reference: $attributeRef");
       return(false);
     }
-    return(attribut.validValue(value));
+    return(attribute.validValue(value));
   }
   
   // from InterfaceSchema
   Element attributeParent(final Element attributeRef) {
-    final WXSAttribute attribut = _hRefAttributVersWXS[attributeRef];
-    if (attribut == null) {
-      print("DaxeWXS: parentAttribut: référence attribut inconnue: $attributeRef");
+    final WXSAttribute attribute = _hAttributeRefToWXS[attributeRef];
+    if (attribute == null) {
+      print("DaxeWXS: attributeParent: unknown attribute reference: $attributeRef");
       return(null);
     }
-    final List<WXSElement> parents = attribut.parentElements();
+    final List<WXSElement> parents = attribute.parentElements();
     if (parents.length > 0)
       return(parents[0].getDOMElement());
     return(null);
@@ -519,9 +503,9 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   bool canContainText(final Element elementRef) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null) {
-      print("DaxeWXS: contientDuTexte: référence élément inconnue: $elementRef");
+      print("DaxeWXS: canContainText: unknown element reference: $elementRef");
       return(false);
     }
     return(element.containsText());
@@ -533,18 +517,18 @@ class DaxeWXS implements InterfaceSchema {
    * If insert is true, just tests the validity of an insert (all sub-elements are optionnal).
    */
   bool validElement(final Element elementRef, final List<Element> subElementRefs, final bool insert) {
-    final WXSElement element = _hRefElementVersWXS[elementRef];
+    final WXSElement element = _hElementRefToWXS[elementRef];
     if (element == null) {
-      print("DaxeWXS: elementValide: référence élément inconnue: $elementRef");
+      print("DaxeWXS: validElement: unknown element reference: $elementRef");
       return(false);
     }
-    final List<WXSElement> sousElements = new List<WXSElement>();
+    final List<WXSElement> subElements = new List<WXSElement>();
     for (Element ref in subElementRefs) {
-      final WXSElement sousElement = _hRefElementVersWXS[ref];
-      if (sousElement != null)
-        sousElements.add(sousElement); // sinon ref d'une autre config ?
+      final WXSElement subElement = _hElementRefToWXS[ref];
+      if (subElement != null)
+        subElements.add(subElement); // else ref from another config ?
     }
-    return(element.validateSubElements(sousElements, insert));
+    return(element.validateSubElements(subElements, insert));
   }
   
   
@@ -557,17 +541,17 @@ class DaxeWXS implements InterfaceSchema {
       urls = "${_getParentURL(parentSchemaURL)}/$schemaLocation";
     if (urls == null)
       return(new Future.error(new WXSException("include/import : location not found : $schemaLocation")));
-    for (WXSSchema schemaInclu in _schemasInclu) {
-      if (_normalizePath(schemaInclu.getURL()) == _normalizePath(urls)) {
-        _addNamespaces(schemaInclu, parentSchema, importNamespace); // une chance de plus de trouver un préfixe
-        return(new Future.value(schemaInclu));
+    for (WXSSchema includedSchema in _includedSchemas) {
+      if (_normalizePath(includedSchema.getURL()) == _normalizePath(urls)) {
+        _addNamespaces(includedSchema, parentSchema, importNamespace); // another chance to find a prefix
+        return(new Future.value(includedSchema));
       }
     }
     Completer<WXSSchema> completer = new Completer<WXSSchema>();
     _readDocument(urls).then((Element documentElement) {
       final WXSSchema schemaInclu = new WXSSchema(documentElement, urls, this, parentSchema);
       _addNamespaces(schemaInclu, parentSchema, importNamespace);
-      _schemasInclu.add(schemaInclu);
+      _includedSchemas.add(schemaInclu);
       schemaInclu._inclusions().then((_) {
         completer.complete(schemaInclu);
       }, onError: (WXSException ex) {
@@ -579,7 +563,7 @@ class DaxeWXS implements InterfaceSchema {
     return(completer.future);
   }
   
-  // transforme 'a/..' en '' à l'intérieur de chemins
+  // transforms 'a/..' into '' inside paths
   String _normalizePath(String path) {
     int ind1 = path.indexOf('/');
     if (ind1 == -1)
@@ -597,27 +581,27 @@ class DaxeWXS implements InterfaceSchema {
   }
   
   void _addNamespaces(final WXSSchema sch, final WXSSchema parentSchema, final String importNamespace) {
-    if (importNamespace != null && _espaceVersPrefixe[importNamespace] == null) {
-      String prefixe = sch.namespacePrefix(importNamespace);
-      if (prefixe != null)
-        _espaceVersPrefixe[importNamespace] = prefixe;
+    if (importNamespace != null && _namespaceToPrefix[importNamespace] == null) {
+      String prefix = sch.namespacePrefix(importNamespace);
+      if (prefix != null)
+        _namespaceToPrefix[importNamespace] = prefix;
       else if (parentSchema != null) {
-        prefixe = parentSchema.namespacePrefix(importNamespace);
-        if (prefixe != null)
-          _espaceVersPrefixe[importNamespace] = prefixe;
+        prefix = parentSchema.namespacePrefix(importNamespace);
+        if (prefix != null)
+          _namespaceToPrefix[importNamespace] = prefix;
       }
     }
-    // toujours ajouter targetNamespace ?
+    // always add targetNamespace ?
     final String targetNamespace = sch.getTargetNamespace();
     if (targetNamespace != null && targetNamespace != "") {
-      final String prefixe = sch.namespacePrefix(targetNamespace);
-      if (prefixe != null)
-        _espaceVersPrefixe[targetNamespace] = prefixe;
+      final String prefix = sch.namespacePrefix(targetNamespace);
+      if (prefix != null)
+        _namespaceToPrefix[targetNamespace] = prefix;
     }
   }
   
   WXSElement _findFirstElement(final String name, final String namespace) {
-    final List<WXSElement> listeWXS = _hNomVersWXS[name];
+    final List<WXSElement> listeWXS = _hNameToWXS[name];
     if (listeWXS == null)
       return(null);
     for (WXSElement element in listeWXS) {
@@ -658,11 +642,11 @@ class DaxeWXS implements InterfaceSchema {
   List<WXSElement> _anies(final String namespace, final String targetNamespace) {
     final List<WXSElement> liste = new List<WXSElement>();
     if (namespace == null || namespace == "" || namespace == "##any") {
-      for (final WXSElement el in _lTousElements)
+      for (final WXSElement el in _lAllElements)
         if (el.getName() != null && el.getRef() == null && !el.getAbstract())
           liste.add(el);
     } else if (namespace == "##local") {
-      for (final WXSElement el in _lTousElements) {
+      for (final WXSElement el in _lAllElements) {
         if (el.getName() != null && el.getRef() == null && !el.getAbstract()) {
           final String tns = el.getNamespace();
           if (tns == null || tns == targetNamespace)
@@ -670,7 +654,7 @@ class DaxeWXS implements InterfaceSchema {
         }
       }
     } else if (namespace == "##other") {
-      for (final WXSElement el in _lTousElements) {
+      for (final WXSElement el in _lAllElements) {
         if (el.getName() != null && el.getRef() == null && !el.getAbstract()) {
           final String tns = el.getNamespace();
           if (tns != null && tns != targetNamespace)
@@ -678,7 +662,7 @@ class DaxeWXS implements InterfaceSchema {
         }
       }
     } else {
-      // liste d'espaces de noms séparés par des espaces
+      // list of namespaces separated by spaces
       final HashSet<String> espaces = new HashSet.from(namespace.split(new RegExp(r"\s+")));
       if (espaces.contains("##targetNamespace")) {
         espaces.remove("##targetNamespace");
@@ -688,7 +672,7 @@ class DaxeWXS implements InterfaceSchema {
         espaces.remove("##local");
         espaces.add("");
       }
-      for (final WXSElement el in _lTousElements) {
+      for (final WXSElement el in _lAllElements) {
         if (el.getName() != null && el.getRef() == null && !el.getAbstract()) {
           final String tns = el.getNamespace();
           if (tns != null && espaces.contains(tns))
@@ -726,8 +710,8 @@ class DaxeWXS implements InterfaceSchema {
   
   static List<String> _booleanValues(final String type, final Element domElement) {
     final String tns = domElement.lookupNamespaceURI(_namePrefix(type));
-    final String espaceSchema = domElement.namespaceURI;
-    if (_localValue(type) == "boolean" && espaceSchema == tns) {
+    final String schemaNamespace = domElement.namespaceURI;
+    if (_localValue(type) == "boolean" && schemaNamespace == tns) {
       final List<String> valbool = ["true", "false", "1", "0"];
       return(valbool);
     }

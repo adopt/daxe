@@ -22,7 +22,7 @@ part of wxs;
 class WXSComplexContent extends WXSAnnotated implements WithSubElements, Parent {
   
   // (restriction|extension)
-  WithSubElements _modele = null; // WXSRestriction | WXSExtension
+  WithSubElements _model = null; // WXSRestriction | WXSExtension
   bool _mixed = null;
   
   WXSComplexType _parent;
@@ -33,9 +33,9 @@ class WXSComplexContent extends WXSAnnotated implements WithSubElements, Parent 
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "restriction")
-          _modele = new WXSRestriction(n as Element, this, schema);
+          _model = new WXSRestriction(n as Element, this, schema);
         else if (n.localName == "extension")
-          _modele = new WXSExtension(n as Element, this, schema);
+          _model = new WXSExtension(n as Element, this, schema);
       }
     }
     if (el.hasAttribute("mixed"))
@@ -46,50 +46,50 @@ class WXSComplexContent extends WXSAnnotated implements WithSubElements, Parent 
   
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
-    if (_modele != null)
-      _modele.resolveReferences(schema, redefine);
+    if (_model != null)
+      _model.resolveReferences(schema, redefine);
   }
   
   // from WithSubElements
   List<WXSElement> allElements() {
-    if (_modele != null)
-      return(_modele.allElements());
+    if (_model != null)
+      return(_model.allElements());
     return(new List<WXSElement>());
   }
   
   // from WithSubElements
   List<WXSElement> subElements() {
-    if (_modele != null)
-      return(_modele.subElements());
+    if (_model != null)
+      return(_model.subElements());
     return(new List<WXSElement>());
   }
   
   // from WithSubElements
   String regularExpression() {
-    if (_modele != null)
-      return(_modele.regularExpression());
+    if (_model != null)
+      return(_model.regularExpression());
     return(null);
   }
   
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
-    if (_modele != null)
-      return(_modele.requiredChild(child));
+    if (_model != null)
+      return(_model.requiredChild(child));
     return(null);
   }
   
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
-    if (_modele != null)
-      return(_modele.multipleChildren(child));
+    if (_model != null)
+      return(_model.multipleChildren(child));
     return(null);
   }
   
   List<WXSAttribute> attributes() {
-    if (_modele is WXSRestriction)
-      return((_modele as WXSRestriction).attributes());
-    else if (_modele is WXSExtension)
-      return((_modele as WXSExtension).attributes());
+    if (_model is WXSRestriction)
+      return((_model as WXSRestriction).attributes());
+    else if (_model is WXSExtension)
+      return((_model as WXSExtension).attributes());
     return(new List<WXSAttribute>());
   }
   
@@ -100,15 +100,15 @@ class WXSComplexContent extends WXSAnnotated implements WithSubElements, Parent 
   
   // from WithSubElements
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
-    if (_modele != null)
-      return(_modele.validate(subElements, start, insertion));
+    if (_model != null)
+      return(_model.validate(subElements, start, insertion));
     return(start);
   }
   
   // from WithSubElements
   bool isOptionnal() {
-    if (_modele != null)
-      return(_modele.isOptionnal());
+    if (_model != null)
+      return(_model.isOptionnal());
     return(true);
   }
 }

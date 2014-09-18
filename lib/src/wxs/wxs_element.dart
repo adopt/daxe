@@ -43,8 +43,8 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   WXSSchema _schema;
   List<WXSThing> _references; // WXSElement | WXSAny
   List<WXSElement> _substitutions;
-  List<WXSElement> _correspondant; // cache des éléments correspondant
-  List<WXSElement> _sousElements; // cache des sous-éléments
+  List<WXSElement> _correspondant; // corresponding elements cache
+  List<WXSElement> _subElements; // sub-elements cache
   
   
   WXSElement(final Element el, final Parent parent, final WXSSchema schema) {
@@ -97,7 +97,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     this._schema = schema;
     _references = null;
     _substitutions = null;
-    _sousElements = null;
+    _subElements = null;
     _correspondant = null;
   }
   
@@ -221,8 +221,8 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   
   // from WithSubElements
   List<WXSElement> subElements() {
-    if (_sousElements != null)
-      return(_sousElements);
+    if (_subElements != null)
+      return(_subElements);
     final LinkedHashSet<WXSElement> set = new LinkedHashSet<WXSElement>();
     if (_wxsRef != null)
       set.addAll(_wxsRef.subElements());
@@ -230,8 +230,8 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       set.addAll(_complexType.subElements());
     else if (_simpleType == null && _type == null && _wxsSubstitutionGroup != null)
       set.addAll(_wxsSubstitutionGroup.subElements());
-    _sousElements = new List.from(set);
-    return(_sousElements);
+    _subElements = new List.from(set);
+    return(_subElements);
   }
   
   // from Parent
@@ -256,7 +256,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
    * Regular expression for the user interface (with the element titles: cannot be used for validation)
    */
   String elementRegularExpression() {
-    // on suppose que cet élément est nommé
+    // this element is assumed to have a name
     if (_complexType == null && _simpleType == null && _type == null && _wxsSubstitutionGroup != null)
       return(_wxsSubstitutionGroup.elementRegularExpression());
     if (_complexType == null)
@@ -295,7 +295,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
-    // on suppose que cet élément est nommé
+    // this element is assumed to have a name
     if (_complexType == null && _simpleType == null && _type == null && _wxsSubstitutionGroup != null)
       return(_wxsSubstitutionGroup.requiredChild(child));
     if (_complexType == null)
@@ -305,7 +305,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
-    // on suppose que cet élément est nommé
+    // this element is assumed to have a name
     if (_complexType == null && _simpleType == null && _type == null && _wxsSubstitutionGroup != null)
       return(_wxsSubstitutionGroup.multipleChildren(child));
     if (_complexType == null)
@@ -361,8 +361,8 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     if (_type != null) {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_type));
       final String schemaNamespace = _domElement.namespaceURI;
-      // si le type fait partie des schémas XML (comme "string" ou "anyURI")
-      // on considère que c'est du texte (sauf si le schéma est le schéma des schémas)
+      // if the type is from XML schemas (like "string" or "anyURI")
+      // it is considered to be text (except if the schema is the superschema)
       if (schemaNamespace != _schema.getTargetNamespace() && schemaNamespace == tns)
         return(true);
     }
@@ -408,11 +408,11 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     for (int i=start; i<subElements.length; i++) {
       if (nb >= _maxOccurs)
         return(i);
-      bool trouve = false;
+      bool found = false;
       for (WXSElement el in correspondant)
         if (el == subElements[i])
-          trouve = true;
-          if (!trouve) {
+          found = true;
+          if (!found) {
             if (!insertion && nb < _minOccurs)
               return(start);
             return(i);

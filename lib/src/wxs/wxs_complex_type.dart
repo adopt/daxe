@@ -22,7 +22,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   
   // (simpleContent | complexContent | ((group|all|choice|sequence)?, (attribute|attributeGroup)*))
   WXSSimpleContent _simpleContent = null;
-  WithSubElements _modele = null; // WXSComplexContent | WXSGroup | WXSAll | WXSChoice | WXSSequence
+  WithSubElements _model = null; // WXSComplexContent | WXSGroup | WXSAll | WXSChoice | WXSSequence
   List<WXSThing> _attrDecls; // attrDecls: (attribute|attributeGroup)*
   String _name = null;
   bool _mixed = false;
@@ -42,15 +42,15 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
         if (n.localName == "simpleContent")
           _simpleContent = new WXSSimpleContent(n as Element, schema);
         else if (n.localName == "complexContent")
-          _modele = new WXSComplexContent(n as Element, this, schema);
+          _model = new WXSComplexContent(n as Element, this, schema);
         else if (n.localName == "group")
-          _modele = new WXSGroup(n as Element, this, schema);
+          _model = new WXSGroup(n as Element, this, schema);
         else if (n.localName == "all")
-          _modele = new WXSAll(n as Element, this, schema);
+          _model = new WXSAll(n as Element, this, schema);
         else if (n.localName == "choice")
-          _modele = new WXSChoice(n as Element, this, schema);
+          _model = new WXSChoice(n as Element, this, schema);
         else if (n.localName == "sequence")
-          _modele = new WXSSequence(n as Element, this, schema);
+          _model = new WXSSequence(n as Element, this, schema);
         else if (n.localName == "attribute")
           _attrDecls.add(new WXSAttribute(n as Element, this, schema));
         else if (n.localName == "attributeGroup")
@@ -97,8 +97,8 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_simpleContent != null)
       _simpleContent.resolveReferences(schema, redefine);
-    if (_modele != null)
-      _modele.resolveReferences(schema, redefine);
+    if (_model != null)
+      _model.resolveReferences(schema, redefine);
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
         attrDecl.resolveReferences(schema);
@@ -121,16 +121,16 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   
   // from WithSubElements
   List<WXSElement> allElements() {
-    if (_modele != null)
-      return(_modele.allElements());
+    if (_model != null)
+      return(_model.allElements());
     return(new List<WXSElement>());
   }
   
   // from WithSubElements
   List<WXSElement> subElements() {
     final List<WXSElement> liste = new List<WXSElement>();
-    if (_modele != null)
-      liste.addAll(_modele.subElements());
+    if (_model != null)
+      liste.addAll(_model.subElements());
     return(liste);
   }
   
@@ -162,22 +162,22 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   
   // from WithSubElements
   String regularExpression() {
-    if (_modele != null)
-      return(_modele.regularExpression());
+    if (_model != null)
+      return(_model.regularExpression());
     return(null);
   }
   
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
-    if (_modele != null)
-      return(_modele.requiredChild(child));
+    if (_model != null)
+      return(_model.requiredChild(child));
     return(null);
   }
   
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
-    if (_modele != null)
-      return(_modele.multipleChildren(child));
+    if (_model != null)
+      return(_model.multipleChildren(child));
     return(null);
   }
   
@@ -198,8 +198,8 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   List<WXSAttribute> attributes() {
     if (_simpleContent != null)
       return(_simpleContent.attributes());
-    else if (_modele is WXSComplexContent)
-      return((_modele as WXSComplexContent).attributes());
+    else if (_model is WXSComplexContent)
+      return((_model as WXSComplexContent).attributes());
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
@@ -214,8 +214,8 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
     if (_simpleContent != null)
       return(start);
-    else if (_modele != null)
-      return(_modele.validate(subElements, start, insertion));
+    else if (_model != null)
+      return(_model.validate(subElements, start, insertion));
     return(start);
   }
   
@@ -223,8 +223,8 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   bool isOptionnal() {
     if (_simpleContent != null)
       return(true);
-    else if (_modele != null)
-      return(_modele.isOptionnal());
+    else if (_model != null)
+      return(_model.isOptionnal());
     return(true);
   }
   
@@ -240,16 +240,16 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
     // on teste le type parent quand un type est dérivé
     // par un autre qui ne redonne pas la liste des sous-éléments...
     // cf http://lists.w3.org/Archives/Public/xmlschema-dev/2005Sep/0025.html
-    if (_modele is WXSComplexContent) {
-      WXSComplexContent cc = _modele as WXSComplexContent;
+    if (_model is WXSComplexContent) {
+      WXSComplexContent cc = _model as WXSComplexContent;
       WXSType wxsBase = null;
-      if (cc._modele is WXSExtension) {
-        WXSExtension ext = cc._modele as WXSExtension;
-        if (ext._modele == null)
+      if (cc._model is WXSExtension) {
+        WXSExtension ext = cc._model as WXSExtension;
+        if (ext._model == null)
           wxsBase = ext._wxsBase;
       } else {
-        WXSRestriction res = cc._modele as WXSRestriction;
-        if (res._modele == null)
+        WXSRestriction res = cc._model as WXSRestriction;
+        if (res._model == null)
           wxsBase = res._wxsBase;
       }
       if (wxsBase is WXSComplexType)

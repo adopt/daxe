@@ -46,6 +46,10 @@ class SimpleSchema implements InterfaceSchema {
     return(_elementDefCache[name]);
   }
   
+  List<Element> elementReferencesByName(final String name) {
+    return([_elementDefCache[name]]);
+  }
+  
   Element elementReference(final Element el, final Element parentRef) {
     String name;
     if (el.prefix == null)

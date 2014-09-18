@@ -653,7 +653,7 @@ ul.wlist>li.selected span {
 }
 
 /* DNTable */
-div.table table {
+div.table>table {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid #000000;
@@ -662,7 +662,7 @@ div.table table {
   margin-bottom: 2px;
 }
 
-div.table table>tr>td {
+div.table>table>tr>td {
   min-width: 2em;
   border: 1px solid #000000;
   word-break: break-all;

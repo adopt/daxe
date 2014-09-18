@@ -75,14 +75,14 @@ class DNAnchor extends DaxeNode {
     return(true);
   }
   
-  static x.Element aRef() {
-    return(doc.cfg.firstElementWithType('anchor'));
+  static List<x.Element> aRefs() {
+    return(doc.cfg.elementsWithType('anchor'));
   }
   
   /**
    * Adds a link at cursor location.
    */
-  static void addLink() {
+  static void addLink(x.Element ref) {
     Position start = page.getSelectionStart();
     if (start == page.getSelectionEnd()) {
       if (start.dn is DNText) {
@@ -100,14 +100,14 @@ class DNAnchor extends DaxeNode {
         page.cursor.setSelection(new Position(start.dn, p1), new Position(start.dn, p2));
       }
     }
-    doc.insertNewNode(aRef(), 'element');
+    doc.insertNewNode(ref, 'element');
   }
   
   /**
    * Adds an anchor at cursor location.
    */
-  static void addAnchor() {
-    doc.insertNewNode(aRef(), 'element');
+  static void addAnchor(x.Element ref) {
+    doc.insertNewNode(ref, 'element');
   }
   
   /**
@@ -126,6 +126,7 @@ class DNAnchor extends DaxeNode {
     DNAnchor anchor = parent;
     if (anchor.firstChild == null) {
       doc.removeNode(anchor);
+      page.updateAfterPathChange();
       return;
     }
     parent = anchor.parent;

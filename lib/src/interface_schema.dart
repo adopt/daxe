@@ -38,6 +38,11 @@ abstract class InterfaceSchema {
   Element elementReferenceByName(final String name);
   
   /**
+   * Returns all the references of the schema elements with the given name.
+   */
+  List<Element> elementReferencesByName(final String name);
+  
+  /**
    * Returns the reference for the first schema element with the given name and namespace,
    * and with the parent whose reference is given.
    */

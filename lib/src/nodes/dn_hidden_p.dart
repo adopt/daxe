@@ -33,7 +33,25 @@ class DNHiddenP extends DaxeNode {
   DNHiddenP.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
     _styleAtt = doc.cfg.elementParameterValue(ref, 'styleAtt', 'style');
     
-    fixLineBreaks();
+    // remove all newlines, and spaces at the beginning and the end
+    DaxeNode next;
+    for (DaxeNode dn=firstChild; dn != null; dn=next) {
+      next = dn.nextSibling;
+      if (dn is DNText) {
+        String s = dn.nodeValue;
+        if (dn.previousSibling == null)
+          while (s.startsWith(' '))
+            s = s.substring(1);
+        if (dn.nextSibling == null)
+          while (s.endsWith(' '))
+            s = s.substring(0, s.length-1);
+        s = s.replaceAll('\n', '');
+        if (s.length == 0)
+          removeChild(dn);
+        else
+          dn.nodeValue = s;
+      }
+    }
   }
   
   @override
@@ -238,88 +256,134 @@ class DNHiddenP extends DaxeNode {
       page.updateAfterPathChange();
       return(true);
     }
+    if (selectionStart.dn != selectionEnd.dn)
+      return(false);
+    if (textParent is DNHiddenP)
+      return(false);
+    x.Element hiddenp = doc.cfg.findSubElement(textParent.ref, doc.hiddenParaRefs);
+    if (hiddenp == null)
+      return(false);
+    if (!doc.cfg.insertIsPossible(textParent, offset, offset, hiddenp))
+      return(false);
     
-    if (selectionStart.dn == selectionEnd.dn && textParent is! DNHiddenP &&
-        doc.cfg.insertIsPossible(textParent, offset, offset, doc.hiddenp)) {
-      // There is no paragraph, we need to create one or two.
-      // Enclose all possible text and markup to the left of selectionStart
-      // in a new hidden paragraph,
-      // and create another one afterwards with what can be moved inside
-      // from the right of selectionStart.
-      UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
-      
-      // clone the nodes that will be in the first paragraph
-      int startOffset = offset;
-      while (startOffset > 0) {
-        DaxeNode child = textParent.childAtOffset(startOffset-1);
-        if (child is! DNText && !doc.cfg.isSubElement(doc.hiddenp, child.ref))
-          break;
-        startOffset--;
+    // There is no paragraph, we need to create one or two.
+    // Enclose all possible text and markup to the left of selectionStart
+    // in a new hidden paragraph,
+    // and create another one afterwards with what can be moved inside
+    // from the right of selectionStart.
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
+    
+    // clone the nodes that will be in the first paragraph
+    int startOffset = offset;
+    while (startOffset > 0) {
+      DaxeNode child = textParent.childAtOffset(startOffset-1);
+      if (child is! DNText && !doc.cfg.isSubElement(hiddenp, child.ref))
+        break;
+      startOffset--;
+    }
+    Position pStart = new Position(textParent, startOffset);
+    DaxeNode cloneLeft = null;
+    if (pStart < selectionStart)
+      cloneLeft = doc.cloneCutBetween(textParent, pStart, selectionStart);
+    
+    // clone the nodes that will be in the second paragraph
+    DaxeNode endParent = selectionEnd.dn;
+    int endOffset = selectionEnd.dnOffset;
+    while (endParent is DNText || endParent is DNStyle) {
+      endOffset = endParent.parent.offsetOf(endParent) + 1;
+      endParent = endParent.parent;
+    }
+    assert(endParent == textParent);
+    while (endOffset < textParent.offsetLength) {
+      DaxeNode child = textParent.childAtOffset(endOffset);
+      if (child is! DNText && !doc.cfg.isSubElement(hiddenp, child.ref))
+        break;
+      endOffset++;
+    }
+    Position pEnd = new Position(textParent, endOffset);
+    DaxeNode cloneRight = null;
+    if (pEnd > selectionEnd) {
+      cloneRight = doc.cloneCutBetween(textParent, selectionEnd, pEnd);
+      // remove possible \n at the end
+      DaxeNode lastChild = cloneRight.childAtOffset(cloneRight.offsetLength-1); 
+      if (lastChild is DNText) {
+        String text = lastChild.nodeValue;
+        if (text.length > 0 && text[text.length-1] == '\n') {
+          if (text.length == 1)
+            cloneRight.removeChild(lastChild);
+          else
+            lastChild.nodeValue = text.substring(0, text.length - 1);
+        }
       }
-      Position pStart = new Position(textParent, startOffset);
-      DaxeNode cloneLeft = null;
-      if (pStart < selectionStart)
-        cloneLeft = doc.cloneCutBetween(textParent, pStart, selectionStart);
-      
-      // clone the nodes that will be in the second paragraph
-      DaxeNode endParent = selectionEnd.dn;
-      int endOffset = selectionEnd.dnOffset;
-      while (endParent is DNText || endParent is DNStyle) {
-        endOffset = endParent.parent.offsetOf(endParent) + 1;
-        endParent = endParent.parent;
+    }
+    
+    if (pStart < pEnd) {
+      // remove everything moved and the selection
+      edit.addSubEdit(doc.removeBetweenEdit(pStart, pEnd));
+    }
+    
+    int p2offset = startOffset;
+    
+    // create the first paragraph if necessary
+    if (cloneLeft != null) {
+      DNHiddenP p1 = NodeFactory.create(hiddenp);
+      edit.addSubEdit(new UndoableEdit.insertNode(pStart, p1));
+      edit.addSubEdit(doc.insertChildrenEdit(cloneLeft, new Position(p1, 0)));
+      p2offset++;
+    }
+    
+    // create the second paragraph
+    DNHiddenP p2 = NodeFactory.create(hiddenp);
+    edit.addSubEdit(new UndoableEdit.insertNode(
+        new Position(textParent, p2offset), p2));
+    if (cloneRight != null)
+      edit.addSubEdit(doc.insertChildrenEdit(cloneRight, new Position(p2, 0)));
+    
+    doc.doNewEdit(edit);
+    page.moveCursorTo(new Position(p2, 0));
+    page.updateAfterPathChange();
+    return(true);
+  }
+  
+  /**
+   * Adjust hidden paragraphs in fragment before insert
+   */
+  static void fixFragment(DaxeNode parent, DaxeNode fragment) {
+    if (doc.hiddenParaRefs == null)
+      return;
+    // do not put a hidden paragraph where it is not allowed (remove one level)
+    DaxeNode next;
+    for (DaxeNode dn2=fragment.firstChild; dn2 != null; dn2=next) {
+      next = dn2.nextSibling;
+      if (dn2 is DNHiddenP && !doc.cfg.isSubElement(parent.ref, dn2.ref)) {
+        DaxeNode next2;
+        for (DaxeNode dn3=dn2.firstChild; dn3 != null; dn3=next2) {
+          next2 = dn3.nextSibling;
+          dn2.removeChild(dn3);
+          fragment.insertBefore(dn3, dn2);
+        }
+        fragment.removeChild(dn2);
       }
-      assert(endParent == textParent);
-      while (endOffset < textParent.offsetLength) {
-        DaxeNode child = textParent.childAtOffset(endOffset);
-        if (child is! DNText && !doc.cfg.isSubElement(doc.hiddenp, child.ref))
-          break;
-        endOffset++;
-      }
-      Position pEnd = new Position(textParent, endOffset);
-      DaxeNode cloneRight = null;
-      if (pEnd > selectionEnd) {
-        cloneRight = doc.cloneCutBetween(textParent, selectionEnd, pEnd);
-        // remove possible \n at the end
-        DaxeNode lastChild = cloneRight.childAtOffset(cloneRight.offsetLength-1); 
-        if (lastChild is DNText) {
-          String text = lastChild.nodeValue;
-          if (text.length > 0 && text[text.length-1] == '\n') {
-            if (text.length == 1)
-              cloneRight.removeChild(lastChild);
-            else
-              lastChild.nodeValue = text.substring(0, text.length - 1);
+    }
+    x.Element hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+    if (hiddenp != null) {
+      // add hidden paragraphs if necessary
+      for (DaxeNode dn2=fragment.firstChild; dn2 != null; dn2=next) {
+        next = dn2.nextSibling;
+        if (dn2.ref != hiddenp &&
+            ((dn2 is DNText && !doc.cfg.canContainText(parent.ref)) ||
+            (!doc.cfg.isSubElement(parent.ref, dn2.ref) &&
+                doc.cfg.isSubElement(hiddenp, dn2.ref)))) {
+          fragment.removeChild(dn2);
+          if (dn2.previousSibling != null && dn2.previousSibling.ref == hiddenp) {
+            dn2.previousSibling.appendChild(dn2);
+          } else {
+            DNHiddenP p = new DNHiddenP.fromRef(hiddenp);
+            p.appendChild(dn2);
+            fragment.insertBefore(p, next);
           }
         }
       }
-      
-      if (pStart < pEnd) {
-        // remove everything moved and the selection
-        edit.addSubEdit(doc.removeBetweenEdit(pStart, pEnd));
-      }
-      
-      int p2offset = startOffset;
-      
-      // create the first paragraph if necessary
-      if (cloneLeft != null) {
-        DNHiddenP p1 = NodeFactory.create(doc.hiddenp);
-        edit.addSubEdit(new UndoableEdit.insertNode(pStart, p1));
-        edit.addSubEdit(doc.insertChildrenEdit(cloneLeft, new Position(p1, 0)));
-        p2offset++;
-      }
-      
-      // create the second paragraph
-      DNHiddenP p2 = NodeFactory.create(doc.hiddenp);
-      edit.addSubEdit(new UndoableEdit.insertNode(
-          new Position(textParent, p2offset), p2));
-      if (cloneRight != null)
-        edit.addSubEdit(doc.insertChildrenEdit(cloneRight, new Position(p2, 0)));
-      
-      doc.doNewEdit(edit);
-      page.moveCursorTo(new Position(p2, 0));
-      page.updateAfterPathChange();
-      return(true);
     }
-    return(false);
   }
-  
 }

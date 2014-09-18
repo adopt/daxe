@@ -408,13 +408,16 @@ class DNStyle extends DaxeNode {
       if (css != null)
         (styleNode as DNStyle).css = css;
       bool inserted = false;
-      if (doc.hiddenp != null && !doc.cfg.isSubElement(parent.ref, styleRef)) {
-        if (doc.cfg.isSubElement(parent.ref, doc.hiddenp) && doc.cfg.isSubElement(doc.hiddenp, styleRef)) {
-          // a new paragraph must be created
-          DNHiddenP p = new DNHiddenP.fromRef(doc.hiddenp);
-          p.appendChild(styleNode);
-          doc.insertNode(p, start);
-          inserted = true;
+      if (doc.hiddenParaRefs != null) {
+        if (!doc.cfg.isSubElement(parent.ref, styleRef)) {
+          x.Element hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+          if (hiddenp != null && doc.cfg.isSubElement(hiddenp, styleRef)) {
+            // a new paragraph must be created
+            DNHiddenP p = new DNHiddenP.fromRef(hiddenp);
+            p.appendChild(styleNode);
+            doc.insertNode(p, start);
+            inserted = true;
+          }
         }
       }
       if (!inserted)

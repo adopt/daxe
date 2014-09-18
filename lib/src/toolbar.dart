@@ -43,87 +43,95 @@ class Toolbar {
     if (cfg != null) {
       // Buttons to insert new elements
       ToolbarBox insertBox = new ToolbarBox();
-      x.Element ref = cfg.firstElementWithType('fichier');
-      if (ref != null) {
-        addInsertButton(cfg, insertBox, ref, iconPath + 'insert_image.png');
+      List<x.Element> refs = cfg.elementsWithType('fichier');
+      if (refs != null && refs.length > 0) {
+        addInsertButton(cfg, insertBox, refs, iconPath + 'insert_image.png');
       }
-      ref = cfg.firstElementWithType('equationmem');
-      if (ref != null) {
-        addInsertButton(cfg, insertBox, ref, iconPath + 'equation.png');
+      refs = cfg.elementsWithType('equationmem');
+      if (refs != null && refs.length > 0) {
+        addInsertButton(cfg, insertBox, refs, iconPath + 'equation.png');
       }
-      ref = cfg.firstElementWithType('symbole2');
-      if (ref != null) {
-        addInsertButton(cfg, insertBox, ref, iconPath + 'insert_symbol.png');
+      refs = cfg.elementsWithType('symbole2');
+      if (refs != null && refs.length > 0) {
+        addInsertButton(cfg, insertBox, refs, iconPath + 'insert_symbol.png');
       }
-      ref = cfg.firstElementWithType('tabletexte');
-      if (ref != null) {
-        addInsertButton(cfg, insertBox, ref, iconPath + 'insert_table.png');
+      refs = cfg.elementsWithType('tabletexte');
+      if (refs != null && refs.length > 0) {
+        addInsertButton(cfg, insertBox, refs, iconPath + 'insert_table.png');
       }
-      ref = cfg.firstElementWithType('liste');
-      if (ref != null) {
-        addInsertButton(cfg, insertBox, ref, iconPath + 'ul.png');
+      refs = cfg.elementsWithType('liste');
+      if (refs != null && refs.length > 0) {
+        addInsertButton(cfg, insertBox, refs, iconPath + 'ul.png');
       }
       items.add(insertBox);
       // List buttons
-      x.Element ulRef = DNWList.ulRef();
-      x.Element olRef = DNWList.olRef();
-      if (ulRef != null || olRef != null) {
+      List<x.Element> ulRefs = DNWList.ulRefs();
+      List<x.Element> olRefs = DNWList.olRefs();
+      if (ulRefs.length > 0 || olRefs.length > 0) {
         ToolbarBox listBox = new ToolbarBox();
-        if (ulRef != null) {
-          ToolbarButton button = new ToolbarButton(_documentationFor(ulRef), iconPath + 'ul.png',
-              null, listButtonUpdate, data:new ToolbarStyleInfo(ulRef, null, null));
+        if (ulRefs.length > 0) {
+          ToolbarButton button = new ToolbarButton(_documentationFor(ulRefs[0]), iconPath + 'ul.png',
+              null, listButtonUpdate, data:new ToolbarStyleInfo(ulRefs, null, null));
           button.action = () {
             if (button.selected)
               DNWList.riseLevel();
             else
-              DNWList.addList((button.data as ToolbarStyleInfo).ref);
+              DNWList.addList((button.data as ToolbarStyleInfo).validRef);
           };
           listBox.add(button);
         }
-        if (olRef != null) {
-          ToolbarButton button = new ToolbarButton(_documentationFor(olRef), iconPath + 'ol.png',
-              null, listButtonUpdate, data:new ToolbarStyleInfo(olRef, null, null));
+        if (olRefs.length > 0) {
+          ToolbarButton button = new ToolbarButton(_documentationFor(olRefs[0]), iconPath + 'ol.png',
+              null, listButtonUpdate, data:new ToolbarStyleInfo(olRefs, null, null));
           button.action = () {
             if (button.selected)
               DNWList.riseLevel();
             else
-              DNWList.addList((button.data as ToolbarStyleInfo).ref);
+              DNWList.addList((button.data as ToolbarStyleInfo).validRef);
           };
           listBox.add(button);
         }
         listBox.add(new ToolbarButton(Strings.get('toolbar.rise_list_level'), iconPath + 'list_rise_level.png',
             () => DNWList.riseLevel(), riseListLevelButtonUpdate, data:'rise_list_level'));
-        if (doc.cfg.isSubElement(DNWList.findItemRef(ulRef), ulRef) ||
-            doc.cfg.isSubElement(DNWList.findItemRef(olRef), olRef))
+        bool possibleListInItem = true; // will be true if it is always possible to have a list in an item of the same type
+        for (x.Element ulRef in ulRefs)
+          if (doc.cfg.findSubElement(DNWList.findItemRef(ulRef), ulRefs) == null)
+            possibleListInItem = false;
+        for (x.Element olRef in olRefs)
+          if (doc.cfg.findSubElement(DNWList.findItemRef(olRef), olRefs) == null)
+            possibleListInItem = false;
+        if (possibleListInItem)
           listBox.add(new ToolbarButton(Strings.get('toolbar.lower_list_level'), iconPath + 'list_lower_level.png',
               () => DNWList.lowerLevel(), lowerListLevelButtonUpdate, data:'lower_list_level'));
         items.add(listBox);
       }
       // Link/Anchor buttons
-      x.Element aRef = DNAnchor.aRef();
-      if (aRef != null) {
+      List<x.Element> aRefs = DNAnchor.aRefs();
+      if (aRefs != null && aRefs.length > 0) {
         ToolbarBox anchorBox = new ToolbarBox();
         ToolbarButton button = new ToolbarButton(Strings.get('toolbar.insert_link'),
             iconPath + 'add_link.png',
-            () => DNAnchor.addLink(), insertLinkButtonUpdate,
-            data:new ToolbarStyleInfo(aRef, null, null));
+            null, insertLinkButtonUpdate,
+            data:new ToolbarStyleInfo(aRefs, null, null));
+        button.action = () => DNAnchor.addLink((button.data as ToolbarStyleInfo).validRef);
         anchorBox.add(button);
         button = new ToolbarButton(Strings.get('toolbar.remove_link'),
             iconPath + 'remove_link.png',
             () => DNAnchor.removeLink(), removeLinkButtonUpdate, 
-            data:new ToolbarStyleInfo(aRef, null, null));
+            data:new ToolbarStyleInfo(aRefs, null, null));
         anchorBox.add(button);
         button = new ToolbarButton(Strings.get('toolbar.insert_anchor'),
             iconPath + 'anchor.png',
-            () => DNAnchor.addAnchor(), insertButtonUpdate,
-            data:new ToolbarStyleInfo(aRef, null, null));
+            null, insertButtonUpdate,
+            data:new ToolbarStyleInfo(aRefs, null, null));
+        button.action = () => DNAnchor.addAnchor((button.data as ToolbarStyleInfo).validRef);
         anchorBox.add(button);
         items.add(anchorBox);
       }
       // Style buttons
       ToolbarBox styleBox = new ToolbarBox();
       List<x.Element> all = cfg.allElementsList();
-      for (ref in all) {
+      for (x.Element ref in all) {
         String dtype = cfg.elementDisplayType(ref);
         if (dtype == 'style') {
           String style = cfg.elementParameterValue(ref, 'style', null);
@@ -147,11 +155,11 @@ class Toolbar {
             () => DNStyle.removeStylesFromSelection(), null, data:"remove_styles"));
         items.add(styleBox);
       }
-      if (doc.hiddenp != null) {
+      if (doc.hiddenParaRefs != null) {
         // Align buttons
-        String pStyleAtt = doc.cfg.elementParameterValue(doc.hiddenp, 'styleAtt', 'style');
+        String pStyleAtt = doc.cfg.elementParameterValue(doc.hiddenParaRefs[0], 'styleAtt', 'style');
         // check if style attribute is allowed for hidden paragraphs
-        List<x.Element> attRefs = doc.cfg.elementAttributes(doc.hiddenp);
+        List<x.Element> attRefs = doc.cfg.elementAttributes(doc.hiddenParaRefs[0]);
         bool found = false;
         for (x.Element attRef in attRefs) {
           if (doc.cfg.attributeName(attRef) == pStyleAtt) {
@@ -172,8 +180,8 @@ class Toolbar {
           items.add(alignBox);
         }
       }
-      ref = DNStyleSpan.styleSpanRef();
-      if (ref != null) {
+      x.Element spanRef = DNStyleSpan.styleSpanRef();
+      if (spanRef != null) {
         // Font menu
         List<String> fonts = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'];
         ToolbarMenu tbmenu = _makeStyleToolbarMenu(Strings.get('toolbar.font'), "font-family", fonts);
@@ -202,7 +210,7 @@ class Toolbar {
         cssValueWithUnit += cssUnit;
       String css = "$cssName: $cssValueWithUnit";
       MenuItem menuItem = new MenuItem(cssValue, null,
-          data:new ToolbarStyleInfo(styleRef, cssName, cssValueWithUnit));
+          data:new ToolbarStyleInfo([styleRef], cssName, cssValueWithUnit));
       menuItem.action = () {
         if (menuItem.checked) {
           Position start = page.getSelectionStart();
@@ -260,8 +268,8 @@ class Toolbar {
         for (ToolbarButton button in item.buttons) {
           if (button.data is ToolbarStyleInfo) {
             ToolbarStyleInfo info = button.data;
-            if (info.ref != null)
-              list.add(info.ref);
+            if (info.possibleRefs != null)
+              list.addAll(info.possibleRefs);
           }
         }
       } else if (item is ToolbarMenu) {
@@ -269,8 +277,8 @@ class Toolbar {
         for (MenuItem menuItem in menu.items) {
           if (menuItem.data is ToolbarStyleInfo) {
             ToolbarStyleInfo info = menuItem.data;
-            if (info.ref != null)
-              list.add(info.ref);
+            if (info.possibleRefs != null)
+              list.addAll(info.possibleRefs);
           }
         }
       }
@@ -295,10 +303,11 @@ class Toolbar {
     return(documentation);
   }
   
-  addInsertButton(Config cfg, ToolbarBox box, x.Element ref, String icon) {
-    ToolbarButton button = new ToolbarButton(_documentationFor(ref), icon,
-        () => doc.insertNewNode(ref, 'element'), insertButtonUpdate,
-        data:new ToolbarStyleInfo(ref, null, null));
+  addInsertButton(Config cfg, ToolbarBox box, List<x.Element> refs, String icon) {
+    ToolbarButton button = new ToolbarButton(_documentationFor(refs[0]), icon,
+        null, insertButtonUpdate,
+        data:new ToolbarStyleInfo(refs, null, null));
+    button.action = () => doc.insertNewNode((button.data as ToolbarStyleInfo).validRef, 'element');
     box.add(button);
   }
   
@@ -306,8 +315,8 @@ class Toolbar {
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     // element insert
     ToolbarStyleInfo info = button.data;
-    x.Element ref = info.ref;
-    if (validRefs.contains(ref))
+    List<x.Element> refs = info.possibleRefs;
+    if (info.findValidRef(validRefs))
       button.enable();
     else
       button.disable();
@@ -315,7 +324,7 @@ class Toolbar {
   
   addStyleButton(Config cfg, ToolbarBox box, x.Element ref, String icon, [String shortcut=null]) {
     ToolbarButton button = new ToolbarButton(_documentationFor(ref), icon, null, dnStyleButtonUpdate,
-        data:new ToolbarStyleInfo(ref, null, null), shortcut:shortcut);
+        data:new ToolbarStyleInfo([ref], null, null), shortcut:shortcut);
     button.action = () {
       if (button.selected) {
         Position start = page.getSelectionStart();
@@ -340,16 +349,23 @@ class Toolbar {
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     // DNStyle, style with no css (as with the b element)
     ToolbarStyleInfo info = button.data;
-    x.Element ref = info.ref;
-    if (ancestorRefs.contains(ref)) {
+    List<x.Element> refs = info.possibleRefs;
+    bool foundAncestor = false;
+    for (x.Element possibleRef in refs) {
+      if (ancestorRefs.contains(possibleRef)) {
+        foundAncestor = true;
+        break;
+      }
+    }
+    if (foundAncestor) {
       button.enable();
       button.select();
     } else {
-      if (selectedNode != null && ref == selectedNode.ref)
+      if (selectedNode != null && refs.contains(selectedNode.ref))
         button.select();
       else
         button.deselect();
-      if (validRefs.contains(ref))
+      if (info.findValidRef(validRefs))
         button.enable();
       else
         button.disable();
@@ -360,7 +376,7 @@ class Toolbar {
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     // DNSpanStyle, span style
     ToolbarStyleInfo info = button.data;
-    x.Element ref = info.ref;
+    x.Element ref = info.possibleRefs[0];
     String css = info.css;
     bool foundAncestor = false;
     for (DaxeNode n = parent; n != null; n = n.parent) {
@@ -389,7 +405,7 @@ class Toolbar {
   addParagraphCssButton(ToolbarBox alignBox, String cssName, String cssValue,
                          String title, String icon) {
     ToolbarButton button = new ToolbarButton(title, icon,
-        null, paragraphButtonUpdate, data:new ToolbarStyleInfo(doc.hiddenp, cssName, cssValue));
+        null, paragraphButtonUpdate, data:new ToolbarStyleInfo(doc.hiddenParaRefs, cssName, cssValue));
     button.action = () {
       if (button.selected) {
         DNHiddenP.removeStyleFromSelection(cssName);
@@ -406,7 +422,7 @@ class Toolbar {
     String css = info.css;
     bool foundAncestor = false;
     for (DaxeNode n = parent; n != null; n = n.parent) {
-      if (n.ref == doc.hiddenp && (n as DNHiddenP).css == css) {
+      if (doc.hiddenParaRefs.contains(n.ref) && (n as DNHiddenP).css == css) {
         foundAncestor = true;
         break;
       }
@@ -415,7 +431,7 @@ class Toolbar {
       button.enable();
       button.select();
     } else {
-      if (selectedNode != null && doc.hiddenp == selectedNode.ref &&
+      if (selectedNode != null && doc.hiddenParaRefs.contains(selectedNode.ref) &&
           (selectedNode as DNHiddenP).css == css) {
         button.select();
       } else {
@@ -432,11 +448,11 @@ class Toolbar {
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     // toggle list button
     ToolbarStyleInfo info = button.data;
-    x.Element ref = info.ref;
+    List<x.Element> refs = info.possibleRefs;
     bool foundAncestor = false;
     for (DaxeNode n = parent; n != null; n = n.parent) {
-      if (n.ref == DNWList.ulRef() || n.ref == DNWList.olRef()) {
-        foundAncestor = (n.ref == ref);
+      if (refs.contains(n.ref)) {
+        foundAncestor = true;
         break;
       }
     }
@@ -445,7 +461,7 @@ class Toolbar {
       button.select();
     } else {
       button.deselect();
-      if (validRefs.contains(ref))
+      if (info.findValidRef(validRefs))
         button.enable();
       else
         button.disable();
@@ -479,8 +495,7 @@ class Toolbar {
   static void insertLinkButtonUpdate(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     ToolbarStyleInfo info = button.data;
-    x.Element ref = info.ref;
-    if (page.getSelectionStart().dn is DNText && validRefs.contains(ref))
+    if (page.getSelectionStart().dn is DNText && info.findValidRef(validRefs))
       button.enable();
     else
       button.disable();
@@ -488,7 +503,16 @@ class Toolbar {
   
   static void removeLinkButtonUpdate(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
-    if (ancestorRefs.contains(DNAnchor.aRef()))
+    ToolbarStyleInfo info = button.data;
+    List<x.Element> refs = info.possibleRefs;
+    bool foundAncestor = false;
+    for (x.Element possibleRef in refs) {
+      if (ancestorRefs.contains(possibleRef)) {
+        foundAncestor = true;
+        break;
+      }
+    }
+    if (foundAncestor)
       button.enable();
     else
       button.disable();
@@ -501,13 +525,13 @@ class Toolbar {
     for (MenuItem menuItem in menu.items) {
       if (menuItem.data is ToolbarStyleInfo) {
         ToolbarStyleInfo info = menuItem.data;
-        x.Element ref = info.ref;
+        x.Element ref = info.possibleRefs[0];
         String css = info.css;
-        if (ref == doc.hiddenp) {
+        if (doc.hiddenParaRefs.contains(ref)) {
           // paragraph style
           bool foundAncestor = false;
           for (DaxeNode n = parent; n != null; n = n.parent) {
-            if (n.ref == doc.hiddenp && (n as DNHiddenP).css == css) {
+            if (doc.hiddenParaRefs.contains(n.ref) && (n as DNHiddenP).css == css) {
               foundAncestor = true;
               break;
             }
@@ -517,7 +541,7 @@ class Toolbar {
             selectedItem = menuItem;
             menuItem.check();
           } else {
-            if (selectedNode != null && doc.hiddenp == selectedNode.ref &&
+            if (selectedNode != null && doc.hiddenParaRefs.contains(selectedNode.ref) &&
                 (selectedNode as DNHiddenP).css == css) {
               selectedItem = menuItem;
               menuItem.check();
@@ -589,10 +613,10 @@ class Toolbar {
     for (MenuItem menuItem in menu.items) {
       if (menuItem.data is ToolbarStyleInfo) {
         ToolbarStyleInfo info = menuItem.data;
-        x.Element ref = info.ref;
-        if (ref != null) {
+        List<x.Element> refs = info.possibleRefs;
+        if (refs != null && refs.length > 0) {
           // element insert
-          if (validRefs.contains(ref))
+          if (info.findValidRef(validRefs))
             menuItem.enable();
           else
             menuItem.disable();

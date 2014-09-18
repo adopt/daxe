@@ -94,6 +94,17 @@ class DaxeWXS implements InterfaceSchema {
   }
   
   // from InterfaceSchema
+  List<Element> elementReferencesByName(final String name) {
+    final List<WXSElement> listeWXS = _hNomVersWXS[name];
+    if (listeWXS == null)
+      return(null);
+    List<Element> refs = new List<Element>();
+    for (WXSElement el in listeWXS)
+      refs.add(el.getDOMElement());
+    return(refs);
+  }
+  
+  // from InterfaceSchema
   Element elementReference(final Element el, final Element parentRef) {
     if (parentRef == null) {
       // pour les éléments racine: il faut éviter les définitions locales

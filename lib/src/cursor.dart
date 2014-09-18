@@ -1224,17 +1224,14 @@ class Cursor {
     if (root.childNodes != null) {
       for (x.Node n in root.childNodes) {
         DaxeNode dn = NodeFactory.createFromNode(n, dnRoot);
-        if (dn.ref == doc.hiddenp && !doc.cfg.isSubElement(parent.ref, doc.hiddenp)) {
-          // do not put a hidden paragraph where it is not allowed (remove one level)
-          for (x.Node n2 in n.childNodes) {
-            DaxeNode dn2 = NodeFactory.createFromNode(n2, dnRoot);
-            dnRoot.appendChild(dn2);
-          }
-        } else
-          dnRoot.appendChild(dn);
+        dnRoot.appendChild(dn);
       }
     }
     dnRoot.fixLineBreaks();
+    if (doc.hiddenParaRefs != null) {
+      // add or remove hidden paragraphs where necessary
+      DNHiddenP.fixFragment(parent, dnRoot);
+    }
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));
     try {
       edit.addSubEdit(doc.insertChildrenEdit(dnRoot, selectionStart, checkValidity:true));

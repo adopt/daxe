@@ -101,41 +101,9 @@ class DNHiddenDiv extends DaxeNode {
   void removeDiv() {
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_element'));
     DaxeNode content = doc.cloneBetween(new Position(this, 0), new Position(this, offsetLength));
-    //add or remove hidden paragraphs where necessary
-    if (doc.hiddenp != null) {
-      // do not put a hidden paragraph where it is not allowed (remove one level)
-      DaxeNode next;
-      for (DaxeNode dn2=content.firstChild; dn2 != null; dn2=next) {
-        next = dn2.nextSibling;
-        if (dn2.ref == doc.hiddenp && !doc.cfg.isSubElement(parent.ref, doc.hiddenp)) {
-          DaxeNode next2;
-          for (DaxeNode dn3=dn2.firstChild; dn3 != null; dn3=next2) {
-            next2 = dn3.nextSibling;
-            dn2.removeChild(dn3);
-            content.insertBefore(dn3, dn2);
-          }
-          content.removeChild(dn2);
-        }
-      }
-      // add hidden paragraphs if necessary
-      if (doc.cfg.isSubElement(parent.ref, doc.hiddenp)) {
-        for (DaxeNode dn2=content.firstChild; dn2 != null; dn2=next) {
-          next = dn2.nextSibling;
-          if (dn2.ref != doc.hiddenp &&
-              ((dn2 is DNText && !doc.cfg.canContainText(parent.ref)) ||
-              (!doc.cfg.isSubElement(parent.ref, dn2.ref) &&
-                  doc.cfg.isSubElement(doc.hiddenp, dn2.ref)))) {
-            content.removeChild(dn2);
-            if (dn2.previousSibling != null && dn2.previousSibling.ref == doc.hiddenp) {
-              dn2.previousSibling.appendChild(dn2);
-            } else {
-              DNHiddenP p = new DNHiddenP.fromRef(doc.hiddenp);
-              p.appendChild(dn2);
-              content.insertBefore(p, next);
-            }
-          }
-        }
-      }
+    if (doc.hiddenParaRefs != null) {
+      // add or remove hidden paragraphs where necessary
+      DNHiddenP.fixFragment(parent, content);
     }
     edit.addSubEdit(new UndoableEdit.removeNode(this));
     edit.addSubEdit(doc.insertChildrenEdit(content, new Position(parent, parent.offsetOf(this)), checkValidity:false));

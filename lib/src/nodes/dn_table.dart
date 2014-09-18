@@ -35,7 +35,7 @@ class DNTable extends DaxeNode {
   
   DNTable.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     init();
-    newElementDialog();
+    createNewStructure();
   }
   
   DNTable.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
@@ -63,11 +63,14 @@ class DNTable extends DaxeNode {
   
   void init() {
     _trtag = doc.cfg.elementParameterValue(ref, 'trTag', 'tr');
-    _trref = doc.cfg.elementReference(_trtag);
+    List<x.Element> trRefs = doc.cfg.elementReferences(_trtag);
+    _trref = doc.cfg.findSubElement(ref, trRefs);
     _tdtag = doc.cfg.elementParameterValue(ref, 'tdTag', 'td');
-    _tdref = doc.cfg.elementReference(_tdtag);
+    List<x.Element> tdRefs = doc.cfg.elementReferences(_tdtag);
+    _tdref = doc.cfg.findSubElement(_trref, tdRefs);
     _thtag = doc.cfg.elementParameterValue(ref, 'thTag', 'th');
-    _thref = doc.cfg.elementReference(_thtag);
+    List<x.Element> thRefs = doc.cfg.elementReferences(_thtag);
+    _thref = doc.cfg.findSubElement(_trref, thRefs);
     _colspanAttr = doc.cfg.elementParameterValue(ref, 'colspanAttr', null);
     _rowspanAttr = doc.cfg.elementParameterValue(ref, 'rowspanAttr', null);
     _alignAttr = doc.cfg.elementParameterValue(ref, 'alignAttr', null);
@@ -214,10 +217,7 @@ class DNTable extends DaxeNode {
     return(new Position(lastChild.lastChild, lastChild.lastChild.offsetLength));
   }
   
-  void newElementDialog() {
-    //TODO: ask for nb of rows and columns
-    
-    
+  void createNewStructure() {
     int rows = 2;
     int columns = 2;
     for (int i=0; i<rows; i++) {

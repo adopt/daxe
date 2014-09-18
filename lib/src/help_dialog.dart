@@ -104,6 +104,12 @@ class HelpDialog {
     div1.append(div2);
     h.document.body.append(div1);
     
+    if (div3.clientHeight > div1.clientHeight * 3 / 4) {
+      // enlarge dialog width for large content models
+      div2.style.left = "33%";
+      div3.style.left = "-25%";
+    }
+    
     if (attributeRef == null)
       fillChildren();
     
@@ -120,13 +126,92 @@ class HelpDialog {
     h.UListElement ul = h.document.getElementById('help_list');
     ul.nodes.clear();
     List<x.Element> parents = doc.cfg.parentElements(elementRef);
+    if (parents == null || parents.length == 0)
+      return;
+    HashMap<x.Element, String> titleMap = bestTitles(parents.toSet());
+    parents.sort((ref1, ref2) => titleMap[ref1].compareTo(titleMap[ref2]));
     for (x.Element parentRef in parents) {
       h.LIElement li = new h.LIElement();
-      li.text = doc.cfg.elementTitle(parentRef);
+      li.text = titleMap[parentRef];
+      String documentation = doc.cfg.documentation(parentRef);
+      if (documentation != null)
+        li.title = documentation;
       li.onClick.listen((h.MouseEvent event) => switchToElement(parentRef));
       li.classes.add('help_selectable');
       ul.append(li);
     }
+  }
+  
+  /**
+   * Look for titles with additional info when several elements have the same name.
+   */
+  HashMap<x.Element, String> bestTitles(Set<x.Element> refs, [int level=0]) {
+    HashMap<String, Set<x.Element>> titleSets = new HashMap<String, Set<x.Element>>();
+    // create the map of titles including the element having a common ancestor title at given level
+    for (x.Element ref in refs) {
+      Set<x.Element> ancestors = ancestorsAtLevel(ref, level);
+      // check if ancestors have the same title and if so add title
+      String ancestorTitle = doc.cfg.elementTitle(ancestors.first);
+      if (ancestorTitle != null) {
+        bool sameTitle = true;
+        for (x.Element ancestor in ancestors) {
+          if (doc.cfg.elementTitle(ancestor) != ancestorTitle) {
+            sameTitle = false;
+            break;
+          }
+        }
+        if (sameTitle) {
+          String title;
+          if (level == 0)
+            title = doc.cfg.elementTitle(ref);
+          else
+            title = doc.cfg.elementTitle(ref) + " (" + ancestorTitle + ")";
+          Set set = titleSets[title];
+          if (set == null) {
+            set = new HashSet<x.Element>();
+            titleSets[title] = set;
+          }
+          set.add(ref);
+        }
+      }
+    }
+    // go to the next level for elements with the same title
+    // and create the result map.
+    HashMap<x.Element, String> resMap = new HashMap<x.Element, String>();
+    for (String title in titleSets.keys) {
+      Set<x.Element> set = titleSets[title];
+      if (set.length > 1 && level < 10) {
+        HashMap<x.Element, String> map2 = bestTitles(set, level+1);
+        resMap.addAll(map2);
+        for (x.Element ref in set)
+          if (map2[ref] == null) {
+            // could not find a unique title for this one, adding the type could be useful...
+            if (title.indexOf('(') == -1 && ref.getAttribute('type') != '')
+              resMap[ref] = title + " (" + ref.getAttribute('type') + ")";
+            else
+              resMap[ref] = title;
+          }
+      } else {
+        for (x.Element ref in set)
+          resMap[ref] = title;
+      }
+    }
+    return(resMap);
+  }
+  
+  Set<x.Element> ancestorsAtLevel(x.Element ref, int level) {
+    Set<x.Element> ancestors = new Set<x.Element>();
+    ancestors.add(ref);
+    for (int i=0; i<level; i++) {
+      Set<x.Element> ancestors2 = new Set<x.Element>();
+      for (x.Element ref2 in ancestors) {
+        List<x.Element> parentList = doc.cfg.parentElements(ref2);
+        if (parentList != null)
+          ancestors2.addAll(parentList);
+      }
+      ancestors = ancestors2;
+    }
+    return(ancestors);
   }
   
   void fillChildren() {
@@ -139,11 +224,17 @@ class HelpDialog {
     h.UListElement ul = h.document.getElementById('help_list');
     ul.nodes.clear();
     List<x.Element> children = doc.cfg.subElements(elementRef);
-    if (children == null)
+    if (children == null || children.length == 0)
       return;
+    HashMap<x.Element, String> titleMap = new HashMap.fromIterable(children,
+        value:(x.Element ref) => doc.cfg.elementTitle(ref));
+    children.sort((ref1, ref2) => titleMap[ref1].compareTo(titleMap[ref2]));
     for (x.Element childRef in children) {
       h.LIElement li = new h.LIElement();
-      li.text = doc.cfg.elementTitle(childRef);
+      li.text = titleMap[childRef];
+      String documentation = doc.cfg.documentation(childRef);
+      if (documentation != null)
+        li.title = documentation;
       li.onClick.listen((h.MouseEvent event) => switchToElement(childRef));
       li.classes.add('help_selectable');
       ul.append(li);
@@ -160,9 +251,17 @@ class HelpDialog {
     h.UListElement ul = h.document.getElementById('help_list');
     ul.nodes.clear();
     List<x.Element> attributes = doc.cfg.elementAttributes(elementRef);
+    if (attributes == null || attributes.length == 0)
+      return;
+    HashMap<x.Element, String> titleMap = new HashMap.fromIterable(attributes,
+        value:(x.Element attRef) => doc.cfg.attributeTitle(elementRef, attRef));
+    attributes.sort((ref1, ref2) => titleMap[ref1].compareTo(titleMap[ref2]));
     for (x.Element attRef in attributes) {
       h.LIElement li = new h.LIElement();
-      li.text = doc.cfg.attributeTitle(elementRef, attRef);
+      li.text = titleMap[attRef];
+      String documentation = doc.cfg.attributeDocumentation(elementRef, attRef);
+      if (documentation != null)
+        li.title = documentation;
       ul.append(li);
     }
   }

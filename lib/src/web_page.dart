@@ -357,7 +357,7 @@ class WebPage {
     for (x.Element ref in validRefs) {
       if (toolbarRefs != null && toolbarRefs.contains(ref))
         continue;
-      if (doc.hiddenp != null && ref == doc.hiddenp)
+      if (doc.hiddenParaRefs != null && doc.hiddenParaRefs.contains(ref))
         continue;
       if (first && addSeparator)
         contextualMenu.addSeparator();

@@ -46,7 +46,7 @@ class InsertPanel {
     for (x.Element ref in refs) {
       if (toolbarRefs != null && toolbarRefs.contains(ref))
         continue;
-      if (doc.hiddenp != null && ref == doc.hiddenp)
+      if (doc.hiddenParaRefs != null && doc.hiddenParaRefs.contains(ref))
         continue;
       divInsert.append(_makeHelpButton(ref));
       h.ButtonElement button = new h.ButtonElement();

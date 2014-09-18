@@ -18,17 +18,31 @@
 part of daxe;
 
 class ToolbarStyleInfo {
-  x.Element ref;
+  List<x.Element> possibleRefs; /* list of possible element references for the toolbar item */
+  x.Element validRef; /* one of possibleRefs, which can be used now */
   String cssName;
   String cssValue;
   
-  ToolbarStyleInfo(this.ref, this.cssName, this.cssValue) {
-    assert(ref != null && (cssName == null || cssValue != null));
+  ToolbarStyleInfo(this.possibleRefs, this.cssName, this.cssValue) {
+    assert(possibleRefs != null && possibleRefs.length > 0 &&
+        (cssName == null || cssValue != null));
+    validRef = null;
   }
   
   String get css {
     if (cssName == null)
       return(null);
     return("$cssName: $cssValue");
+  }
+  
+  bool findValidRef(List<x.Element> list) {
+    for (x.Element possibleRef in possibleRefs) {
+      if (list.contains(possibleRef)) {
+        validRef = possibleRef;
+        return(true);
+      }
+    }
+    validRef = null;
+    return(false);
   }
 }

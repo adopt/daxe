@@ -507,6 +507,13 @@ class Config {
   }
   
   /**
+   * Returns the references of the elements with the given name
+   */
+  List<x.Element> elementReferences(final String name) {
+    return(_schema.elementReferencesByName(localValue(name)));
+  }
+  
+  /**
    * Returns the namespace to use for the element,
    * or null the namespace is undefined.
    */
@@ -604,10 +611,23 @@ class Config {
    * Returns true if there is a relation parent-child between the 2 elements
    */
   bool isSubElement(final x.Element parentRef, final x.Element childRef) {
-    final List<x.Element> enfants = subElements(parentRef);
-    if (enfants == null)
+    final List<x.Element> children = subElements(parentRef);
+    if (children == null)
       return(false);
-    return(enfants.contains(childRef));
+    return(children.contains(childRef));
+  }
+  
+  /**
+   * Returns the first reference in the list that is a child of the parent, or null if none is found.
+   */
+  x.Element findSubElement(final x.Element parentRef, final List<x.Element> refs) {
+    final List<x.Element> children = subElements(parentRef);
+    if (children == null)
+      return(null);
+    for (x.Element ref in refs)
+      if (children.contains(ref))
+        return(ref);
+    return(null);
   }
   
   /**
@@ -1048,14 +1068,14 @@ class Config {
   /**
    * Returns the references of the elements with the given display type in the config file.
    */
-  List<x.Element> elementstWithType(final String displayType) {
+  List<x.Element> elementsWithType(final String displayType) {
     if (_cfgroot == null)
       return(null);
     List<x.Element> list = new List<x.Element>();
     x.Element affel = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
     while (affel != null) {
       if (displayType == affel.getAttribute("type"))
-        list.add(elementReference(affel.getAttribute("element")));
+        list.addAll(elementReferences(affel.getAttribute("element")));
       affel = _nextElement(affel, "AFFICHAGE_ELEMENT");
     }
     return(list);

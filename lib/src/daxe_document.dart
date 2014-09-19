@@ -647,40 +647,24 @@ class DaxeDocument {
   void insertNewString(String s, bool shift) {
     Position selectionStart = page.getSelectionStart();
     Position selectionEnd = page.getSelectionEnd();
-    if (((selectionStart.dn is DNItem) ||
-        (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
-        selectionStart.dnOffset == selectionStart.dn.offsetLength &&
-        s == '\n' && !shift) {
-      // \n in an item: adding a new list item
-      // TODO: try to move this node-specific code elsewhere
-      DNItem item;
-      if (selectionStart.dn is DNItem)
-        item = selectionStart.dn;
-      else
-        item = selectionStart.dn.parent;
-      DNItem newitem = NodeFactory.create(item.ref);
-      doc.insertNode(newitem,
-          new Position(item.parent, item.parent.offsetOf(item) + 1));
-      page.moveCursorTo(new Position(newitem, 0));
-      page.updateAfterPathChange();
-      return;
-    } else if (((selectionStart.dn is DNWItem) ||
-        (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNWItem)) &&
-        selectionStart.dnOffset == selectionStart.dn.offsetLength &&
-        s == '\n' && !shift) {
-      // \n in an item: adding a new list item
-      // TODO: try to move this node-specific code elsewhere
-      DNWItem item;
-      if (selectionStart.dn is DNWItem)
-        item = selectionStart.dn;
-      else
-        item = selectionStart.dn.parent;
-      DNWItem newitem = NodeFactory.create(item.ref);
-      doc.insertNode(newitem,
-          new Position(item.parent, item.parent.offsetOf(item) + 1));
-      page.moveCursorTo(new Position(newitem, 0));
-      page.updateAfterPathChange();
-      return;
+    if (s == '\n' && !shift) {
+      // check for newlines in lists
+      if (((selectionStart.dn is DNItem) ||
+          (selectionStart.dn.nextSibling == null && selectionStart.dn.parent is DNItem)) &&
+          selectionStart.dnOffset == selectionStart.dn.offsetLength) {
+        // \n at the end of a DNList item: adding a new list item
+        DNList.newlineInItem(selectionStart);
+        return;
+      } else {
+        DaxeNode ancestor = selectionStart.dn;
+        while (ancestor is DNText || ancestor is DNHiddenP || ancestor is DNStyle || ancestor is DNStyleSpan)
+          ancestor = ancestor.parent;
+        if (ancestor is DNWItem) {
+          // \n in a DNWList item: adding a new list item
+          DNWList.newlineInItem(selectionStart);
+          return;
+        }
+      }
     }
     // Handles automatic insertion of hidden paragraphs
     if (s == '\n' && hiddenParaRefs != null) {
@@ -714,6 +698,7 @@ class DaxeDocument {
     }
     if (problem) {
       h.window.alert(Strings.get('insert.text_not_allowed'));
+      page.cursor.clearField();
       return;
     }
     bool remove = false;

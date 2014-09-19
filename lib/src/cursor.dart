@@ -699,13 +699,20 @@ class Cursor {
         DaxeNode prev = selectionStart.dn.childAtOffset(selectionStart.dnOffset - 1);
         h.Element hprev = prev.getHTMLNode();
         prevBlock = _isBlock(hprev);
-      } else
-        prevBlock = true;
+      } else {
+        if (selectionStart.dn is DNWItem)
+          prevBlock = false; // special case for the beginning of a WYSIWYG list item
+        else
+          prevBlock = true;
+      }
       bool nextBlock;
       if (selectionStart.dnOffset < selectionStart.dn.offsetLength) {
         DaxeNode next = selectionStart.dn.childAtOffset(selectionStart.dnOffset);
         h.Element hnext = next.getHTMLNode();
-        nextBlock = _isBlock(hnext);
+        if (next is DNWItem && selectionStart.dnOffset == 0)
+          nextBlock = false; // special case for the beginning of a WYSIWYG list
+        else
+          nextBlock = _isBlock(hnext);
       } else
         nextBlock = true;
       horizontal = prevBlock && nextBlock;
@@ -757,6 +764,13 @@ class Cursor {
     if (visible)
       show();
     ta.focus();
+  }
+  
+  /**
+   * Clears the hidden field
+   */
+  void clearField() {
+    ta.value = '';
   }
   
   setSelection(Position start, Position end) {

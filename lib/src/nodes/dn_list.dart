@@ -102,4 +102,22 @@ class DNList extends DaxeNode {
   bool newlineInside() {
     return(true);
   }
+  
+  /**
+   * Called when a newline character is inserted within an item and a new item should be created.
+   */
+  static void newlineInItem(Position selectionStart) {
+    // the newline is assumed to be at the end of the item, so it does not need to be split.
+    DNItem item;
+    if (selectionStart.dn is DNItem)
+      item = selectionStart.dn;
+    else
+      item = selectionStart.dn.parent;
+    DNItem newitem = NodeFactory.create(item.ref);
+    doc.insertNode(newitem,
+        new Position(item.parent, item.parent.offsetOf(item) + 1));
+    page.moveCursorTo(new Position(newitem, 0));
+    page.updateAfterPathChange();
+  }
+  
 }

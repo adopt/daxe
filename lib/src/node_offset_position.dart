@@ -346,6 +346,11 @@ class NodeOffsetPosition implements Position {
           h.Rectangle r2 = hn2.getBoundingClientRect();
           return(new Point(r2.left, (r1.bottom + r2.top)/2));
         }
+        if (children[_dnOffset] is DNWItem) {
+          // special case for the first li in a WYSIWYG list
+          h.Rectangle r = hn.getClientRects()[0];
+          return(new Point(r.left - 21, r.top + 2));
+        }
         h.Rectangle r = hn.getClientRects()[0];
         return(new Point(r.left, r.top));
       } else {

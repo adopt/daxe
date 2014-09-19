@@ -390,6 +390,34 @@ class DNWList extends DaxeNode {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Called when a newline character is inserted within an item and a new item should be created.
+   */
+  static void newlineInItem(Position selectionStart) {
+    // the newline can be inserted within a style within a hidden paragraph,
+    // so the item has to be split with DaxeDocument.cloneCutBetween.
+    DNWItem item;
+    DaxeNode dn = selectionStart.dn;
+    while (dn != null && dn is! DNWItem)
+      dn = dn.parent;
+    assert(dn != null);
+    if (dn == null)
+      return;
+    item = dn;
+    Position beforeItem = new Position(item.parent, item.parent.offsetOf(item));
+    Position afterItem = new Position(item.parent, item.parent.offsetOf(item) + 1);
+    DaxeNode firstNewItem = doc.cloneCutBetween(item, beforeItem, selectionStart);
+    DaxeNode secondNewItem = doc.cloneCutBetween(item, selectionStart, afterItem);
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
+    edit.addSubEdit(new UndoableEdit.insertNode(beforeItem, firstNewItem));
+    beforeItem = new Position(item.parent, item.parent.offsetOf(item)+1);
+    edit.addSubEdit(new UndoableEdit.insertNode(beforeItem, secondNewItem));
+    edit.addSubEdit(new UndoableEdit.removeNode(item));
+    doc.doNewEdit(edit);
+    page.moveCursorTo(new Position(secondNewItem, 0));
+    page.updateAfterPathChange();
+  }
+  
   static List<x.Element> ulRefs() {
     List<x.Element> list = new List<x.Element>();
     List<x.Element> wlist = doc.cfg.elementsWithType('wlist');

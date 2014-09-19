@@ -871,9 +871,16 @@ abstract class DaxeNode {
             span_test.remove();
             if (hn is h.LIElement) {
               h.Node lastDescendant = hn;
-              while (lastDescendant.firstChild != null && lastDescendant.lastChild is! h.Text &&
-                  lastDescendant.lastChild is! h.ImageElement)
-                lastDescendant = lastDescendant.lastChild;
+              while (lastDescendant.firstChild != null &&
+                  (lastDescendant.lastChild is! h.Text ||
+                      (lastDescendant.lastChild.nodeValue == '\n' && lastDescendant.lastChild.previousNode != null)) &&
+                  lastDescendant.lastChild is! h.ImageElement) {
+                if (lastDescendant.lastChild is h.Text && lastDescendant.lastChild.nodeValue == '\n' &&
+                    lastDescendant.lastChild.previousNode != null)
+                  lastDescendant = lastDescendant.lastChild.previousNode; // case of a hidden paragraph or block inside li
+                else
+                  lastDescendant = lastDescendant.lastChild;
+              }
               lastDescendant.append(span_test);
             } else
               hn.append(span_test);

@@ -35,19 +35,17 @@ class DNWItem extends DaxeNode {
     h.LIElement li = new h.LIElement();
     li.id = "$id";
     li.classes.add('dn');
-    h.SpanElement contents = new h.SpanElement();
     DaxeNode dn = firstChild;
     while (dn != null) {
-      contents.append(dn.html());
+      li.append(dn.html());
       dn = dn.nextSibling;
     }
-    li.append(contents);
     return(li);
   }
   
   @override
   h.Element getHTMLContentsNode() {
-    return(getHTMLNode().firstChild);
+    return(getHTMLNode());
   }
   
   @override

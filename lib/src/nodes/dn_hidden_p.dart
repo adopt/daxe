@@ -258,6 +258,8 @@ class DNHiddenP extends DaxeNode {
     }
     if (selectionStart.dn != selectionEnd.dn)
       return(false);
+    if (textParent.ref == null)
+      return(false);
     if (textParent is DNHiddenP)
       return(false);
     x.Element hiddenp = doc.cfg.findSubElement(textParent.ref, doc.hiddenParaRefs);

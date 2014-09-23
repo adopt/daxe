@@ -33,6 +33,7 @@ class SimpleTypeControl {
   h.Element hcontrol;
   ActionFunction valueChanged;
   bool catchUndo;
+  Menu popup;
   
   
   SimpleTypeControl.forElement(this.refElement, this.value, {this.valueChanged}) {
@@ -120,6 +121,7 @@ class SimpleTypeControl {
         h.DataListElement datalist = new h.DataListElement();
         datalist.id = 'datalist_$_uniqueName';
         titleToValue = new HashMap<String, String>();
+        popup = new Menu('');
         for (String v in suggestedValues) {
           h.OptionElement option = new h.OptionElement();
           String title;
@@ -130,11 +132,26 @@ class SimpleTypeControl {
           option.value = title;
           titleToValue[title] = v;
           datalist.append(option);
+          popup.add(new MenuItem(title, () {
+            input.value = title;
+            checkValue(true);
+          }));
         }
         input.attributes['list'] = 'datalist_$_uniqueName';
         span.append(datalist);
       }
       span.append(input);
+      if (suggestedValues != null && suggestedValues.length > 0) {
+        // add a custom menu, because datalist UI sucks and there is no way to configure it or script it safely
+        input.style.width = "90%"; // instead of 100%, to give some room to arrowSpan
+        h.SpanElement arrowSpan = new h.SpanElement();
+        arrowSpan.text = '▼';
+        arrowSpan.style.cursor = 'default';
+        arrowSpan.onClick.listen((h.Event event) => showSuggestedValuesMenu(input));
+        arrowSpan.onMouseOver.listen((h.Event event) => arrowSpan.style.background = '#E0E0E0');
+        arrowSpan.onMouseOut.listen((h.Event event) => arrowSpan.style.background = null);
+        span.append(arrowSpan);
+      }
     } else {
       h.SelectElement select = new h.SelectElement();
       hcontrol = select;
@@ -287,5 +304,23 @@ class SimpleTypeControl {
     } else if (hcontrol != null) {
       hcontrol.focus();
     }
+  }
+  
+  void showSuggestedValuesMenu(h.TextInputElement input) {
+    h.DivElement div = popup.htmlMenu();
+    div.style.position = 'absolute';
+    div.style.display = 'block';
+    h.Rectangle rect = input.getBoundingClientRect();
+    div.style.left = "${rect.left}px";
+    div.style.top = "${rect.bottom}px";
+    div.style.width = "${rect.width}px";
+    ((div.firstChild) as h.Element).style.width = "${rect.width}px"; // for the table
+    h.document.body.append(div);
+    StreamSubscription<h.MouseEvent> subscription = h.document.onMouseUp.listen(null);
+    subscription.onData((h.MouseEvent event) {
+      subscription.cancel();
+      div.remove();
+      event.preventDefault();
+    });
   }
 }

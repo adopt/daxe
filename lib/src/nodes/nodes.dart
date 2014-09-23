@@ -33,7 +33,7 @@ import '../xmldom/xmldom.dart' as x;
 import '../equations/equations.dart' show EquationDialog, MathBase, StringMathBuilder;
 import '../strings.dart' show Strings;
 import '../../daxe.dart' show doc, page, ActionFunction, DaxeAttr, DaxeNode, DaxeException, HelpDialog,
-  NodeFactory, Position, Tag, UndoableEdit;
+  NodeFactory, Position, Tag, UndoableEdit, Menu, MenuItem;
 
 part 'dn_anchor.dart';
 part 'dn_area.dart';

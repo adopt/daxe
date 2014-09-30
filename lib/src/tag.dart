@@ -55,7 +55,7 @@ class Tag {
         List<x.Element> attRefs = doc.cfg.elementAttributes(_dn.ref);
         hasAttributes = (attRefs != null && attRefs.length > 0);
       } else {
-        hasAttributes = true; // who knows ?
+        hasAttributes = (_dn is! DNComment && _dn is! DNCData);
       }
       if (hasAttributes) {
         h.ImageElement img = new h.ImageElement(src:'packages/daxe/images/attributes.png', width:16, height:16);

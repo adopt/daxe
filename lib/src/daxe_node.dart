@@ -262,7 +262,8 @@ abstract class DaxeNode {
     // this is only a guess, it should be subclassed to be safe
     if (newlineAfter())
       return(true);
-    return(getHTMLNode() is h.DivElement);
+    h.Element hnode = getHTMLNode(); 
+    return(hnode is h.DivElement || hnode is h.TableElement || hnode is h.UListElement);
   }
   
   /**

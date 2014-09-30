@@ -37,6 +37,12 @@ class DNWList extends DaxeNode {
   DNWList.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
     init();
     fixLineBreaks();
+    // remove spaces between li
+    for (DaxeNode dn in childNodes) {
+      if (dn is DNText && dn.nodeValue.trim() == '') {
+        removeChild(dn);
+      }
+    }
   }
   
   void init() {

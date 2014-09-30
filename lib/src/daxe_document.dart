@@ -78,6 +78,8 @@ class DaxeDocument {
         if (removeIndents)
           removeWhitespace(xmldoc.documentElement);
         dndoc = NodeFactory.createFromNode(xmldoc, null);
+        if (cfg != null && hiddenParaRefs != null)
+          removeWhitespaceForHiddenParagraphs(dndoc);
         completer.complete();
       }, onError: (x.DOMException ex) {
         if (ex.errorCode == 404) {
@@ -977,10 +979,6 @@ class DaxeDocument {
     } else
       refElement = null;
     final bool fte = _isFirstTextElement(el, refElement, refParent, fteParent);
-    // remove all newlines inside if the parent accepts hidden paragraphs inside
-    bool removeAllNewlines = false;
-    removeAllNewlines = cfg != null && hiddenParaRefs != null && refElement != null &&
-        cfg.findSubElement(refElement, hiddenParaRefs) != null;
     x.Node next;
     for (x.Node n = el.firstChild; n != null; n = next) {
       next = n.nextSibling;
@@ -990,8 +988,8 @@ class DaxeDocument {
         String s = n.nodeValue;
         
         // whitespace is not removed if there is only whitespace in the element
-        if (n.nextSibling == null && n.previousSibling == null && s.trim() == "")
-          break;
+        //if (n.nextSibling == null && n.previousSibling == null && s.trim() == "")
+        //  break;
         
         if (fte && n.parentNode.firstChild == n && refParent != null) {
           // remove whitespace at the beginning if the text node is the first child of the element
@@ -1016,15 +1014,6 @@ class DaxeDocument {
           idebuttab = s.indexOf("\n\t");
           if (idebuttab != -1 && (idebut == -1 || idebuttab < idebut))
             idebut = idebuttab;
-        }
-        
-        // remove newlines everywhere if the parent accepts hidden paragraphs inside
-        if (removeAllNewlines) {
-          for (int i=0; i<s.length; i++)
-            if (s[i] == '\n') {
-              s = s.substring(0, i) + s.substring(i+1);
-              i--;
-            }
         }
         
         // condense spaces everywhere
@@ -1077,5 +1066,47 @@ class DaxeDocument {
       return fteParent;
     return true;
   }
-
+  
+  /**
+   * Replace newlines by spaces where hidden paragraphs can be found and inside them,
+   * and remove whitespace before and after blocks where hidden paragraphs can be found.
+   */
+  void removeWhitespaceForHiddenParagraphs(DaxeNode parent) {
+    x.Element paraRef = cfg.findSubElement(parent.ref, hiddenParaRefs);
+    bool paraInside = (paraRef != null);
+    bool para = parent is DNHiddenP;
+    bool style = parent is DNStyle;
+    DaxeNode next;
+    for (DaxeNode dn=parent.firstChild; dn != null; dn=next) {
+      next = dn.nextSibling;
+      if (dn is DNText) {
+        if (paraInside || para || style) {
+          String s = dn.nodeValue;
+          s = s.replaceAll('\n', ' ');
+          s = s.replaceAll('  ', ' ');
+          if (paraInside) {
+            // also trim left if there is a block before, and right if there is a block after
+            // ("blocks" here are elements that are not allowed inside a paragraph)
+            if (dn.previousSibling != null && dn.previousSibling.ref != null && !cfg.isSubElement(paraRef, dn.previousSibling.ref)) {
+              s = s.trimLeft();
+            }
+            if (dn.nextSibling != null && dn.nextSibling.ref != null && !cfg.isSubElement(paraRef, dn.nextSibling.ref)) {
+              s = s.trimRight();
+            }
+          } else if (para) {
+            // trim hidden paragraphs
+            if (dn.previousSibling == null)
+              s = s.trimLeft();
+            if (dn.nextSibling == null)
+              s = s.trimRight();
+          }
+          if (s.length == 0)
+            parent.removeChild(dn);
+          else
+            dn.nodeValue = s;
+        }
+      } else if (dn.firstChild != null)
+        removeWhitespaceForHiddenParagraphs(dn);
+    }
+  }
 }

@@ -32,26 +32,6 @@ class DNHiddenP extends DaxeNode {
   
   DNHiddenP.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
     _styleAtt = doc.cfg.elementParameterValue(ref, 'styleAtt', 'style');
-    
-    // remove all newlines, and spaces at the beginning and the end
-    DaxeNode next;
-    for (DaxeNode dn=firstChild; dn != null; dn=next) {
-      next = dn.nextSibling;
-      if (dn is DNText) {
-        String s = dn.nodeValue;
-        if (dn.previousSibling == null)
-          while (s.startsWith(' '))
-            s = s.substring(1);
-        if (dn.nextSibling == null)
-          while (s.endsWith(' '))
-            s = s.substring(0, s.length-1);
-        s = s.replaceAll('\n', '');
-        if (s.length == 0)
-          removeChild(dn);
-        else
-          dn.nodeValue = s;
-      }
-    }
   }
   
   @override

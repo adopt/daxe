@@ -51,6 +51,7 @@ abstract class DaxeNode {
   DaxeNode nextSibling;
   List<DaxeAttr> attributes;
   bool userCannotRemove = false; // with suppr/del, could be extended to selections...
+  bool userCannotEdit = false;
   bool valid;
   
   

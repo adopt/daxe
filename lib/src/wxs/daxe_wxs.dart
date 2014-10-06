@@ -329,6 +329,7 @@ class DaxeWXS implements InterfaceSchema {
   
   // from InterfaceSchema
   List<Element> subElements(final Element parentRef) {
+    assert(parentRef != null);
     // à faire: cache
     final WXSElement parent = _hElementRefToWXS[parentRef];
     if (parent == null) {

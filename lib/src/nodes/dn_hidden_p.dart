@@ -307,10 +307,11 @@ class DNHiddenP extends DaxeNode {
     int p2offset = startOffset;
     
     // create the first paragraph if necessary
-    if (cloneLeft != null) {
+    if (cloneLeft != null || textParent.offsetLength == 0) {
       DNHiddenP p1 = NodeFactory.create(hiddenp);
       edit.addSubEdit(new UndoableEdit.insertNode(pStart, p1));
-      edit.addSubEdit(doc.insertChildrenEdit(cloneLeft, new Position(p1, 0)));
+      if (cloneLeft != null)
+        edit.addSubEdit(doc.insertChildrenEdit(cloneLeft, new Position(p1, 0)));
       p2offset++;
     }
     

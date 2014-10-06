@@ -62,6 +62,7 @@ class DNTable extends DaxeNode {
   }
   
   void init() {
+    userCannotEdit = true;
     _trtag = doc.cfg.elementParameterValue(ref, 'trTag', 'tr');
     List<x.Element> trRefs = doc.cfg.elementReferences(_trtag);
     _trref = doc.cfg.findSubElement(ref, trRefs);
@@ -570,10 +571,12 @@ class DNTR extends DaxeNode {
   
   DNTR.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     userCannotRemove = true;
+    userCannotEdit = true;
   }
   
   DNTR.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
     userCannotRemove = true;
+    userCannotEdit = true;
     fixLineBreaks();
   }
   
@@ -632,7 +635,8 @@ class DNTD extends DaxeNode {
       td.classes.add('header');
     td.attributes['rowspan'] = rowspan.toString();
     td.attributes['colspan'] = colspan.toString();
-    td.attributes['align'] = align;
+    if (align != '')
+      td.attributes['align'] = align;
     DaxeNode dn = firstChild;
     while (dn != null) {
       td.append(dn.html());
@@ -640,8 +644,25 @@ class DNTD extends DaxeNode {
     }
     // without a space at the end, a newline at the end of a cell does not create additional
     // space for the cell
-    td.appendText(' ');
+    // but this should not be added after a block, otherwise it adds an empty line.
+    // This kind of conditional HTML makes it hard to optimize display updates:
+    // we have to override updateHTMLAfterChildrenChange
+    if (lastChild == null || !lastChild.block)
+      td.appendText(' ');
     return(td);
+  }
+  
+  @override
+  void updateHTMLAfterChildrenChange(List<DaxeNode> changed) {
+    super.updateHTMLAfterChildrenChange(changed);
+    h.TableCellElement td = getHTMLNode();
+    if (lastChild == null || !lastChild.block) {
+      if (td.lastChild is! h.Text)
+        td.appendText(' ');
+    } else {
+      if (td.lastChild is h.Text)
+        td.lastChild.remove();
+    }
   }
   
   int get rowspan {

@@ -675,10 +675,12 @@ class DaxeDocument {
     }
     // check if text is allowed here
     bool problem = false;
-    if (s.trim() != '') {
-      DaxeNode parent = selectionStart.dn;
-      if (parent.nodeType == DaxeNode.TEXT_NODE)
-        parent = parent.parent;
+    DaxeNode parent = selectionStart.dn;
+    if (parent.nodeType == DaxeNode.TEXT_NODE)
+      parent = parent.parent;
+    if (parent.userCannotEdit)
+      problem = true;
+    else if (s.trim() != '') {
       if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
         problem = true;
       else if (parent.ref != null && !doc.cfg.canContainText(parent.ref)) {
@@ -1072,7 +1074,11 @@ class DaxeDocument {
    * and remove whitespace before and after blocks where hidden paragraphs can be found.
    */
   void removeWhitespaceForHiddenParagraphs(DaxeNode parent) {
-    x.Element paraRef = cfg.findSubElement(parent.ref, hiddenParaRefs);
+    x.Element paraRef;
+    if (parent.ref != null)
+      paraRef = cfg.findSubElement(parent.ref, hiddenParaRefs);
+    else
+      paraRef = null;
     bool paraInside = (paraRef != null);
     bool para = parent is DNHiddenP;
     bool style = parent is DNStyle;

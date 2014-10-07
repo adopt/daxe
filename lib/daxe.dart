@@ -42,6 +42,7 @@ import 'src/simple_schema.dart';
 import 'src/nodes/nodes.dart';
 
 part 'src/attribute_dialog.dart';
+part 'src/css_map.dart';
 part 'src/cursor.dart';
 part 'src/daxe_document.dart';
 part 'src/daxe_exception.dart';

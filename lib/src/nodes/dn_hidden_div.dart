@@ -127,25 +127,24 @@ class DNHiddenDiv extends DaxeNode {
   static UndoableEdit _removeStyleFromNodeEdit(DNHiddenDiv dn, String cssName) {
     if (dn.css == null)
       return(null);
-    List<String> cssArray = dn.css.split(';');
-    for (String cssEntry in cssArray) {
-      if (cssEntry.startsWith("${cssName}:")) {
-        cssArray.remove(cssEntry);
-        DaxeAttr att = dn.getAttributeNode(dn._styleAtt);
-        att.value = cssArray.join(';');
-        return(new UndoableEdit.changeAttributes(dn, [att], updateDisplay:true));
-      }
+    CSSMap cssMap = new CSSMap(dn.css);
+    if (cssMap[cssName] != null) {
+      cssMap.remove(cssName);
+      String newCss = cssMap.toString();
+      DaxeAttr att = dn.getAttributeNode(dn._styleAtt);
+      att.value = newCss;
+      return(new UndoableEdit.changeAttributes(dn, [att], updateDisplay:true));
     }
     return(null);
   }
   
-  static void applyStyleToSelection(String cssName, String css) {
+  static void applyStyleToSelection(String cssName, String cssValue) {
     List<DNHiddenDiv> list = divsInSelection();
     if (list.length == 0)
       return;
     UndoableEdit compound = new UndoableEdit.compound(Strings.get('style.apply_style'));
     for (DNHiddenDiv dn in list) {
-      UndoableEdit edit = _applyStyleOnNodeEdit(dn, cssName, css);
+      UndoableEdit edit = _applyStyleOnNodeEdit(dn, cssName, cssValue);
       if (edit != null)
         compound.addSubEdit(edit);
     }
@@ -153,27 +152,15 @@ class DNHiddenDiv extends DaxeNode {
     page.cursor.refresh();
   }
   
-  static UndoableEdit _applyStyleOnNodeEdit(DNHiddenDiv dn, String cssName, String css) {
-    List<String> cssArray;
-    if (dn.css == null)
-      cssArray = new List<String>();
-    else
-      cssArray = dn.css.split(';');
-    String matchingEntry = null;
-    for (String cssEntry in cssArray) {
-      if (cssEntry.startsWith("${cssName}:")) {
-        matchingEntry = cssEntry;
-        break;
-      }
-    }
-    if (matchingEntry != null)
-      cssArray.remove(matchingEntry);
-    cssArray.add(css);
+  static UndoableEdit _applyStyleOnNodeEdit(DNHiddenDiv dn, String cssName, String cssValue) {
+    CSSMap cssMap = new CSSMap(dn.css);
+    cssMap[cssName] = cssValue;
+    String newCss = cssMap.toString();
     DaxeAttr att = dn.getAttributeNode(dn._styleAtt);
     if (att == null)
-      att = new DaxeAttr(dn._styleAtt, cssArray.join(';'));
+      att = new DaxeAttr(dn._styleAtt, newCss);
     else
-      att.value = cssArray.join(';');
+      att.value = newCss;
     return(new UndoableEdit.changeAttributes(dn, [att], updateDisplay:true));
   }
   

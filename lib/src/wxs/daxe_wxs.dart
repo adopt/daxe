@@ -125,7 +125,7 @@ class DaxeWXS implements InterfaceSchema {
             return(topel.getDOMElement());
         }
       }
-      print("JaxeWXS: elementReference: no matching root element in the schema for $name");
+      print("DaxeWXS: elementReference: no matching root element in the schema for $name");
       return(null);
     }
     final WXSElement wxsParent = _hElementRefToWXS[parentRef];

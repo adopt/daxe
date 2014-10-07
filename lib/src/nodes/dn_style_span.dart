@@ -90,4 +90,30 @@ class DNStyleSpan extends DNStyle {
     return(doc.cfg.firstElementWithType('stylespan'));
   }
   
+  @override
+  bool matches(DNStyle dn) {
+    if (dn is DNStyleSpan) {
+      CSSMap cssMap1 = new CSSMap(css);
+      CSSMap cssMap2 = new CSSMap(dn.css);
+      return(cssMap1.equivalent(cssMap2));
+    } else {
+      return(false);
+    }
+  }
+  
+  @override
+  bool matchesCss(String cssName, String cssValue) {
+    if (css == null)
+      return(false);
+    CSSMap cssMap = new CSSMap(css);
+    return(cssMap[cssName] == cssValue);
+  }
+  
+  @override
+  bool matchesCssName(String cssName) {
+    if (css == null)
+      return(false);
+    CSSMap cssMap = new CSSMap(css);
+    return(cssMap[cssName] != null);
+  }
 }

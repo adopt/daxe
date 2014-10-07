@@ -96,6 +96,13 @@ class DNHiddenP extends DaxeNode {
     return(getAttribute(_styleAtt));
   }
   
+  bool matchesCss(String cssName, String cssValue) {
+    if (css == null)
+      return(false);
+    CSSMap cssMap = new CSSMap(css);
+    return(cssMap[cssName] == cssValue);
+  }
+  
   static void removeStyleFromSelection(String cssName) {
     List<DNHiddenP> list = paragraphsInSelection();
     if (list.length == 0)
@@ -111,27 +118,27 @@ class DNHiddenP extends DaxeNode {
   }
   
   static UndoableEdit _removeStyleFromNodeEdit(DNHiddenP p, String cssName) {
-    if (p.css == null)
+    String pcss = p.css;
+    if (pcss == null)
       return(null);
-    List<String> cssArray = p.css.split(';');
-    for (String cssEntry in cssArray) {
-      if (cssEntry.startsWith("${cssName}:")) {
-        cssArray.remove(cssEntry);
-        DaxeAttr att = p.getAttributeNode(p._styleAtt);
-        att.value = cssArray.join(';');
-        return(new UndoableEdit.changeAttributes(p, [att], updateDisplay:true));
-      }
+    CSSMap cssMap = new CSSMap(p.css);
+    if (cssMap[cssName] != null) {
+      cssMap.remove(cssName);
+      String newCss = cssMap.toString();
+      DaxeAttr att = p.getAttributeNode(p._styleAtt);
+      att.value = newCss;
+      return(new UndoableEdit.changeAttributes(p, [att], updateDisplay:true));
     }
     return(null);
   }
   
-  static void applyStyleToSelection(String cssName, String css) {
+  static void applyStyleToSelection(String cssName, String cssValue) {
     List<DNHiddenP> list = paragraphsInSelection();
     if (list.length == 0)
       return;
     UndoableEdit compound = new UndoableEdit.compound(Strings.get('style.apply_style'));
     for (DNHiddenP p in list) {
-      UndoableEdit edit = _applyStyleOnNodeEdit(p, cssName, css);
+      UndoableEdit edit = _applyStyleOnNodeEdit(p, cssName, cssValue);
       if (edit != null)
         compound.addSubEdit(edit);
     }
@@ -139,27 +146,15 @@ class DNHiddenP extends DaxeNode {
     page.cursor.refresh();
   }
   
-  static UndoableEdit _applyStyleOnNodeEdit(DNHiddenP p, String cssName, String css) {
-    List<String> cssArray;
-    if (p.css == null)
-      cssArray = new List<String>();
-    else
-      cssArray = p.css.split(';');
-    String matchingEntry = null;
-    for (String cssEntry in cssArray) {
-      if (cssEntry.startsWith("${cssName}:")) {
-        matchingEntry = cssEntry;
-        break;
-      }
-    }
-    if (matchingEntry != null)
-      cssArray.remove(matchingEntry);
-    cssArray.add(css);
+  static UndoableEdit _applyStyleOnNodeEdit(DNHiddenP p, String cssName, String cssValue) {
+    CSSMap cssMap = new CSSMap(p.css);
+    cssMap[cssName] = cssValue;
+    String newCss = cssMap.toString();
     DaxeAttr att = p.getAttributeNode(p._styleAtt);
     if (att == null)
-      att = new DaxeAttr(p._styleAtt, cssArray.join(';'));
+      att = new DaxeAttr(p._styleAtt, newCss);
     else
-      att.value = cssArray.join(';');
+      att.value = newCss;
     return(new UndoableEdit.changeAttributes(p, [att], updateDisplay:true));
   }
   

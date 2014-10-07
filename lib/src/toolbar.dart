@@ -208,7 +208,6 @@ class Toolbar {
       String cssValueWithUnit = cssValue;
       if (cssUnit != null)
         cssValueWithUnit += cssUnit;
-      String css = "$cssName: $cssValueWithUnit";
       MenuItem menuItem = new MenuItem(cssValue, null,
           data:new ToolbarStyleInfo([styleRef], cssName, cssValueWithUnit));
       menuItem.action = () {
@@ -216,7 +215,7 @@ class Toolbar {
           Position start = page.getSelectionStart();
           Position end = page.getSelectionEnd();
           if (start == end && start.dn is DNText && start.dn.parent.ref == styleRef &&
-              (start.dn.parent as DNStyle).css == css &&
+              (start.dn.parent as DNStyle).matchesCss(cssName, cssValueWithUnit) &&
               start.dnOffset == start.dn.offsetLength && start.dn.nextSibling == null) {
             // we are at the end of the style
             // just move the cursor position outside of the style
@@ -226,7 +225,7 @@ class Toolbar {
           } else
             DNStyle.removeStylesFromSelection(styleRef, cssName);
         } else {
-          DNStyle.removeAndApplyStyleToSelection(styleRef, cssName, css);
+          DNStyle.removeAndApplyStyleToSelection(styleRef, cssName, cssValueWithUnit);
         }
       };
       menu.add(menuItem);
@@ -377,10 +376,9 @@ class Toolbar {
     // DNSpanStyle, span style
     ToolbarStyleInfo info = button.data;
     x.Element ref = info.possibleRefs[0];
-    String css = info.css;
     bool foundAncestor = false;
     for (DaxeNode n = parent; n != null; n = n.parent) {
-      if (n.ref == ref && (n as DNStyleSpan).css == css) {
+      if (n.ref == ref && (n as DNStyleSpan).matchesCss(info.cssName, info.cssValue)) {
         foundAncestor = true;
         break;
       }
@@ -390,7 +388,7 @@ class Toolbar {
       button.select();
     } else {
       if (selectedNode != null && ref == selectedNode.ref &&
-          (selectedNode as DNStyleSpan).css == css) {
+          (selectedNode as DNStyleSpan).matchesCss(info.cssName, info.cssValue)) {
         button.select();
       } else {
         button.deselect();
@@ -410,7 +408,7 @@ class Toolbar {
       if (button.selected) {
         DNHiddenP.removeStyleFromSelection(cssName);
       } else {
-        DNHiddenP.applyStyleToSelection(cssName, '$cssName: $cssValue');
+        DNHiddenP.applyStyleToSelection(cssName, cssValue);
       }
     };
     alignBox.add(button);
@@ -419,12 +417,13 @@ class Toolbar {
   static void paragraphButtonUpdate(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     ToolbarStyleInfo info = button.data;
-    String css = info.css;
     bool foundAncestor = false;
     for (DaxeNode n = parent; n != null; n = n.parent) {
-      if (doc.hiddenParaRefs.contains(n.ref) && (n as DNHiddenP).css == css) {
-        foundAncestor = true;
-        break;
+      if (doc.hiddenParaRefs.contains(n.ref)) {
+        if ((n as DNHiddenP).matchesCss(info.cssName, info.cssValue)) {
+          foundAncestor = true;
+          break;
+        }
       }
     }
     if (foundAncestor) {
@@ -432,7 +431,7 @@ class Toolbar {
       button.select();
     } else {
       if (selectedNode != null && doc.hiddenParaRefs.contains(selectedNode.ref) &&
-          (selectedNode as DNHiddenP).css == css) {
+          (selectedNode as DNHiddenP).matchesCss(info.cssName, info.cssValue)) {
         button.select();
       } else {
         button.deselect();
@@ -526,12 +525,13 @@ class Toolbar {
       if (menuItem.data is ToolbarStyleInfo) {
         ToolbarStyleInfo info = menuItem.data;
         x.Element ref = info.possibleRefs[0];
-        String css = info.css;
+        String cssName = info.cssName;
+        String cssValue = info.cssValue;
         if (doc.hiddenParaRefs.contains(ref)) {
           // paragraph style
           bool foundAncestor = false;
           for (DaxeNode n = parent; n != null; n = n.parent) {
-            if (doc.hiddenParaRefs.contains(n.ref) && (n as DNHiddenP).css == css) {
+            if (doc.hiddenParaRefs.contains(n.ref) && (n as DNHiddenP).matchesCss(cssName, cssValue)) {
               foundAncestor = true;
               break;
             }
@@ -542,7 +542,7 @@ class Toolbar {
             menuItem.check();
           } else {
             if (selectedNode != null && doc.hiddenParaRefs.contains(selectedNode.ref) &&
-                (selectedNode as DNHiddenP).css == css) {
+                (selectedNode as DNHiddenP).matchesCss(cssName, cssValue)) {
               selectedItem = menuItem;
               menuItem.check();
             } else {
@@ -570,7 +570,7 @@ class Toolbar {
           // DNSpanStyle
           bool foundAncestor = false;
           for (DaxeNode n = parent; n != null; n = n.parent) {
-            if (n.ref == ref && (n as DNStyleSpan).css == css) {
+            if (n.ref == ref && (n as DNStyleSpan).matchesCss(cssName, cssValue)) {
               foundAncestor = true;
               break;
             }
@@ -581,7 +581,7 @@ class Toolbar {
             menuItem.check();
           } else {
             if (selectedNode != null && ref == selectedNode.ref &&
-                (selectedNode as DNStyleSpan).css == css) {
+                (selectedNode as DNStyleSpan).matchesCss(cssName, cssValue)) {
               selectedItem = menuItem;
               menuItem.check();
             } else {

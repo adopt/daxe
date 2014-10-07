@@ -235,7 +235,8 @@ class NodeOffsetPosition implements Position {
         // to the right of a \n or a space
         if (offset == s.length) {
           // ranges always report wrong positions in this case :(
-          if (_dn.nextSibling != null && _dn.nextSibling.nodeType == DaxeNode.ELEMENT_NODE) {
+          if (_dn.nextSibling != null && _dn.nextSibling.nodeType == DaxeNode.ELEMENT_NODE &&
+              (s[offset-1] == '\n' || !_dn.nextSibling.block)) {
             h.Rectangle r = (_dn.nextSibling.getHTMLNode()).getClientRects()[0];
             pt = new Point(r.left, r.top);
           } else if (s[offset-1] == ' ') {

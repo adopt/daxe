@@ -1,7 +1,7 @@
 body {
   line-height: 1.5;
   color: black;
-  background-color: #FFFFFF;
+  background-color: white;
 }
 
 button {
@@ -267,8 +267,6 @@ div#doc1 {
   right: 0em;
   top: 4em;
   overflow: auto;
-  background-color: #FFFFFF;
-  color: #000;
 }
 
 div#doc2 {
@@ -633,6 +631,20 @@ span.source_doctype {
 }
 .anchor img {
   cursor: default;
+}
+
+/* DNHiddenP */
+.hiddenp {
+  position: relative;
+  min-height: 1.5em;
+}
+.hiddenp::after {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  content: " ¶";
+  color: #CCC;
+  z-index: -1;
 }
 
 /* DNList */

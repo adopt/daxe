@@ -39,6 +39,7 @@ class DNHiddenP extends DaxeNode {
     h.DivElement div = new h.DivElement();
     div.id = "$id";
     div.classes.add('dn');
+    div.classes.add('hiddenp');
     if (!valid)
       div.classes.add('invalid');
     if (css != null)
@@ -48,34 +49,12 @@ class DNHiddenP extends DaxeNode {
       div.append(dn.html());
       dn = dn.nextSibling;
     }
-    if (lastChild == null || lastChild.nodeType == DaxeNode.TEXT_NODE)
-      div.appendText('\n');
-    //this kind of conditional HTML makes it hard to optimize display updates:
-    //we have to override updateHTMLAfterChildrenChange
-    // also, it seems that in IE this adds a BR instead of a text node !
     return(div);
   }
   
   @override
   h.Element getHTMLContentsNode() {
     return(getHTMLNode());
-  }
-  
-  @override
-  void updateHTMLAfterChildrenChange(List<DaxeNode> changed) {
-    super.updateHTMLAfterChildrenChange(changed);
-    h.DivElement contents = getHTMLContentsNode();
-    if (contents.nodes.length > 0) {
-      h.Node hn = contents.nodes.first;
-      while (hn != null) {
-        h.Node next = hn.nextNode;
-        if (hn is h.Text || hn is h.BRElement)
-          hn.remove();
-        hn = next;
-      }
-    }
-    if (lastChild == null || lastChild.nodeType == DaxeNode.TEXT_NODE)
-      contents.appendText('\n');
   }
   
   @override

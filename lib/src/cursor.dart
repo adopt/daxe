@@ -208,11 +208,20 @@ class Cursor {
    */
   void lineStart() {
     Point pt = selectionStart.positionOnScreen();
-    pt.x = 0;
+    //pt.x = 0;
+    // this does not work when blocks are used (it moves the cursor outside)
+    DaxeNode dn = selectionStart.dn;
+    if (dn == null)
+      return;
+    while (!dn.block && dn.parent != null)
+      dn = dn.parent;
+    h.Element hnode = dn.getHTMLNode();
+    h.Rectangle rect = hnode.getBoundingClientRect();
+    pt.x = rect.left + 1;
     pt.y += 5;
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos == null)
-      return(null);
+      return;
     if (pos != null) {
       moveTo(pos);
       page.updateAfterPathChange();
@@ -224,11 +233,20 @@ class Cursor {
    */
   void lineEnd() {
     Point pt = selectionStart.positionOnScreen();
-    pt.x += 10000;
+    //pt.x += 10000;
+    // this does not work when blocks are used (it moves the cursor outside)
+    DaxeNode dn = selectionStart.dn;
+    if (dn == null)
+      return;
+    while (!dn.block && dn.parent != null)
+      dn = dn.parent;
+    h.Element hnode = dn.getHTMLNode();
+    h.Rectangle rect = hnode.getBoundingClientRect();
+    pt.x = rect.right - 1;
     pt.y += 5;
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos == null)
-      return(null);
+      return;
     if (pos != null) {
       moveTo(pos);
       page.updateAfterPathChange();

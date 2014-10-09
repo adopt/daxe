@@ -269,10 +269,10 @@ class NodeOffsetPosition implements Position {
               s[offset-1] == '\n' && s[offset] == '\n' && rects.length == 2) // IE
             r = rects.first;
           else {
-            // preferably use a Rectangle with a width (useful in the case of 1\n2\n with Chromium)
+            // preferably use a Rectangle with a width > 1 (useful in the case of 1\n2\n with Chromium)
             r = rects.last;
             for (h.Rectangle ri in rects)
-              if (ri.width > 0) {
+              if (ri.width > 1) {
                 r = ri;
                 break;
               }

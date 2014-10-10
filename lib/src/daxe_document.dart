@@ -1088,7 +1088,11 @@ class DaxeDocument {
       if (dn is DNText) {
         if (paraInside || para || style) {
           String s = dn.nodeValue;
-          s = s.replaceAll('\n', ' ');
+          // replace newlines by spaces except between XML comments
+          if (dn.previousSibling == null || dn.previousSibling is! DNComment ||
+              dn.nextSibling == null || dn.nextSibling is! DNComment) {
+            s = s.replaceAll('\n', ' ');
+          }
           s = s.replaceAll('  ', ' ');
           if (paraInside) {
             // also trim left if there is a block before, and right if there is a block after

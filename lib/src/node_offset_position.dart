@@ -330,23 +330,33 @@ class NodeOffsetPosition implements Position {
         if (hn == null)
           return(null);
         if (_dnOffset > 0) {
-          h.Element hn1 = children[_dnOffset - 1].getHTMLNode();
+          // between two nodes
+          DaxeNode dn1 = children[_dnOffset - 1];
+          DaxeNode dn2 = children[_dnOffset];
+          h.Element hn1 = dn1.getHTMLNode();
           h.Element hn2 = hn;
-          bool inlineThenBlock = (hn1 is! h.DivElement && hn1 is! h.TableElement &&
-              hn1 is! h.UListElement && hn1 is! h.LIElement &&
-              (hn2 is h.DivElement || hn2 is h.TableElement ||
-               hn2 is h.UListElement || hn2 is h.LIElement));
-          if (inlineThenBlock) {
-            List<h.Rectangle> rects = hn1.getClientRects();
-            if (rects.length != 0) {
-              h.Rectangle r = rects.last;
-              return(new Point(r.right, r.top));
-            }
+          if (dn1.block && !dn2.block) {
+            // block-inline
+            List<h.Rectangle> rects2 = hn2.getClientRects();
+            if (rects2.length == 0 )
+              return(null);
+            h.Rectangle r2 = rects2.first;
+            return(new Point(r2.left, r2.top));
+          } else if (dn1.block && dn2.block) {
+            // block-block
+            h.Rectangle r1 = hn1.getBoundingClientRect();
+            h.Rectangle r2 = hn2.getBoundingClientRect();
+            return(new Point(r2.left, (r1.bottom + r2.top)/2));
+          } else {
+            // inline-inline or inline-block
+            List<h.Rectangle> rects1 = hn1.getClientRects();
+            if (rects1.length == 0 )
+              return(null);
+            h.Rectangle r1 = rects1.last;
+            return(new Point(r1.right, r1.top));
           }
-          h.Rectangle r1 = hn1.getBoundingClientRect();
-          h.Rectangle r2 = hn2.getBoundingClientRect();
-          return(new Point(r2.left, (r1.bottom + r2.top)/2));
         }
+        // before the first node
         if (children[_dnOffset] is DNWItem) {
           // special case for the first li in a WYSIWYG list
           h.Rectangle r = hn.getClientRects()[0];

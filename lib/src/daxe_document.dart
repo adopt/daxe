@@ -953,33 +953,12 @@ class DaxeDocument {
   
   void _removeWhitespace(final x.Element el, final x.Element refParent, final bool spacePreserveParent,
                       final bool fteParent) {
-    bool spacePreserve;
-    final String xmlspace = el.getAttribute("xml:space");
-    if (xmlspace == "preserve")
-      spacePreserve = true;
-    else if (xmlspace == "default")
-      spacePreserve = false;
-    else
-      spacePreserve = spacePreserveParent;
     x.Element refElement;
-    if (cfg != null) {
+    if (cfg != null)
       refElement = cfg.getElementRef(el, refParent);
-      if (refElement != null && xmlspace == "") {
-        final List<x.Element> attributs = cfg.elementAttributes(refElement);
-        for (x.Element attref in attributs) {
-          if (cfg.attributeName(attref) == "space" &&
-              cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
-            final String defaut = cfg.defaultAttributeValue(attref);
-            if (defaut == "preserve")
-              spacePreserve = true;
-            else if (defaut == "default")
-              spacePreserve = false;
-            break;
-          }
-        }
-      }
-    } else
+    else
       refElement = null;
+    bool spacePreserve = _spacePreserve(el, refElement, refParent, spacePreserveParent);
     final bool fte = _isFirstTextElement(el, refElement, refParent, fteParent);
     x.Node next;
     for (x.Node n = el.firstChild; n != null; n = next) {
@@ -1035,6 +1014,36 @@ class DaxeDocument {
           n.nodeValue = s;
       }
     }
+  }
+  
+  /**
+   * Returns true if the text should be preserved in an element.
+   */
+  bool _spacePreserve(final x.Element el, final x.Element refElement, final x.Element refParent,
+                      final bool spacePreserveParent) {
+    bool spacePreserve;
+    final String xmlspace = el.getAttribute("xml:space");
+    if (xmlspace == "preserve")
+      spacePreserve = true;
+    else if (xmlspace == "default")
+      spacePreserve = false;
+    else
+      spacePreserve = spacePreserveParent;
+    if (refElement != null && xmlspace == "") {
+      final List<x.Element> attributs = cfg.elementAttributes(refElement);
+      for (x.Element attref in attributs) {
+        if (cfg.attributeName(attref) == "space" &&
+            cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
+          final String defaut = cfg.defaultAttributeValue(attref);
+          if (defaut == "preserve")
+            spacePreserve = true;
+          else if (defaut == "default")
+            spacePreserve = false;
+          break;
+        }
+      }
+    }
+    return(spacePreserve);
   }
   
   /**
@@ -1117,6 +1126,40 @@ class DaxeDocument {
         }
       } else if (dn.firstChild != null)
         removeWhitespaceForHiddenParagraphs(dn);
+    }
+  }
+  
+  /**
+   * Indents a DOM document recursively.
+   */
+  void indentDOMDocument(x.Document domdoc) {
+    if (domdoc.documentElement != null)
+      _indentDOMNode(domdoc.documentElement, null, false, 1);
+  }
+  
+  /**
+   * Indents a DOM node recursively.
+   */
+  void _indentDOMNode(final x.Element el, final x.Element refParent, final bool spacePreserveParent, final int level) {
+    x.Element refElement;
+    if (cfg != null)
+      refElement = cfg.getElementRef(el, refParent);
+    else
+      refElement = null;
+    bool spacePreserve = _spacePreserve(el, refElement, refParent, spacePreserveParent);
+    for (x.Node n = el.firstChild; n != null; n = n.nextSibling) {
+      if (n.nodeType == x.Node.ELEMENT_NODE)
+        _indentDOMNode(n as x.Element, refElement, spacePreserve, level+1);
+      else if (!spacePreserve && n.nodeType == x.Node.TEXT_NODE && n.nodeValue.contains("\n")) {
+        StringBuffer sb = new StringBuffer("\n");
+        int indents = level;
+        if (n.nextSibling == null)
+          indents--;
+        for (int i=0; i<indents; i++)
+          sb.write('  ');
+        String newline_spaces = sb.toString();
+        n.nodeValue = n.nodeValue.replaceAll("\n", newline_spaces);
+      }
     }
   }
 }

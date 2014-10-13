@@ -24,6 +24,7 @@ class SourceWindow {
   
   void show() {
     x.Document domdoc = doc.toDOMDoc();
+    doc.indentDOMDocument(domdoc);
     
     h.DivElement div1 = new h.DivElement();
     div1.id = 'dlg1';

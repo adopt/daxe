@@ -379,7 +379,7 @@ class NodeOffsetPosition implements Position {
     }
   }
   
-  String xPath() {
+  String xPath({bool titles:false}) {
     String s = "";
     DaxeNode n = _dn;
     while (n != null) {
@@ -394,9 +394,14 @@ class NodeOffsetPosition implements Position {
         }
         spos = "[$position]";
       }
-      if (n.nodeType == DaxeNode.ELEMENT_NODE)
-        s = "${n.nodeName}$spos/$s";
-      else if (n.nodeType == DaxeNode.TEXT_NODE)
+      if (n.nodeType == DaxeNode.ELEMENT_NODE) {
+        String title;
+        if (titles && doc.cfg != null && n.ref != null)
+          title = doc.cfg.elementTitle(n.ref);
+        else
+          title = n.nodeName;
+        s = "$title$spos/$s";
+      } else if (n.nodeType == DaxeNode.TEXT_NODE)
         s = "#text";
       n = n.parent;
     }

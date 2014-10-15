@@ -486,6 +486,10 @@ div.dlg3 table {
   border-spacing: 5px;
 }
 
+span.help_element_name {
+  font-family: monospace;
+}
+
 div.help_regexp {
   font-family: monospace;
   margin-bottom: 1em;

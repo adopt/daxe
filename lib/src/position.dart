@@ -112,7 +112,7 @@ abstract class Position {
    */
   Point positionOnScreen();
   
-  String xPath();
+  String xPath({bool titles:false});
   
   String toString();
 }

@@ -507,7 +507,7 @@ class WebPage {
     if (_cursor.selectionStart == null)
       div_path.text = "";
     else
-      div_path.text = _cursor.selectionStart.xPath();
+      div_path.text = _cursor.selectionStart.xPath(titles:true);
   }
   
   void updateUndoMenus() {

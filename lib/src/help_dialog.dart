@@ -23,6 +23,7 @@ part of daxe;
 class HelpDialog {
   x.Element elementRef;
   x.Element attributeRef;
+  StreamSubscription<h.KeyboardEvent> keyboardSubscription;
   
   HelpDialog.Element(this.elementRef) {
   }
@@ -38,16 +39,43 @@ class HelpDialog {
     div2.classes.add('dlg2');
     h.DivElement div3 = new h.DivElement();
     div3.classes.add('dlg3');
+    
+    // top-right close button
+    h.DivElement topDiv = new h.DivElement();
+    topDiv.style.position = 'absolute';
+    topDiv.style.top = '0px';
+    topDiv.style.right = '0px';
+    topDiv.style.width = '16px';
+    topDiv.style.height = '16px';
+    h.ImageElement img = new h.ImageElement();
+    img.src = 'packages/daxe/images/close_dialog.png';
+    img.width = 16;
+    img.height = 16;
+    img.style.position = 'fixed';
+    img.onClick.listen((h.MouseEvent event) => close());
+    topDiv.append(img);
+    div3.append(topDiv);
+    
     h.DivElement title = new h.DivElement();
     title.classes.add('dlgtitle');
-    if (this.attributeRef == null)
+    if (attributeRef == null)
       title.text = doc.cfg.elementTitle(elementRef);
     else
       title.text = doc.cfg.attributeTitle(elementRef, attributeRef);
     div3.append(title);
     
+    if (attributeRef == null) {
+      h.ParagraphElement p = new h.ParagraphElement();
+      p.appendText(Strings.get('help.element_name') + ' ');
+      h.SpanElement nameSpan = new h.SpanElement();
+      nameSpan.classes.add('help_element_name');
+      nameSpan.text = doc.cfg.elementName(elementRef);
+      p.append(nameSpan);
+      div3.append(p);
+    }
+    
     String documentation;
-    if (this.attributeRef == null)
+    if (attributeRef == null)
       documentation = doc.cfg.documentation(elementRef);
     else
       documentation = doc.cfg.attributeDocumentation(elementRef, attributeRef);
@@ -113,6 +141,13 @@ class HelpDialog {
     if (attributeRef == null)
       fillChildren();
     
+    keyboardSubscription = h.document.onKeyDown.listen(null);
+    keyboardSubscription.onData((h.KeyboardEvent event) {
+      if (event.keyCode == h.KeyCode.ESC) {
+        close();
+      }
+    });
+    
     bOk.focus();
   }
   
@@ -129,7 +164,8 @@ class HelpDialog {
     if (parents == null || parents.length == 0)
       return;
     HashMap<x.Element, String> titleMap = bestTitles(parents.toSet());
-    parents.sort((ref1, ref2) => titleMap[ref1].compareTo(titleMap[ref2]));
+    parents.sort((ref1, ref2) => titleMap[ref1].toLowerCase().compareTo(
+        titleMap[ref2].toLowerCase()));
     for (x.Element parentRef in parents) {
       h.LIElement li = new h.LIElement();
       li.text = titleMap[parentRef];
@@ -228,7 +264,8 @@ class HelpDialog {
       return;
     HashMap<x.Element, String> titleMap = new HashMap.fromIterable(children,
         value:(x.Element ref) => doc.cfg.elementTitle(ref));
-    children.sort((ref1, ref2) => titleMap[ref1].compareTo(titleMap[ref2]));
+    children.sort((ref1, ref2) => titleMap[ref1].toLowerCase().compareTo(
+        titleMap[ref2].toLowerCase()));
     for (x.Element childRef in children) {
       h.LIElement li = new h.LIElement();
       li.text = titleMap[childRef];
@@ -255,7 +292,8 @@ class HelpDialog {
       return;
     HashMap<x.Element, String> titleMap = new HashMap.fromIterable(attributes,
         value:(x.Element attRef) => doc.cfg.attributeTitle(elementRef, attRef));
-    attributes.sort((ref1, ref2) => titleMap[ref1].compareTo(titleMap[ref2]));
+    attributes.sort((ref1, ref2) => titleMap[ref1].toLowerCase().compareTo(
+        titleMap[ref2].toLowerCase()));
     for (x.Element attRef in attributes) {
       h.LIElement li = new h.LIElement();
       li.text = titleMap[attRef];
@@ -269,12 +307,12 @@ class HelpDialog {
   void switchToElement(x.Element elementRef) {
     this.elementRef = elementRef;
     attributeRef = null;
-    h.DivElement div1 = h.document.getElementById('dlg1');
-    div1.remove();
+    close();
     show();
   }
   
   void close() {
+    keyboardSubscription.cancel();
     h.DivElement div1 = h.document.getElementById('dlg1');
     div1.remove();
     page.focusCursor();

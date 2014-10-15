@@ -127,9 +127,9 @@ class RightOffsetPosition implements Position {
     return(nopos.positionOnScreen());
   }
   
-  String xPath() {
+  String xPath({bool titles:false}) {
     NodeOffsetPosition nopos = new NodeOffsetPosition.fromRightOffsetPosition(this);
-    return(nopos.xPath());
+    return(nopos.xPath(titles:titles));
   }
   
   String toString() {

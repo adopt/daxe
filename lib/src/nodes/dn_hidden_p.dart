@@ -322,7 +322,11 @@ class DNHiddenP extends DaxeNode {
         fragment.removeChild(dn2);
       }
     }
-    x.Element hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+    x.Element hiddenp;
+    if (parent.ref != null)
+      hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+    else
+      hiddenp = null;
     if (hiddenp != null) {
       // add hidden paragraphs if necessary
       for (DaxeNode dn2=fragment.firstChild; dn2 != null; dn2=next) {

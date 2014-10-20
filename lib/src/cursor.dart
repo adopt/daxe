@@ -1263,6 +1263,7 @@ class Cursor {
     if (doc.hiddenParaRefs != null) {
       // add or remove hidden paragraphs where necessary
       DNHiddenP.fixFragment(parent, dnRoot);
+      doc.removeWhitespaceForHiddenParagraphs(dnRoot);
     }
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));
     try {

@@ -22,7 +22,7 @@ part of wxs;
 class WXSFacet extends WXSAnnotated {
   
   String _facet; // (minExclusive|minInclusive|maxExclusive|maxInclusive|totalDigits|fractionDigits|length|minLength|maxLength|enumeration|pattern)
-  // A FAIRE: ajouter whiteSpace (avant pattern)
+  // TODO: add whiteSpace (before pattern)
   String _value = null;
   bool _fixed = false;
   
@@ -36,11 +36,23 @@ class WXSFacet extends WXSAnnotated {
       _value = el.getAttribute("value");
       _iparam = int.parse(_value, onError:(String source) => 0);
       if (_facet == "pattern") {
-        // remplacements très approximatifs de \i, \I, \c et \C
+        // approximative replacements of \i, \I, \c and \C
         _value = _value.replaceAll("\\i", "[^<>&#!/?'\",0-9.\\-\\s]");
         _value = _value.replaceAll("\\I", "[^a-zA-Z]");
         _value = _value.replaceAll("\\c", "[^<>&#!/?'\",\\s]");
         _value = _value.replaceAll("\\C", "\\W");
+        // replacement of '$' into '\$'
+        _value = _value.replaceAll("\$", "\\\$");
+        // replacement of '^' into '\^' except after '[' (but not '\[')
+        for (int i=0; i<_value.length; i++) {
+          if (_value[i] == '^' &&
+              (i == 0 ||
+              (_value[i-1] != '[' ||
+              (i > 1 && _value[i-2] == '\\')))) {
+            _value = _value.substring(0, i) + "\\^" + _value.substring(i+1);
+            i++;
+          }
+        }
       }
     }
     if (el.hasAttribute("fixed"))
@@ -108,7 +120,8 @@ class WXSFacet extends WXSAnnotated {
     else if (_facet == "maxLength")
       return(value.length <= _iparam);
     else if (_facet == "enumeration") {
-      return(_value != null && _value == value); // A FAIRE: enumeration basée sur des entiers, par ex. 02 valide pour 2
+      return(_value != null && _value == value);
+      // TODO: enumeration based on integers, e.g. 02 valid for 2
     } else if (_facet == "whiteSpace") {
       return(true);
       /*

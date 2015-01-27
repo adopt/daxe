@@ -50,6 +50,7 @@ class ToolbarButton {
       div.classes.add('button-disabled');
     if (selected)
       div.classes.add('button-selected');
+    div.setAttribute('tabindex', '-1');
     div.setAttribute('title', _title);
     h.ImageElement img = new h.ImageElement();
     img.src = iconFilename;

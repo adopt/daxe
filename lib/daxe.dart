@@ -51,6 +51,8 @@ part 'src/daxe_node.dart';
 part 'src/daxe_attr.dart';
 //part 'src/file_open_dialog.dart';
 part 'src/find_dialog.dart';
+part 'src/focus_container.dart';
+part 'src/focus_manager.dart';
 part 'src/help_dialog.dart';
 part 'src/insert_panel.dart';
 part 'src/left_panel.dart';

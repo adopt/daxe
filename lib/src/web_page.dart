@@ -20,7 +20,7 @@ part of daxe;
 /**
  * Represents a web page (window or tab). A page can only contain a single document.
  */
-class WebPage {
+class WebPage extends FocusContainer {
   static const int doubleClickTime = 400; // maximum time between the clicks, in milliseconds
   Cursor _cursor;
   Position selectionStart, selectionEnd;
@@ -33,6 +33,7 @@ class WebPage {
   Position lastClickPosition;
   DateTime lastClickTime;
   bool selectionByWords; // double-click+drag
+  FocusManager focusManager;
   
   WebPage() {
     _cursor = new Cursor();
@@ -40,6 +41,7 @@ class WebPage {
     lastClickPosition = null;
     lastClickTime = null;
     selectionByWords = false;
+    focusManager = new FocusManager(this);
   }
   
   Future newDocument(String configPath) {
@@ -107,6 +109,7 @@ class WebPage {
         event.preventDefault();
       }
     });
+    focusManager.setFocus(this, _cursor);
   }
   
   void adjustPositionsUnderToolbar() {
@@ -120,6 +123,7 @@ class WebPage {
   void _buildMenus() {
     mbar = doc.cfg.makeMenus(doc);
     Menu fileMenu = new Menu(Strings.get('menu.file'));
+    fileMenu.parent = mbar;
     MenuItem item;
     if (doc.saveURL != null) {
       item = new MenuItem(Strings.get('menu.save'), () => save(), shortcut: 'S');
@@ -131,6 +135,7 @@ class WebPage {
     fileMenu.add(item);
     mbar.insert(fileMenu, 0);
     Menu editMenu = new Menu(Strings.get('menu.edit'));
+    editMenu.parent = mbar;
     undoMenu = new MenuItem(Strings.get('undo.undo'), () => doc.undo(), shortcut: 'Z');
     undoMenu.enabled = false;
     editMenu.add(undoMenu);
@@ -176,6 +181,7 @@ class WebPage {
         event.target is h.TextInputElement ||
         event.target is h.SelectElement)
       return;
+    focusManager.setFocus(this, _cursor);
     h.Element parent = event.target;
     while (parent is h.Element && !parent.classes.contains('dn')) {
       parent = parent.parent;
@@ -562,5 +568,52 @@ class WebPage {
     //h.WindowBase popup = h.window.open('data:text/xml;charset=UTF-8,$data', 'source');
     
     (new SourceWindow()).show();
+  }
+  
+  // FocusManager methods (using default attributes)
+  
+  int selectKey = 0;
+  
+  focusItem(Object item) {
+    assert(focusableItems.contains(item));
+    if (item == mbar) {
+      _cursor.ta.blur();
+      focusManager.setFocus(mbar, mbar.focusableItems.first);
+    } else if (item == toolbar) {
+      if (mbar.visibleMenu != null)
+        mbar.hideMenu(mbar.visibleMenu);
+      _cursor.ta.blur();
+      focusManager.setFocus(toolbar, toolbar.focusableItems.first);
+    } else if (item == _left) {
+      if (mbar.visibleMenu != null)
+        mbar.hideMenu(mbar.visibleMenu);
+      _cursor.ta.blur();
+      if (_left._selected == 0)
+        focusManager.setFocus(_left, _left._insertP);
+      else if (_left._selected == 1)
+        focusManager.setFocus(_left, _left._treeP);
+    } else if (item == _cursor) {
+      if (mbar.visibleMenu != null)
+        mbar.hideMenu(mbar.visibleMenu);
+      _cursor.show();
+      _cursor.focus();
+    }
+  }
+  
+  unfocusItem(Object item) {
+    assert(focusableItems.contains(item));
+    if (item == mbar)
+      ;
+    else if (item == _cursor)
+      _cursor.ta.blur();
+  }
+  
+  selectItem(Object item) {
+    assert(focusableItems.contains(item));
+    focusItem(item);
+  }
+  
+  List<Object> get focusableItems {
+    return [mbar, toolbar, _left, _cursor];
   }
 }

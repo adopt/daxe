@@ -31,11 +31,21 @@ class WXSChoice extends WXSExplicitGroup {
       if (nb >= _maxOccurs)
         return(i);
       int pos = i;
+      int max_pos = i;
       for (WithSubElements nestedParticle in _nestedParticles) {
         pos = nestedParticle.validate(subElements, i, insertion);
-        if (pos > i)
-          break;
+        if (insertion) {
+          // elements b,a with content model (a,b)|(b,a) :
+          // all particules have to be tried
+          if (pos > max_pos)
+            max_pos = pos;
+        } else {
+          if (pos > i)
+            break;
+        }
       }
+      if (insertion)
+        pos = max_pos;
       if (pos == i) {
         if (!insertion && nb < _minOccurs)
           return(start);

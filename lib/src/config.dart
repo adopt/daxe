@@ -450,18 +450,19 @@ class Config {
    * @param doc  The Daxe document
    */
   MenuBar makeMenus(final DaxeDocument doc) {
-    final MenuBar barreBalises = new MenuBar();
+    final MenuBar mbar = new MenuBar();
     
     final x.Element menus = _getMenus();
     if (menus != null) {
       x.Element menudef = _findElement(menus, "MENU");
       while (menudef != null) {
         final Menu jmenu = _creationMenu(doc, menudef);
-        barreBalises.add(jmenu);
+        jmenu.parent = mbar;
+        mbar.add(jmenu);
         menudef = _nextElement(menudef, "MENU");
       }
     }
-    return(barreBalises);
+    return(mbar);
   }
   
   

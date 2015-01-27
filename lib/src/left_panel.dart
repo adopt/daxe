@@ -20,7 +20,7 @@ part of daxe;
 /**
  * Left panel, with the insert and tree tabs.
  */
-class LeftPanel {
+class LeftPanel implements FocusContainer {
   int _selected;
   InsertPanel _insertP;
   TreePanel _treeP;
@@ -40,14 +40,16 @@ class LeftPanel {
     insertButton.id = 'insert_tab_button';
     insertButton.classes.add('tab_button');
     insertButton.classes.add('selected');
+    insertButton.setAttribute('tabindex', '-1');
     insertButton.appendText(Strings.get('left.insert'));
-    insertButton.onClick.listen((h.MouseEvent event) => selectInsertPanel());
+    insertButton.onClick.listen((h.MouseEvent event) => page.focusManager.setFocus(this, _insertP));
     buttonsDiv.append(insertButton);
     h.SpanElement treeButton = new h.SpanElement();
     treeButton.id = 'tree_tab_button';
     treeButton.classes.add('tab_button');
+    treeButton.setAttribute('tabindex', '-1');
     treeButton.appendText(Strings.get('left.tree'));
-    treeButton.onClick.listen((h.MouseEvent event) => selectTreePanel());
+    treeButton.onClick.listen((h.MouseEvent event) => page.focusManager.setFocus(this, _treeP));
     buttonsDiv.append(treeButton);
     panelDiv.append(buttonsDiv);
     h.DivElement insertDiv = new h.DivElement();
@@ -90,5 +92,52 @@ class LeftPanel {
       _insertP.update(parent, refs, validRefs);
     else
       _treeP.update();
+  }
+  
+  // FocusManager methods (using default attributes)
+  
+  int nextFocusKey = h.KeyCode.RIGHT;
+  bool nextFocusShift = false;
+  int previousFocusKey = h.KeyCode.LEFT;
+  bool previousFocusShift = false;
+  int selectKey = h.KeyCode.ENTER;
+  int selectSubContainerKey = h.KeyCode.DOWN;
+  bool selectSubContainerShift = false;
+  int selectParentContainerKey = h.KeyCode.ESC;
+  bool selectParentContainerShift = false;
+  
+  FocusContainer get parentFocusContainer {
+    return page;
+  }
+  
+  focusItem(Object item) {
+    assert(focusableItems.contains(item));
+    if (item == _insertP) {
+      page._cursor.ta.blur();
+      h.document.getElementById('insert_tab_button').focus();
+      selectInsertPanel();
+    } else if (item == _treeP) {
+      page._cursor.ta.blur();
+      h.document.getElementById('tree_tab_button').focus();
+      selectTreePanel();
+    }
+  }
+  
+  unfocusItem(Object item) {
+    assert(focusableItems.contains(item));
+    if (item == _insertP) {
+      h.document.getElementById('insert_tab_button').blur();
+    } else if (item == _treeP) {
+      h.document.getElementById('tree_tab_button').blur();
+    }
+  }
+  
+  selectItem(Object item) {
+    assert(focusableItems.contains(item));
+    focusItem(item);
+  }
+  
+  List<Object> get focusableItems {
+    return [_insertP, _treeP];
   }
 }

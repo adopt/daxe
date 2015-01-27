@@ -17,7 +17,7 @@
 
 part of daxe;
 
-class Menu extends MenuItem {
+class Menu extends MenuItem implements FocusContainer {
   List<MenuItem> items;
   String menuid;
   
@@ -35,6 +35,7 @@ class Menu extends MenuItem {
   h.Element htmlItem() {
     h.TableRowElement tr = new h.TableRowElement();
     tr.attributes['id'] = itemid;
+    tr.setAttribute('tabindex', '-1');
     h.TableCellElement td = new h.TableCellElement();
     td.text = _title;
     td.onMouseOver.listen((h.MouseEvent event) {
@@ -150,8 +151,8 @@ class Menu extends MenuItem {
     else
       el.classes.add('disabled');
     enabled = en;
-    if (parent != null)
-      parent.checkEnabled();
+    if (parent is Menu)
+      (parent as Menu).checkEnabled();
   }
   
   /*
@@ -163,4 +164,56 @@ class Menu extends MenuItem {
       hide();
   }
   */
+  
+  // FocusManager attributes and methods
+  
+  int nextFocusKey = h.KeyCode.DOWN;
+  bool nextFocusShift = false;
+  int previousFocusKey = h.KeyCode.UP;
+  bool previousFocusShift = false;
+  int selectKey = h.KeyCode.ENTER;
+  int selectSubContainerKey = h.KeyCode.RIGHT;
+  bool selectSubContainerShift = false;
+  int get selectParentContainerKey {
+    if (parent is Menu)
+      return h.KeyCode.LEFT;
+    else
+      return h.KeyCode.ESC;
+  }
+  bool selectParentContainerShift = false;
+  
+  FocusContainer get parentFocusContainer {
+    return parent;
+  }
+  
+  focusItem(Object item) {
+    assert(items.contains(item));
+    deselectOtherItems(item);
+    (item as MenuItem).select();
+    (item as MenuItem).getItemHTMLNode().focus();
+  }
+  
+  unfocusItem(Object item) {
+    assert(items.contains(item));
+    (item as MenuItem).getItemHTMLNode().blur();
+    (item as MenuItem).deselect();
+  }
+  
+  selectItem(Object item) {
+    assert(items.contains(item));
+    if (item is Menu)
+      focusItem(item);
+    else {
+      (item as MenuItem).activate();
+    }
+  }
+  
+  List<Object> get focusableItems {
+    List<MenuItem> focusItems = new List<MenuItem>();
+    for (MenuItem item in items) {
+      if (item.enabled)
+        focusItems.add(item);
+    }
+    return(focusItems);
+  }
 }

@@ -21,7 +21,7 @@ class MenuItem {
   static int itemidcount = 0;
   String itemid;
   String _title;
-  Menu parent;
+  Object parent; // Menu, Menubar or Toolbar
   ActionFunction action;
   String shortcut;
   Object data;
@@ -56,6 +56,7 @@ class MenuItem {
       tr.append(td);
     } else {
       tr.attributes['id'] = itemid;
+      tr.setAttribute('tabindex', '-1');
       h.TableCellElement td = new h.TableCellElement();
       td.text = _title;
       td.onMouseUp.listen((h.MouseEvent event) => activate());
@@ -92,6 +93,7 @@ class MenuItem {
   void activate() {
     if (!enabled)
       return;
+    page.focusManager.setFocus(page, page._cursor);
     action();
   }
   
@@ -104,7 +106,8 @@ class MenuItem {
     if (this is Menu) {
       (this as Menu).show();
     }
-    parent.deselectOtherItems(this);
+    if (parent is Menu)
+      (parent as Menu).deselectOtherItems(this);
   }
   
   void deselect() {
@@ -126,7 +129,8 @@ class MenuItem {
     h.Element tr = getItemHTMLNode();
     tr.classes.remove('selected');
     tr.classes.add('disabled');
-    parent.checkEnabled();
+    if (parent is Menu)
+      (parent as Menu).checkEnabled();
   }
   
   void enable() {
@@ -135,7 +139,8 @@ class MenuItem {
     enabled = true;
     h.Element tr = getItemHTMLNode();
     tr.classes.remove('disabled');
-    parent.checkEnabled();
+    if (parent is Menu)
+      (parent as Menu).checkEnabled();
   }
   
   void check() {

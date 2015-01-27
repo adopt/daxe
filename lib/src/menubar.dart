@@ -17,7 +17,7 @@
 
 part of daxe;
 
-class MenuBar {
+class MenuBar implements FocusContainer {
   List<Menu> menus;
   bool ignoreClick;
   Menu visibleMenu;
@@ -51,6 +51,7 @@ class MenuBar {
     divMenu.text = m.title;
     divMenu.id = m.itemid;
     divMenu.classes.add('menu_title');
+    divMenu.setAttribute('tabindex', '-1');
     divMenu.onMouseDown.listen((h.MouseEvent event) => mouseDown(event, m));
     divMenu.onMouseOver.listen((h.MouseEvent event) => mouseOver(event, m));
     divMenu.onClick.listen((h.MouseEvent event) => click(m));
@@ -65,6 +66,7 @@ class MenuBar {
     if (!m.isVisible()) {
       showMenu(m);
       ignoreClick = true;
+      page.focusManager.setFocus(m.parent, m);
     } else {
       ignoreClick = false;
     }
@@ -75,6 +77,7 @@ class MenuBar {
       return;
     hideMenu(visibleMenu);
     showMenu(m);
+    page.focusManager.setFocus(m.parent, m);
   }
   
   void click(Menu m) {
@@ -112,5 +115,49 @@ class MenuBar {
     h.DivElement divMenu = h.querySelector("#${m.itemid}");
     divMenu.classes.remove('selected');
     m.hide();
+  }
+  
+  // FocusManager attributes and methods
+  
+  int nextFocusKey = h.KeyCode.RIGHT;
+  bool nextFocusShift = false;
+  int previousFocusKey = h.KeyCode.LEFT;
+  bool previousFocusShift = false;
+  int selectKey = h.KeyCode.ENTER;
+  int selectSubContainerKey = h.KeyCode.DOWN;
+  bool selectSubContainerShift = false;
+  int selectParentContainerKey = h.KeyCode.ESC;
+  bool selectParentContainerShift = false;
+  
+  FocusContainer get parentFocusContainer {
+    return page;
+  }
+  
+  focusItem(Object item) {
+    assert(menus.contains(item));
+    if (visibleMenu != null)
+      hideMenu(visibleMenu);
+    showMenu(item);
+    (item as Menu).getItemHTMLNode().focus();
+  }
+  
+  unfocusItem(Object item) {
+    assert(menus.contains(item));
+    (item as Menu).getItemHTMLNode().blur();
+    hideMenu(item);
+  }
+  
+  selectItem(Object item) {
+    assert(menus.contains(item));
+    focusItem(item);
+  }
+  
+  List<Object> get focusableItems {
+    List<Menu> items = new List<Menu>();
+    for (Menu m in menus) {
+      if (m.enabled)
+        items.add(m);
+    }
+    return(items);
   }
 }

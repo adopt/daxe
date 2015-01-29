@@ -25,8 +25,9 @@ class ToolbarMenu extends ToolbarItem {
   String title;
   UpdateMenuState update;
   
-  ToolbarMenu(this.menu, this.update) {
+  ToolbarMenu(this.menu, this.update, Toolbar toolbar) {
     title = menu.title;
+    menu.parent = toolbar;
   }
   
   h.Element html() {

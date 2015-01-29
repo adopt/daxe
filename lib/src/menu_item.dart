@@ -55,8 +55,37 @@ class MenuItem {
       td.append(new h.HRElement());
       tr.append(td);
     } else {
-      tr.attributes['id'] = itemid;
+      tr.id = itemid;
       tr.setAttribute('tabindex', '-1');
+      tr.onKeyDown.listen((h.KeyboardEvent event) {
+        int keyCode = event.keyCode;
+        if (keyCode == h.KeyCode.ENTER) {
+          event.preventDefault();
+          closeMenu();
+          activate();
+        } else if (keyCode == h.KeyCode.UP) {
+          (parent as Menu).selectPrevious(this);
+        } else if (keyCode == h.KeyCode.DOWN) {
+          (parent as Menu).selectNext(this);
+        } else if (keyCode == h.KeyCode.LEFT) {
+          if ((parent as Menu).parent is Menu) {
+            (parent as Menu).hide();
+            (parent as Menu).getItemHTMLNode().focus();
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          else if ((parent as Menu).parent is MenuBar)
+            ((parent as Menu).parent as MenuBar).selectPrevious(parent as Menu);
+        } else if (keyCode == h.KeyCode.RIGHT) {
+          Object ancestor = parent;
+          while (ancestor is Menu)
+            ancestor = (ancestor as Menu).parent;
+          if (ancestor is MenuBar)
+            ancestor.selectNext(null);
+        } else if (keyCode == h.KeyCode.TAB) {
+          Timer.run(closeMenu);
+        }
+      });
       h.TableCellElement td = new h.TableCellElement();
       td.text = _title;
       td.onMouseUp.listen((h.MouseEvent event) => activate());
@@ -93,7 +122,7 @@ class MenuItem {
   void activate() {
     if (!enabled)
       return;
-    page.focusManager.setFocus(page, page._cursor);
+    page.focusCursor();
     action();
   }
   
@@ -108,6 +137,7 @@ class MenuItem {
     }
     if (parent is Menu)
       (parent as Menu).deselectOtherItems(this);
+    tr.focus();
   }
   
   void deselect() {
@@ -115,8 +145,10 @@ class MenuItem {
       return;
     selected = false;
     h.Element tr = getItemHTMLNode();
-    if (tr != null)
+    if (tr != null) {
       tr.classes.remove('selected');
+      tr.blur();
+    }
     if (this is Menu) {
       (this as Menu).hide();
     }
@@ -175,5 +207,17 @@ class MenuItem {
     h.TableRowElement tr = h.querySelector("#$itemid");
     h.TableCellElement td = tr.nodes.first;
     td.text = title;
+  }
+  
+  void closeMenu() {
+    if (parent is! Menu)
+      return;
+    Menu ancestorMenu = parent;
+    while (ancestorMenu.parent is Menu)
+      ancestorMenu = ancestorMenu.parent;
+    if (ancestorMenu.parent is MenuBar)
+      (ancestorMenu.parent as MenuBar).hideVisibleMenu();
+    else
+      ancestorMenu.hide();
   }
 }

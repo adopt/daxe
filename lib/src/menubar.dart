@@ -17,7 +17,7 @@
 
 part of daxe;
 
-class MenuBar implements FocusContainer {
+class MenuBar {
   List<Menu> menus;
   bool ignoreClick;
   Menu visibleMenu;
@@ -39,8 +39,14 @@ class MenuBar implements FocusContainer {
   h.Element html() {
     h.DivElement div = new h.DivElement();
     div.classes.add('menubar');
+    bool addedTabindex = false;
     for (Menu m in menus) {
-      div.append(createMenuDiv(m));
+      h.DivElement divMenu = createMenuDiv(m);
+      div.append(divMenu);
+      if (!addedTabindex && m.enabled) {
+        divMenu.setAttribute('tabindex', '0');
+        addedTabindex = true;
+      }
     }
     h.document.onMouseUp.listen((h.MouseEvent event) => docMouseUp(event));
     return(div);
@@ -51,10 +57,31 @@ class MenuBar implements FocusContainer {
     divMenu.text = m.title;
     divMenu.id = m.itemid;
     divMenu.classes.add('menu_title');
-    divMenu.setAttribute('tabindex', '-1');
+    if (m.parent is Toolbar)
+      divMenu.setAttribute('tabindex', '0');
+    else
+      divMenu.setAttribute('tabindex', '-1');
     divMenu.onMouseDown.listen((h.MouseEvent event) => mouseDown(event, m));
     divMenu.onMouseOver.listen((h.MouseEvent event) => mouseOver(event, m));
     divMenu.onClick.listen((h.MouseEvent event) => click(m));
+    divMenu.onKeyDown.listen((h.KeyboardEvent event) {
+      if (h.document.activeElement != divMenu)
+        return; // an item could have the focus, and the onKeyDown will trigger
+      int keyCode = event.keyCode;
+      if (keyCode == h.KeyCode.ENTER || keyCode == h.KeyCode.DOWN) {
+        event.preventDefault();
+        if (m == visibleMenu)
+          m.selectFirst();
+        else
+          showMenu(m);
+      } else if (keyCode == h.KeyCode.LEFT) {
+        selectPrevious(m);
+      } else if (keyCode == h.KeyCode.RIGHT) {
+        selectNext(m);
+      } else if (keyCode == h.KeyCode.TAB) {
+        Timer.run(hideVisibleMenu);
+      }
+    });
     h.Element dropdown = m.htmlMenu();
     dropdown.style.display = 'none';
     divMenu.append(dropdown);
@@ -66,7 +93,6 @@ class MenuBar implements FocusContainer {
     if (!m.isVisible()) {
       showMenu(m);
       ignoreClick = true;
-      page.focusManager.setFocus(m.parent, m);
     } else {
       ignoreClick = false;
     }
@@ -77,7 +103,6 @@ class MenuBar implements FocusContainer {
       return;
     hideMenu(visibleMenu);
     showMenu(m);
-    page.focusManager.setFocus(m.parent, m);
   }
   
   void click(Menu m) {
@@ -108,6 +133,7 @@ class MenuBar implements FocusContainer {
     h.DivElement divMenu = h.querySelector("#${m.itemid}");
     divMenu.classes.add('selected');
     m.show();
+    m.getItemHTMLNode().focus();
   }
   
   void hideMenu(Menu m) {
@@ -117,47 +143,43 @@ class MenuBar implements FocusContainer {
     m.hide();
   }
   
-  // FocusManager attributes and methods
-  
-  int nextFocusKey = h.KeyCode.RIGHT;
-  bool nextFocusShift = false;
-  int previousFocusKey = h.KeyCode.LEFT;
-  bool previousFocusShift = false;
-  int selectKey = h.KeyCode.ENTER;
-  int selectSubContainerKey = h.KeyCode.DOWN;
-  bool selectSubContainerShift = false;
-  int selectParentContainerKey = h.KeyCode.ESC;
-  bool selectParentContainerShift = false;
-  
-  FocusContainer get parentFocusContainer {
-    return page;
-  }
-  
-  focusItem(Object item) {
-    assert(menus.contains(item));
+  void hideVisibleMenu() {
     if (visibleMenu != null)
       hideMenu(visibleMenu);
-    showMenu(item);
-    (item as Menu).getItemHTMLNode().focus();
   }
   
-  unfocusItem(Object item) {
-    assert(menus.contains(item));
-    (item as Menu).getItemHTMLNode().blur();
-    hideMenu(item);
-  }
-  
-  selectItem(Object item) {
-    assert(menus.contains(item));
-    focusItem(item);
-  }
-  
-  List<Object> get focusableItems {
-    List<Menu> items = new List<Menu>();
-    for (Menu m in menus) {
-      if (m.enabled)
-        items.add(m);
+  void selectPrevious(Menu current) {
+    if (current == null)
+      current = visibleMenu;
+    if (current == null)
+      return;
+    bool found = false;
+    for (Menu m in menus.reversed) {
+      if (m == current) {
+        found = true;
+      } else if (found && m.enabled) {
+        hideMenu(current);
+        showMenu(m);
+        return;
+      }
     }
-    return(items);
   }
+  
+  void selectNext(Menu current) {
+    if (current == null)
+      current = visibleMenu;
+    if (current == null)
+      return;
+    bool found = false;
+    for (Menu m in menus) {
+      if (m == current) {
+        found = true;
+      } else if (found && m.enabled) {
+        hideMenu(current);
+        showMenu(m);
+        return;
+      }
+    }
+  }
+  
 }

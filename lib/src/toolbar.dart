@@ -17,7 +17,7 @@
 
 part of daxe;
 
-class Toolbar implements FocusContainer {
+class Toolbar {
   List<ToolbarItem> items;
   List<x.Element> cacheRefs = null;
   static final String iconPath = 'packages/daxe/images/toolbar/';
@@ -231,7 +231,7 @@ class Toolbar implements FocusContainer {
       };
       menu.add(menuItem);
     }
-    ToolbarMenu tbmenu = new ToolbarMenu(menu, styleMenuUpdate);
+    ToolbarMenu tbmenu = new ToolbarMenu(menu, styleMenuUpdate, this);
     return(tbmenu);
   }
   
@@ -650,72 +650,4 @@ class Toolbar implements FocusContainer {
     }
   }
   
-  // FocusManager attributes and methods
-  
-  int nextFocusKey = h.KeyCode.TAB;
-  bool nextFocusShift = false;
-  int previousFocusKey = h.KeyCode.TAB;
-  bool previousFocusShift = true;
-  int selectKey = h.KeyCode.ENTER;
-  int selectSubContainerKey = h.KeyCode.DOWN;
-  bool selectSubContainerShift = false;
-  int selectParentContainerKey = h.KeyCode.ESC;
-  bool selectParentContainerShift = false;
-  
-  FocusContainer get parentFocusContainer {
-    return page;
-  }
-  
-  focusItem(Object item) {
-    assert(focusableItems.contains(item));
-    for (Object focusItem in focusableItems) {
-      if (focusItem == item) {
-        if (item is ToolbarButton) {
-          //item.select();
-          item.getHTMLNode().focus();
-        } else if (item is Menu) {
-          (item as MenuItem).select();
-          (item as Menu).getItemHTMLNode().focus();
-        }
-      }
-    }
-  }
-  
-  unfocusItem(Object item) {
-    assert(focusableItems.contains(item));
-    for (Object focusItem in focusableItems) {
-      if (focusItem == item) {
-        if (item is ToolbarButton) {
-          item.deselect();
-          item.getHTMLNode().blur();
-        } else if (item is Menu) {
-          (item as MenuItem).deselect();
-          (item as Menu).getItemHTMLNode().blur();
-        }
-      }
-    }
-  }
-  
-  selectItem(Object item) {
-    assert(focusableItems.contains(item));
-    if (item is ToolbarButton) {
-      unfocusItem(item);
-      item.action();
-    } else
-      focusItem(item);
-  }
-  
-  List<Object> get focusableItems {
-    List<Object> focusItems = new List<Object>();
-    for (ToolbarItem item in items) {
-      if (item is ToolbarBox) {
-        for (ToolbarButton button in item.buttons) {
-          if (button.enabled)
-            focusItems.add(button);
-        }
-      } else if (item is ToolbarMenu)
-        focusItems.add(item.menu);
-    }
-    return(focusItems);
-  }
 }

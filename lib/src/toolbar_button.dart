@@ -48,9 +48,10 @@ class ToolbarButton {
     div.classes.add('toolbar-button');
     if (!enabled)
       div.classes.add('button-disabled');
+    else
+      div.setAttribute('tabindex', '0');
     if (selected)
       div.classes.add('button-selected');
-    div.setAttribute('tabindex', '-1');
     div.setAttribute('title', _title);
     h.ImageElement img = new h.ImageElement();
     img.src = iconFilename;
@@ -59,6 +60,13 @@ class ToolbarButton {
     if (enabled)
       listener = div.onClick.listen((h.MouseEvent event) => action());
     div.append(img);
+    div.onKeyDown.listen((h.KeyboardEvent event) {
+      int keyCode = event.keyCode;
+      if (keyCode == h.KeyCode.ENTER) {
+        event.preventDefault();
+        action();
+      }
+    });
     return(div);
   }
   
@@ -83,6 +91,7 @@ class ToolbarButton {
     h.Element div = getHTMLNode();
     div.classes.add('button-disabled');
     listener.cancel();
+    div.setAttribute('tabindex', '-1');
   }
   
   void enable() {
@@ -92,6 +101,7 @@ class ToolbarButton {
     h.Element div = getHTMLNode();
     div.classes.remove('button-disabled');
     listener = div.onClick.listen((h.MouseEvent event) => action());
+    div.setAttribute('tabindex', '0');
   }
   
   void select() {

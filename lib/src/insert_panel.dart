@@ -58,6 +58,13 @@ class InsertPanel {
       if (!validRefs.contains(ref))
         button.disabled = true;
       button.onClick.listen((h.Event event) => insert(ref));
+      button.onKeyDown.listen((h.KeyboardEvent event) {
+        int keyCode = event.keyCode;
+        if (keyCode == h.KeyCode.ENTER) {
+          event.preventDefault();
+          insert(ref);
+        }
+      });
       divInsert.append(button);
       divInsert.append(new h.BRElement());
     }

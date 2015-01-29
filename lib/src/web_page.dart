@@ -20,7 +20,7 @@ part of daxe;
 /**
  * Represents a web page (window or tab). A page can only contain a single document.
  */
-class WebPage extends FocusContainer {
+class WebPage {
   static const int doubleClickTime = 400; // maximum time between the clicks, in milliseconds
   Cursor _cursor;
   Position selectionStart, selectionEnd;
@@ -33,7 +33,6 @@ class WebPage extends FocusContainer {
   Position lastClickPosition;
   DateTime lastClickTime;
   bool selectionByWords; // double-click+drag
-  FocusManager focusManager;
   
   WebPage() {
     _cursor = new Cursor();
@@ -41,7 +40,6 @@ class WebPage extends FocusContainer {
     lastClickPosition = null;
     lastClickTime = null;
     selectionByWords = false;
-    focusManager = new FocusManager(this);
   }
   
   Future newDocument(String configPath) {
@@ -82,7 +80,7 @@ class WebPage extends FocusContainer {
   void init() {
     h.Element divdoc = h.document.getElementById('doc2');
     divdoc.children.clear();
-    h.document.body.append(_left.html());
+    h.document.body.insertBefore(_left.html(), h.document.getElementById('doc1'));
     
     // adjust positions when the toolbar is on more than 1 lines
     // (this cannot be done with CSS)
@@ -109,7 +107,6 @@ class WebPage extends FocusContainer {
         event.preventDefault();
       }
     });
-    focusManager.setFocus(this, _cursor);
   }
   
   void adjustPositionsUnderToolbar() {
@@ -181,7 +178,6 @@ class WebPage extends FocusContainer {
         event.target is h.TextInputElement ||
         event.target is h.SelectElement)
       return;
-    focusManager.setFocus(this, _cursor);
     h.Element parent = event.target;
     while (parent is h.Element && !parent.classes.contains('dn')) {
       parent = parent.parent;
@@ -570,50 +566,4 @@ class WebPage extends FocusContainer {
     (new SourceWindow()).show();
   }
   
-  // FocusManager methods (using default attributes)
-  
-  int selectKey = 0;
-  
-  focusItem(Object item) {
-    assert(focusableItems.contains(item));
-    if (item == mbar) {
-      _cursor.ta.blur();
-      focusManager.setFocus(mbar, mbar.focusableItems.first);
-    } else if (item == toolbar) {
-      if (mbar.visibleMenu != null)
-        mbar.hideMenu(mbar.visibleMenu);
-      _cursor.ta.blur();
-      focusManager.setFocus(toolbar, toolbar.focusableItems.first);
-    } else if (item == _left) {
-      if (mbar.visibleMenu != null)
-        mbar.hideMenu(mbar.visibleMenu);
-      _cursor.ta.blur();
-      if (_left._selected == 0)
-        focusManager.setFocus(_left, _left._insertP);
-      else if (_left._selected == 1)
-        focusManager.setFocus(_left, _left._treeP);
-    } else if (item == _cursor) {
-      if (mbar.visibleMenu != null)
-        mbar.hideMenu(mbar.visibleMenu);
-      _cursor.show();
-      _cursor.focus();
-    }
-  }
-  
-  unfocusItem(Object item) {
-    assert(focusableItems.contains(item));
-    if (item == mbar)
-      ;
-    else if (item == _cursor)
-      _cursor.ta.blur();
-  }
-  
-  selectItem(Object item) {
-    assert(focusableItems.contains(item));
-    focusItem(item);
-  }
-  
-  List<Object> get focusableItems {
-    return [mbar, toolbar, _left, _cursor];
-  }
 }

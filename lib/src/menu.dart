@@ -17,7 +17,7 @@
 
 part of daxe;
 
-class Menu extends MenuItem implements FocusContainer {
+class Menu extends MenuItem {
   List<MenuItem> items;
   String menuid;
   
@@ -34,8 +34,36 @@ class Menu extends MenuItem implements FocusContainer {
   @override
   h.Element htmlItem() {
     h.TableRowElement tr = new h.TableRowElement();
-    tr.attributes['id'] = itemid;
+    tr.id = itemid;
     tr.setAttribute('tabindex', '-1');
+    tr.onKeyDown.listen((h.KeyboardEvent event) {
+      if (h.document.activeElement != tr)
+        return; // an item could have the focus, and the onKeyDown will trigger
+      int keyCode = event.keyCode;
+      if (keyCode == h.KeyCode.ENTER) {
+        select();
+      } else if (keyCode == h.KeyCode.UP) {
+        (parent as Menu).selectPrevious(this);
+      } else if (keyCode == h.KeyCode.DOWN) {
+        (parent as Menu).selectNext(this);
+      } else if (keyCode == h.KeyCode.LEFT) {
+        if (parent is Menu) {
+          if ((parent as Menu).parent is Menu)
+            (parent as Menu).select();
+          else if ((parent as Menu).parent is MenuBar)
+            ((parent as Menu).parent as MenuBar).selectPrevious(parent as Menu);
+        }
+      } else if (keyCode == h.KeyCode.RIGHT) {
+        for (MenuItem item in items) {
+          if (item.enabled) {
+            item.select();
+            break;
+          }
+        }
+      } else if (keyCode == h.KeyCode.TAB) {
+        Timer.run(closeMenu);
+      }
+    });
     h.TableCellElement td = new h.TableCellElement();
     td.text = _title;
     td.onMouseOver.listen((h.MouseEvent event) {
@@ -165,55 +193,39 @@ class Menu extends MenuItem implements FocusContainer {
   }
   */
   
-  // FocusManager attributes and methods
-  
-  int nextFocusKey = h.KeyCode.DOWN;
-  bool nextFocusShift = false;
-  int previousFocusKey = h.KeyCode.UP;
-  bool previousFocusShift = false;
-  int selectKey = h.KeyCode.ENTER;
-  int selectSubContainerKey = h.KeyCode.RIGHT;
-  bool selectSubContainerShift = false;
-  int get selectParentContainerKey {
-    if (parent is Menu)
-      return h.KeyCode.LEFT;
-    else
-      return h.KeyCode.ESC;
-  }
-  bool selectParentContainerShift = false;
-  
-  FocusContainer get parentFocusContainer {
-    return parent;
-  }
-  
-  focusItem(Object item) {
-    assert(items.contains(item));
-    deselectOtherItems(item);
-    (item as MenuItem).select();
-    (item as MenuItem).getItemHTMLNode().focus();
-  }
-  
-  unfocusItem(Object item) {
-    assert(items.contains(item));
-    (item as MenuItem).getItemHTMLNode().blur();
-    (item as MenuItem).deselect();
-  }
-  
-  selectItem(Object item) {
-    assert(items.contains(item));
-    if (item is Menu)
-      focusItem(item);
-    else {
-      (item as MenuItem).activate();
-    }
-  }
-  
-  List<Object> get focusableItems {
-    List<MenuItem> focusItems = new List<MenuItem>();
+  void selectFirst() {
     for (MenuItem item in items) {
-      if (item.enabled)
-        focusItems.add(item);
+      if (item.enabled) {
+        item.select();
+        return;
+      }
     }
-    return(focusItems);
   }
+  
+  void selectPrevious(MenuItem current) {
+    bool found = false;
+    for (MenuItem item in items.reversed) {
+      if (item == current) {
+        found = true;
+      } else if (found && item.enabled) {
+        current.deselect();
+        item.select();
+        break;
+      }
+    }
+  }
+  
+  void selectNext(MenuItem current) {
+    bool found = false;
+    for (MenuItem item in items) {
+      if (item == current) {
+        found = true;
+      } else if (found && item.enabled) {
+        current.deselect();
+        item.select();
+        break;
+      }
+    }
+  }
+  
 }

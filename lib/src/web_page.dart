@@ -102,6 +102,10 @@ class WebPage {
     h.document.getElementById('doc1').onScroll.listen((h.Event event) => onScroll(event));
     h.document.onMouseUp.listen((h.MouseEvent event) {
       if (contextualMenu != null) {
+        h.Element div = contextualMenu.getMenuHTMLNode();
+        if (div.scrollHeight > div.clientHeight && event.target == div &&
+            event.client.x > div.offsetLeft + div.clientWidth)
+          return; // in the scrollbar
         if (event.client != ctxMenuPos)
           closeContextualMenu();
         event.preventDefault();
@@ -376,9 +380,13 @@ class WebPage {
     int ypos = event.client.y;
     div.style.left = "${xpos}px";
     div.style.top = "${ypos}px";
+    div.style.maxHeight = "${h.window.innerHeight - ypos}px";
+    div.style.overflowY = 'auto';
     h.document.body.append(div);
-    if (xpos + div.clientWidth > h.window.innerWidth) {
-      xpos = h.window.innerWidth - div.clientWidth;
+    if (div.scrollHeight > div.clientHeight)
+      div.style.paddingRight = "${div.offsetWidth - div.clientWidth}px"; // for the vertical scrollbar
+    if (xpos + div.offsetWidth > h.window.innerWidth) {
+      xpos = h.window.innerWidth - div.offsetWidth;
       div.style.left = "${xpos}px";
     }
   }

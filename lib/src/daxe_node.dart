@@ -926,12 +926,17 @@ abstract class DaxeNode {
         h.Range range = new h.Range();
         for (int i=0; i<ht.length; i++) {
           // problem: depending on the browser, the clientrects are not the same
-          // for \n or for line-breaking space characters...
+          // for \n or for line-breaking space characters (or for the character before a \n with IE11)...
           if (nodeValue[pp + i] != '\n') {
             range.setStart(ht, i);
             range.setEnd(ht, i+1);
             List<h.Rectangle> rects = range.getClientRects();
             for (h.Rectangle r in rects) {
+              if (h.window.navigator.appVersion.contains("Trident") && pp + i + 1 < nodeValue.length &&
+                  nodeValue[pp + i + 1] == '\n' && r.width == 0) {
+                // With IE11, ignore a 0-width rect for the character before a \n
+                continue;
+              }
               if (i < nodeValue.length - 1 && r.left == r.right &&
                   x < r.left && y < r.bottom) {
                 //print("left of line start after newline");
@@ -959,18 +964,19 @@ abstract class DaxeNode {
             range.setEnd(ht, i+1);
             List<h.Rectangle> rects = range.getClientRects();
             ht.text = s;
-            for (h.Rectangle r in rects) {
-              /*
-              if (x > r.left && y <= r.bottom) {
-                //print("right of \\n");
-                // to the right of the last character on the line
-                return(new Position(this, pp + i));
-              }
-              */
-              // changed for Chromium, TODO: check with Firefox and IE
-              if (y <= r.bottom) {
+            if (h.window.navigator.appVersion.contains("Trident")) {
+              // tested on IE11
+              if (y <= rects.first.bottom) {
                 // before the line bottom
                 return(new Position(this, pp + i));
+              }
+            } else {
+              // tested on Chromium and Firefox
+              for (h.Rectangle r in rects) {
+                if (y <= r.bottom) {
+                  // before the line bottom
+                  return(new Position(this, pp + i));
+                }
               }
             }
           }

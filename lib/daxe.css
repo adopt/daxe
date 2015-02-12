@@ -2,6 +2,7 @@ body {
   line-height: 1.5;
   color: black;
   background-color: white;
+  overflow: hidden;
 }
 
 button {
@@ -59,6 +60,11 @@ button {
 
 .tab_button:hover {
   background-color: #DDD;
+}
+
+.tab_button:focus {
+  outline: none;
+  box-shadow: inset 0px 0px 1px 1px #50A0FF;
 }
 
 .tab_button.selected {
@@ -124,6 +130,11 @@ button {
   user-select: none;
 }
 
+.tree_node_title:focus {
+  outline: none;
+  box-shadow: 0px 0px 1px 1px #50A0FF;
+}
+
 .tree_node_title:hover {
   background-color: #DDD;
 }
@@ -157,6 +168,11 @@ div.menu_title {
 
 .menu_title .disabled {
   color: #AAA;
+}
+
+.menu_title:focus {
+  outline: none;
+  box-shadow: inset 0px 0px 1px 1px #50A0FF;
 }
 
 div.dropdown_menu {
@@ -253,6 +269,14 @@ div.submenu {
   background-color: #DDD;
 }
 
+.toolbar-button:focus {
+  outline: none;
+  box-shadow: inset 0px 0px 1px 1px #50A0FF;
+}
+
+.toolbar-button:focus img {
+}
+
 .toolbar-button.button-disabled:hover {
   background-color: transparent;
 }
@@ -297,6 +321,7 @@ textarea#tacursor {
   opacity: 0;
   resize: none;
   pointer-events: none;
+  text-indent: -1em;
 }
 
 span#caret {
@@ -432,6 +457,7 @@ div.dlg3 {
   left: -50%;
   top: 1em;
   max-height: 90%;
+  min-width: 250px;
   overflow: auto;
   padding: 1em;
   background-color: #FFFFFF;

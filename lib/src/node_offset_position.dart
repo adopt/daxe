@@ -261,11 +261,20 @@ class NodeOffsetPosition implements Position {
           range.setEnd(n, offset + 1);
           List<h.Rectangle> rects = range.getClientRects();
           h.Rectangle r;
-          if (s[offset-1] == ' ' && s[offset] == '\n')
-            r = rects.first;
-          else if (s[offset] == '\n' && rects.length == 3)
+          if (s[offset-1] == ' ' && offset < s.length && s[offset] == '\n') {
+            if (h.window.navigator.appVersion.contains("Trident")) { // IE11, TODO: test other IE versions
+              // ranges do not work in this case with IE11, we will have to add pixels from the previous position
+              range.setStart(n, offset - 1);
+              range.setEnd(n, offset);
+              rects = range.getClientRects();
+              r = rects.first;
+              r = new h.Rectangle(r.left + 7, r.top, r.width, r.height); // 7px added for the space
+            } else
+              r = rects.first;
+          } else if (s[offset] == '\n' && rects.length == 3)
             r = rects[1];
-          else if (h.window.navigator.userAgent.toLowerCase().indexOf('msie') >= 0 &&
+          else if ((h.window.navigator.userAgent.toLowerCase().indexOf('msie') >= 0 ||
+              h.window.navigator.appVersion.contains("Trident")) &&
               s[offset-1] == '\n' && s[offset] == '\n' && rects.length == 2) // IE
             r = rects.first;
           else {
@@ -280,9 +289,17 @@ class NodeOffsetPosition implements Position {
           pt = new Point(r.left, r.top);
         }
       } else {
-        range.setStart(n, 0);
-        range.setEnd(n, offset);
-        h.Rectangle r = range.getClientRects().last;
+        h.Rectangle r;
+        if (h.window.navigator.appVersion.contains("Trident") && offset < s.length && s[offset] == '\n') {
+          // IE11 is crazy: it would returns the position *after* the \n as the last rect
+          range.setStart(n, offset-1);
+          range.setEnd(n, offset);
+          r = range.getClientRects().first;
+        } else {
+          range.setStart(n, 0);
+          range.setEnd(n, offset);
+          r = range.getClientRects().last;
+        }
         pt = new Point(r.right, r.top);
       }
       return(pt);

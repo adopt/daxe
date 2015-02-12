@@ -45,7 +45,8 @@ class DNStyleSpan extends DNStyle {
         contents.append(dn.html());
         dn = dn.nextSibling;
       }
-      contents.setAttribute('style', css);
+      if (css != null)
+        contents.setAttribute('style', css);
       span.append(contents);
     } else {
       // let's make this invisible style visible !

@@ -53,6 +53,7 @@ abstract class DaxeNode {
   bool userCannotRemove = false; // with suppr/del, could be extended to selections...
   bool userCannotEdit = false;
   bool valid;
+  List<String> restrictedInserts; // used in DaxeDocument.elementsAllowedUnder to restrict inserts beyond schema
   
   
   /**
@@ -385,6 +386,15 @@ abstract class DaxeNode {
     }
     attributes.add(new DaxeAttr(name, value));
     return;
+  }
+  
+  void removeAttribute(String name) {
+    for (DaxeAttr att in attributes) {
+      if (att.localName == name) {
+        attributes.remove(att);
+        return;
+      }
+    }
   }
   
   void setAttributeNS(String namespaceURI, String qualifiedName, String value) {
@@ -876,7 +886,7 @@ abstract class DaxeNode {
               while (lastDescendant.firstChild != null &&
                   (lastDescendant.lastChild is! h.Text ||
                       (lastDescendant.lastChild.nodeValue == '\n' && lastDescendant.lastChild.previousNode != null)) &&
-                  lastDescendant.lastChild is! h.ImageElement) {
+                  lastDescendant.lastChild is! h.ImageElement && lastDescendant.lastChild is! h.ScriptElement) {
                 if (lastDescendant.lastChild is h.Text && lastDescendant.lastChild.nodeValue == '\n' &&
                     lastDescendant.lastChild.previousNode != null)
                   lastDescendant = lastDescendant.lastChild.previousNode; // case of a hidden paragraph or block inside li
@@ -1072,7 +1082,7 @@ abstract class DaxeNode {
   }
   
   /**
-   * Called after this node was inserted. Does nothing by default.
+   * Called after this node was inserted (after display update). Does nothing by default.
    */
   void afterInsert() {
   }
@@ -1083,4 +1093,10 @@ abstract class DaxeNode {
   void beforeRemove() {
   }
   
+  /**
+   * Returns true if the children should be using ParentUpdatingDNText instead of DNText
+   */
+  bool get needsParentUpdatingDNText {
+    return false;
+  }
 }

@@ -737,8 +737,8 @@ class Config {
   }
   
   /**
-   * Returns true if the parent element is valid, considering only its attributes,
-   * its first level children, and its node value
+   * Returns true if the parent element is valid, considering its attributes,
+   * its first level children, its node value, and its parent if there is one.
    */
   bool elementIsValid(final DaxeNode parent) {
     if (parent is DNComment || parent is DNProcessingInstruction || parent is DNCData)
@@ -748,6 +748,9 @@ class Config {
       return(false);
     
     if (!attributesAreValid(parent))
+      return(false);
+    
+    if (parent.parent != null && parent.parent.ref != null && !isSubElement(parent.parent.ref, parent.ref))
       return(false);
     
     if (parent.firstChild == null && !isElementValueValid(parent.ref, ''))
@@ -1441,7 +1444,7 @@ class Config {
    * Formats the documentation in HTML.
    */
   static String formatDoc(final String documentation) {
-    String doc = documentation;
+    String doc = documentation.trim();
     doc = doc.replaceAll("&", "&amp;");
     doc = doc.replaceAll("<", "&lt;");
     doc = doc.replaceAll(">", "&gt;");

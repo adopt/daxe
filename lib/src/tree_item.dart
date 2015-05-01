@@ -225,9 +225,9 @@ class TreeItem {
         } else {
           item.update();
         }
+        if (item != null)
+          item = item.nextSibling;
       }
-      if (item != null)
-        item = item.nextSibling;
     }
     if (item != null)
       removeChildrenStartingAt(item);

@@ -72,6 +72,14 @@ class HelpDialog {
       nameSpan.text = doc.cfg.elementName(elementRef);
       p.append(nameSpan);
       div3.append(p);
+    } else {
+      h.ParagraphElement p = new h.ParagraphElement();
+      p.appendText(Strings.get('help.attribute_name') + ' ');
+      h.SpanElement nameSpan = new h.SpanElement();
+      nameSpan.classes.add('help_attribute_name');
+      nameSpan.text = doc.cfg.attributeName(attributeRef);
+      p.append(nameSpan);
+      div3.append(p);
     }
     
     String documentation;

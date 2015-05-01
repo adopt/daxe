@@ -25,7 +25,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
 
-    $Id: xhtml1-strict.xsd,v 1.2 2002/08/28 08:05:44 mimasa Exp $
+    $Id: xhtml1-strict.xsd,v 1.1 2015/04/17 15:35:05 damieng Exp $
     </xs:documentation>
   </xs:annotation>
 

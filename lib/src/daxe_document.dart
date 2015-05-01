@@ -876,6 +876,14 @@ class DaxeDocument {
           refs = new List.from(set);
         }
       }
+      if (parent.restrictedInserts != null) {
+        for (int i=0; i<refs.length; i++) {
+          if (!parent.restrictedInserts.contains(cfg.elementName(refs[i]))) {
+            refs.removeAt(i);
+            i--;
+          }
+        }
+      }
     }
     return(refs);
   }

@@ -43,6 +43,12 @@ class TreePanel {
         if (doc.getRootElement() == null) {
           rootItem.div.remove();
           rootItem = null;
+        } else if (doc.getRootElement() != rootItem.dn) {
+          rootItem.div.remove();
+          rootItem = new TreeItem(doc.getRootElement(), null);
+          _initialExpand();
+          h.DivElement treeDiv = h.document.getElementById('tree');
+          treeDiv.append(rootItem.div);
         } else
           rootItem.update();
       }

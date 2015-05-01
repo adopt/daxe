@@ -209,7 +209,10 @@ class UndoableEdit {
       pos.moveInsideTextNodeIfPossible();
       if (pos.dn.nodeType == DaxeNode.ELEMENT_NODE) {
         // a new text node is required (it turns this edit into an insertNode)
-        dn = new DNText(text);
+        if (pos.dn.needsParentUpdatingDNText)
+          dn = new ParentUpdatingDNText(text);
+        else
+          dn = new DNText(text);
         text = null;
       }
     }

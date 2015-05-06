@@ -80,6 +80,16 @@ class HelpDialog {
       nameSpan.text = doc.cfg.attributeName(attributeRef);
       p.append(nameSpan);
       div3.append(p);
+      String defaultValue = doc.cfg.defaultAttributeValue(attributeRef);
+      if (defaultValue != null) {
+        p = new h.ParagraphElement();
+        p.appendText(Strings.get('help.default_value') + ' ');
+        h.SpanElement defaultSpan = new h.SpanElement();
+        defaultSpan.classes.add('help_default_value');
+        defaultSpan.text = defaultValue;
+        p.append(defaultSpan);
+        div3.append(p);
+      }
     }
     
     String documentation;

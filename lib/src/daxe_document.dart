@@ -779,7 +779,7 @@ class DaxeDocument {
         // The node must be inserted outside of the paragraph.
         // If there is something in the paragraph to the right of the cursor, it must be
         // moved into a new paragraph after the inserted node.
-        UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
+        UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_element'));
         Position pend = new Position(p, p.offsetLength);
         pend.moveInsideTextNodeIfPossible();
         if (pos < pend) {

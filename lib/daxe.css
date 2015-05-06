@@ -295,6 +295,7 @@ div#doc1 {
 }
 
 div#doc2 {
+  height: 100%;
   cursor: text;
   padding-right: 3px;
 }
@@ -513,7 +514,15 @@ div.dlg3 table {
   border-spacing: 5px;
 }
 
-span.help_element_name {
+.help_element_name {
+  font-family: monospace;
+}
+
+.help_attribute_name {
+  font-family: monospace;
+}
+
+.help_default_value {
   font-family: monospace;
 }
 

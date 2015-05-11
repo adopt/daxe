@@ -46,29 +46,7 @@ class Strings {
         systemLocale = defaultLocale;
       String language = systemLocale.split('_')[0];
       String fullFilePath = "${resourcePath}_$language.properties";
-      
-      h.HttpRequest request = new h.HttpRequest();
-      request.open("GET", fullFilePath);
-      request.onLoad.listen((h.ProgressEvent event) {
-        String txt = request.responseText;
-        map = new HashMap<String, String>();
-        List<String> lines = txt.split("\n");
-        for (String line in lines) {
-          if (line.startsWith('#'))
-            continue;
-          int ind = line.indexOf('=');
-          if (ind == -1)
-            continue;
-          String key = line.substring(0, ind).trim();
-          String value = line.substring(ind + 1).trim();
-          map[key] = value;
-        }
-        completer.complete(true);
-      });
-      request.onError.listen((h.ProgressEvent event) {
-        completer.completeError("Error when reading the strings in $resourcePath");
-      });
-      request.send();
+      _request(fullFilePath, completer);
     });
     return(completer.future);
   }
@@ -77,4 +55,43 @@ class Strings {
     return(map[key]);
   }
   
+  static void _request(String fullFilePath, Completer<bool> completer) {
+    h.HttpRequest request = new h.HttpRequest();
+    request.open("GET", fullFilePath);
+    request.onLoad.listen((h.ProgressEvent event) {
+      if (request.status == 404) {
+        // no localization for this language, use default instead
+        String defaultLanguage = defaultLocale.split('_')[0];
+        String defaultFullFilePath = "${resourcePath}_$defaultLanguage.properties";
+        if (fullFilePath == defaultFullFilePath)
+          completer.completeError("Error when reading the strings in $resourcePath");
+        else
+          _request(defaultFullFilePath, completer);
+      } else if (request.status != 200) {
+        completer.completeError("Error when reading the strings in $resourcePath");
+      } else {
+        _parseResponse(request.responseText);
+        completer.complete(true);
+      }
+    });
+    request.onError.listen((h.ProgressEvent event) {
+      completer.completeError("Error when reading the strings in $resourcePath");
+    });
+    request.send();
+  }
+  
+  static void _parseResponse(String txt) {
+    map = new HashMap<String, String>();
+    List<String> lines = txt.split("\n");
+    for (String line in lines) {
+      if (line.startsWith('#'))
+        continue;
+      int ind = line.indexOf('=');
+      if (ind == -1)
+        continue;
+      String key = line.substring(0, ind).trim();
+      String value = line.substring(ind + 1).trim();
+      map[key] = value;
+    }
+  }
 }

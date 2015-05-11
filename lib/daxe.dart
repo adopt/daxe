@@ -122,6 +122,8 @@ void main() {
       page.newDocument(config);
     else
       h.window.alert(Strings.get('daxe.missing_config'));
+  }).catchError((e) {
+    h.document.body.appendText('Error when loading the strings in LocalStrings_en.properties.');
   });
 }
 

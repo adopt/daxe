@@ -91,40 +91,53 @@ void main() {
   NodeFactory.addCoreDisplayTypes();
   
   Strings.load().then((bool b) {
-    doc = new DaxeDocument();
-    page = new WebPage();
-    
-    // check parameters for a config and file to open
-    String file = null;
-    String config = null;
-    String saveURL = null;
-    h.Location location = h.window.location;
-    String search = location.search;
-    if (search.startsWith('?'))
-      search = search.substring(1);
-    List<String> parameters = search.split('&');
-    for (String param in parameters) {
-      List<String> lparam = param.split('=');
-      if (lparam.length != 2)
-        continue;
-      if (lparam[0] == 'config')
-        config = lparam[1];
-      else if (lparam[0] == 'file')
-        file = Uri.decodeComponent(lparam[1]);
-      else if (lparam[0] == 'save')
-        saveURL = lparam[1];
-    }
-    if (saveURL != null)
-      doc.saveURL = saveURL;
-    if (config != null && file != null)
-      page.openDocument(file, config);
-    else if (config != null)
-      page.newDocument(config);
-    else
-      h.window.alert(Strings.get('daxe.missing_config'));
+    initDaxe();
   }).catchError((e) {
     h.document.body.appendText('Error when loading the strings in LocalStrings_en.properties.');
   });
+}
+
+/**
+ * This Future can be used to initialize Daxe and customize the user interface afterwards.
+ * The display types and the strings have to be loaded before this method is called.
+ * In the Daxe application, the results of the Future are not used.
+ */
+Future initDaxe() {
+  Completer completer = new Completer();
+  doc = new DaxeDocument();
+  page = new WebPage();
+  
+  // check parameters for a config and file to open
+  String file = null;
+  String config = null;
+  String saveURL = null;
+  h.Location location = h.window.location;
+  String search = location.search;
+  if (search.startsWith('?'))
+    search = search.substring(1);
+  List<String> parameters = search.split('&');
+  for (String param in parameters) {
+    List<String> lparam = param.split('=');
+    if (lparam.length != 2)
+      continue;
+    if (lparam[0] == 'config')
+      config = lparam[1];
+    else if (lparam[0] == 'file')
+      file = Uri.decodeComponent(lparam[1]);
+    else if (lparam[0] == 'save')
+      saveURL = lparam[1];
+  }
+  if (saveURL != null)
+    doc.saveURL = saveURL;
+  if (config != null && file != null)
+    page.openDocument(file, config).then((v) => completer.complete());
+  else if (config != null)
+    page.newDocument(config).then((v) => completer.complete());
+  else {
+    h.window.alert(Strings.get('daxe.missing_config'));
+    completer.completeError(Strings.get('daxe.missing_config'));
+  }
+  return(completer.future);
 }
 
 /**

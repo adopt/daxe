@@ -391,7 +391,16 @@ class NodeOffsetPosition implements Position {
         if (rects.length == 0)
           return(null);
         h.Rectangle r = rects[0];
-        return(new Point(r.left, r.top));
+        Point pt = new Point(r.left, r.top);
+        h.CssStyleDeclaration cssdec = hn.getComputedStyle();
+        String paddingLeft = cssdec.paddingLeft;
+        if (paddingLeft != null && paddingLeft.endsWith('px')) {
+          int pixels = int.parse(paddingLeft.substring(0, paddingLeft.length-2),
+              onError: (source) => null);
+          if (pixels != null)
+            pt.x = pt.x + pixels;
+        }
+        return(pt);
       }
     }
   }

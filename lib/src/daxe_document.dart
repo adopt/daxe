@@ -27,6 +27,7 @@ class DaxeDocument {
   Config cfg;
   List<UndoableEdit> edits = new List<UndoableEdit>();
   int undoPosition = -1;
+  UndoableEdit lastSavedEdit = null;
   String filePath;
   String saveURL;
   List<x.Element> hiddenParaRefs; /* references for hidden paragraphs */
@@ -111,9 +112,13 @@ class DaxeDocument {
     h.HttpRequest request = new h.HttpRequest();
     request.onLoad.listen((h.ProgressEvent event) {
       String response = request.responseText;
-      if (response.startsWith('ok'))
+      if (response.startsWith('ok')) {
+        if (undoPosition >= 0)
+          lastSavedEdit = edits[undoPosition];
+        else
+          lastSavedEdit = null;
         completer.complete();
-      else {
+      } else {
         String errorMessage;
         if (response.startsWith('erreur\n'))
           errorMessage = response.substring('erreur\n'.length);
@@ -166,6 +171,17 @@ class DaxeDocument {
     request.send(buffer); // what buffer type can I use here ???
     */
     return(completer.future);
+  }
+  
+  /**
+   * Returns true if the document has changed since the last save.
+   * This is used to display a dialog on beforeunload.
+   */
+  bool changed() {
+    if (undoPosition >= 0)
+      return(lastSavedEdit != edits[undoPosition]);
+    else
+      return(lastSavedEdit != null);
   }
   
   String newId(DaxeNode jn) {

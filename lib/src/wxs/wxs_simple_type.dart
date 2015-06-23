@@ -309,8 +309,9 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
   }
   
   static bool _verifExpr(final String value, final String regexp) {
-    // un cache serait-il utile ici ? (attention aux fuites de mémoire si c'est static)
-    final RegExp r = new RegExp("^${regexp}\$");
+    // NOTE: would a cache be useful here ? (beware memory leaks if it's static)
+    final RegExp r = new RegExp("^(${regexp})\$");
+    // NOTE: parenthesis are needed for regexps like "a|b".
     return(r.hasMatch(value));
   }
   

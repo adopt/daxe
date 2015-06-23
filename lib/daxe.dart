@@ -64,6 +64,7 @@ part 'src/node_offset_position.dart';
 part 'src/left_offset_position.dart';
 part 'src/right_offset_position.dart';
 part 'src/source_window.dart';
+part 'src/symbol_dialog.dart';
 part 'src/tag.dart';
 part 'src/toolbar.dart';
 part 'src/toolbar_item.dart';

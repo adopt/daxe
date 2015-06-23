@@ -42,19 +42,25 @@ class Toolbar {
     items.add(findBox);
     if (cfg != null) {
       // Buttons to insert new elements
-      ToolbarBox insertBox = new ToolbarBox();
       List<x.Element> refs = cfg.elementsWithType('fichier');
       if (refs != null && refs.length > 0) {
-        addInsertButton(cfg, insertBox, refs, iconPath + 'insert_image.png');
+        ToolbarBox fileBox = new ToolbarBox();
+        addInsertButton(cfg, fileBox, refs, iconPath + 'insert_image.png');
+        items.add(fileBox);
       }
+      ToolbarBox mathBox = new ToolbarBox();
       refs = cfg.elementsWithType('equationmem');
       if (refs != null && refs.length > 0) {
-        addInsertButton(cfg, insertBox, refs, iconPath + 'equation.png');
+        addInsertButton(cfg, mathBox, refs, iconPath + 'equation.png');
       }
       refs = cfg.elementsWithType('symbole2');
       if (refs != null && refs.length > 0) {
-        addInsertButton(cfg, insertBox, refs, iconPath + 'insert_symbol.png');
+        addInsertButton(cfg, mathBox, refs, iconPath + 'insert_symbol.png');
+      } else {
+        addUnicodeSymbolButton(mathBox);
       }
+      items.add(mathBox);
+      ToolbarBox insertBox = new ToolbarBox();
       refs = cfg.elementsWithType('tabletexte');
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, insertBox, refs, iconPath + 'insert_table.png');
@@ -309,6 +315,58 @@ class Toolbar {
         data:new ToolbarStyleInfo(refs, null, null));
     button.action = () => doc.insertNewNode((button.data as ToolbarStyleInfo).validRef, 'element');
     box.add(button);
+  }
+  
+  addUnicodeSymbolButton(ToolbarBox box) {
+    ToolbarButton button = new ToolbarButton(Strings.get('toolbar.symbol'), iconPath + 'insert_symbol.png',
+        SymbolButtonClick, symbolButtonUpdate);
+    box.add(button);
+  }
+  
+  static SymbolButtonClick() {
+    SymbolDialog dlg;
+    dlg = new SymbolDialog(() {
+      String char = dlg.getChar();
+      if (char != null) {
+        doc.insertNewString(char, false);
+      }
+    });
+    dlg.show();
+  }
+  
+  static void symbolButtonUpdate(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,
+                             List<x.Element> validRefs, List<x.Element> ancestorRefs) {
+    // check if text is allowed here
+    bool problem = false;
+    Position selectionStart = page.getSelectionStart();
+    Position selectionEnd = page.getSelectionEnd();
+    if (selectionStart == null) {
+      problem = true;
+    } else {
+      DaxeNode parent = selectionStart.dn;
+      if (parent.nodeType == DaxeNode.TEXT_NODE)
+        parent = parent.parent;
+      if (parent.userCannotEdit)
+        problem = true;
+      else {
+        if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
+          problem = true;
+        else if (parent.ref != null && !doc.cfg.canContainText(parent.ref)) {
+          if (doc.hiddenParaRefs != null) {
+            x.Element hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+            if (hiddenp != null && selectionStart == selectionEnd) {
+              // we will just have to insert a hidden paragraph
+            } else
+              problem = true;
+          } else
+            problem = true;
+        }
+      }
+    }
+    if (problem)
+      button.disable();
+    else
+      button.enable();
   }
   
   static void insertButtonUpdate(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,

@@ -764,6 +764,10 @@ table.special_dlg {
   cursor: default;
 }
 
+table.special_dlg>tr>td {
+  border: 1px solid white;
+}
+
 /* DNForm */
 td.shrink {
   white-space: nowrap;

@@ -236,7 +236,8 @@ class SimpleTypeControl {
     }
     bool valid;
     if (refAttribute != null)
-      valid = doc.cfg.validAttributeValue(refAttribute, value);
+      valid = ((value == '' && !doc.cfg.requiredAttribute(refElement, refAttribute)) ||
+          doc.cfg.validAttributeValue(refAttribute, value));
     else
       valid = (value == '' || doc.cfg.isElementValueValid(refElement, value));
     if (valid) {
@@ -272,6 +273,7 @@ class SimpleTypeControl {
           option.text = doc.cfg.attributeValueTitle(refElement, refAttribute, v);
         else
           option.text = doc.cfg.elementValueTitle(refElement, v);
+        option.value = v;
         if (v == value)
           option.selected = true;
         select.append(option);
@@ -280,6 +282,7 @@ class SimpleTypeControl {
         // add this invalid value (will be removed at the next call to setValue with another value)
         h.OptionElement option = new h.OptionElement();
         option.text = value;
+        option.value = value;
         option.selected = true;
         select.append(option);
         hcontrol.classes.add('invalid');

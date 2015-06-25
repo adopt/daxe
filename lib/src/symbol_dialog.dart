@@ -36,17 +36,17 @@ class SymbolDialog {
     // math letters
     ["\u2113", "\u2102", "\u2115", "\u211A", "\u211D", "\u2124"],
     // maths operators
-    ["°", "¬", "±", "×", "÷", "·",
-     "\u2200", "\u2202", "\u2203", "\u2205", "\u2207", "\u2211",
+    ["¬", "±", "×", "÷", "·",
+     "\u2200", "\u2203", "\u2202", "\u2207", "\u2211",
      "\u221D", "\u221E",
      "\u2227", "\u2228", "\u222B", "\u223C", "\u2248", "\u2245",
      "\u2260", "\u2261", "\u2264", "\u2265", "\u226A", "\u226B",
      "\u27C2", "\u2225"],
-     // set and arrow operators
-     ["\u2208", "\u2209", "\u2229", "\u222A", "\u2282", null, null,
+     // sets and arrows
+     ["\u2205", "\u2208", "\u2209", "\u2229", "\u222A", "\u2282", null, null, null,
       "\u2190", "\u2192", "\u2194", "\u21D0", "\u21D2", "\u21D4"],
-     // other
-     ["©", "\u212B", "£", "¥", "\u20AC", "¢"]
+     // units and other
+     ["°", "\u212B", "©", "£", "¥", "\u20AC", "¢"]
      // cursive letters would be nice, but it's a little risky without an explicit font 
      /*
      ["\u{1D49C}", "\u212C", "\u{1D49E}", "\u{1D49F}", "\u2130", "\u2131", "\u{1D4A2}", "\u210B",

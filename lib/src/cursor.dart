@@ -144,6 +144,8 @@ class Cursor {
       backspace();
     } else if (keyCode == h.KeyCode.DELETE) {
       suppr();
+    } else if (keyCode == h.KeyCode.TAB && !ctrl && !shift) {
+      tab(event);
     } else if (ctrl && shortcuts[keyCode] != null) {
       event.preventDefault();
       return;
@@ -516,6 +518,41 @@ class Cursor {
       removeSelection();
     }
     page.updateAfterPathChange();
+  }
+  
+  /**
+   * Action for the tab key.
+   * Inserts 4 spaces only if spaces are preserved in the element
+   * (without looking at parents)
+   */
+  void tab(h.Event event) {
+    if (selectionStart != selectionEnd)
+      return;
+    DaxeNode parent = selectionStart.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    if (parent.nodeType != DaxeNode.ELEMENT_NODE)
+      return;
+    final String xmlspace = parent.getAttribute("xml:space");
+    bool spacePreserve = (xmlspace == "preserve");
+    if (!spacePreserve && parent.ref != null && xmlspace == null) {
+      final List<x.Element> attributes = doc.cfg.elementAttributes(parent.ref);
+      for (x.Element attref in attributes) {
+        if (doc.cfg.attributeName(attref) == "space" &&
+            doc.cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
+          final String defaut = doc.cfg.defaultAttributeValue(attref);
+          if (defaut == "preserve")
+            spacePreserve = true;
+          else if (defaut == "default")
+            spacePreserve = false;
+          break;
+        }
+      }
+    }
+    if (spacePreserve) {
+      doc.insertString(selectionStart, "    ");
+      event.preventDefault();
+    }
   }
   
   Position nextCaretPosition(Position pos) {

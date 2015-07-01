@@ -934,7 +934,43 @@ abstract class DaxeNode {
         else
           continue;
         h.Range range = new h.Range();
-        for (int i=0; i<ht.length; i++) {
+        // first try to approximate position for long texts
+        int i1 = 0;
+        int i2 = ht.length - 1;
+        if (i2 > 200) {
+          int im;
+          while (i2 - i1 > 10) {
+            im = ((i1 + i2)/2).toInt();
+            // avoid \n, getBoundingClientRect would return 0
+            int im2 = im;
+            while (nodeValue[pp + im2] == '\n' && im2 - im < 5)
+              im2++;
+            if (im2 - im >= 5)
+              break; // too many \n, give up on optimizing
+            im = im2;
+            range.setStart(ht, im);
+            range.setEnd(ht, im+1);
+            h.Rectangle r = range.getBoundingClientRect();
+            if (y < r.top) {
+              i2 = im;
+            } else if (y > r.bottom) {
+              i1 = im;
+            } else {
+              break;
+            }
+          }
+          i1 = im - 10;
+          if (i1 < 0)
+            i1 = 0;
+          // go back 2 lines to make sure not to miss the right position
+          int nbnl = 0;
+          while (i1 > 0 && i1 > im - 200 && nbnl < 2) {
+            if (nodeValue[pp + i1] == '\n')
+              nbnl ++;
+            i1--;
+          }
+        }
+        for (int i=i1; i<ht.length; i++) {
           // problem: depending on the browser, the clientrects are not the same
           // for \n or for line-breaking space characters (or for the character before a \n with IE11)...
           if (nodeValue[pp + i] != '\n') {
@@ -951,7 +987,8 @@ abstract class DaxeNode {
                   x < r.left && y < r.bottom) {
                 //print("left of line start after newline");
                 return(new Position(this, pp + i+1));
-              } if (x < r.right && y <= r.bottom) {
+              }
+              if (x < r.right && y <= r.bottom) {
                 if (x < (r.left + r.right) / 2)
                   return(new Position(this, pp + i));
                 else

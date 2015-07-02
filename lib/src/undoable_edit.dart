@@ -23,18 +23,21 @@ part of daxe;
 class UndoableEdit {
   static const int INSERT = 0;
   static const int REMOVE = 1;
-  static const int ATTRIBUTES = 2;
-  static const int COMPOUND = 3;
+  static const int ATTRIBUTE = 2;
+  static const int ATTRIBUTES = 3;
+  static const int COMPOUND = 4;
   
   int operation;
   String title;
-  Position pos;
-  String text;
+  Position pos = null;
+  String text = null;
   int length;
-  DaxeNode dn;
-  DaxeNode cutNode;
-  List<DaxeAttr> attributes;
-  List<UndoableEdit> subEdits;
+  DaxeNode dn = null;
+  DaxeNode cutNode = null;
+  DaxeAttr attribute = null;
+  String oldAttributeValue = null;
+  List<DaxeAttr> attributes = null;
+  List<UndoableEdit> subEdits = null;
   bool updateDisplay; // update the display the first time doit() is called (default: true)
   
   
@@ -46,10 +49,7 @@ class UndoableEdit {
     title = Strings.get('undo.insert_text');
     this.pos = new Position.clone(pos);
     this.text = text;
-    dn = null; // we can't check if a new text node is needed at this point, because of CompoundEdits
-    cutNode = null;
-    attributes = null;
-    subEdits = null;
+    // dn = null, we can't check if a new text node is needed at this point, because of CompoundEdits
     this.updateDisplay = updateDisplay;
   }
   
@@ -59,12 +59,8 @@ class UndoableEdit {
     operation = REMOVE;
     title = Strings.get('undo.remove_text');
     this.pos = new Position.clone(pos);
-    text = null; // we can't extract it at this point, because of CompoundEdits
+    // text = null, we can't extract it at this point, because of CompoundEdits
     this.length = length;
-    dn = null;
-    cutNode = null;
-    attributes = null;
-    subEdits = null;
     this.updateDisplay = updateDisplay;
   }
   
@@ -72,64 +68,36 @@ class UndoableEdit {
     operation = INSERT;
     title = Strings.get('undo.insert_element');
     this.pos = new Position.clone(pos);
-    text = null;
     this.dn = dn;
-    cutNode = null;
-    attributes = null;
-    subEdits = null;
     this.updateDisplay = updateDisplay;
   }
   
   UndoableEdit.removeNode(DaxeNode dn, {bool updateDisplay: true}) {
     operation = REMOVE;
     title = Strings.get('undo.remove_element');
-    pos = null;
-    text = null;
     this.dn = dn;
-    cutNode = null;
-    attributes = null;
-    subEdits = null;
+    this.updateDisplay = updateDisplay;
+  }
+  
+  UndoableEdit.changeAttribute(DaxeNode dn, DaxeAttr attr, {bool updateDisplay: true}) {
+    operation = ATTRIBUTE;
+    title = Strings.get('undo.attributes');
+    this.dn = dn;
+    attribute = attr;
     this.updateDisplay = updateDisplay;
   }
   
   UndoableEdit.changeAttributes(DaxeNode dn, List<DaxeAttr> attributes, {bool updateDisplay: true}) {
     operation = ATTRIBUTES;
     title = Strings.get('undo.attributes');
-    pos = null;
-    text = null;
     this.dn = dn;
-    cutNode = null;
     this.attributes = attributes;
-    subEdits = null;
-    this.updateDisplay = updateDisplay;
-  }
-  
-  UndoableEdit.changeAttribute(DaxeNode dn, DaxeAttr attr, {bool updateDisplay: true}) {
-    operation = ATTRIBUTES;
-    title = Strings.get('undo.attributes');
-    pos = null;
-    text = null;
-    this.dn = dn;
-    cutNode = null;
-    LinkedHashMap<String, DaxeAttr> map = dn.getAttributesMapCopy(); // FIXME: not good with compounds
-    if (attr.value == null) {
-      if (map[attr.name] != null)
-        map.remove(attr.name);
-    } else
-      map[attr.name] = attr;
-    this.attributes = new List.from(map.values);
-    subEdits = null;
     this.updateDisplay = updateDisplay;
   }
   
   UndoableEdit.compound(String title) {
     operation = COMPOUND;
     this.title = title;
-    pos = null;
-    text = null;
-    dn = null;
-    cutNode = null;
-    attributes = null;
     subEdits = new List<UndoableEdit>();
     updateDisplay = true;
   }
@@ -143,6 +111,28 @@ class UndoableEdit {
   bool addEdit(UndoableEdit edit) {
     if (operation != edit.operation)
       return(false);
+    if (operation == ATTRIBUTE) {
+      // single attribute edits: combine when text keeps being added or removed
+      if (attribute.name != edit.attribute.name)
+        return(false);
+      String v1 = oldAttributeValue;
+      String v2 = attribute.value;
+      String v3 = edit.attribute.value;
+      if (v2 == null)
+        return(false);
+      bool ok = false;
+      if (v1 == null || (v2.length > v1.length && v2.substring(0, v1.length) == v1)) {
+        if (v3 != null && v3.length > v2.length && v3.substring(0, v2.length) == v2)
+          ok = true; // inserting text at the end
+      } else if (v1 != null && v1.length > v2.length && v1.substring(0, v2.length) == v2) {
+        if (v3 == null || (v2.length > v3.length && v2.substring(0, v3.length) == v3))
+          ok = true; // removing text at the end
+      }
+      if (!ok)
+        return(false);
+      attribute.value = edit.attribute.value;
+      return(true);
+    }
     if (operation == INSERT && dn is DNText && edit.text != null &&
         edit.pos.dn == dn && edit.pos.dnOffset + 1 == dn.offsetLength) {
       // insert text node + insert text
@@ -179,6 +169,8 @@ class UndoableEdit {
       _insert(updateDisplay);
     else if (operation == REMOVE)
       _remove(updateDisplay);
+    else if (operation == ATTRIBUTE)
+      _changeAttribute(updateDisplay);
     else if (operation == ATTRIBUTES)
       _changeAttributes(updateDisplay);
     else if (operation == COMPOUND) {
@@ -194,6 +186,8 @@ class UndoableEdit {
       _remove(updateDisplay);
     else if (operation == REMOVE)
       _insert(updateDisplay);
+    else if (operation == ATTRIBUTE)
+      _undoChangeAttribute(updateDisplay);
     else if (operation == ATTRIBUTES)
       _changeAttributes(updateDisplay);
     else if (operation == COMPOUND) {
@@ -340,6 +334,29 @@ class UndoableEdit {
     }
   }
   
+  void _changeAttribute(bool update) {
+    oldAttributeValue = dn.getAttribute(attribute.name);
+    if (attribute.value == null)
+      dn.removeAttribute(attribute.name);
+    else
+      dn.setAttribute(attribute.name, attribute.value);
+    if (update) {
+      dn.updateValidity();
+      dn.updateAttributes();
+    }
+  }
+  
+  void _undoChangeAttribute(bool update) {
+    if (oldAttributeValue == null)
+      dn.removeAttribute(attribute.name);
+    else
+      dn.setAttribute(attribute.name, oldAttributeValue);
+    if (update) {
+      dn.updateValidity();
+      dn.updateAttributes();
+    }
+  }
+  
   void _changeAttributes(bool update) {
     List<DaxeAttr> oldAttributes = dn.attributes;
     dn.attributes = attributes;
@@ -355,6 +372,7 @@ class UndoableEdit {
     switch(operation) {
       case INSERT: sb.write("Insert "); break;
       case REMOVE: sb.write("Remove "); break;
+      case ATTRIBUTE: sb.write("Attribute "); break;
       case ATTRIBUTES: sb.write("Attributes "); break;
       case COMPOUND: sb.write("Compound "); break;
     }

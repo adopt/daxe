@@ -99,14 +99,27 @@ class FileChooser {
       List<String> subSegments = uri.pathSegments.sublist(0, i+1);
       span = new h.SpanElement();
       span.classes.add('open-path-segment');
+      span.setAttribute('tabindex', '0');
       span.appendText(segment);
       span.onClick.listen((h.MouseEvent e) {
         openDir(uri.replace(pathSegments:subSegments));
+      });
+      span.onKeyDown.listen((h.KeyboardEvent event) {
+        int keyCode = event.keyCode;
+        if (keyCode == h.KeyCode.ENTER) {
+          event.preventDefault();
+          openDir(uri.replace(pathSegments:subSegments));
+        }
       });
       pathDiv.append(span);
       pathDiv.appendText('/');
     }
     dirDiv.append(pathDiv);
+    
+    h.DivElement previewDiv = new h.DivElement();
+    previewDiv.id = 'open-preview-div';
+    dirDiv.append(previewDiv);
+    
     h.DivElement tableDiv = new h.DivElement();
     tableDiv.id = 'open-table-div';
     h.TableElement table = new h.TableElement();
@@ -125,25 +138,13 @@ class FileChooser {
     th.text = Strings.get('open.modified');
     tr.append(th);
     table.append(tr);
+    h.TableRowElement previousTr = null;
+    DirectoryItem previousItem = null;
     for (DirectoryItem item in items) {
       h.TableRowElement tr = new h.TableRowElement();
+      tr.setAttribute('tabindex', '-1');
       h.TableCellElement td = new h.TableCellElement();
-      String icon;
-      String lcname = item.name.toLowerCase();
-      if (item.type == DirectoryItemType.DIRECTORY)
-        icon = 'folder.png';
-      else if (lcname.endsWith('.xml') || lcname.endsWith('.problem') ||
-          lcname.endsWith('.exam') || lcname.endsWith('.survey'))
-        icon = 'xml_file.png';
-      else if (lcname.endsWith('.gif') || lcname.endsWith('.jpg') ||
-          lcname.endsWith('.jpeg') || lcname.endsWith('.png') ||
-          lcname.endsWith('.svg'))
-        icon = 'image_file.png';
-      else if (lcname.endsWith('.html') || lcname.endsWith('.htm'))
-        icon = 'html_file.png';
-      else
-        icon = 'generic_file.png';
-      td.append(new h.ImageElement(src:iconPath+icon, width:16, height:16));
+      td.append(new h.ImageElement(src:iconPath+item.icon, width:16, height:16));
       tr.append(td);
       td = new h.TableCellElement();
       td.text = item.name;
@@ -179,9 +180,37 @@ class FileChooser {
         td.text = s;
       }
       tr.append(td);
-      tr.onClick.listen((h.MouseEvent event) => select(item, tr));
+      tr.onClick.listen((h.MouseEvent event) {
+        event.preventDefault();
+        select(item, tr);
+      });
       tr.onDoubleClick.listen((h.MouseEvent event) => open(item));
+      {
+        DirectoryItem pi = previousItem;
+        h.TableRowElement pt = previousTr;
+        tr.onKeyDown.listen((h.KeyboardEvent event) {
+          int keyCode = event.keyCode;
+          if (keyCode == h.KeyCode.ENTER) {
+            event.preventDefault();
+            open(item);
+          } else if (pi != null && keyCode == h.KeyCode.UP) {
+            event.preventDefault();
+            select(pi, pt);
+          }
+        });
+      }
+      if (previousItem != null) {
+        previousTr.onKeyDown.listen((h.KeyboardEvent event) {
+          int keyCode = event.keyCode;
+          if (keyCode == h.KeyCode.DOWN) {
+            event.preventDefault();
+            select(item, tr);
+          }
+        });
+      }
       table.append(tr);
+      previousItem = item;
+      previousTr = tr;
     }
     tableDiv.append(table);
     dirDiv.append(tableDiv);
@@ -228,13 +257,21 @@ class FileChooser {
   }
   
   void select(DirectoryItem item, h.TableRowElement tr) {
-    tr.classes.add('selected');
     if (selectedTR != null)
       selectedTR.classes.remove('selected');
+    tr.classes.add('selected');
     selectedTR = tr;
     selectedItem = item;
     h.ButtonElement bOk = h.querySelector('button#open_ok');
     bOk.disabled = false;
+    h.DivElement previewDiv = h.document.getElementById('open-preview-div');
+    previewDiv.children.clear();
+    if (item.icon == 'image_file.png') {
+      h.ImageElement img = new h.ImageElement();
+      img.src = uri.path + '/' + item.name;
+      previewDiv.append(img);
+    }
+    tr.focus();
   }
   
   Uri itemUri(DirectoryItem item) {
@@ -244,10 +281,10 @@ class FileChooser {
   }
   
   void open(DirectoryItem item) {
-    Uri uri = itemUri(item);
-    if (item.type == DirectoryItemType.DIRECTORY)
+    if (item.type == DirectoryItemType.DIRECTORY) {
+      Uri uri = itemUri(item);
       openDir(uri);
-    else
+    } else
       closeAndLaunchOpenAction();
   }
   
@@ -272,7 +309,9 @@ class FileChooser {
   void ok(h.MouseEvent event) {
     if (event != null)
       event.preventDefault();
-    closeAndLaunchOpenAction();
+    if (selectedItem == null)
+      return;
+    open(selectedItem);
   }
   
   void cancel() {
@@ -291,4 +330,25 @@ class DirectoryItem {
   int size;
   DateTime modified;
   DirectoryItem(this.type, this.name, [this.size, this.modified]);
+  
+  String get icon {
+    if (name == null)
+      return 'generic_file.png';
+    String icon;
+    String lcname = name.toLowerCase();
+    if (type == DirectoryItemType.DIRECTORY)
+      icon = 'folder.png';
+    else if (lcname.endsWith('.xml') || lcname.endsWith('.problem') ||
+        lcname.endsWith('.exam') || lcname.endsWith('.survey'))
+      icon = 'xml_file.png';
+    else if (lcname.endsWith('.gif') || lcname.endsWith('.jpg') ||
+        lcname.endsWith('.jpeg') || lcname.endsWith('.png') ||
+        lcname.endsWith('.svg'))
+      icon = 'image_file.png';
+    else if (lcname.endsWith('.html') || lcname.endsWith('.htm'))
+      icon = 'html_file.png';
+    else
+      icon = 'generic_file.png';
+    return icon;
+  }
 }

@@ -601,15 +601,13 @@ div.options label {
   overflow-y: scroll;
   max-height: 30em;
   margin-bottom: 0.5em;
+  margin-right: 110px;
+  box-shadow: 2px 2px 2px #A0A0A0;
+  padding: 0px;
 }
 
 span.open-path-segment:hover {
   background-color: #EEE;
-}
-
-#open-table-div {
-  box-shadow: 2px 2px 2px #A0A0A0;
-  padding: 0px;
 }
 
 table.opendlg_table {
@@ -640,6 +638,15 @@ table.opendlg_table>tr>td:nth-of-type(2), table.opendlg_table>tr>td:nth-of-type(
 
 table.opendlg_table>tr.selected {
   background-color: #50A0FF;
+}
+
+#open-preview-div {
+  float: right;
+}
+
+#open-preview-div>img {
+  max-width: 100px;
+  max-height: 100px;
 }
 
 /* source */

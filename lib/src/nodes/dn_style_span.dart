@@ -55,7 +55,8 @@ class DNStyleSpan extends DNStyle {
       Tag b2 = new Tag(this, Tag.END);
       span.append(b1.html());
       h.SpanElement contents = new h.SpanElement();
-      contents.setAttribute('style', css);
+      if (css != null)
+        contents.setAttribute('style', css);
       span.append(contents);
       span.append(b2.html());
     }

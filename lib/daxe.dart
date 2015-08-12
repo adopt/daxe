@@ -49,7 +49,6 @@ part 'src/daxe_exception.dart';
 part 'src/config.dart';
 part 'src/daxe_node.dart';
 part 'src/daxe_attr.dart';
-//part 'src/file_open_dialog.dart';
 part 'src/find_dialog.dart';
 part 'src/help_dialog.dart';
 part 'src/insert_panel.dart';
@@ -59,6 +58,7 @@ part 'src/menu.dart';
 part 'src/menubar.dart';
 part 'src/menu_item.dart';
 part 'src/node_factory.dart';
+part 'src/file_chooser.dart';
 part 'src/position.dart';
 part 'src/node_offset_position.dart';
 part 'src/left_offset_position.dart';
@@ -105,13 +105,12 @@ void main() {
  */
 Future initDaxe() {
   Completer completer = new Completer();
-  doc = new DaxeDocument();
-  page = new WebPage();
   
   // check parameters for a config and file to open
   String file = null;
   String config = null;
-  String saveURL = null;
+  String saveURL = null; // URL for saving file, will trigger the display of the save menu
+  bool application = false; // Desktop application (open and quit menus)
   h.Location location = h.window.location;
   String search = location.search;
   if (search.startsWith('?'))
@@ -127,7 +126,11 @@ Future initDaxe() {
       file = Uri.decodeComponent(lparam[1]);
     else if (lparam[0] == 'save')
       saveURL = lparam[1];
+    else if (lparam[0] == 'application' && lparam[1] == 'true')
+      application = true;
   }
+  doc = new DaxeDocument();
+  page = new WebPage(application:application);
   if (saveURL != null)
     doc.saveURL = saveURL;
   if (config != null && file != null)

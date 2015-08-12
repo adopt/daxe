@@ -89,7 +89,7 @@ class SourceWindow {
             html.appendText('="');
             h.SpanElement attributeValue = new h.SpanElement();
             attributeValue.classes.add('source_attribute_value');
-            _appendTextWithEntities(attributeValue, att.nodeValue);
+            _appendTextWithEntities(attributeValue, att.nodeValue, true);
             html.append(attributeValue);
             html.appendText('"');
           }
@@ -113,7 +113,7 @@ class SourceWindow {
         break;
         
       case x.Node.TEXT_NODE :
-        _appendTextWithEntities(html, node.nodeValue);
+        _appendTextWithEntities(html, node.nodeValue, false);
         break;
       
       case x.Node.COMMENT_NODE :
@@ -157,7 +157,7 @@ class SourceWindow {
     }
   }
   
-  void _appendTextWithEntities(h.Element html, String s) {
+  void _appendTextWithEntities(h.Element html, String s, bool attribute) {
     Map<String, String> cent = <String, String>{
       '&' : '&amp;',
       '"' : '&quot;',
@@ -168,7 +168,7 @@ class SourceWindow {
     int p = 0;
     while (p < s.length) {
       String c = s[p];
-      if (keys.contains(c)) {
+      if (keys.contains(c) && (attribute || c != '"')) {
         if (p > 0)
           html.appendText(s.substring(0, p));
         h.SpanElement entity = new h.SpanElement();

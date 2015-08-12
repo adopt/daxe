@@ -57,40 +57,57 @@ class DNWList extends DaxeNode {
     div.classes.add('dn');
     if (!valid)
       div.classes.add('invalid');
-    h.Element list;
-    if (type == 'ul')
-      list = new h.UListElement();
-    else
-      list = new h.OListElement();
-    list.classes.add('wlist');
-    DaxeNode dn = firstChild;
-    while (dn != null) {
-      list.append(dn.html());
-      dn = dn.nextSibling;
+    if (firstChild != null) {
+      h.Element list;
+      if (type == 'ul')
+        list = new h.UListElement();
+      else
+        list = new h.OListElement();
+      list.classes.add('wlist');
+      DaxeNode dn = firstChild;
+      while (dn != null) {
+        list.append(dn.html());
+        dn = dn.nextSibling;
+      }
+      div.append(list);
+    } else {
+      // Display like DNList
+      Tag b1 = new Tag(this, Tag.START);
+      Tag b2 = new Tag(this, Tag.END);
+      div.append(b1.html());
+      h.UListElement list = new h.UListElement();
+      list.classes.add('list');
+      DaxeNode dn = firstChild;
+      while (dn != null) {
+        list.append(dn.html());
+        dn = dn.nextSibling;
+      }
+      div.append(list);
+      div.append(b2.html());
     }
-    div.append(list);
     return(div);
   }
   
   @override
   Position firstCursorPositionInside() {
-    if (firstChild == null) {
-      return(null);
-    }
+    if (firstChild == null)
+      return super.firstCursorPositionInside();
     return(new Position(firstChild, 0));
   }
   
   @override
   Position lastCursorPositionInside() {
-    if (lastChild == null) {
-      return(null);
-    }
+    if (lastChild == null)
+      return super.lastCursorPositionInside();
     return(new Position(lastChild, lastChild.offsetLength));
   }
   
   @override
   h.Element getHTMLContentsNode() {
-    return(getHTMLNode().firstChild);
+    h.Element hnode = getHTMLNode();
+    if (hnode.nodes.length > 1)
+      return(hnode.nodes[1]);
+    return(hnode.firstChild);
   }
   
   @override

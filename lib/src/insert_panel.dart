@@ -38,8 +38,9 @@ class InsertPanel {
       divInsert.append(span);
       divInsert.append(new h.HRElement());
     }
+    // Items already in the toolbar are not displayed if there are lots of elements to list.
     List<x.Element> toolbarRefs;
-    if (page.toolbar != null)
+    if (refs.length > 15 && page.toolbar != null)
       toolbarRefs = page.toolbar.elementRefs();
     else
       toolbarRefs = null;

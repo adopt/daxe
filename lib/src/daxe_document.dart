@@ -29,6 +29,7 @@ class DaxeDocument {
   int undoPosition = -1;
   UndoableEdit lastSavedEdit = null;
   String filePath;
+  String configPath;
   String saveURL;
   List<x.Element> hiddenParaRefs; /* references for hidden paragraphs */
   x.Element hiddendiv;
@@ -37,6 +38,7 @@ class DaxeDocument {
    * Create a new document with the given configuration path.
    */
   Future newDocument(String configPath) {
+    this.configPath = configPath;
     Completer completer = new Completer();
     cfg = new Config();
     cfg.load(configPath).then((_) {
@@ -66,6 +68,7 @@ class DaxeDocument {
    * (so that it can be saved at the given path)
    */
   Future openDocument(String filePath, String configPath, {bool removeIndents: true}) {
+    this.configPath = configPath;
     Completer completer = new Completer();
     cfg = new Config();
     cfg.load(configPath).then((_) {
@@ -105,7 +108,7 @@ class DaxeDocument {
   /**
    * Send the document with a POST request to saveURL.
    */
-  Future saveOnWebJaxe() {
+  Future save({bool addIndents:true}) {
     assert(saveURL != null);
     Completer completer = new Completer();
     String bound = 'AaB03x';
@@ -120,7 +123,7 @@ class DaxeDocument {
         completer.complete();
       } else {
         String errorMessage;
-        if (response.startsWith('erreur\n'))
+        if (response.startsWith('error\n'))
           errorMessage = response.substring('erreur\n'.length);
         else
           errorMessage = response;
@@ -135,15 +138,21 @@ class DaxeDocument {
     
     StringBuffer sb = new StringBuffer();
     sb.write("--$bound\r\n");
-    sb.write('Content-Disposition: form-data; name="chemin"\r\n');
+    sb.write('Content-Disposition: form-data; name="path"\r\n');
     sb.write('Content-type: text/plain; charset=UTF-8\r\n');
     sb.write('Content-transfer-encoding: 8bit\r\n\r\n');
     sb.write(filePath);
     sb.write("\r\n--$bound\r\n");
-    sb.write('Content-Disposition: form-data; name="contenu"; filename="$filePath"\r\n');
+    sb.write('Content-Disposition: form-data; name="file"; filename="$filePath"\r\n');
     sb.write('Content-Type: application/octet-stream\r\n\r\n');
     dndoc.xmlEncoding = 'UTF-8'; // the document is forced to use UTF-8
-    sb.write(toString());
+    if (addIndents) {
+      x.Document domdoc = toDOMDoc();
+      indentDOMDocument(domdoc);
+      sb.write(domdoc.toString());
+    } else {
+      sb.write(toString());
+    }
     sb.write('\r\n--$bound--\r\n\r\n');
     request.send(sb.toString());
     

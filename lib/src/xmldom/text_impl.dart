@@ -77,7 +77,15 @@ class TextImpl extends NodeImpl implements Text {
   }
   
   String toString() {
-    return(NodeImpl._escape(nodeValue));
+    return(_escape(nodeValue));
+  }
+  
+  /// escapes XML character entities for serialization
+  static String _escape(String s) {
+    s = s.replaceAll('&', '&amp;');
+    s = s.replaceAll('<', '&lt;');
+    s = s.replaceAll('>', '&gt;');
+    return(s);
   }
 }
 

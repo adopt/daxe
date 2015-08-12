@@ -586,6 +586,62 @@ div.options label {
   margin-right: 1em;
 }
 
+/* open */
+#open-dir-div {
+  cursor: default;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+#open-path-div {
+  font-family: monospace;
+}
+#open-table-div {
+  overflow-y: scroll;
+  max-height: 30em;
+  margin-bottom: 0.5em;
+}
+
+span.open-path-segment:hover {
+  background-color: #EEE;
+}
+
+#open-table-div {
+  box-shadow: 2px 2px 2px #A0A0A0;
+  padding: 0px;
+}
+
+table.opendlg_table {
+  border-collapse: collapse;
+  border: 1px solid #AAA;
+  font-size: 80%;
+  margin: 0px;
+}
+
+table.opendlg_table>tr>th {
+  padding: 2px;
+  border-bottom: 1px solid #AAA;
+}
+
+table.opendlg_table>tr>th:nth-of-type(2), table.opendlg_table>tr>th:nth-of-type(3) {
+  border-right: 1px solid #AAA;
+}
+
+table.opendlg_table>tr>td {
+  white-space: nowrap;
+  padding: 2px;
+  border-bottom: 1px solid #AAA;
+}
+
+table.opendlg_table>tr>td:nth-of-type(2), table.opendlg_table>tr>td:nth-of-type(3) {
+  border-right: 1px solid #AAA;
+}
+
+table.opendlg_table>tr.selected {
+  background-color: #50A0FF;
+}
+
 /* source */
 div.source_window {
   position: absolute;
@@ -752,6 +808,15 @@ img.dn {
 
 img.dn.selected, .selected img.dn {
   opacity: 0.7;
+}
+
+span.file-label {
+  cursor: default;
+  border: 1px solid #AAA;
+  font-family: monospace;
+  padding: 1px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 /* DNSpecial */

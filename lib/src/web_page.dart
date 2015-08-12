@@ -33,8 +33,9 @@ class WebPage {
   Position lastClickPosition;
   DateTime lastClickTime;
   bool selectionByWords; // double-click+drag
+  bool application; // Desktop application
   
-  WebPage() {
+  WebPage({this.application:false}) {
     _cursor = new Cursor();
     _left = new LeftPanel();
     lastClickPosition = null;
@@ -61,7 +62,7 @@ class WebPage {
   
   Future openDocument(String filePath, String configPath, {bool removeIndents: true}) {
     Completer completer = new Completer();
-    doc.openDocument(filePath, configPath).then( (_) {
+    doc.openDocument(filePath, configPath, removeIndents:removeIndents).then( (_) {
       _buildMenus();
       init();
       _left.selectTreePanel();
@@ -135,6 +136,10 @@ class WebPage {
     Menu fileMenu = new Menu(Strings.get('menu.file'));
     fileMenu.parent = mbar;
     MenuItem item;
+    if (application && doc.saveURL != null) {
+      item = new MenuItem(Strings.get('menu.open'), () => open(), shortcut: 'O');
+      fileMenu.add(item);
+    }
     if (doc.saveURL != null) {
       item = new MenuItem(Strings.get('menu.save'), () => save(), shortcut: 'S');
       fileMenu.add(item);
@@ -143,6 +148,10 @@ class WebPage {
     fileMenu.add(item);
     item = new MenuItem(Strings.get('menu.validation'), () => (new ValidationDialog()).show());
     fileMenu.add(item);
+    if (application && doc.saveURL != null) {
+      item = new MenuItem(Strings.get('menu.quit'), () => quit(), shortcut: 'Q');
+      fileMenu.add(item);
+    }
     mbar.insert(fileMenu, 0);
     Menu editMenu = new Menu(Strings.get('menu.edit'));
     editMenu.parent = mbar;
@@ -158,6 +167,7 @@ class WebPage {
     mbar.insert(editMenu, 1);
     
     h.Element headers = h.document.getElementById('headers');
+    headers.children.clear();
     headers.append(mbar.html());
     
     toolbar = new Toolbar(doc.cfg);
@@ -565,8 +575,23 @@ class WebPage {
     }
   }
   
+  void open() {
+    Uri htmlUri = Uri.parse(h.window.location.toString());
+    Uri docUri = Uri.parse(doc.filePath);
+    List<String> segments = new List<String>.from(docUri.pathSegments);
+    segments.removeLast();
+    Uri openDir = docUri.replace(scheme:htmlUri.scheme, host:htmlUri.host,
+        port:htmlUri.port, pathSegments:segments);
+    FileChooser dlg;
+    ActionFunction action = () {
+      openDocument(dlg.getSelectedUri().toString(), doc.configPath);
+    };
+    dlg = new FileChooser(openDir, action);
+    dlg.show();
+  }
+  
   void save() {
-    doc.saveOnWebJaxe().then((_) {
+    doc.save().then((_) {
       h.window.alert(Strings.get('save.success'));
     }, onError: (DaxeException ex) {
       h.window.alert(Strings.get('save.error') + ': ' + ex.message);
@@ -583,4 +608,31 @@ class WebPage {
     (new SourceWindow()).show();
   }
   
+  /**
+   * Tell the Daxe application server to exit and tell user to close the window.
+   */
+  void quit() {
+    h.HttpRequest request = new h.HttpRequest();
+    Uri saveUri = Uri.parse(doc.saveURL);
+    Uri quitUri = saveUri.replace(path:'/quit');
+    request.open('GET', quitUri.toString());
+    request.onLoad.listen((h.ProgressEvent event) {
+      if (request.status != 200) {
+        h.window.alert(Strings.get('quit.error') + ': ${request.status}');
+        return;
+      }
+      if (request.responseText != 'ok') {
+        h.window.alert(Strings.get('quit.error') + ': ${request.responseText}');
+        return;
+      }
+      //h.window.close(); // This does not work in recent browsers
+      // A workaround would be to start a new browser process when opening a file,
+      // and kill it (nicely) with the server when the user quits.
+      h.window.alert(Strings.get('quit.byhand'));
+    });
+    request.onError.listen((h.ProgressEvent event) {
+      h.window.alert(Strings.get('quit.error'));
+    });
+    request.send();
+  }
 }

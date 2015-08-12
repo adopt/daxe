@@ -138,6 +138,16 @@ class AttrImpl extends NodeImpl implements Attr {
   }
   
   String toString() {
-    return('$nodeName="${NodeImpl._escape(nodeValue)}"');
+    return('$nodeName="${_escape(nodeValue)}"');
+  }
+  
+  /// escapes XML character entities for serialization
+  static String _escape(String s) {
+    s = s.replaceAll('&', '&amp;');
+    s = s.replaceAll('"', '&quot;');
+    //s = s.replaceAll("'", '&apos;');
+    s = s.replaceAll('<', '&lt;');
+    s = s.replaceAll('>', '&gt;');
+    return(s);
   }
 }

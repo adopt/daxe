@@ -36,9 +36,16 @@ class WXSFacet extends WXSAnnotated {
       _value = el.getAttribute("value");
       _iparam = int.parse(_value, onError:(String source) => 0);
       if (_facet == "pattern") {
+        // Character class substraction: replace [\i-[:]] by ((?![:])[\i])
+        _value = _value.replaceAllMapped(
+            new RegExp(r'\[([^\[\]-]+)-\[([^\[\]-]+)\]\]'),
+            (Match m) => "((?![${m[2]}])[${m[1]}])");
         // approximative replacements of \i, \I, \c and \C
+        _value = _value.replaceAll("[\\i]", "[^<>&#!/?'\",0-9.\\-\\s]");
         _value = _value.replaceAll("\\i", "[^<>&#!/?'\",0-9.\\-\\s]");
+        _value = _value.replaceAll("[\\I]", "[^a-zA-Z]");
         _value = _value.replaceAll("\\I", "[^a-zA-Z]");
+        _value = _value.replaceAll("[\\c]", "[^<>&#!/?'\",\\s]");
         _value = _value.replaceAll("\\c", "[^<>&#!/?'\",\\s]");
         _value = _value.replaceAll("\\C", "\\W");
         // replacement of '$' into '\$'

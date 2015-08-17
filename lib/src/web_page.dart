@@ -161,6 +161,12 @@ class WebPage {
     redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
     redoMenu.enabled = false;
     editMenu.add(redoMenu);
+    editMenu.add(new MenuItem.separator());
+    MenuItem cutMenu = new MenuItem(Strings.get('menu.cut'), () => cursor.clipboardCut(), shortcut: 'X');
+    editMenu.add(cutMenu);
+    MenuItem copyMenu = new MenuItem(Strings.get('menu.copy'), () => cursor.clipboardCopy(), shortcut: 'C');
+    editMenu.add(copyMenu);
+    editMenu.add(new MenuItem.separator());
     editMenu.add(new MenuItem(Strings.get('menu.select_all'), () => selectAll(), shortcut: 'A'));
     MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
     editMenu.add(findMenu);

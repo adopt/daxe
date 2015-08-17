@@ -1281,8 +1281,31 @@ class Cursor {
         h.window.alert(Strings.get('insert.text_not_allowed'));
         return(false);
       }
-      doc.insertString(selectionStart, s);
-      return(true);
+      // use hidden paragraphs instead of newlines if allowed at current position
+      bool useParagraphs = (doc.hiddenParaRefs != null && s.contains('\n'));
+      x.Element hiddenp;
+      if (useParagraphs) {
+        DaxeNode parent = selectionStart.dn;
+        if (parent is DNText)
+          parent = parent.parent;
+        hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+        useParagraphs = (hiddenp != null);
+      }
+      if (!useParagraphs) {
+        doc.insertString(selectionStart, s);
+        return(true);
+      }
+      x.DOMImplementation domimpl = new x.DOMImplementationImpl();
+      tmpdoc = domimpl.createDocument(null, null, null);
+      x.Element root = tmpdoc.createElement('root');
+      tmpdoc.appendChild(root);
+      List<String> parts = s.split('\n');
+      for (String part in parts) {
+        x.Element p = tmpdoc.createElementNS(null, doc.cfg.elementName(hiddenp));
+        if (part != '')
+          p.appendChild(tmpdoc.createTextNode(part));
+        root.appendChild(p);
+      }
     }
     DaxeNode parent = selectionStart.dn;
     if (parent is DNText)
@@ -1390,5 +1413,50 @@ class Cursor {
     moveTo(futureCursorPos);
     page.updateAfterPathChange();
     return;
+  }
+  
+  /**
+   * Copies the current selection to the clipboard when the browser allows it.
+   * Otherwise display a message suggesting to use Ctrl-C.
+   */
+  void clipboardCopy() {
+    if (selectionStart == null || selectionStart == selectionEnd)
+      return;
+    ta.value = copy();
+    ta.select();
+    bool success;
+    try {
+      success = h.document.execCommand('copy', false, null);
+    } catch(ex) {
+      success = false;
+    }
+    ta.value = '';
+    if (!success) {
+      h.window.alert(Strings.get('menu.copy_with_keyboard'));
+    }
+  }
+  
+  /**
+   * Copies the current selection to the clipboard when the browser allows it.
+   * Otherwise display a message suggesting to use Ctrl-C.
+   */
+  void clipboardCut() {
+    if (selectionStart == null || selectionStart == selectionEnd)
+      return;
+    ta.value = copy();
+    ta.select();
+    bool success;
+    try {
+      success = h.document.execCommand('cut', false, null);
+    } catch(ex) {
+      success = false;
+    }
+    ta.value = '';
+    if (success) {
+      removeSelection();
+      page.updateAfterPathChange();
+    } else {
+      h.window.alert(Strings.get('menu.cut_with_keyboard'));
+    }
   }
 }

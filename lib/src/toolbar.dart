@@ -36,6 +36,15 @@ class Toolbar {
     historyBox.add(new ToolbarButton(Strings.get('undo.redo'), iconPath + 'history_redo.png',
         () => doc.redo(), null, data:"redo", enabled:false));
     items.add(historyBox);
+    // We could do a browser check here, but that requires another library...
+    // We would display these buttons only for Chrome 42+, Firefox 41+,
+    // IE 9+, Opera 29+ (Safari does not support it)
+    ToolbarBox editBox = new ToolbarBox();
+    editBox.add(new ToolbarButton(Strings.get('toolbar.cut'), iconPath + 'cut.png',
+        () => page.cursor.clipboardCut(), null, data:'cut', enabled:true));
+    editBox.add(new ToolbarButton(Strings.get('toolbar.copy'), iconPath + 'copy.png',
+        () => page.cursor.clipboardCopy(), null, data:'copy', enabled:true));
+    items.add(editBox);
     ToolbarBox findBox = new ToolbarBox();
     findBox.add(new ToolbarButton(Strings.get('find.find_replace'), iconPath + 'find.png',
         () => (new FindDialog()).show(), null));

@@ -502,6 +502,10 @@ input:-webkit-autofill {
   color: #005000;
 }
 
+.attribute-title {
+  white-space: nowrap;
+}
+
 /* help */
 button.help {
   line-height: 1em;

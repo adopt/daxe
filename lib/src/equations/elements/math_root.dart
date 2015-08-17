@@ -58,11 +58,11 @@ class MathRoot extends MathElement {
     final MathElement e2 = getMathElement(1);
     final double width = getWidth(true);
 
-    final double width1 = e1.getWidth(true);
+    //final double width1 = e1.getWidth(true);
     //final int height1 = e1.getHeight(true);
     final double height1 = 8.0;
     final double width2 = e2.getWidth(true);
-    final double height2 = e2.getHeight(true);
+    //final double height2 = e2.getHeight(true);
 
     final double aheight1 = e1.getAscentHeight(true);
     final double dheight1 = e1.getDescentHeight(true);

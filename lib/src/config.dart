@@ -33,7 +33,6 @@ class Config {
   HashMap<String, x.Element> _elementDisplayCache; // cache for associations nom -> AFFICHAGE_ELEMENT
   HashMap<x.Element, String> _elementsToNamesCache; // cache for associations element reference -> name
   HashMap<x.Element, String> _elementsTitlesCache; // cache for associations element reference -> title
-  HashMap<x.Element, Pattern> _insertCache = null; // cache for regular expressions for insertions
   HashMap<x.Element, Pattern> _validPatternCache = null;
   HashMap<x.Element, HashMap<String, List<String>>> _parametersCache = null;
   List<String> _namespaceCache = null; // namespace list
@@ -71,11 +70,6 @@ class Config {
     
     x.DOMParser dp = new x.DOMParser();
     dp.parseFromURL(cfgFilePath).then((x.Document configdoc) {
-      String resource;
-      if (configdoc.documentElement.nodeName == "CONFIG_JAXE")
-        resource = null;
-      else
-        resource = _getResource(configdoc.documentElement);
       
       _cfgdir = _getParentURL(cfgFilePath);
       
@@ -246,10 +240,6 @@ class Config {
     return(_elementDisplayCache);
   }
   
-  HashMap<x.Element, String> _getElementsToNamesCache() {
-    return(_elementsToNamesCache);
-  }
-  
   x.Element getElementDisplay(String name) {
     return _elementDisplayCache[name];
   }
@@ -267,18 +257,6 @@ class Config {
       if (nom != null)
         _elementsToNamesCache[ref] = nom;
     }
-  }
-  
-  /**
-   * Return the name of the resource bundle to use.
-   *
-   * @return the name of the resource bundle, null if not defined.
-   */
-  String _getResource(final x.Element root) {
-    final x.Element bundle = _findElement(root, "FICHIERTITRES");
-    if (bundle == null)
-      return(null);
-    return(bundle.getAttribute("nom"));
   }
   
   /**
@@ -478,10 +456,6 @@ class Config {
   List<x.Element> allElementsList() {
     final List<x.Element> liste = _schema.allElements();
     return(liste);
-  }
-  
-  bool _elementInSchema(final x.Element elementRef) {
-    return(_schema.elementInSchema(elementRef));
   }
   
   /**

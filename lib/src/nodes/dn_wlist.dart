@@ -133,7 +133,6 @@ class DNWList extends DaxeNode {
   static void addList(x.Element listRef) {
     x.Element itemRef = findItemRef(listRef);
     Position selectionStart = page.getSelectionStart();
-    Position selectionEnd = page.getSelectionEnd();
     UndoableEdit edit = new UndoableEdit.compound(doc.cfg.elementTitle(listRef));
     Position newPos;
     

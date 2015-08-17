@@ -903,12 +903,13 @@ abstract class DaxeNode {
             span_test.remove();
           }
         }
-        if ((y < hny1 + topLineHeight && (y < hny1 - 1 || (x < hnx1 + 1 && hn is! h.LIElement &&
-            dn is! DNHiddenP)))) {
+        if (y < hny1 + topLineHeight && (y < hny1 - 1 || (x < hnx1 + 1 && hn is! h.LIElement &&
+            dn is! DNHiddenP))) {
           // position is before this child
           return(pos);
         }
-        if (y > hny2 - bottomLineHeight && (y > hny2 + 1 || (x > hnx2 - 1 && hn is! h.LIElement))) {
+        if ((y > hny2 - bottomLineHeight && (y > hny2 + 1 || (x > hnx2 - 1 && hn is! h.LIElement))) ||
+            (hn.style.float == 'right' && x < hnx1 && y > hny1 - 1)) {
           // position is after this child
           pos = new Position(this, offsetOf(dn) + 1);
         } else {
@@ -940,7 +941,7 @@ abstract class DaxeNode {
         if (i2 > 200) {
           int im;
           while (i2 - i1 > 10) {
-            im = ((i1 + i2)/2).toInt();
+            im = (i1 + i2) ~/ 2;
             // avoid \n, getBoundingClientRect would return 0
             int im2 = im;
             while (nodeValue[pp + im2] == '\n' && im2 - im < 5)

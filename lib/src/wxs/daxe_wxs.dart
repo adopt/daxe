@@ -601,6 +601,7 @@ class DaxeWXS implements InterfaceSchema {
     }
   }
   
+  /*
   WXSElement _findFirstElement(final String name, final String namespace) {
     final List<WXSElement> listeWXS = _hNameToWXS[name];
     if (listeWXS == null)
@@ -611,6 +612,7 @@ class DaxeWXS implements InterfaceSchema {
     }
     return(null);
   }
+  */ 
   
   /**
    * Returns the root element of the document with the given URL.

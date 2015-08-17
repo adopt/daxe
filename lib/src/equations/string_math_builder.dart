@@ -323,7 +323,7 @@ class StringMathBuilder {
       bool nb;
       try {
         nb = _numbersExpr.hasMatch(s);
-      } on FormatException catch(ex) {
+      } on FormatException {
         nb = false;
       }
       if (nb)
@@ -345,7 +345,6 @@ class StringMathBuilder {
           else if (c == ')')
             pp--;
         }
-        String nomfct = null;
         JEQ nom = null;
         if (indf2 == -1) {
           nom = new JEQVariable(s.substring(0,indf));
@@ -661,7 +660,7 @@ class JEQFonction implements JEQ {
           for (int i=0; i<n; i++)
             spts = spts + '.';
           mop.addText(spts);
-        } on FormatException catch(ex) {
+        } on FormatException {
           mop.addText("?");
         }
       } else

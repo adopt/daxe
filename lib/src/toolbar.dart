@@ -373,7 +373,6 @@ class Toolbar {
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     // element insert
     ToolbarStyleInfo info = button.data;
-    List<x.Element> refs = info.possibleRefs;
     if (info.findValidRef(validRefs))
       button.enable();
     else

@@ -33,7 +33,7 @@ class MathSqrt extends MathElement {
   void paint(final h.CanvasRenderingContext2D context, final double posX, final double posY) {
     final double width = getWidth(true);
 
-    final double width1 = getMathElementsWidth();
+    //final double width1 = getMathElementsWidth();
     //double height1 = getMathElementsHeight(true);
     final double height1 = 8.0;
     final double aheight1 = getMathElementsAscentHeight(true);

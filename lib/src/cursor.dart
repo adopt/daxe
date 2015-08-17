@@ -1265,7 +1265,7 @@ class Cursor {
     try {
       x.DOMParser dp = new x.DOMParser();
       tmpdoc = dp.parseFromString("<root>$s</root>");
-    } on x.DOMException catch(ex) {
+    } on x.DOMException {
       // this is not XML, it is inserted as string if it is possible
       bool problem = false;
       if (s.trim() != '') {

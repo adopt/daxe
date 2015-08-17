@@ -86,7 +86,6 @@ class NodeOffsetPosition implements Position {
       nopos = new NodeOffsetPosition.fromLeftOffsetPosition(other);
     else if (other is RightOffsetPosition)
       nopos = new NodeOffsetPosition.fromRightOffsetPosition(other);
-    DaxeNode cp = null;
     DaxeNode p1 = _dn;
     double offset1 = _dnOffset.toDouble();
     while (p1 != null) {

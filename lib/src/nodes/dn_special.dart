@@ -120,9 +120,6 @@ class SpecialDialog {
     div3.classes.add('dlg3');
     h.FormElement form = new h.FormElement();
     
-    int rows = 0;
-    for (int i=0; i<symbols.length; i++)
-      rows += (symbols[i].length / columns).ceil();
     h.TableElement table = new h.TableElement();
     table.classes.add('special_dlg');
     int x = 0;

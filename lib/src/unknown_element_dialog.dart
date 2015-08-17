@@ -105,7 +105,6 @@ class UnknownElementDialog {
         return;
       }
       String value = valueInputs[i].value;
-      int ind = name.indexOf(':');
       DaxeAttr attribute;
       String namespace = doc.cfg != null ? doc.cfg.attributeNamespaceByName(name) : null;
       attribute = new DaxeAttr.NS(namespace, name, value);

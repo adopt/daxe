@@ -70,6 +70,7 @@ class AttributeDialog {
         td.classes.add('required');
       else
         td.classes.add('optional');
+      td.classes.add('attribute-title');
       tr.append(td);
       td = new h.TableCellElement();
       String value = el.getAttribute(name);

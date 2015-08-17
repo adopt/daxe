@@ -87,7 +87,6 @@ class Engine {
   bool checkConditions(TokenRule rule) {
     if (rule.conditions == null)
       return(true);
-    bool stop = false;
     for (StateCondition condition in rule.conditions) {
       bool current = states[condition.name];
       if (current == null)

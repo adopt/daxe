@@ -49,7 +49,7 @@ class DNFile extends DaxeNode {
     chooser = (chooserString == 'true' && doc.saveURL != null);
     _widthAtt = doc.cfg.elementParameterValue(ref, 'widthAtt', null);
     _heightAtt = doc.cfg.elementParameterValue(ref, 'heightAtt', null);
-    error = false;
+    error = (getAttribute(_srcAtt) == null);
   }
   
   @override
@@ -76,7 +76,7 @@ class DNFile extends DaxeNode {
       span.id = "$id";
       span.classes.add('dn');
       span.classes.add('file-label');
-      span.text = getAttribute(_srcAtt);
+      span.text = getAttribute(_srcAtt) != null ? getAttribute(_srcAtt) : '?';
       span.onClick.listen((h.MouseEvent event) => attributeDialog());
       return(span);
     }

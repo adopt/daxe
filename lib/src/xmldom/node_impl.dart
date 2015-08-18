@@ -57,9 +57,6 @@ abstract class NodeImpl implements Node {
         (this as Document).documentElement != null)
       throw new DOMException("HIERARCHY_REQUEST_ERR");
     
-    if (childNodes == null)
-      childNodes = new List<Node>();
-    
     if (newChild.parentNode != null)
       newChild.parentNode.removeChild(newChild);
     
@@ -71,6 +68,10 @@ abstract class NodeImpl implements Node {
       firstChild = newChild;
     newChild.nextSibling = refChild;
     newChild.previousSibling = refChild.previousSibling;
+    if (refChild.previousSibling != null)
+      refChild.previousSibling.nextSibling = newChild;
+    refChild.previousSibling = newChild;
+    childNodes.insert(childNodes.indexOf(refChild), newChild);
     return(newChild);
   }
   
@@ -93,7 +94,12 @@ abstract class NodeImpl implements Node {
       lastChild = newChild;
     newChild.nextSibling = oldChild.nextSibling;
     newChild.previousSibling = oldChild.previousSibling;
+    if (oldChild.previousSibling != null)
+      oldChild.previousSibling.nextSibling = newChild;
     oldChild.parentNode = null;
+    oldChild.previousSibling = null;
+    oldChild.nextSibling = null;
+    childNodes.insert(childNodes.indexOf(oldChild), newChild);
     childNodes.remove(oldChild);
     return(oldChild);
   }
@@ -114,6 +120,8 @@ abstract class NodeImpl implements Node {
     if (oldChild.nextSibling != null)
       oldChild.nextSibling.previousSibling = oldChild.previousSibling;
     oldChild.parentNode = null;
+    oldChild.previousSibling = null;
+    oldChild.nextSibling = null;
     childNodes.remove(oldChild);
     return(oldChild);
   }

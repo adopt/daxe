@@ -31,6 +31,7 @@ class Cursor {
   static const Duration delay = const Duration(milliseconds: 700);
   Timer timer;
   HashMap<int, ActionFunction> shortcuts;
+  bool donePaste;
   
   Cursor() {
     ta = h.querySelector("#tacursor");
@@ -41,6 +42,15 @@ class Cursor {
     ta.onKeyUp.listen((h.KeyboardEvent event) => keyUp(event));
     ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
     ta.onBlur.listen((h.Event event) => blur(event));
+    ta.onPaste.listen((h.Event e) {
+      h.DataTransfer data = e.clipboardData;
+      if (data.types.contains('text/html')) {
+        pasteHTML(data.getData('text/html'), data.getData('text/plain'));
+        e.preventDefault();
+        donePaste = true;
+      }
+    });
+    donePaste = false;
     newTimer();
   }
   
@@ -109,6 +119,7 @@ class Cursor {
   void keyDown(h.KeyboardEvent event) {
     if (selectionStart == null)
       return;
+    donePaste = false;
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
@@ -181,10 +192,13 @@ class Cursor {
     } else if (ctrl && !shift && keyCode == h.KeyCode.C) { // Ctrl-C
       ta.value = '';
     } else if (ctrl && !shift && keyCode == h.KeyCode.V) { // Ctrl-V
+      if (donePaste) {
+        return;
+      }
       if (selectionStart != selectionEnd) {
         removeSelection();
       }
-      paste(ta.value);
+      pasteString(ta.value);
       ta.value = '';
       page.updateAfterPathChange();
     } else if (ctrl && shortcuts[keyCode] != null) {
@@ -1258,9 +1272,10 @@ class Cursor {
   }
   
   /**
-   * Parses the given String and pastes the XML at the current position.
+   * Parses the given String and pastes the XML or text at the current position.
+   * Returns true if it was pasted without error.
    */
-  bool paste(String s) {
+  bool pasteString(String s) {
     x.Document tmpdoc;
     try {
       x.DOMParser dp = new x.DOMParser();
@@ -1281,36 +1296,57 @@ class Cursor {
         h.window.alert(Strings.get('insert.text_not_allowed'));
         return(false);
       }
-      // use hidden paragraphs instead of newlines if allowed at current position
-      bool useParagraphs = (doc.hiddenParaRefs != null && s.contains('\n'));
-      x.Element hiddenp;
-      if (useParagraphs) {
-        DaxeNode parent = selectionStart.dn;
-        if (parent is DNText)
-          parent = parent.parent;
-        hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
-        useParagraphs = (hiddenp != null);
-      }
-      if (!useParagraphs) {
-        doc.insertString(selectionStart, s);
-        return(true);
-      }
-      x.DOMImplementation domimpl = new x.DOMImplementationImpl();
-      tmpdoc = domimpl.createDocument(null, null, null);
-      x.Element root = tmpdoc.createElement('root');
-      tmpdoc.appendChild(root);
-      List<String> parts = s.split('\n');
-      for (String part in parts) {
-        x.Element p = tmpdoc.createElementNS(null, doc.cfg.elementName(hiddenp));
-        if (part != '')
-          p.appendChild(tmpdoc.createTextNode(part));
-        root.appendChild(p);
-      }
+      return(pasteText(s));
+    }
+    return(pasteXML(tmpdoc));
+  }
+  
+  /**
+   * Pastes the text at the current position (using hidden paragraphs if possible).
+   * Returns true if it was pasted without error.
+   */
+  bool pasteText(String s) {
+    // use hidden paragraphs instead of newlines if allowed at current position
+    bool useParagraphs = (doc.hiddenParaRefs != null && s.contains('\n'));
+    x.Element hiddenp;
+    if (useParagraphs) {
+      DaxeNode parent = selectionStart.dn;
+      if (parent is DNText)
+        parent = parent.parent;
+      hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+      useParagraphs = (hiddenp != null);
+    }
+    if (!useParagraphs) {
+      doc.insertString(selectionStart, s);
+      return(true);
+    }
+    x.DOMImplementation domimpl = new x.DOMImplementationImpl();
+    x.Document tmpdoc = domimpl.createDocument(null, null, null);
+    x.Element root = tmpdoc.createElement('root');
+    tmpdoc.appendChild(root);
+    List<String> parts = s.split('\n');
+    for (String part in parts) {
+      x.Element p = tmpdoc.createElementNS(null, doc.cfg.elementName(hiddenp));
+      if (part != '')
+        p.appendChild(tmpdoc.createTextNode(part));
+      root.appendChild(p);
+    }
+    return(pasteXML(tmpdoc));
+  }
+  
+  /**
+   * Pastes the XML (without the root element) at the current position.
+   * Returns true if it was pasted without error.
+   */
+  bool pasteXML(x.Document tmpdoc) {
+    x.Element root = tmpdoc.documentElement;
+    if (root.firstChild != null && root.firstChild.nextSibling == null &&
+        root.firstChild.nodeType == x.Node.TEXT_NODE) {
+      return(pasteText(root.firstChild.nodeValue));
     }
     DaxeNode parent = selectionStart.dn;
     if (parent is DNText)
       parent = parent.parent;
-    x.Element root = tmpdoc.documentElement;
     // to call fixLineBreaks(), we need a real DaxeNode for the "root", with the right ref
     DaxeNode dnRoot = NodeFactory.create(parent.ref);
     if (root.childNodes != null) {
@@ -1334,6 +1370,115 @@ class Cursor {
     }
     doc.doNewEdit(edit);
     return(true);
+  }
+  
+  /**
+   * Try to paste HTML, paste the plain alternative if that does not work.
+   */
+  void pasteHTML(String html, String plain) {
+    // first remove tags with a prefix (the whole content would be
+    // removed by Dart otherwise)
+    html = html.replaceAll(new RegExp(r'</?[a-zA-Z]+:[a-zA-Z-]+[^>\n]*>'), '');
+    // then change img src to keep file names local
+    // (otherwise Dart would remove the whole src attribute)
+    html = html.replaceAllMapped(
+        new RegExp(r'(<img[^>\n]+src=")[a-zA-Z0-9_:./-]+/([a-zA-Z0-9_.-]+")'),
+        (Match m) => '${m[1]}${m[2]}'
+    );
+    // let the browser and Dart parse and fix some of the syntax before trying to use it
+    h.DivElement div = new h.DivElement();
+    div.innerHtml = html;
+    String fixed = (new h.XmlSerializer()).serializeToString(div);
+    x.Document tmpdoc;
+    try {
+      x.DOMParser dp = new x.DOMParser();
+      tmpdoc = dp.parseFromString(fixed);
+      if (tmpdoc.documentElement.getAttribute('xmlns') != '') {
+        tmpdoc.documentElement.removeAttribute('xmlns');
+        _removeNamespace(tmpdoc.documentElement);
+      }
+      cleanupHTML(tmpdoc.documentElement);
+      doc.removeWhitespace(tmpdoc.documentElement);
+      pasteXML(tmpdoc);
+    } on x.DOMException {
+      pasteText(plain);
+    }
+  }
+  
+  void _removeNamespace(x.Element el) {
+    el.namespaceURI = null;
+    for (x.Node n=el.firstChild; n!=null; n=n.nextSibling) {
+      if (n.nodeType == x.Node.ELEMENT_NODE) {
+        _removeNamespace(n);
+      }
+    }
+  }
+  
+  /**
+   * Try to cleanup the HTML, removing all style information and
+   * some text processor crap.
+   */
+  void cleanupHTML(x.Element el) {
+    if (el.getAttribute('class') != '')
+      el.removeAttribute('class');
+    if (el.getAttribute('style') != '')
+      el.removeAttribute('style');
+    x.Node next;
+    for (x.Node n=el.firstChild; n!=null; n=next) {
+      next = n.nextSibling;
+      if (n.nodeType == x.Node.ELEMENT_NODE) {
+        if (n.prefix != null) {
+          el.removeChild(n);
+        } else {
+          cleanupHTML(n);
+          String name = n.nodeName;
+          bool replaceByChildren = false;
+          if (name == 'center' || name == 'font')
+            replaceByChildren = true;
+          else if (name == 'span' || name == 'div' || name == 'b' || name == 'i') {
+            if (n.firstChild == null) {
+              el.removeChild(n);
+            } else if (!n.hasAttributes()) {
+              replaceByChildren = true;
+            }
+          } else if (name == 'p' && n.firstChild != null &&
+              (el.nodeName == 'li' || el.nodeName == 'td') &&
+              (n.previousSibling == null ||
+              (n.previousSibling.nodeType == x.Node.TEXT_NODE &&
+              n.previousSibling.previousSibling == null &&
+              n.previousSibling.nodeValue.trim() == '')) &&
+              (n.nextSibling == null ||
+              (n.nextSibling.nodeType == x.Node.TEXT_NODE &&
+              n.nextSibling.nextSibling == null && n.nextSibling.nodeValue.trim() == '')))
+            replaceByChildren = true;
+          if (replaceByChildren) {
+            // replace element by its children
+            x.Node first = n.firstChild;
+            x.Node next2;
+            for (x.Node n2=n.firstChild; n2!=null; n2=next2) {
+              next2 = n2.nextSibling;
+              n.removeChild(n2);
+              if (next == null)
+                el.appendChild(n2);
+              else
+                el.insertBefore(n2, next);
+            }
+            el.removeChild(n);
+            next = first;
+          }
+        }
+      } else if (n.nodeType == x.Node.COMMENT_NODE) {
+        el.removeChild(n);
+      }
+    }
+    // normalize text
+    for (x.Node n=el.firstChild; n!=null; n=n.nextSibling) {
+      while (n.nodeType == x.Node.TEXT_NODE && n.nextSibling != null &&
+          n.nextSibling.nodeType == x.Node.TEXT_NODE) {
+        n.nodeValue = "${n.nodeValue}${n.nextSibling.nodeValue}";
+        el.removeChild(n.nextSibling);
+      }
+    }
   }
   
   void mergeBlocks(DaxeNode dn1, DaxeNode dn2) {

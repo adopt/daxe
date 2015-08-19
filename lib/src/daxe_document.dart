@@ -1096,9 +1096,11 @@ class DaxeDocument {
           return false;
         return true;
       } else if (prevNode.nodeType == x.Node.ELEMENT_NODE) {
-        final x.Node lc = prevNode.lastChild;
-        if (lc != null && lc.nodeType == x.Node.TEXT_NODE) {
-          final String prevText = lc.nodeValue;
+        x.Node lastInPrev = prevNode;
+        while (lastInPrev.nodeType == x.Node.ELEMENT_NODE && lastInPrev.lastChild != null)
+          lastInPrev = lastInPrev.lastChild;
+        if (lastInPrev != null && lastInPrev.nodeType == x.Node.TEXT_NODE) {
+          final String prevText = lastInPrev.nodeValue;
           if (!(prevText.endsWith(" ") || prevText.endsWith("\n")))
             return false;
         }

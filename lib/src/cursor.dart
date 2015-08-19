@@ -1376,18 +1376,10 @@ class Cursor {
    * Try to paste HTML, paste the plain alternative if that does not work.
    */
   void pasteHTML(String html, String plain) {
-    // first remove tags with a prefix (the whole content would be
-    // removed by Dart otherwise)
-    html = html.replaceAll(new RegExp(r'</?[a-zA-Z]+:[a-zA-Z-]+[^>\n]*>'), '');
-    // then change img src to keep file names local
-    // (otherwise Dart would remove the whole src attribute)
-    html = html.replaceAllMapped(
-        new RegExp(r'(<img[^>\n]+src=")[a-zA-Z0-9_:./-]+/([a-zA-Z0-9_.-]+")'),
-        (Match m) => '${m[1]}${m[2]}'
-    );
-    // let the browser and Dart parse and fix some of the syntax before trying to use it
+    // Let the browser and Dart parse and fix some of the syntax before trying to use it
     h.DivElement div = new h.DivElement();
-    div.innerHtml = html;
+    MyTreeSanitizer sanitizer = new MyTreeSanitizer();
+    div.setInnerHtml(html, treeSanitizer:sanitizer);
     String fixed = (new h.XmlSerializer()).serializeToString(div);
     x.Document tmpdoc;
     try {
@@ -1398,7 +1390,20 @@ class Cursor {
         _removeNamespace(tmpdoc.documentElement);
       }
       cleanupHTML(tmpdoc.documentElement);
-      doc.removeWhitespace(tmpdoc.documentElement);
+      // removeWhitespace needs the right references
+      DaxeNode parent = selectionStart.dn;
+      if (parent is DNText)
+        parent = parent.parent;
+      tmpdoc.documentElement.nodeName = parent.nodeName;
+      tmpdoc.documentElement.namespaceURI = parent.namespaceURI;
+      tmpdoc.documentElement.prefix = parent.prefix;
+      tmpdoc.documentElement.localName = parent.localName;
+      x.Element refGrandParent;
+      if (parent.parent == null)
+        refGrandParent = null;
+      else
+        refGrandParent = parent.parent.ref;
+      doc._removeWhitespace(tmpdoc.documentElement, refGrandParent, false, true);
       pasteXML(tmpdoc);
     } on x.DOMException {
       pasteText(plain);
@@ -1427,35 +1432,54 @@ class Cursor {
     for (x.Node n=el.firstChild; n!=null; n=next) {
       next = n.nextSibling;
       if (n.nodeType == x.Node.ELEMENT_NODE) {
+        x.Element en = n;
         if (n.prefix != null) {
           el.removeChild(n);
         } else {
           cleanupHTML(n);
           String name = n.nodeName;
           bool replaceByChildren = false;
-          if (name == 'center' || name == 'font')
+          if (name == 'center' || name == 'font') {
             replaceByChildren = true;
-          else if (name == 'span' || name == 'div' || name == 'b' || name == 'i') {
+          } else if (name == 'b' || name == 'i') {
+            if (n.firstChild == null)
+              el.removeChild(n);
+          } else if (name == 'span' || name == 'div') {
             if (n.firstChild == null) {
               el.removeChild(n);
-            } else if (!n.hasAttributes()) {
+            } else {
               replaceByChildren = true;
             }
           } else if (name == 'p' && n.firstChild != null &&
               (el.nodeName == 'li' || el.nodeName == 'td') &&
               (n.previousSibling == null ||
-              (n.previousSibling.nodeType == x.Node.TEXT_NODE &&
-              n.previousSibling.previousSibling == null &&
-              n.previousSibling.nodeValue.trim() == '')) &&
+                (n.previousSibling.nodeType == x.Node.TEXT_NODE &&
+                  n.previousSibling.previousSibling == null &&
+                  n.previousSibling.nodeValue.trim() == '')) &&
               (n.nextSibling == null ||
-              (n.nextSibling.nodeType == x.Node.TEXT_NODE &&
-              n.nextSibling.nextSibling == null && n.nextSibling.nodeValue.trim() == '')))
+                (n.nextSibling.nodeType == x.Node.TEXT_NODE &&
+                  n.nextSibling.nextSibling == null &&
+                  n.nextSibling.nodeValue.trim() == ''))) {
+            // remove useless paragraphs in li and td
             replaceByChildren = true;
+          } else if (name == 'img') {
+            String src = en.getAttribute('src');
+            if (src != null && !src.startsWith('data:'))
+              en.setAttribute('src', src.split('/').last);
+          } else if (name == 'a') {
+            String href = en.getAttribute('href');
+            if (href != null && href.startsWith('file://')) {
+              String last = href.split('/').last;
+              if (last.contains('#'))
+                last = last.substring(last.indexOf('#'));
+              en.setAttribute('href', last);
+            }
+          }
           if (replaceByChildren) {
             // replace element by its children
             x.Node first = n.firstChild;
             x.Node next2;
-            for (x.Node n2=n.firstChild; n2!=null; n2=next2) {
+            for (x.Node n2=first; n2!=null; n2=next2) {
               next2 = n2.nextSibling;
               n.removeChild(n2);
               if (next == null)
@@ -1464,7 +1488,8 @@ class Cursor {
                 el.insertBefore(n2, next);
             }
             el.removeChild(n);
-            next = first;
+            if (first != null)
+              next = first;
           }
         }
       } else if (n.nodeType == x.Node.COMMENT_NODE) {
@@ -1602,6 +1627,62 @@ class Cursor {
       page.updateAfterPathChange();
     } else {
       h.window.alert(Strings.get('menu.cut_with_keyboard'));
+    }
+  }
+}
+
+class LaxUriPolicy implements h.UriPolicy {
+  @override
+  bool allowsUri(String uri) => true;
+}
+
+/**
+ * We need a custom tree sanitizer because Dart's sanitizer removes an entire element content
+ * when it is not valid. This sanitizer preserves the children in such a case,
+ * which is standard behavior for HTML.
+ */
+class MyTreeSanitizer implements h.NodeTreeSanitizer {
+  h.NodeValidator validator;
+  
+  MyTreeSanitizer() {
+    h.UriPolicy policy = new LaxUriPolicy();
+    validator = new h.NodeValidatorBuilder.common()
+          ..allowImages(policy)
+          ..allowNavigation(policy);
+    // NOTE: we could allow inline style with allowInlineStyles(),
+    // but then we will have to clean that up in cleanupHTML().
+  }
+  
+  void sanitizeTree(h.Node node) {
+    h.Node next;
+    for (h.Node n=node.firstChild; n != null; n = next) {
+      next = n.nextNode;
+      if (n.nodeType == h.Node.ELEMENT_NODE) {
+        h.Element ne = (n as h.Element);
+        if (!validator.allowsElement(ne)) {
+          // replace element by its children
+          h.Node first = n.firstChild;
+          h.Node next2;
+          for (h.Node n2=first; n2!=null; n2=next2) {
+            next2 = n2.nextNode;
+            n2.remove();
+            if (next == null)
+              node.append(n2);
+            else
+              node.insertBefore(n2, next);
+          }
+          n.remove();
+          if (first != null)
+            next = first;
+        } else {
+          Map<String, String> attributes = ne.attributes;
+          attributes.forEach((String name, String value) {
+            if (!validator.allowsAttribute(ne, name, value))
+              ne.attributes.remove(name);
+          });
+          sanitizeTree(ne);
+        }
+      }
     }
   }
 }

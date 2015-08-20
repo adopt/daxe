@@ -237,7 +237,7 @@ class XMLParser {
             i < token.matchedTokens.length - 2 &&
             token.matchedTokens[i+1].id == 'ATTR_VALUE') {
           publicId = token.matchedTokens[i+1].matchedString;
-          publicId = publicId.substring(1, systemId.length - 1);
+          publicId = publicId.substring(1, publicId.length - 1);
         } else if (token.matchedTokens[i].id == 'GENERIC_ID' &&
             token.matchedTokens[i].matchedString == 'SYSTEM' &&
             i < token.matchedTokens.length - 2 &&

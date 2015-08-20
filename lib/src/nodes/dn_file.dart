@@ -52,6 +52,11 @@ class DNFile extends DaxeNode {
     error = (getAttribute(_srcAtt) == null);
   }
   
+  void setSrc(String src) {
+    setAttribute(_srcAtt, src);
+    error = (src == null);
+  }
+  
   @override
   h.Element html() {
     assert(doc.filePath != null);
@@ -64,7 +69,9 @@ class DNFile extends DaxeNode {
       int ind = xmlFilePath.lastIndexOf('/');
       if (ind != -1)
         folder = xmlFilePath.substring(0, ind + 1);
-      String src = "$folder${getAttribute(_srcAtt)}";
+      String src = getAttribute(_srcAtt);
+      if (!src.startsWith('data:'))
+        src = "$folder$src";
       _img.src = src;
       _img.alt = getAttribute(_srcAtt);
       _img.onLoad.listen((h.Event event) => _imageLoaded());

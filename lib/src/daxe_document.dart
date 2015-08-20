@@ -124,7 +124,7 @@ class DaxeDocument {
       } else {
         String errorMessage;
         if (response.startsWith('error\n'))
-          errorMessage = response.substring('erreur\n'.length);
+          errorMessage = response.substring('error\n'.length);
         else
           errorMessage = response;
         completer.completeError(new DaxeException(errorMessage));
@@ -179,6 +179,42 @@ class DaxeDocument {
     buffer.addAll(UTF8.encode('\r\n--$bound--\r\n\r\n'));
     request.send(buffer); // what buffer type can I use here ???
     */
+    return(completer.future);
+  }
+  
+  /**
+   * Send the file with a POST request to saveURL.
+   */
+  Future uploadFile(String uri, h.Blob blob) {
+    assert(saveURL != null);
+    Completer completer = new Completer();
+    h.HttpRequest request = new h.HttpRequest();
+    request.onLoad.listen((h.ProgressEvent event) {
+      String response = request.responseText;
+      if (response.startsWith('ok')) {
+        if (undoPosition >= 0)
+          lastSavedEdit = edits[undoPosition];
+        else
+          lastSavedEdit = null;
+        completer.complete();
+      } else {
+        String errorMessage;
+        if (response.startsWith('error\n'))
+          errorMessage = response.substring('error\n'.length);
+        else
+          errorMessage = response;
+        completer.completeError(new DaxeException(errorMessage));
+      }
+    });
+    request.onError.listen((h.ProgressEvent event) {
+      completer.completeError(new DaxeException(request.status.toString()));
+    });
+    // NOTE: FormData only works with recent browsers, IE >= 10.
+    h.FormData formData = new h.FormData();
+    formData.append('path', uri);
+    formData.appendBlob('file', blob, uri);
+    request.open('POST', saveURL);
+    request.send(formData);
     return(completer.future);
   }
   

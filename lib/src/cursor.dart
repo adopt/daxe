@@ -48,6 +48,10 @@ class Cursor {
         pasteHTML(data.getData('text/html'), data.getData('text/plain'));
         e.preventDefault();
         donePaste = true;
+      } else if (data.types.contains('Files')) {
+        donePaste = pasteImage(data);
+        if (donePaste)
+          e.preventDefault();
       }
     });
     donePaste = false;
@@ -198,9 +202,11 @@ class Cursor {
       if (selectionStart != selectionEnd) {
         removeSelection();
       }
-      pasteString(ta.value);
-      ta.value = '';
-      page.updateAfterPathChange();
+      if (ta.value != '') {
+        pasteString(ta.value);
+        ta.value = '';
+        page.updateAfterPathChange();
+      }
     } else if (ctrl && shortcuts[keyCode] != null) {
       event.preventDefault();
       shortcuts[keyCode]();
@@ -1464,6 +1470,7 @@ class Cursor {
             replaceByChildren = true;
           } else if (name == 'img') {
             String src = en.getAttribute('src');
+            // TODO: upload data images when possible
             if (src != null && !src.startsWith('data:'))
               en.setAttribute('src', src.split('/').last);
           } else if (name == 'a') {
@@ -1504,6 +1511,112 @@ class Cursor {
         el.removeChild(n.nextSibling);
       }
     }
+  }
+  
+  /**
+   * Returns true if the image will probably be pasted.
+   */
+  bool pasteImage(h.DataTransfer data) {
+    if (selectionStart == null)
+      return false;
+    DaxeNode parent = selectionStart.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    if (parent.ref == null)
+      return false;
+    List<x.Element> childrenRefs = doc.cfg.subElements(parent.ref);
+    x.Element imageRef = null;
+    for (x.Element ref in childrenRefs) {
+      String type = doc.cfg.elementDisplayType(ref);
+      if (type == 'file' || type == 'fichier') {
+        imageRef = ref;
+        break;
+      }
+    }
+    if (imageRef == null)
+      return false;
+    h.Blob blob = null;
+    if (data.items != null) {
+      // Chromium, pasted image (not a file)
+      for (int i=0; i<data.items.length; i++) {
+        if (data.items[i].type.indexOf('image') == 0) {
+          blob = data.items[i].getAsFile();
+          break;
+        }
+      }
+    } else if (data.files != null) {
+      // pasted file, might work with Firefox or IE
+      for (int i=0; i<data.files.length; i++) {
+        if (data.files[i].type.indexOf('image') == 0) {
+          blob = data.files[i];
+          break;
+        }
+      }
+    }
+    if (blob == null)
+      return false;
+    if (doc.saveURL == null) {
+      // no server, use data: for src
+      h.FileReader reader = new h.FileReader();
+      reader.onLoad.listen((h.ProgressEvent e) {
+        DNFile img = NodeFactory.create(imageRef);
+        img.setSrc(reader.result);
+        doc.insertNode(img, selectionStart);
+      });
+      reader.readAsDataUrl(blob);
+    } else {
+      // upload the image file
+      try {
+        _uploadAndCreateImage(blob, imageRef);
+      } on DaxeException catch(ex) {
+        h.window.alert(Strings.get('save.error') + ': ' + ex.message);
+      }
+    }
+    return true;
+  }
+  
+  Future _uploadAndCreateImage(h.Blob blob, x.Element imageRef) async {
+    String type = blob.type;
+    String filename;
+    String dirURI = doc.filePath;
+    dirURI = dirURI.substring(0, dirURI.lastIndexOf('/')+1);
+    if (blob is h.File)
+      filename = blob.name;
+    else {
+      String extension = type;
+      if (extension.contains('/'))
+        extension = extension.split('/').last;
+      // read the directory to find a number to use in the file name
+      Uri htmlUri = Uri.parse(h.window.location.toString());
+      Uri docUri = Uri.parse(doc.filePath);
+      List<String> segments = new List<String>.from(docUri.pathSegments);
+      segments.removeLast();
+      Uri openDir = docUri.replace(scheme:htmlUri.scheme, host:htmlUri.host,
+          port:htmlUri.port, pathSegments:segments);
+      List<DirectoryItem> items = await FileChooser.readDirectory(openDir);
+      String baseName = 'pasted_image_';
+      int newNumber = 1;
+      for (DirectoryItem item in items) {
+        if (item.type == DirectoryItemType.FILE && item.name.startsWith(baseName)) {
+          String noExt = item.name;
+          int ind = item.name.indexOf('.');
+          if (ind != -1)
+            noExt = item.name.substring(0, ind);
+          String sNum = noExt.substring(baseName.length);
+          int num;
+          num = int.parse(sNum, onError: (String s) => null);
+          if (num != null && num >= newNumber)
+            newNumber = num + 1;
+        }
+      }
+      filename = 'pasted_image_${newNumber}.' + extension;
+    }
+    String uri = dirURI + filename;
+    await doc.uploadFile(uri, blob);
+    DNFile img = NodeFactory.create(imageRef);
+    img.setSrc(filename);
+    doc.insertNode(img, selectionStart);
+    return true;
   }
   
   void mergeBlocks(DaxeNode dn1, DaxeNode dn2) {
@@ -1660,20 +1773,24 @@ class MyTreeSanitizer implements h.NodeTreeSanitizer {
       if (n.nodeType == h.Node.ELEMENT_NODE) {
         h.Element ne = (n as h.Element);
         if (!validator.allowsElement(ne)) {
-          // replace element by its children
-          h.Node first = n.firstChild;
-          h.Node next2;
-          for (h.Node n2=first; n2!=null; n2=next2) {
-            next2 = n2.nextNode;
-            n2.remove();
-            if (next == null)
-              node.append(n2);
-            else
-              node.insertBefore(n2, next);
+          // replace element by its children, except for <style> and <script>
+          if (n.nodeName == 'STYLE' || n.nodeName == 'SCRIPT') {
+            n.remove();
+          } else {
+            h.Node first = n.firstChild;
+            h.Node next2;
+            for (h.Node n2=first; n2!=null; n2=next2) {
+              next2 = n2.nextNode;
+              n2.remove();
+              if (next == null)
+                node.append(n2);
+              else
+                node.insertBefore(n2, next);
+            }
+            n.remove();
+            if (first != null)
+              next = first;
           }
-          n.remove();
-          if (first != null)
-            next = first;
         } else {
           Map<String, String> attributes = ne.attributes;
           attributes.forEach((String name, String value) {

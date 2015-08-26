@@ -1,0 +1,1284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xml:lang="fr" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+<!-- Types de données -->
+
+<xs:simpleType name="typeLabel">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="[\-a-z0-9]*"/>
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="typeDate">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="[0-3]?[0-9]/[0-1]?[0-9]/[1-2][0-9][0-9][0-9]"/>
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="typeURL">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="http://.*"/>
+    </xs:restriction>
+</xs:simpleType>
+
+
+<!-- Elément racine -->
+
+<xs:element name="XPAGES">
+    <xs:annotation>
+        <xs:documentation>
+        Un ensemble de pages qui se suivent, sur un sujet donné.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="INFORMATIONS"/>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="PAGE"/>
+                <xs:element ref="REFXPAGES"/>
+                <xs:element ref="XPAGES"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+
+<!-- Métadonnées -->
+
+<xs:element name="INFORMATIONS">
+    <xs:annotation>
+        <xs:documentation>
+        Informations sur le document. Le label et le titre sont obligatoires.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="LABEL"/>
+            <xs:element ref="TITRE"/>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="AUTEUR"/>
+            <xs:element minOccurs="0" ref="DATECRE"/>
+            <xs:element minOccurs="0" ref="DATEMAJ"/>
+            <xs:element minOccurs="0" ref="LOGO"/>
+            <xs:element minOccurs="0" ref="INTERFACE"/>
+            <xs:element minOccurs="0" ref="RUBRIQUES"/>
+            <xs:element minOccurs="0" ref="LANGUE"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="LABEL" type="typeLabel">
+    <xs:annotation>
+        <xs:documentation>
+        Identifiant pour cette contribution.
+        Ne peut contenir que des lettres de a à z, des chiffres de 0 à 9, et le caractère "-".
+        Le nom du fichier XML et le nom du dossier doivent correspondre au label.
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="TITRE" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+        Titre de l'ensemble de pages.
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="AUTEUR" type="xs:string"/>
+
+<xs:element name="DATECRE" type="typeDate">
+    <xs:annotation>
+        <xs:documentation>
+            Date de création, au format JJ/MM/AAAA
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="DATEMAJ" type="typeDate">
+    <xs:annotation>
+        <xs:documentation>
+            Date de mise à jour, au format JJ/MM/AAAA
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="LOGO">
+    <xs:annotation>
+        <xs:documentation>
+        Fichier image d'un logo à utiliser pour l'interface du site.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="fichier" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                Chemin vers le fichier de l'image, relatif au fichier XML.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="lien" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                Lien optionnel d'une page web vers laquelle aller quand on clique sur le logo.
+                Doit commencer par "http://".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="INTERFACE" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+        Interface des pages.
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="RUBRIQUES">
+    <xs:annotation>
+        <xs:documentation>
+        Afficher les rubriques ou non. Par défaut, utilise la valeur de l'élément parent.
+        L'élément XPAGES de plus haut niveau a la valeur "oui" par défaut.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="oui"/>
+            <xs:enumeration value="non"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+<xs:element name="LANGUE">
+    <xs:annotation>
+        <xs:documentation>
+        Code de la langue à utiliser pour l'interface utilisateur.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="fr"/>
+            <xs:enumeration value="en"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+
+<!-- Pages -->
+
+<xs:element name="REFXPAGES">
+    <xs:annotation>
+        <xs:documentation>
+        Référence vers un autre ensemble de pages, dont le titre sera affiché
+        dans le sommaire de cet ensemble.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="label" type="typeLabel" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Label du document XPAGES référencé.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="PAGE">
+    <xs:annotation>
+        <xs:documentation>
+        Page écran, d'environ 1000 caractères.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element ref="SECTION"/>
+            <xs:element ref="PARAGRAPHE"/>
+            <xs:element ref="LISTE"/>
+            <xs:element ref="TABLEAU"/>
+            <xs:element ref="ENVIMAGE"/>
+            <xs:element ref="APPLICATION"/>
+            <xs:element ref="COMMENTAIRE"/>
+            <xs:element ref="CODE"/>
+            <xs:element ref="EXERCICE"/>
+            <xs:element ref="QCM"/>
+            <xs:element ref="BIBLIOGRAPHIE"/>
+        </xs:choice>
+        <xs:attribute name="label" type="typeLabel" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Label de la page (identifiant caché permettant de faire un lien vers cette page).
+                    Ne doit être composé que de lettres minuscules de a à z.
+                    Utiliser le label "index" pour la page d'entrée du site.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="titre" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Titre de la page.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="role" type="xs:string" use="optional" default="autre">
+            <xs:annotation>
+                <xs:documentation>
+                    Rôle sémantique de la page : sens qu'on lui donne.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+
+<!-- Eléments de bloc -->
+
+<xs:element name="SECTION">
+    <xs:annotation>
+        <xs:documentation>
+        Une section à l'intérieur d'une page, qui peut avoir un titre.
+        Le rôle permet de donner un sens à la section, pour des transformations XML ultérieures ou un affichage particulier.
+        L'importance "grande" permet de mettre en valeur la section par rapport au reste du texte.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element ref="SECTION"/>
+            <xs:element ref="PARAGRAPHE"/>
+            <xs:element ref="LISTE"/>
+            <xs:element ref="TABLEAU"/>
+            <xs:element ref="ENVIMAGE"/>
+            <xs:element ref="APPLICATION"/>
+            <xs:element ref="COMMENTAIRE"/>
+            <xs:element ref="CODE"/>
+            <xs:element ref="EXERCICE"/>
+            <xs:element ref="QCM"/>
+        </xs:choice>
+        <xs:attribute name="titre" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Titre de la section.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="role" type="xs:string" use="optional" default="autre">
+            <xs:annotation>
+                <xs:documentation>
+                    Rôle sémantique de la section : sens qu'on lui donne.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="importance" use="optional" default="normale">
+            <xs:annotation>
+                <xs:documentation>
+                    Importance de la section. Une section importante pourra être mise en évidence
+                    dans le site web généré.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="normale"/>
+                    <xs:enumeration value="grande"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="PARAGRAPHE">
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:group ref="texte"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="ENVIMAGE">
+    <xs:annotation>
+        <xs:documentation>
+        Environnement pour des images ou animations.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="FICHIER"/>
+                <xs:element ref="FORMATS"/>
+            </xs:choice>
+            <xs:element minOccurs="0" ref="LEGENDE"/>
+            <xs:element minOccurs="0" ref="CREDIT"/>
+        </xs:sequence>
+        <xs:attribute name="titre" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Titre de l'image ou animation.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="localisation" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Positionnement souhaité pour l'image :
+                    - texte : dans le texte à la taille d'origine
+                    - page : dans la page à côté du texte, réduit si nécessaire
+                    - icône : sous forme de petite icône à côté du paragraphe qui suit
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="texte"/>
+                    <xs:enumeration value="page"/>
+                    <xs:enumeration value="icône"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="label" type="typeLabel" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Label permettant de faire un lien vers l'image.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="LEGENDE">
+    <xs:annotation>
+        <xs:documentation>
+        Légende
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:group ref="texte"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="FICHIER">
+    <xs:annotation>
+        <xs:documentation>
+        Fichier image ou animation à inclure dans le texte,
+        ou à localiser dans une page qui s'ouvrira à part du texte.
+        Si le contenu du fichier doit être accompagné d'une légende,
+        il est nécessaire de passer par l'élément ENVIMAGE.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="nom" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="FORMATS">
+    <xs:annotation>
+        <xs:documentation>
+        Permet de spécifier plusieurs fichiers, avec des formats différents, pour un même media.
+        Un seul fichier sera affiché, choisi en fonction des capacités de l'environnement d'affichage.
+        Cet élément n'est utile qu'avec des formats qui ne sont pas lisibles partout, par exemple pour des vidéos.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="FICHIER" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="CREDIT">
+    <xs:annotation>
+        <xs:documentation>
+        crédit des documents
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="LIENPAGE"/>
+            <xs:element ref="LIENWEB"/>
+            <xs:group ref="styletexte"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="TABLEAU">
+    <xs:annotation>
+        <xs:documentation>
+        Tableau.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="TR"/>
+        </xs:choice>
+        <xs:attribute name="titre" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Titre du tableau
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="TR">
+    <xs:annotation>
+        <xs:documentation>
+        Ligne d'un tableau
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="TD"/>
+            <xs:element ref="TH"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="TD">
+    <xs:annotation>
+        <xs:documentation>
+        Cellule d'un tableau
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:group ref="texte"/>
+        </xs:choice>
+        <xs:attribute name="align" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Alignement du texte de la cellule
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="left"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="right"/>
+                    <xs:enumeration value="justify"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="colspan" type="xs:positiveInteger" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Regroupement horizontal de cellules :
+                    nombres de cellules à regrouper à droite de celle-ci
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="rowspan" type="xs:positiveInteger" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Regroupement vertical de cellules :
+                    nombres de cellules à regrouper en bas de celle-ci
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="TH">
+    <xs:annotation>
+        <xs:documentation>
+        Entête d'une colonne
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:group ref="texte"/>
+        </xs:choice>
+        <xs:attribute name="align" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Alignement du texte de la cellule
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="left"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="right"/>
+                    <xs:enumeration value="justify"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="colspan" type="xs:positiveInteger" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Regroupement horizontal de cellules :
+                    nombres de cellules à regrouper à droite de celle-ci
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="rowspan" type="xs:positiveInteger" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Regroupement vertical de cellules :
+                    nombres de cellules à regrouper en bas de celle-ci
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="LISTE">
+    <xs:annotation>
+        <xs:documentation>
+        Liste avec des puces ou des numéros
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence maxOccurs="unbounded" minOccurs="1">
+            <xs:element ref="ITEM"/>
+        </xs:sequence>
+        <xs:attribute name="type" use="optional" default="puces">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="puces"/>
+                    <xs:enumeration value="numéros"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="ITEM">
+    <xs:annotation>
+        <xs:documentation>
+        Elément d'une liste
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="PARAGRAPHE"/>
+            <xs:element ref="LISTE"/>
+            <xs:group ref="texte"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="APPLICATION">
+    <xs:annotation>
+        <xs:documentation>
+        Application interactive. Remplace les éléments APPLET et FLASH en généralisant le concept.
+        L'attribut type précise le type d'application (applet Java, Flash ou HTML/Javascript).
+        Le fichier indiqué doit être un .jar pour les applets Java, un .swf pour les applications Flash,
+        et un .html pour les applications Javascript.
+        Les applets Java doivent avoir un paramètre "code" avec le nom de la classe.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="PARAM" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="LEGENDE" minOccurs="0"/>
+            <xs:element ref="CREDIT" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="type" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Type d'application (applet Java, Flash ou HTML/Javascript).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="applet"/>
+                    <xs:enumeration value="flash"/>
+                    <xs:enumeration value="html"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="titre" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Titre de l'application.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="fichier" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Fichier de l'application.
+                    Doit être un .jar pour les applets Java, un .swf pour les applications Flash,
+                    et un .html pour les applications Javascript.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value=".+\.(jar|swf|html)"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="contribution" type="typeLabel" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Contribution du fichier de l'application.
+                    Permet de ne pas avoir à recopier plusieurs fois une application utilisée dans plusieurs contributions.
+                    Les applications doivent lire les fichiers dont les noms sont passés en paramètres à partir
+                    du chemin du fichier HTML et non du chemin du fichier de l'application.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="largeur" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Largeur de la zone de l'application, en pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="hauteur" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Hauteur de la zone de l'application, en pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="localisation" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Positionnement souhaité pour l'application :
+                    - texte : dans le texte
+                    - page : dans la page à côté du texte
+                    - icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="texte"/>
+                    <xs:enumeration value="page"/>
+                    <xs:enumeration value="icône"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="PARAM">
+    <xs:annotation>
+        <xs:documentation>
+        Paramètre d'application interactive
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="nom" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Nom du paramètre.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="valeur" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Valeur du paramètre.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="COMMENTAIRE" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+        Commentaire de l'auteur, qui ne sera pas affiché dans le résultat final.
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+
+<!-- Exercices -->
+
+<xs:element name="EXERCICE">
+    <xs:annotation>
+        <xs:documentation>
+            Exercice de type questions-réponses
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="AUTEUR"/>
+            <xs:element ref="ENONCE" minOccurs="0"/>
+            <xs:element ref="DIFFICULTE" minOccurs="0"/>
+            <xs:element ref="TEMPS" minOccurs="0"/>
+            <xs:element ref="QUESTION" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="titre" type="xs:string" use="optional"/>
+        <xs:attribute name="type" use="optional" default="évaluation">
+            <xs:annotation>
+                <xs:documentation>
+                    Type d'exercice. Les solutions des exercices de type "évaluation" ne sont
+                    affichées qu'avec la sortie "solutions", alors que les solutions des exercices
+                    de type "auto-évaluation" sont toujours affichées.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="évaluation"/>
+                    <xs:enumeration value="auto-évaluation"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="ENONCE">
+    <xs:annotation>
+        <xs:documentation>
+            Enoncé d'un exercice ou d'une question
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="SECTION"/>
+            <xs:element ref="PARAGRAPHE"/>
+            <xs:element ref="LISTE"/>
+            <xs:element ref="TABLEAU"/>
+            <xs:element ref="ENVIMAGE"/>
+            <xs:element ref="APPLICATION"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="DIFFICULTE">
+    <xs:annotation>
+        <xs:documentation>
+            indication du niveau de difficulté :
+            * : facile, ou application directe du cours
+            ** : moyen
+            *** : difficile
+        </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="*"/>
+            <xs:enumeration value="**"/>
+            <xs:enumeration value="***"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+<xs:element name="TEMPS" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+            temps indicatif nécessaire pour résoudre l'exercice
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="QUESTION">
+    <xs:annotation>
+        <xs:documentation>
+            Question d'un exercice, avec un énoncé, éventuellement des aides, une solution,
+            et éventuellement des points.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="ENONCE"/>
+            <xs:element ref="AIDE" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="SOLUTION" minOccurs="0"/>
+            <xs:element ref="POINTS" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="SOLUTION">
+    <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="SECTION"/>
+            <xs:element ref="PARAGRAPHE"/>
+            <xs:element ref="LISTE"/>
+            <xs:element ref="TABLEAU"/>
+            <xs:element ref="ENVIMAGE"/>
+            <xs:element ref="APPLICATION"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="POINTS" type="xs:float">
+    <xs:annotation>
+        <xs:documentation>
+            Nombre de points gagnés si la réponse est correcte.
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="QCM">
+    <xs:annotation>
+        <xs:documentation>
+            Questionnaire à choix multiples, avec des commentaires affichés
+            après le choix de l'utilisateur.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="AUTEUR"/>
+            <xs:element ref="ENONCE" minOccurs="0"/>
+            <xs:element ref="DIFFICULTE" minOccurs="0"/>
+            <xs:element ref="TEMPS" minOccurs="0"/>
+            <xs:element ref="QUESTIONQCM" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="titre" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="AIDE">
+    <xs:annotation>
+        <xs:documentation>
+            Aide d'un exercice.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="PARAGRAPHE"/>
+            <xs:element ref="LISTE"/>
+            <xs:element ref="TABLEAU"/>
+            <xs:element ref="ENVIMAGE"/>
+            <xs:element ref="APPLICATION"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="QUESTIONQCM">
+    <xs:annotation>
+        <xs:documentation>
+            Question d'un QCM, avec un énoncé, éventuellement des aides,
+            et les réponses possibles.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="ENONCEQCM"/>
+            <xs:element ref="AIDE" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="REPONSEQCM" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="ENONCEQCM">
+    <xs:annotation>
+        <xs:documentation>
+            Enoncé d'un QCM (texte très court)
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:group ref="texte"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="REPONSEQCM">
+    <xs:annotation>
+        <xs:documentation>
+            Réponse possible à un QCM.
+            Contient le texte de la réponse (TEXTEREP)
+            et un commentaire (COMMENTAIREREP) à afficher si la réponse donnée est incorrecte.
+            L'attribut bonne indique si la réponse est bonne ou pas.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="TEXTEREP"/>
+            <xs:element ref="COMMENTAIREREP" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute use="required" name="bonne">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="non"/>
+                    <xs:enumeration value="oui"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="TEXTEREP">
+    <xs:annotation>
+        <xs:documentation>
+            Texte de la réponse
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:group ref="texte"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="COMMENTAIREREP" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+            Commentaire à afficher si la réponse donnée est incorrecte
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+
+<!-- Eléments mélangés à du texte -->
+
+<xs:group name="texte">
+    <xs:annotation>
+        <xs:documentation>
+        Ensemble des éléments que l'on retrouve mélangés à du texte
+        </xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+        <xs:element ref="LIENPAGE"/>
+        <xs:element ref="LIENWEB"/>
+        <xs:element ref="LIENIMAGE"/>
+        <xs:element ref="FICHIER"/>
+        <xs:element ref="SYMBOLE"/>
+        <xs:element ref="EQUATION"/>
+        <xs:element ref="EQUATEX"/>
+        <xs:element ref="GLOSSAIRE"/>
+        <xs:group ref="styletexte"/>
+    </xs:choice>
+</xs:group>
+
+<xs:group name="styletexte">
+    <xs:annotation>
+        <xs:documentation>
+        styles et espaces pour le texte
+        </xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+        <xs:element ref="EM"/>
+        <xs:element ref="SUP"/>
+        <xs:element ref="SUB"/>
+        <xs:element ref="CODE"/>
+        <xs:element ref="NBSP"/>
+    </xs:choice>
+</xs:group>
+
+<xs:element name="LIENPAGE">
+    <xs:annotation>
+        <xs:documentation>
+        Lien vers une page de la même contribution (si contribution est vide),
+        ou vers une page d'une autre contribution (avec contribution = le label de la contribution).
+        Doit contenir du texte ou un fichier sur lequel sera placé le lien.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="FICHIER"/>
+            <xs:element ref="EM"/>
+            <xs:element ref="SUP"/>
+            <xs:element ref="SUB"/>
+            <xs:element ref="EQUATION"/>
+            <xs:element ref="EQUATEX"/>
+        </xs:choice>
+        <xs:attribute name="contribution" type="typeLabel" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                Le label de la contribution. Vide si on veut faire un lien vers la même contribution.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="page" type="typeLabel" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                Le label de la page. Vide si on veut faire un lien vers la première page de la contribution.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="LIENWEB">
+    <xs:annotation>
+        <xs:documentation>
+        Lien externe (avec url commençant par "http://").
+        Doit contenir du texte ou un fichier sur lequel sera placé le lien.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="FICHIER"/>
+            <xs:element ref="EM"/>
+            <xs:element ref="SUP"/>
+            <xs:element ref="SUB"/>
+            <xs:element ref="EQUATION"/>
+            <xs:element ref="EQUATEX"/>
+        </xs:choice>
+        <xs:attribute name="url" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                Adresse de la page web. Doit commencer par "http://".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="LIENIMAGE">
+    <xs:annotation>
+        <xs:documentation>
+        Lien vers un environnement d'image dans la même page.
+        Doit contenir du texte ou un fichier sur lequel sera placé le lien.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="FICHIER"/>
+            <xs:element ref="EM"/>
+            <xs:element ref="SUP"/>
+            <xs:element ref="SUB"/>
+            <xs:element ref="EQUATION"/>
+            <xs:element ref="EQUATEX"/>
+        </xs:choice>
+        <xs:attribute name="label" type="typeLabel" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                Label de l'environnement d'image (qui doit se trouver dans la même page).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="SYMBOLE">
+    <xs:annotation>
+        <xs:documentation>
+            Caractère spécial ou petite image parmi les symboles de Jaxe.
+            Quand l'attribut nom avec le chemin vers l'image n'est pas utilisé,
+            le symbole doit se trouver à l'intérieur de l'élément sous forme d'une entité caractère.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:attribute name="nom" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="EQUATION">
+    <xs:annotation>
+        <xs:documentation>
+        Equation: texte de l'équation dans l'attribut texte (avec la syntaxe de Jaxe),
+        et image PNG encodée en base64 à l'intérieur de l'élément.
+        Plus tard l'image sera redirigée vers un fichier dont la référence
+        sera dans un attribut "image".
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:attribute name="texte" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                Texte de l'équation, avec la syntaxe de Jaxe.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="EQUATEX">
+    <xs:annotation>
+        <xs:documentation>
+            Equation avec la syntaxe TeX: texte
+            et image PNG encodée en base64 à l'intérieur de l'élément.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:attribute name="texte" type="xs:string" use="required"/>
+        <xs:attribute name="label" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="GLOSSAIRE">
+    <xs:annotation>
+        <xs:documentation>
+        Renvoi au glossaire des mots importants ou jargonneux,
+        et éventuelle proposition de définition pour le glossaire.
+        Les attributs définissent le mot affiché et le mot de référence,
+        et le contenu de l'élément correspond à sa définition.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:group ref="styletexte"/>
+        </xs:choice>
+        <xs:attribute name="mot" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                Mot affiché.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ref" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                Mot de référence dans le glossaire, s'il est différent du mot affiché.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="BIBLIOGRAPHIE">
+    <xs:annotation>
+        <xs:documentation>
+        Liste de références bibliographiques et webographiques.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element ref="REFOUVRAGE"/>
+            <xs:element ref="REFARTICLE"/>
+            <xs:element ref="REFWEB"/>
+        </xs:choice>
+        <xs:attribute name="titre" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="REFOUVRAGE">
+    <xs:annotation>
+        <xs:documentation>
+            Référence bibliographique pour un ouvrage.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="titre" type="xs:string" use="required"/>
+        <xs:attribute name="sous-titre" type="xs:string" use="optional"/>
+        <xs:attribute name="premierAuteur" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Ecrire sous la forme "NOM, Prénom".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[A-Z \-]+,.+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="autresAuteurs" type="xs:string" use="optional"/>
+        <xs:attribute name="volume" type="xs:string" use="optional"/>
+        <xs:attribute name="lieu" type="xs:string" use="optional"/>
+        <xs:attribute name="editeur" type="xs:string" use="required"/>
+        <xs:attribute name="annee" type="xs:string" use="required"/>
+        <xs:attribute name="pagination" type="xs:string" use="optional"/>
+        <xs:attribute name="collection" type="xs:string" use="optional"/>
+        <xs:attribute name="isbn" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[0-9\-]+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="url" type="typeURL" use="optional"/>
+        <xs:attribute name="autre" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="REFARTICLE">
+    <xs:annotation>
+        <xs:documentation>
+            Référence bibliographique pour un article de périodique.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="titreArticle" type="xs:string" use="required"/>
+        <xs:attribute name="titrePeriodique" type="xs:string" use="required"/>
+        <xs:attribute name="premierAuteur" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Ecrire sous la forme "NOM, Prénom".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[A-Z \-]+,.+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="autresAuteurs" type="xs:string" use="optional"/>
+        <xs:attribute name="annee" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="volume" type="xs:string" use="optional"/>
+        <xs:attribute name="numero" type="xs:string" use="required"/>
+        <xs:attribute name="pagination" type="xs:string" use="required"/>
+        <xs:attribute name="url" type="typeURL" use="optional"/>
+        <xs:attribute name="autre" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="REFWEB">
+    <xs:annotation>
+        <xs:documentation>
+            Référence pour une page web.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:attribute name="url" type="typeURL" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    URL de la page web qui doit être référencée dans la webographie. Doit commencer par "http://".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="auteurs" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Auteurs ou collectivité.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="titre" type="xs:string" use="required"/>
+        <xs:attribute name="titreSite" type="xs:string" use="optional"/>
+        <xs:attribute name="dateConsultation" type="xs:string" use="optional"/>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="EM">
+    <xs:annotation>
+        <xs:documentation>
+        Emphase
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="SUP"/>
+            <xs:element ref="SUB"/>
+            <xs:element ref="NBSP"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="CODE">
+    <xs:annotation>
+        <xs:documentation>
+        Code informatique (généralement affiché avec une police dont les lettres ont la même taille)
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element ref="NBSP"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="SUP" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+        Exposant
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="SUB" type="xs:string">
+    <xs:annotation>
+        <xs:documentation>
+        Indice
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="NBSP">
+    <xs:annotation>
+        <xs:documentation>
+        Espace insécable
+        </xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+</xs:schema>

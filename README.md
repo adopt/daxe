@@ -22,6 +22,13 @@ Parameters
 
 Upon saving, the server script receives a POST request with the path of the document in the `path` parameter and its content in the `file` parameter. It replies with the text `ok` if no error occured, or a string starting with `error` if there was an error.
 
+##Building and testing
+
+* Install the [Dart SDK](https://www.dartlang.org/tools/sdk/).
+* `./build.sh` (or just `pub build`) with pub on the PATH
+* copy the `build/web` directory on a server (here localhost, with the contents of `build/web` inside a `daxe` directory)
+* `http://localhost//daxe/daxe_js.html?config=config/XPAGES_config.xml`
+
 ##Documentation
 
 Although it doesn't have as many features (especially anything requesting an access to local files), Daxe was designed to look like Jaxe, and use Jaxe configuration files. So Jaxe documentation can be used as well :

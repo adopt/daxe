@@ -1,5 +1,6 @@
-**/packages
-**/CVS
-.hg
+packages
+build/
+.pub/
+CVS
+.hg/
 .hgignore
-build

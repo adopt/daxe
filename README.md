@@ -25,9 +25,9 @@ Upon saving, the server script receives a POST request with the path of the docu
 ##Building and testing
 
 * Install the [Dart SDK](https://www.dartlang.org/tools/sdk/).
-* `./build.sh` (or just `pub build`) with pub on the PATH
+* `./build.sh` (or just `pub build`) with `pub` on the PATH
 * copy the `build/web` directory on a server (here localhost, with the contents of `build/web` inside a `daxe` directory)
-* `http://localhost//daxe/daxe_js.html?config=config/XPAGES_config.xml`
+* `http://localhost/daxe/daxe_js.html?config=config/XPAGES_config.xml`
 
 ##Documentation
 

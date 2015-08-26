@@ -11,6 +11,10 @@ In itself, Daxe is not very useful, because it cannot open or save a local file 
 
 Daxe is licenced under the [GPL version 3](http://www.gnu.org/licenses/gpl-3.0.en.html) or later.
 
+##Demo
+* [New XHTML document](http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml)
+* [New XPAGES document](http://adopt.github.io/daxe/demo/daxe.html?config=config/XPAGES_config.xml)
+
 ##Using Daxe
 
 Daxe is using a whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.

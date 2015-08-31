@@ -460,7 +460,7 @@ div.dlg3 {
   max-height: 90%;
   min-width: 250px;
   overflow: auto;
-  padding: 1em;
+  padding: 1em 1.5em 1em 1em;
   background-color: #FFFFFF;
   border: solid 1px #202020;
   box-shadow: 2px 2px 2px #A0A0A0;

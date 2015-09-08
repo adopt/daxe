@@ -116,17 +116,19 @@ class WebPage {
     });
     if (doc.saveURL != null) {
       h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
-        if (application) {
-          if (hasQuit)
-            return null;
-          quit();
-        }
         if (doc.changed()) {
           String message = Strings.get('save.document_not_saved');
           e.returnValue = message;
           return message;
         }
       });
+      if (application) {
+        h.window.onUnload.listen((h.Event e) {
+          if (hasQuit)
+            return null;
+          quit(false);
+        });
+      }
     }
   }
   
@@ -156,7 +158,7 @@ class WebPage {
     item = new MenuItem(Strings.get('menu.validation'), () => (new ValidationDialog()).show());
     fileMenu.add(item);
     if (application && doc.saveURL != null) {
-      item = new MenuItem(Strings.get('menu.quit'), () => quit(), shortcut: 'Q');
+      item = new MenuItem(Strings.get('menu.quit'), () => quit(true), shortcut: 'Q');
       fileMenu.add(item);
     }
     mbar.insert(fileMenu, 0);
@@ -624,12 +626,13 @@ class WebPage {
   /**
    * Tell the Daxe application server to exit and tell user to close the window.
    */
-  void quit() {
+  void quit(bool async) {
     h.HttpRequest request = new h.HttpRequest();
     Uri saveUri = Uri.parse(doc.saveURL);
     Uri quitUri = saveUri.replace(path:'/quit');
-    request.open('GET', quitUri.toString());
+    request.open('GET', quitUri.toString(), async:async);
     request.onLoad.listen((h.ProgressEvent event) {
+      // NOTE: alerts might not display during onunload
       if (request.status != 200) {
         h.window.alert(Strings.get('quit.error') + ': ${request.status}');
         return;

@@ -34,6 +34,7 @@ class WebPage {
   DateTime lastClickTime;
   bool selectionByWords; // double-click+drag
   bool application; // Desktop application
+  bool hasQuit; // for Desktop application only
   
   WebPage({this.application:false}) {
     _cursor = new Cursor();
@@ -41,6 +42,7 @@ class WebPage {
     lastClickPosition = null;
     lastClickTime = null;
     selectionByWords = false;
+    hasQuit = false;
   }
   
   Future newDocument(String configPath) {
@@ -114,6 +116,11 @@ class WebPage {
     });
     if (doc.saveURL != null) {
       h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
+        if (application) {
+          if (hasQuit)
+            return null;
+          quit();
+        }
         if (doc.changed()) {
           String message = Strings.get('save.document_not_saved');
           e.returnValue = message;
@@ -635,6 +642,7 @@ class WebPage {
       // A workaround would be to start a new browser process when opening a file,
       // and kill it (nicely) with the server when the user quits.
       h.window.alert(Strings.get('quit.byhand'));
+      hasQuit = true;
     });
     request.onError.listen((h.ProgressEvent event) {
       h.window.alert(Strings.get('quit.error'));

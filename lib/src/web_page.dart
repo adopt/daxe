@@ -116,7 +116,7 @@ class WebPage {
     });
     if (doc.saveURL != null) {
       h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
-        if (doc.changed()) {
+        if (doc.changed() && !hasQuit) {
           String message = Strings.get('save.document_not_saved');
           e.returnValue = message;
           return message;

@@ -57,6 +57,11 @@ class DNDocument extends DaxeNode {
     for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
       domDocument.appendChild(dn.toDOMNode(domDocument));
     }
+    if (doc.cfg != null && (doc.cfg.getPublicId() != null ||
+        doc.cfg.getSystemId() != null) && domDocument.documentElement != null) {
+      domDocument.doctype = new x.DocumentTypeImpl(
+          domDocument.documentElement.nodeName, doc.cfg.getPublicId(), doc.cfg.getSystemId());
+    }
     return(domDocument);
   }
 }

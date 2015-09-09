@@ -25,7 +25,6 @@ class DocumentImpl extends NodeImpl implements Document {
   bool xmlStandalone;
   String xmlVersion;
   String documentURI;
-  DocumentType doctype;
   
   HashMap<String, Element> _idToElement; // todo: fill this with something !
   
@@ -37,7 +36,6 @@ class DocumentImpl extends NodeImpl implements Document {
     xmlStandalone = doc.xmlStandalone;
     xmlVersion = doc.xmlVersion;
     documentURI = doc.documentURI;
-    doctype = doc.doctype;
     
     _idToElement = new HashMap<String, Element>();
     
@@ -83,7 +81,6 @@ class DocumentImpl extends NodeImpl implements Document {
     xmlStandalone = false;
     xmlVersion = "1.0";
     documentURI = null;
-    this.doctype = doctype;
     _idToElement = new HashMap<String, Element>();
     
     nodeName = "#document";
@@ -108,6 +105,9 @@ class DocumentImpl extends NodeImpl implements Document {
         documentElement = new ElementImpl(this, qualifiedName);
       documentElement.parentNode = this;
     }
+    
+    if (doctype != null)
+      this.doctype = doctype;
   }
   
   /*
@@ -273,11 +273,35 @@ class DocumentImpl extends NodeImpl implements Document {
     if (xmlEncoding != null)
       sb.write(' encoding="$xmlEncoding"');
     sb.writeln("?>");
-    if (doctype != null)
-      sb.write(doctype.toString());
     for (Node n in childNodes) {
       sb.write(n.toString());
     }
     return(sb.toString());
+  }
+  
+  DocumentType get doctype {
+    for (Node n=firstChild; n!=null; n=n.nextSibling)
+      if (n is DocumentType)
+        return n;
+    return null;
+  }
+  
+  // NOTE: setting a doctype is not DOM3
+  set doctype(DocumentType dt) {
+    Node next;
+    for (Node n=firstChild; n!=null; n=next) {
+      next = n.nextSibling;
+      if (n is DocumentType) {
+        removeChild(n);
+        break;
+      }
+    }
+    if (dt != null) {
+      dt.ownerDocument = this;
+      if (firstChild != null)
+        insertBefore(dt, firstChild);
+      else
+        appendChild(dt);
+    }
   }
 }

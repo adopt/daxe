@@ -133,6 +133,14 @@ class NodeFactory {
         (x.Element ref) => new DNStyleSpan.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNStyleSpan.fromNode(node, parent)
     );
+    addDisplayType('symbol',
+        (x.Element ref) => new DNSpecial.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
+    );
+    addDisplayType('symbole',
+        (x.Element ref) => new DNSpecial.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
+    );
     addDisplayType('symbol2',
         (x.Element ref) => new DNSpecial.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
@@ -142,6 +150,10 @@ class NodeFactory {
         (x.Node node, DaxeNode parent) => new DNSpecial.fromNode(node, parent)
     );
     addDisplayType('table',
+        (x.Element ref) => new DNTable.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
+    );
+    addDisplayType('tableau',
         (x.Element ref) => new DNTable.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
     );

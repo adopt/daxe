@@ -61,8 +61,11 @@ class DNSimpleType extends DaxeNode {
       img.onClick.listen((h.MouseEvent event) => attributeDialog());
       span.append(img);
     }
+    h.SpanElement titleSpan = new h.SpanElement();
+    titleSpan.classes.add('simple_type-title');
     String title = doc.cfg.elementTitle(ref);
-    span.append(new h.Text(title));
+    titleSpan.append(new h.Text(title));
+    span.append(titleSpan);
     
     String value;
     if (firstChild != null)

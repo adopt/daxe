@@ -738,7 +738,7 @@ class JEQFonction implements JEQ {
         final MathOperator mo = new MathOperator();
       mo.addText(";");
       me.addMathElement(mo);
-      me.addMathElement(vp[i].versMathML());
+      me.addMathElement(StringMathBuilder.elemOrQuestion(vp[i]));
       }
       if (par) {
         final MathOperator mo = new MathOperator();

@@ -23,7 +23,6 @@ part of nodes;
  * Jaxe display type: equationmem, or a plugin with the class `xpages.JEEquationMemoire`.
  * 
  * * parameter: `texteAtt`: the name of the attribute giving the equation text
- * * parameter: `labelAtt`: the name of the attribute giving the image label
  */
 class DNEquationMem extends DaxeNode {
   h.ImageElement _img;

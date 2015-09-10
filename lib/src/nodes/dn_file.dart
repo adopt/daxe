@@ -49,29 +49,32 @@ class DNFile extends DaxeNode {
     chooser = (chooserString == 'true' && doc.saveURL != null);
     _widthAtt = doc.cfg.elementParameterValue(ref, 'widthAtt', null);
     _heightAtt = doc.cfg.elementParameterValue(ref, 'heightAtt', null);
-    error = (getAttribute(_srcAtt) == null);
+    _resetErrorWithSrc();
   }
   
   void setSrc(String src) {
     setAttribute(_srcAtt, src);
-    error = (src == null);
+    _resetErrorWithSrc();
   }
   
   @override
   h.Element html() {
-    assert(doc.filePath != null);
+    assert(error || getAttribute(_srcAtt).startsWith('data:') ||
+        doc.filePath != null);
     if (!error) {
       _img = new h.ImageElement();
       _img.id = "$id";
       _img.classes.add('dn');
       String folder = '';
       String xmlFilePath = doc.filePath;
-      int ind = xmlFilePath.lastIndexOf('/');
-      if (ind != -1)
-        folder = xmlFilePath.substring(0, ind + 1);
       String src = getAttribute(_srcAtt);
-      if (!src.startsWith('data:'))
-        src = "$folder$src";
+      if (xmlFilePath != null) {
+        int ind = xmlFilePath.lastIndexOf('/');
+        if (ind != -1)
+          folder = xmlFilePath.substring(0, ind + 1);
+        if (!src.startsWith('data:'))
+          src = "$folder$src";
+      }
       _img.src = src;
       _img.alt = getAttribute(_srcAtt);
       _img.onLoad.listen((h.Event event) => _imageLoaded());
@@ -125,7 +128,10 @@ class DNFile extends DaxeNode {
   @override
   void newNodeCreationUI(ActionFunction okfct) {
     if (!chooser) {
-      super.newNodeCreationUI(okfct);
+      super.newNodeCreationUI(() {
+        _resetErrorWithSrc();
+        okfct();
+      });
       return;
     }
     // display file chooser, set some attributes automatically, and
@@ -175,8 +181,12 @@ class DNFile extends DaxeNode {
   
   @override
   void updateAttributes() {
-    if (error)
-      error = false;
+    _resetErrorWithSrc();
     super.updateAttributes();
+  }
+  
+  void _resetErrorWithSrc() {
+    String src = getAttribute(_srcAtt);
+    error = (src == null || (doc.filePath == null && !src.startsWith('data:')));
   }
 }

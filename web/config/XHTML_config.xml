@@ -97,7 +97,7 @@
     <AFFICHAGE_ELEMENT element="h4" type="string"/>
     <AFFICHAGE_ELEMENT element="h5" type="string"/>
     <AFFICHAGE_ELEMENT element="div" type="division"/>
-    <AFFICHAGE_ELEMENT element="hr" type="vide"/>
+    <AFFICHAGE_ELEMENT element="hr" type="hr"/>
     <AFFICHAGE_ELEMENT element="p" type="hiddenp"/>
     <AFFICHAGE_ELEMENT element="a" type="anchor"/>
     <AFFICHAGE_ELEMENT element="blockquote" type="zone"/>

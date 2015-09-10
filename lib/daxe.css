@@ -919,6 +919,9 @@ select.invalid {
 span.simple_type {
   padding: 3px;
 }
+span.simple_type-title {
+  padding-right: 3px;
+}
 
 /* Fonts for symbols and equations */
 

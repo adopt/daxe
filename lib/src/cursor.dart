@@ -1288,20 +1288,6 @@ class Cursor {
       tmpdoc = dp.parseFromString("<root>$s</root>");
     } on x.DOMException {
       // this is not XML, it is inserted as string if it is possible
-      bool problem = false;
-      if (s.trim() != '') {
-        DaxeNode parent = selectionStart.dn;
-        if (parent.nodeType == DaxeNode.TEXT_NODE)
-          parent = parent.parent;
-        if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
-          problem = true;
-        else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
-          problem = true;
-      }
-      if (problem) {
-        h.window.alert(Strings.get('insert.text_not_allowed'));
-        return(false);
-      }
       return(pasteText(s));
     }
     return(pasteXML(tmpdoc));
@@ -1312,6 +1298,20 @@ class Cursor {
    * Returns true if it was pasted without error.
    */
   bool pasteText(String s) {
+    bool problem = false;
+    if (s.trim() != '') {
+      DaxeNode parent = selectionStart.dn;
+      if (parent.nodeType == DaxeNode.TEXT_NODE)
+        parent = parent.parent;
+      if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
+        problem = true;
+      else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
+        problem = true;
+    }
+    if (problem) {
+      h.window.alert(Strings.get('insert.text_not_allowed'));
+      return(false);
+    }
     // use hidden paragraphs instead of newlines if allowed at current position
     bool useParagraphs = (doc.hiddenParaRefs != null && s.contains('\n'));
     x.Element hiddenp;
@@ -1410,7 +1410,8 @@ class Cursor {
       else
         refGrandParent = parent.parent.ref;
       doc._removeWhitespace(tmpdoc.documentElement, refGrandParent, false, true);
-      pasteXML(tmpdoc);
+      if (!pasteXML(tmpdoc))
+        pasteText(plain);
     } on x.DOMException {
       pasteText(plain);
     }

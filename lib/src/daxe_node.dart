@@ -29,14 +29,14 @@ abstract class DaxeNode {
   //static const int COMMENT_NODE = 8;
   static const int DOCUMENT_NODE = 9;
   
-  static const String STYLE_BOLD = 'GRAS';
-  static const String STYLE_ITALIC = 'ITALIQUE';
-  static const String STYLE_SUPERSCRIPT = 'EXPOSANT';
-  static const String STYLE_SUBSCRIPT = 'INDICE';
-  static const String STYLE_UNDERLINE = 'SOULIGNE';
-  static const String STYLE_STRIKETHROUGH = 'BARRE';
-  static const String STYLE_BACKGROUND_COLOR = 'FCOULEUR';
-  static const String STYLE_FOREGROUND_COLOR = 'PCOULEUR';
+  static List<String> BOLD_STYLES = ['GRAS', 'BOLD'];
+  static List<String> ITALIC_STYLES = ['ITALIQUE', 'ITALIC'];
+  static List<String> SUPERSCRIPT_STYLES = ['EXPOSANT', 'SUPERSCRIPT'];
+  static List<String> SUBSCRIPT_STYLES = ['INDICE', 'SUBSCRIPT'];
+  static List<String> UNDERLINE_STYLES = ['SOULIGNE', 'UNDERLINE'];
+  static List<String> STRIKETHROUGH_STYLES = ['BARRE', 'STRIKETHROUGH'];
+  static List<String> BACKGROUND_STYLES = ['FCOULEUR', 'BACKGROUND'];
+  static List<String> FOREGROUND_STYLES = ['PCOULEUR', 'FOREGROUND'];
   static const String COLOR_PATTERN = "^.*\\[(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3})\\]\$";
 
   x.Element ref; // schema element
@@ -1050,34 +1050,38 @@ abstract class DaxeNode {
     if (styleParam != null) {
       List<String> styleList = styleParam.split(';');
       for (String style in styleList) {
-        if (style == STYLE_BOLD) {
+        if (BOLD_STYLES.contains(style)) {
           hn.style.fontWeight = 'bold';
-        } else if (style == STYLE_ITALIC) {
+        } else if (ITALIC_STYLES.contains(style)) {
           hn.style.fontStyle = 'italic';
-        } else if (style == STYLE_SUPERSCRIPT) {
+        } else if (SUPERSCRIPT_STYLES.contains(style)) {
           hn.style.verticalAlign = 'super';
           hn.style.fontSize = '80%';
-        } else if (style == STYLE_SUBSCRIPT) {
+        } else if (SUBSCRIPT_STYLES.contains(style)) {
           hn.style.verticalAlign = 'sub';
           hn.style.fontSize = '80%';
-        } else if (style == STYLE_UNDERLINE) {
+        } else if (UNDERLINE_STYLES.contains(style)) {
           hn.style.textDecoration = 'underline';
-        } else if (style == STYLE_STRIKETHROUGH) {
+        } else if (STRIKETHROUGH_STYLES.contains(style)) {
           hn.style.textDecoration = 'line-through';
-        } else if (style.startsWith(STYLE_BACKGROUND_COLOR)) {
+        } else if (style.startsWith(BACKGROUND_STYLES[0]) || style.startsWith(BACKGROUND_STYLES[1])) {
           hn.style.background = _getColor(style);
-        } else if (style.startsWith(STYLE_FOREGROUND_COLOR)) {
+        } else if (style.startsWith(FOREGROUND_STYLES[0]) || style.startsWith(FOREGROUND_STYLES[1])) {
           hn.style.color = _getColor(style);
         }
       }
     }
     String fontParam = doc.cfg.elementParameterValue(ref, 'police', null);
+    if (fontParam == null)
+      fontParam = doc.cfg.elementParameterValue(ref, 'font', null);
     if (fontParam != null) {
       if (fontParam == 'Monospaced')
         fontParam = 'monospace';
       hn.style.fontFamily = fontParam;
     }
     String sizeParam = doc.cfg.elementParameterValue(ref, 'taille', null);
+    if (sizeParam == null)
+      sizeParam = doc.cfg.elementParameterValue(ref, 'size', null);
     if (sizeParam != null) {
       hn.style.fontSize = sizeParam;
     }

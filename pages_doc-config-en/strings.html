@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Strings</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_doc-config-en/display-types.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="Daxe configuration files : Page for printing" href="../pages_doc-config-en/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_doc-config-en/display-types.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_doc-config-en/intro-doc-config-en.html">&nbsp;Daxe configuration files</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/intro-doc-config-en.html">&bull; Introduction</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/definition-xml-language.html">&bull; Definition of the XML language</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/file-saving-options.html">&bull; File saving options</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/menus.html">&bull; Menus</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/node-display.html">&bull; Node display</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/display-types.html">&bull; Display types</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Strings</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Strings</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>All the texts (also called <em>strings</em>) may have to be changed in the interface created with the configuration. Either to improve readability without having to change the schema, or to provide an interface in another natural language for the same schema. Texts may also have to be provided for a set of languages, so that users can edit the same documents, with the same Daxe configuration, but with an interface entirely in their native language.</p>
+    
+<p>For these reasons, the <span class="code">Strings</span> element represents a set of strings for a given language and country, and it is possible to specify several in the same config file. On can use for instance <span class="code">language="pt" country="BR"</span> for Brazilian Portuguese, or just <span class="code">language="en"</span> so specify English without any precision about the country.</p>
+    
+<p>You may have noticed that the real config file XML elements have French names, even though you see them in English in Daxe and in this documentation. This is because the config file for config files is using these <span class="code">Strings</span> elements to define titles to use for elements when the user's system language is English.</p>
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Configuration description</span>
+
+<p>Short line to describe the configuration, displayed in the dialog to create new documents with Jaxe.</p>
+        
+</li>
+<li>
+
+<span class="code">Menu strings</span>
+
+<p>Strings associated to a menu, identified with its name</p>
+        
+</li>
+<li>
+
+<span class="code">Title</span>
+
+<p>A title</p>
+        
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+<p>A documentation</p>
+        
+</li>
+<li>
+
+<span class="code">Element strings</span>
+
+<p>Strings associated to an XML element. Used to display the element, but also for this element's insertion menu if no string was defined for the menu.</p>
+        
+</li>
+<li>
+
+<span class="code">Title for value</span>
+
+<p>A title to use for an element or attribute value</p>
+        
+</li>
+<li>
+
+<span class="code">Attribute strings</span>
+
+<p>Strings associated to an attributes</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Strings</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Strings @language @country (Configuration description | Menu strings | Element strings)+</span>
+
+<ul>
+<li>
+
+<span class="code">Configuration description</span>
+
+</li>
+<li>
+
+<span class="code">Menu strings @menu (Title?, Documentation?, Menu strings*)</span>
+
+<ul>
+<li>
+
+<span class="code">Title</span>
+
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+</li>
+<li>
+
+<span class="code">Menu strings @menu</span>
+
+</li>
+</ul>
+            
+</li>
+<li>
+
+<span class="code">Element strings @element (Title?, Documentation?, Title for value*, Attribute strings*)</span>
+
+<ul>
+<li>
+
+<span class="code">Title</span>
+
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+</li>
+<li>
+
+<span class="code">Title for value @valeur</span>
+
+</li>
+<li>
+
+<span class="code">Attribute strings @attribut (Title?, Documentation?, Title for value*)</span>
+
+<ul>
+<li>
+
+<span class="code">Title</span>
+
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+</li>
+<li>
+
+<span class="code">Title for value @valeur</span>
+
+</li>
+</ul>
+                
+</li>
+</ul>
+            
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_doc-config-en/display-types.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

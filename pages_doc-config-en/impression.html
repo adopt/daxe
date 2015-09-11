@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Daxe configuration files : Page for printing</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Daxe configuration files</h1>
+<ul>
+<li>Introduction</li>
+<li>Definition of the XML language</li>
+<li>File saving options</li>
+<li>Menus</li>
+<li>Node display</li>
+<li>Display types</li>
+<li>Strings</li>
+</ul>
+<hr>
+<div style="page-break-after: always"></div>
+<h1>Introduction</h1>
+<div class="zone_texte">
+    
+<p>To provide a user interface for a given XML language, Daxe needs the language definition (given with an XML schema) and a configuration file describing the user interface for the language. It works in the same way as <a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/">Jaxe</a>, and in fact the config files are mostly compatible.</p>
+    
+<p>Specifically, configuration files contain basic information about the XML language (a link to the schema and a list of root elements), saving options, menus (especially to insert the elements), display types for the elements, and all the strings used in the interface, depending on the user language.</p>
+    
+<p>They are located in Daxe's <span class="code">config</span> directory, and their names end with "_config.xml".</p>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Definition of the XML language</h1>
+<div class="zone_texte">
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">XML schema file</span>
+
+<p>When creating a new config file, the first thing to do is to define the corresponding XML language. This is usually done by specifying an existing XML schema. Schemas must use the W3C syntax (WXS), or the Relax NG one (in XML).</p>
+        
+</li>
+<li>
+
+<span class="code">Root</span>
+
+<p>After defining the XML language, it is necessary to give Jaxe one or several possible root elements to use for new documents. The name of the element is specified for each possible root element.</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Language</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Language (XML schema file, Root+)</span>
+
+<ul>
+<li>
+
+<span class="code">XML schema file @name</span>
+
+</li>
+<li>
+
+<span class="code">Root @element</span>
+
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>File saving options</h1>
+<div class="zone_texte">
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Doctype</span>
+
+<p>Document type definition, if a DTD must be specified in the document headers.</p>
+        
+</li>
+<li>
+
+<p>
+
+<span class="code">SchemaLocation</span>
+
+</p>
+          
+<p>To save the location of the XML schema in XML documents.</p>
+        
+</li>
+<li>
+
+<span class="code">Namespace prefix</span>
+
+<p>Prefix to use for a given namespace. It is possible to specify several namespace prefixes.</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Saving</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Saving (Doctype?, Namespace prefix*)</span>
+
+<ul>
+<li>
+
+<span class="code">Doctype @publicid @systemid</span>
+
+</li>
+<li>
+
+<span class="code">SchemaLocation @schemaLocation @noNamespaceSchemaLocation</span>
+
+</li>
+<li>
+
+<span class="code">Namespace prefix @uri @prefix</span>
+
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Menus</h1>
+<div class="zone_texte">
+    
+<p>Menus defined in config files are displayed above Daxe's text area, after the file and edit menus.</p>
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Menu</span>
+
+<p>A main menu, possibly containing sub-menus.</p>
+        
+</li>
+<li>
+
+<span class="code">Insertion menu</span>
+
+<p>A menu to insert an XML node at the cursor position. The node name and the node type (element by default) must be specified. It is also possible to specify a keyboard shortcut, with the corresponding key.</p>
+        
+</li>
+<li>
+
+<span class="code">Function menu</span>
+
+<p>Menu to execute a <em>function</em> with its name. The only predefined function in Jaxe is <span class="code">jaxe.FonctionNormal</span>, which is used to remove all the styles in a text area. Other functions can be added by extending Daxe.</p>
+        
+</li>
+<li>
+
+<span class="code">Separator</span>
+
+<p>Menu separator.</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Menus</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Menus (Menu+)</span>
+
+<ul>
+<li>
+
+<span class="code">Menu @nom (Menu | Insertion menu | Function menu | Separator)+</span>
+
+<ul>
+<li>
+
+<span class="code">Insertion menu @name @node type (element|instruction|comment) @shortcut</span>
+
+</li>
+<li>
+
+<span class="code">Function menu @name @class @shortcut</span>
+
+<ul>
+<li>
+
+<span class="code">Parameter @name @value</span>
+
+</li>
+</ul>
+                
+</li>
+<li>
+
+<span class="code">Separator</span>
+
+</li>
+<li>
+
+<span class="code">Menu</span>
+
+</li>
+</ul>
+            
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Node display</h1>
+<div class="zone_texte">
+    
+<p>An essential feature in Daxe is the possibility to display and edit XML element in different ways, whatever their types in the XML schema. For instance, a table element can be displayed as a table, and an element linking to an image can be displayed as an image. The objective is to ease document editing, without losing of sight their semantics&nbsp;: elements will not be displayed as they will be seen in web pages or PDF documents, but simply with a user interface making edition easier and highlighting the meaning of the elements.</p>
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Element display</span>
+
+<p>Specifies how an element will be displayed in Jaxe</p>
+        
+</li>
+<li>
+
+<span class="code">Parameter</span>
+
+<p>A display parameter, depending on the display type (see below for a list).</p>
+        
+</li>
+<li>
+
+<span class="code">Suggested value</span>
+
+<p>Value suggested to the user when the schema does not limit authorized values.</p>
+        
+</li>
+<li>
+
+<span class="code">Attribute display</span>
+
+<p>Can be used to suggest attribute values.</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Display</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Display (Element display)+</span>
+
+<ul>
+<li>
+
+<span class="code">Element display @element @type (Parameter | Suggested value | Attribute display)*</span>
+
+<ul>
+<li>
+
+<span class="code">Parameter @name @value</span>
+
+</li>
+<li>
+
+<span class="code">Suggested value</span>
+
+</li>
+<li>
+
+<span class="code">Attribute display @attribute (Suggested value+)</span>
+
+<ul>
+<li>
+
+<span class="code">Suggested value</span>
+
+</li>
+</ul>
+                
+</li>
+</ul>
+            
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Display types</h1>
+<div class="zone_texte">
+    
+<table class="tableau">
+      
+<tr>
+
+<th>Type</th>
+<th>Description</th>
+<th>Display</th>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">division</span>
+</td>
+<td class="tableaux1">Two bars extending to the window's right side, clearly separating large areas in the document.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/division.png" alt="images_types/division.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">area</span>
+</td>
+<td class="tableaux2">Two tags and carriage returns, to separate areas smaller than with <span class="code">division</span>.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/zone.png" alt="images_types/zone.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">string</span>
+</td>
+<td class="tableaux1">Two tags to identify a small string, without any carriage return.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/string.png" alt="images_types/string.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">empty</span>
+</td>
+<td class="tableaux2">A single tag, typically for an empty element.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/vide.png" alt="images_types/vide.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">table</span>
+</td>
+<td class="tableaux1">Table display allowing the use of XML elements inside the cells. Also handles the rowspan and colspan attributes to gather cells vertically and horizontally.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/tabletexte.png" alt="images_types/tabletexte.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">style</span>
+</td>
+<td class="tableaux2">For use in the case (very rare if the XML language encodes the meaning as opposed to the presentation) where an XML element only conveys a style information. Displays the characters in the chosen style (bold, italic, ...), without any tag. An alternative is to use the <span class="code">string</span> type, which can also use a style, but displays the tags.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/style.png" alt="images_types/style.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">file</span>
+</td>
+<td class="tableaux1">Displays an image based on its path on the disk coming from an attribute of the XML element (to be defined). It is possible to copy/paste images and Daxe will automatically create the XML element and save the image file whenever possible, using the first element of type <span class="code">file</span>.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/fichier.png" alt="images_types/fichier.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">symbol</span>
+</td>
+<td class="tableaux2">Special character stored as a UNICODE character within the element tags. If no element has this type, users will still be able to insert UNICODE characters from a table.</td>
+<td class="tableaux2">
+<span class="symbole">&hArr;</span>
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">list</span>
+</td>
+<td class="tableaux1">For an element representing a bulleted or ordered list. The sub-element must use the <span class="code">item</span> type. The tags are displayed as for <span class="code">area</span>, with a '+' button to create new items.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/liste.png" alt="images_types/liste.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">item</span>
+</td>
+<td class="tableaux2">List item in a list displayed with the <span class="code">list</span> type. Displayed with bullets or numbers, depending on the list type.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/item.png" alt="images_types/item.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">wlist</span>
+</td>
+<td class="tableaux1">Displays a list with the default browser display for the HTML <span class="code">ul</span> element. This provides a more WYSIWYG interface than <span class="code">list</span>, because the list tags are hidden (which might also make it harder to edit the XML precisely). The <span class="code">witem</span> type must be used for items.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/wlist.png" alt="images_types/wlist.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">witem</span>
+</td>
+<td class="tableaux2">Must be used for items in a list using the <span class="code">wlist</span> type.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/witem.png" alt="images_types/witem.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">simpletype</span>
+</td>
+<td class="tableaux1">Displays an element having a simple value, in a small panel. Usable only for the elements with a simple type in the XML schema. The precise display (text field, menu or checkbox) and the validation are done based on the XML schema constraints.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/typesimple.png" alt="images_types/typesimple.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">equationmem</span>
+</td>
+<td class="tableaux2">Displays the image of an equation. The equation can be edited by a simple click on the image, with a dialog showing at the same time the text of the equation (using a very simple <a class="lien" href="../pages_/equations.html">syntax</a> specific to Jaxe/Daxe) and the corresponding image. The text of the equation is store as an attribute, and the image is encoded in base64 and added as text inside the element.</td>
+<td class="tableaux2">
+<img class="maths" src="../pages_doc-config-en/equations_doc-config-en/equation1.png" alt="int(1/sqrt(x);x;1;infty)">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">equatexmem</span>
+</td>
+<td class="tableaux1">This works in the same way as the previous type, but using a TeX syntax.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/equatex.png" alt="images_types/equatex.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">form</span>
+</td>
+<td class="tableaux2">Displays an element and all its sub-elements as a form. Beware not to use this type with elements that could have an infinitely deep subtree !
+          Sub-elements can be displayed as fields with the <span class="code">field</span> type, or with other types (using other types within a form is only possible with Daxe, not Jaxe).</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/formulaire.png" alt="images_types/formulaire.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">field</span>
+</td>
+<td class="tableaux1">Form field</td>
+<td class="tableaux1">see above</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">anchor</span>
+</td>
+<td class="tableaux2">This is used to display WYSIWYG links with the HTML <span class="code">a</span> element.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/anchor.png" alt="images_types/anchor.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">hiddenp</span>
+</td>
+<td class="tableaux1">Provides a WYSIWYG interface to paragraph elements. Tags are not displayed, and entering a newline where the paragraph element is allowed automatically triggers the insertion of a new paragraph.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/hiddenp.png" alt="images_types/hiddenp.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">hiddendiv</span>
+</td>
+<td class="tableaux2">Hides elements such as the HTML <span class="code">div</span> to provide a more WYSIWYG interface. A new menu appears in the contextual menu to remove a parent <span class="code">div</span>.</td>
+<td class="tableaux2"></td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">stylespan</span>
+</td>
+<td class="tableaux1">Normally used on an HTML <span class="code">span</span> element, this makes Daxe use the element with this type to add style to text. Note that it is better to provide semantic elements rather than style ones like <span class="code">span</span>.</td>
+<td class="tableaux1"></td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">hr</span>
+</td>
+<td class="tableaux2">Displayed as a horizontal line, as for the HTML <span class="code">hr</span> element.</td>
+<td class="tableaux2">
+<img src="../pages_doc-config-en/images_types/hr.png" alt="images_types/hr.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">br</span>
+</td>
+<td class="tableaux1">Displayed as a line break, as the HTML <span class="code">br</span> element. This display type might not play well with <span class="code">hiddenp</span>, and should be avoided in general.</td>
+<td class="tableaux1"></td>
+
+</tr>
+    
+</table>
+    
+<p>Parameters can be specified for some display types, with the <span class="code">Parameter</span> element under <span class="code">Element display</span>.</p>
+    
+<p>Display types <span class="code">division</span> and <span class="code">area</span> can have a parameter specifying the name of the attribute to use as a title for the element display.</p>
+    
+<p>Display types <span class="code">file</span> and <span class="code">symbol</span> <em>must</em> have a parameter specifying the attribute with the file name.</p>
+    
+<p>Display types <span class="code">table</span> <em>must</em> have parameters specifying the elements for the rows and the cells.</p>
+    
+<p>Display types <span class="code">style</span> <em>must</em> have a parameter specifying the style.</p>
+    
+<p>Display types <span class="code">area</span> and <span class="code">string</span> can have a parameter specifying the style, a parameter with the font family, and a parameter with the font size.</p>
+    
+<p>Display types <span class="code">equationmem</span> and <span class="code">equatexmem</span> <em>must</em> have a parameter specifying the attribute to use for the equation text.</p>
+    
+<p>Here is a list of all the parameters:</p>
+    
+<table class="tableau">
+      
+<tr>
+
+<th>type</th>
+<th>parameter name</th>
+<th>description</th>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">division and area</td>
+<td class="tableaux1">titreAtt</td>
+<td class="tableaux1">attribute for the title</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">division, area, string and empty</td>
+<td class="tableaux2">attributsVisibles</td>
+<td class="tableaux2">displays all the attributes on the start tag (true|false)</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">table</td>
+<td class="tableaux1">trTag</td>
+<td class="tableaux1">element for a line</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">table</td>
+<td class="tableaux2">tdTag</td>
+<td class="tableaux2">element for a cell</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">table</td>
+<td class="tableaux1">thTag</td>
+<td class="tableaux1">element for a header cell</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">table</td>
+<td class="tableaux2">colspanAttr</td>
+<td class="tableaux2">attribute to merge columns</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">table</td>
+<td class="tableaux1">rowspanAttr</td>
+<td class="tableaux1">attribute to merge rows</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">table</td>
+<td class="tableaux2">alignAttr</td>
+<td class="tableaux2">attribute to align text</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">wlist</td>
+<td class="tableaux1">type</td>
+<td class="tableaux1">type of list (<span class="code">ul|ol</span>) (unordered/ordered)</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">style, area and string</td>
+<td class="tableaux2">style</td>
+<td class="tableaux2">
+<span class="code">BOLD</span> | <span class="code">ITALIC</span> | <span class="code">SUPERSCRIPT</span> | <span class="code">SUBSCRIPT</span> | <span class="code">UNDERLINE</span> | <span class="code">STRIKETHROUGH</span> | <span class="code">FOREGROUND[###,###,###]</span> | <span class="code">BACKGROUND[###,###,###]</span>
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">area and string</td>
+<td class="tableaux1">font</td>
+<td class="tableaux1">font family</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">area and string</td>
+<td class="tableaux2">size</td>
+<td class="tableaux2">font size</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">file</td>
+<td class="tableaux1">srcAtt</td>
+<td class="tableaux1">attribute with the file name</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">file</td>
+<td class="tableaux2">chooser</td>
+<td class="tableaux2">when set to "true", the file chooser is used to select a file, from the XML file directory</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">file</td>
+<td class="tableaux1">widthAtt</td>
+<td class="tableaux1">the name of the attribute with the width (in pixels)</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">file</td>
+<td class="tableaux2">heightAtt</td>
+<td class="tableaux2">the name of the attribute with the width (in pixels)</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">item</td>
+<td class="tableaux1">image1</td>
+<td class="tableaux1">first bullet image</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">item</td>
+<td class="tableaux2">image2</td>
+<td class="tableaux2">second bullet image</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">equationmem and equatexmem</td>
+<td class="tableaux1">texteAtt</td>
+<td class="tableaux1">attribute with the equation text</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">anchor</td>
+<td class="tableaux2">nameAtt</td>
+<td class="tableaux2">the name of the name attribute</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">anchor</td>
+<td class="tableaux1">hrefAtt</td>
+<td class="tableaux1">the name of the href attribute</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">hiddenp, hiddendiv and stylespan</td>
+<td class="tableaux2">styleAtt</td>
+<td class="tableaux2">the name of the CSS style attribute</td>
+
+</tr>
+    
+</table>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Strings</h1>
+<div class="zone_texte">
+    
+<p>All the texts (also called <em>strings</em>) may have to be changed in the interface created with the configuration. Either to improve readability without having to change the schema, or to provide an interface in another natural language for the same schema. Texts may also have to be provided for a set of languages, so that users can edit the same documents, with the same Daxe configuration, but with an interface entirely in their native language.</p>
+    
+<p>For these reasons, the <span class="code">Strings</span> element represents a set of strings for a given language and country, and it is possible to specify several in the same config file. On can use for instance <span class="code">language="pt" country="BR"</span> for Brazilian Portuguese, or just <span class="code">language="en"</span> so specify English without any precision about the country.</p>
+    
+<p>You may have noticed that the real config file XML elements have French names, even though you see them in English in Daxe and in this documentation. This is because the config file for config files is using these <span class="code">Strings</span> elements to define titles to use for elements when the user's system language is English.</p>
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Configuration description</span>
+
+<p>Short line to describe the configuration, displayed in the dialog to create new documents with Jaxe.</p>
+        
+</li>
+<li>
+
+<span class="code">Menu strings</span>
+
+<p>Strings associated to a menu, identified with its name</p>
+        
+</li>
+<li>
+
+<span class="code">Title</span>
+
+<p>A title</p>
+        
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+<p>A documentation</p>
+        
+</li>
+<li>
+
+<span class="code">Element strings</span>
+
+<p>Strings associated to an XML element. Used to display the element, but also for this element's insertion menu if no string was defined for the menu.</p>
+        
+</li>
+<li>
+
+<span class="code">Title for value</span>
+
+<p>A title to use for an element or attribute value</p>
+        
+</li>
+<li>
+
+<span class="code">Attribute strings</span>
+
+<p>Strings associated to an attributes</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Strings</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Strings @language @country (Configuration description | Menu strings | Element strings)+</span>
+
+<ul>
+<li>
+
+<span class="code">Configuration description</span>
+
+</li>
+<li>
+
+<span class="code">Menu strings @menu (Title?, Documentation?, Menu strings*)</span>
+
+<ul>
+<li>
+
+<span class="code">Title</span>
+
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+</li>
+<li>
+
+<span class="code">Menu strings @menu</span>
+
+</li>
+</ul>
+            
+</li>
+<li>
+
+<span class="code">Element strings @element (Title?, Documentation?, Title for value*, Attribute strings*)</span>
+
+<ul>
+<li>
+
+<span class="code">Title</span>
+
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+</li>
+<li>
+
+<span class="code">Title for value @valeur</span>
+
+</li>
+<li>
+
+<span class="code">Attribute strings @attribut (Title?, Documentation?, Title for value*)</span>
+
+<ul>
+<li>
+
+<span class="code">Title</span>
+
+</li>
+<li>
+
+<span class="code">Documentation</span>
+
+</li>
+<li>
+
+<span class="code">Title for value @valeur</span>
+
+</li>
+</ul>
+                
+</li>
+</ul>
+            
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Node display</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_doc-config-en/menus.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="../pages_doc-config-en/display-types.html" rel="Next">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="Daxe configuration files : Page for printing" href="../pages_doc-config-en/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_doc-config-en/menus.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"><a title="Next page" accesskey="l" href="../pages_doc-config-en/display-types.html"><img border="0" alt="->" height="16" width="25" src="../interface/nuages/petiteflechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_doc-config-en/intro-doc-config-en.html">&nbsp;Daxe configuration files</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/intro-doc-config-en.html">&bull; Introduction</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/definition-xml-language.html">&bull; Definition of the XML language</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/file-saving-options.html">&bull; File saving options</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/menus.html">&bull; Menus</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Node display</span>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/display-types.html">&bull; Display types</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/strings.html">&bull; Strings</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Node display</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>An essential feature in Daxe is the possibility to display and edit XML element in different ways, whatever their types in the XML schema. For instance, a table element can be displayed as a table, and an element linking to an image can be displayed as an image. The objective is to ease document editing, without losing of sight their semantics&nbsp;: elements will not be displayed as they will be seen in web pages or PDF documents, but simply with a user interface making edition easier and highlighting the meaning of the elements.</p>
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Element display</span>
+
+<p>Specifies how an element will be displayed in Jaxe</p>
+        
+</li>
+<li>
+
+<span class="code">Parameter</span>
+
+<p>A display parameter, depending on the display type (see below for a list).</p>
+        
+</li>
+<li>
+
+<span class="code">Suggested value</span>
+
+<p>Value suggested to the user when the schema does not limit authorized values.</p>
+        
+</li>
+<li>
+
+<span class="code">Attribute display</span>
+
+<p>Can be used to suggest attribute values.</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Display</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Display (Element display)+</span>
+
+<ul>
+<li>
+
+<span class="code">Element display @element @type (Parameter | Suggested value | Attribute display)*</span>
+
+<ul>
+<li>
+
+<span class="code">Parameter @name @value</span>
+
+</li>
+<li>
+
+<span class="code">Suggested value</span>
+
+</li>
+<li>
+
+<span class="code">Attribute display @attribute (Suggested value+)</span>
+
+<ul>
+<li>
+
+<span class="code">Suggested value</span>
+
+</li>
+</ul>
+                
+</li>
+</ul>
+            
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_doc-config-en/menus.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"><a title="Next page" href="../pages_doc-config-en/display-types.html"><img border="0" alt="Next page" height="31" width="48" src="../interface/nuages/flechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

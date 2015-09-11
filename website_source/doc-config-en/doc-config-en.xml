@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XPAGES>
+  <INFORMATIONS>
+    <LABEL>doc-config-en</LABEL>
+    <TITRE>Daxe configuration files</TITRE>
+    <DATECRE>23/9/2015</DATECRE>
+    <LANGUE>en</LANGUE>
+  </INFORMATIONS>
+  
+  <PAGE label="intro-doc-config-en" titre="Introduction">
+    <PARAGRAPHE>To provide a user interface for a given XML language, Daxe needs the language definition (given with an XML schema) and a configuration file describing the user interface for the language. It works in the same way as <LIENWEB url="http://jaxe.sourceforge.net/en/">Jaxe</LIENWEB>, and in fact the config files are mostly compatible.</PARAGRAPHE>
+    <PARAGRAPHE>Specifically, configuration files contain basic information about the XML language (a link to the schema and a list of root elements), saving options, menus (especially to insert the elements), display types for the elements, and all the strings used in the interface, depending on the user language.</PARAGRAPHE>
+    <PARAGRAPHE>They are located in Daxe's <CODE>config</CODE> directory, and their names end with "_config.xml".</PARAGRAPHE>
+  </PAGE>
+  
+  <PAGE label="definition-xml-language" titre="Definition of the XML language">
+    <SECTION titre="Element definition">
+      <LISTE>
+        <ITEM><CODE>XML schema file</CODE><PARAGRAPHE>When creating a new config file, the first thing to do is to define the corresponding XML language. This is usually done by specifying an existing XML schema. Schemas must use the W3C syntax (WXS), or the Relax NG one (in XML).</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Root</CODE><PARAGRAPHE>After defining the XML language, it is necessary to give Jaxe one or several possible root elements to use for new documents. The name of the element is specified for each possible root element.</PARAGRAPHE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+    <SECTION titre="Element tree">
+      <PARAGRAPHE>Element tree under <CODE>Language</CODE> :</PARAGRAPHE>
+      <LISTE>
+        <ITEM><CODE>Language (XML schema file, Root+)</CODE><LISTE>
+            <ITEM><CODE>XML schema file @name</CODE></ITEM>
+            <ITEM><CODE>Root @element</CODE></ITEM>
+          </LISTE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+  </PAGE>
+  
+  <PAGE label="file-saving-options" titre="File saving options">
+    <SECTION titre="Element definition">
+      <LISTE>
+        <ITEM><CODE>Doctype</CODE><PARAGRAPHE>Document type definition, if a DTD must be specified in the document headers.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><PARAGRAPHE><CODE>SchemaLocation</CODE></PARAGRAPHE>
+          <PARAGRAPHE>To save the location of the XML schema in XML documents.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Namespace prefix</CODE><PARAGRAPHE>Prefix to use for a given namespace. It is possible to specify several namespace prefixes.</PARAGRAPHE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+    <SECTION titre="Element tree">
+      <PARAGRAPHE>Element tree under <CODE>Saving</CODE> :</PARAGRAPHE>
+      <LISTE>
+        <ITEM><CODE>Saving (Doctype?, Namespace prefix*)</CODE><LISTE>
+            <ITEM><CODE>Doctype @publicid @systemid</CODE></ITEM>
+            <ITEM><CODE>SchemaLocation @schemaLocation @noNamespaceSchemaLocation</CODE></ITEM>
+            <ITEM><CODE>Namespace prefix @uri @prefix</CODE></ITEM>
+          </LISTE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+  </PAGE>
+  
+  <PAGE label="menus" titre="Menus">
+    <PARAGRAPHE>Menus defined in config files are displayed above Daxe's text area, after the file and edit menus.</PARAGRAPHE>
+    <SECTION titre="Element definition">
+      <LISTE>
+        <ITEM><CODE>Menu</CODE><PARAGRAPHE>A main menu, possibly containing sub-menus.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Insertion menu</CODE><PARAGRAPHE>A menu to insert an XML node at the cursor position. The node name and the node type (element by default) must be specified. It is also possible to specify a keyboard shortcut, with the corresponding key.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Function menu</CODE><PARAGRAPHE>Menu to execute a <EM>function</EM> with its name. The only predefined function in Jaxe is <CODE>jaxe.FonctionNormal</CODE>, which is used to remove all the styles in a text area. Other functions can be added by extending Daxe.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Separator</CODE><PARAGRAPHE>Menu separator.</PARAGRAPHE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+    <SECTION titre="Element tree">
+      <PARAGRAPHE>Element tree under <CODE>Menus</CODE> :</PARAGRAPHE>
+      <LISTE>
+        <ITEM><CODE>Menus (Menu+)</CODE><LISTE>
+            <ITEM><CODE>Menu @nom (Menu | Insertion menu | Function menu | Separator)+</CODE><LISTE>
+                <ITEM><CODE>Insertion menu @name @node type (element|instruction|comment) @shortcut</CODE></ITEM>
+                <ITEM><CODE>Function menu @name @class @shortcut</CODE><LISTE>
+                    <ITEM><CODE>Parameter @name @value</CODE></ITEM>
+                  </LISTE>
+                </ITEM>
+                <ITEM><CODE>Separator</CODE></ITEM>
+                <ITEM><CODE>Menu</CODE></ITEM>
+              </LISTE>
+            </ITEM>
+          </LISTE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+  </PAGE>
+  
+  <PAGE label="node-display" titre="Node display">
+    <PARAGRAPHE>An essential feature in Daxe is the possibility to display and edit XML element in different ways, whatever their types in the XML schema. For instance, a table element can be displayed as a table, and an element linking to an image can be displayed as an image. The objective is to ease document editing, without losing of sight their semantics<NBSP/>: elements will not be displayed as they will be seen in web pages or PDF documents, but simply with a user interface making edition easier and highlighting the meaning of the elements.</PARAGRAPHE>
+    <SECTION titre="Element definition">
+      <LISTE>
+        <ITEM><CODE>Element display</CODE><PARAGRAPHE>Specifies how an element will be displayed in Jaxe</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Parameter</CODE><PARAGRAPHE>A display parameter, depending on the display type (see below for a list).</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Suggested value</CODE><PARAGRAPHE>Value suggested to the user when the schema does not limit authorized values.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Attribute display</CODE><PARAGRAPHE>Can be used to suggest attribute values.</PARAGRAPHE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+    <SECTION titre="Element tree">
+      <PARAGRAPHE>Element tree under <CODE>Display</CODE> :</PARAGRAPHE>
+      <LISTE>
+        <ITEM><CODE>Display (Element display)+</CODE><LISTE>
+            <ITEM><CODE>Element display @element @type (Parameter | Suggested value | Attribute display)*</CODE><LISTE>
+                <ITEM><CODE>Parameter @name @value</CODE></ITEM>
+                <ITEM><CODE>Suggested value</CODE></ITEM>
+                <ITEM><CODE>Attribute display @attribute (Suggested value+)</CODE><LISTE>
+                    <ITEM><CODE>Suggested value</CODE></ITEM>
+                  </LISTE>
+                </ITEM>
+              </LISTE>
+            </ITEM>
+          </LISTE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+  </PAGE>
+  
+  <PAGE label="display-types" titre="Display types">
+    <TABLEAU>
+      <TR><TH>Type</TH><TH>Description</TH><TH>Display</TH></TR>
+      <TR><TD><CODE>division</CODE></TD><TD>Two bars extending to the window's right side, clearly separating large areas in the document.</TD><TD><FICHIER nom="images_types/division.png"/></TD></TR>
+      <TR><TD><CODE>area</CODE></TD><TD>Two tags and carriage returns, to separate areas smaller than with <CODE>division</CODE>.</TD><TD><FICHIER nom="images_types/zone.png"/></TD></TR>
+      <TR><TD><CODE>string</CODE></TD><TD>Two tags to identify a small string, without any carriage return.</TD><TD><FICHIER nom="images_types/string.png"/></TD></TR>
+      <TR><TD><CODE>empty</CODE></TD><TD>A single tag, typically for an empty element.</TD><TD><FICHIER nom="images_types/vide.png"/></TD></TR>
+      <TR><TD><CODE>table</CODE></TD><TD>Table display allowing the use of XML elements inside the cells. Also handles the rowspan and colspan attributes to gather cells vertically and horizontally.</TD><TD><FICHIER nom="images_types/tabletexte.png"/></TD></TR>
+      <TR><TD><CODE>style</CODE></TD><TD>For use in the case (very rare if the XML language encodes the meaning as opposed to the presentation) where an XML element only conveys a style information. Displays the characters in the chosen style (bold, italic, ...), without any tag. An alternative is to use the <CODE>string</CODE> type, which can also use a style, but displays the tags.</TD><TD><FICHIER nom="images_types/style.png"/></TD></TR>
+      <TR><TD><CODE>file</CODE></TD><TD>Displays an image based on its path on the disk coming from an attribute of the XML element (to be defined). It is possible to copy/paste images and Daxe will automatically create the XML element and save the image file whenever possible, using the first element of type <CODE>file</CODE>.</TD><TD><FICHIER nom="images_types/fichier.png"/></TD></TR>
+      <TR><TD><CODE>symbol</CODE></TD><TD>Special character stored as a UNICODE character within the element tags. If no element has this type, users will still be able to insert UNICODE characters from a table.</TD><TD><SYMBOLE>⇔</SYMBOLE></TD></TR>
+      <TR><TD><CODE>list</CODE></TD><TD>For an element representing a bulleted or ordered list. The sub-element must use the <CODE>item</CODE> type. The tags are displayed as for <CODE>area</CODE>, with a '+' button to create new items.</TD><TD><FICHIER nom="images_types/liste.png"/></TD></TR>
+      <TR><TD><CODE>item</CODE></TD><TD>List item in a list displayed with the <CODE>list</CODE> type. Displayed with bullets or numbers, depending on the list type.</TD><TD><FICHIER nom="images_types/item.png"/></TD></TR>
+      <TR><TD><CODE>wlist</CODE></TD><TD>Displays a list with the default browser display for the HTML <CODE>ul</CODE> element. This provides a more WYSIWYG interface than <CODE>list</CODE>, because the list tags are hidden (which might also make it harder to edit the XML precisely). The <CODE>witem</CODE> type must be used for items.</TD><TD><FICHIER nom="images_types/wlist.png"/></TD></TR>
+      <TR><TD><CODE>witem</CODE></TD><TD>Must be used for items in a list using the <CODE>wlist</CODE> type.</TD><TD><FICHIER nom="images_types/witem.png"/></TD></TR>
+      <TR><TD><CODE>simpletype</CODE></TD><TD>Displays an element having a simple value, in a small panel. Usable only for the elements with a simple type in the XML schema. The precise display (text field, menu or checkbox) and the validation are done based on the XML schema constraints.</TD><TD><FICHIER nom="images_types/typesimple.png"/></TD></TR>
+      <TR><TD><CODE>equationmem</CODE></TD><TD>Displays the image of an equation. The equation can be edited by a simple click on the image, with a dialog showing at the same time the text of the equation (using a very simple <LIENPAGE contribution="jaxe-user-guide" page="equations">syntax</LIENPAGE> specific to Jaxe/Daxe) and the corresponding image. The text of the equation is store as an attribute, and the image is encoded in base64 and added as text inside the element.</TD><TD><EQUATION texte="int(1/sqrt(x);x;1;infty)">iVBORw0KGgoAAAANSUhEUgAAADoAAABfCAYAAAC5gtTBAAADoUlEQVR4nO3cb8idcxzH8dft1o7b
+          WGxpmr9LQskeUGvZ7uTRGIq5i2ZYmxRRWnmClmRkwgOxUQzxiOS/4hFLSqExRVppk4kQi/yLB98j
+          1312777vc67rd67rPvfvXefB73ed8+37Od/rXNf3+/v+rkMmk8lkMplMZpZzJR7AZYW5ZdiC6zBc
+          h1NVcwfW4HJ8g81YjneF0M/weG3eVcQQXiyMz8KveM7/UTwK32JOf12rlnnY1TF3P77E4YW51zC3
+          X06lYjc24RRxCj+JHXheRHEuHqvNuwpZJn6Hv+BZHIkFIoqf4yksqs27TCaTyWRmDi2sxUbMr9mX
+          ZAyLjGi9SBS21OtOOi7C3yKqq7C4XnfSsRk/1u1EP3gU++p2oh9slU7oSCK7PZFC6Dl4HbdVbLcU
+          VQtdgCX4GrdXaLc0qU7dj2Wh9ZCFliQLrYsstCSfaJjQm/BEhfbmYR1+xzuizdEIUqaAjWImCB0R
+          GVcpmi50jegmXFXWUNOFEl29WSF0nwEVehwexC1iwe4HBwodwgWi3bmkPbdONLYnpGlCh/EhTm2P
+          j8EfJo5oS7Q2t4ntCatx/sEM9yL0n4pfRcbwfsfcZKfumKh9R6dyumkRvQdvdMxNJvRE/Gkayzap
+          hV5t+tGEu8T6cpHJhN4gInreVI6kFvoFlnbx/lHxBaxqj0fws1hg7+RcrMB2sU3hdJGCTkhKoSfg
+          J93vV9okkoRXcJ+I2NM4vn18pdhYcn17fAW+wzWTGU0p9Fq81ONnR8RthvE7ZYhby8KOuWOnMphS
+          6DO4OZHtrkkpdC/OTGS7a1IJPUNsvRtKYLsnUgm9UWy5awyphL6ADQns9kwKoYeIRPzkiu2WIlWT
+          aXdh3HWlkYK3sL9im7c6cMNkV5VGCnaJ1n6VvCmylU6mXWmkoGqhLXGGdGYudFFppGCban+jo9h5
+          kGPTrjRS0OvF6Gzciw9waGH+Tjw0wfu7qjRS0IvQ+aK38jD24JLCsR24uDDuqdJIQdnby07xZAUc
+          gd+Mj1RPlUYKygrdiL9wNC7Ee1U4lYKyQheKK+mYSAjursKpFFSRGb0sLjIf6XMS0A1VCF0tLjD7
+          cVhpjxKxVdSNZZiD7/F2eXfSsR2fVmBnvfG3mUbQEuukLbwqsqOBZKlYO70UX4ksZWBZK7pVJ9Xt
+          SCaTyRQ5zQA/CvIfi0UDdm/djvSD5bLQwSILHTRmjdAVZoHQRXhErOCtNMP/NiSTyWQy/eZfXXHz
+          VmDLBpoAAAAASUVORK5CYII=</EQUATION></TD></TR>
+      <TR><TD><CODE>equatexmem</CODE></TD><TD>This works in the same way as the previous type, but using a TeX syntax.</TD><TD><FICHIER nom="images_types/equatex.png"/></TD></TR>
+      <TR><TD><CODE>form</CODE></TD><TD>Displays an element and all its sub-elements as a form. Beware not to use this type with elements that could have an infinitely deep subtree !
+          Sub-elements can be displayed as fields with the <CODE>field</CODE> type, or with other types (using other types within a form is only possible with Daxe, not Jaxe).</TD><TD><FICHIER nom="images_types/formulaire.png"/></TD></TR>
+      <TR><TD><CODE>field</CODE></TD><TD>Form field</TD><TD>see above</TD></TR>
+      <TR><TD><CODE>anchor</CODE></TD><TD>This is used to display WYSIWYG links with the HTML <CODE>a</CODE> element.</TD><TD><FICHIER nom="images_types/anchor.png"/></TD></TR>
+      <TR><TD><CODE>hiddenp</CODE></TD><TD>Provides a WYSIWYG interface to paragraph elements. Tags are not displayed, and entering a newline where the paragraph element is allowed automatically triggers the insertion of a new paragraph.</TD><TD><FICHIER nom="images_types/hiddenp.png"/></TD></TR>
+      <TR><TD><CODE>hiddendiv</CODE></TD><TD>Hides elements such as the HTML <CODE>div</CODE> to provide a more WYSIWYG interface. A new menu appears in the contextual menu to remove a parent <CODE>div</CODE>.</TD><TD/></TR>
+      <TR><TD><CODE>stylespan</CODE></TD><TD>Normally used on an HTML <CODE>span</CODE> element, this makes Daxe use the element with this type to add style to text. Note that it is better to provide semantic elements rather than style ones like <CODE>span</CODE>.</TD><TD/></TR>
+      <TR><TD><CODE>hr</CODE></TD><TD>Displayed as a horizontal line, as for the HTML <CODE>hr</CODE> element.</TD><TD><FICHIER nom="images_types/hr.png"/></TD></TR>
+      <TR><TD><CODE>br</CODE></TD><TD>Displayed as a line break, as the HTML <CODE>br</CODE> element. This display type might not play well with <CODE>hiddenp</CODE>, and should be avoided in general.</TD><TD/></TR>
+    </TABLEAU>
+    <PARAGRAPHE>Parameters can be specified for some display types, with the <CODE>Parameter</CODE> element under <CODE>Element display</CODE>.</PARAGRAPHE>
+    <PARAGRAPHE>Display types <CODE>division</CODE> and <CODE>area</CODE> can have a parameter specifying the name of the attribute to use as a title for the element display.</PARAGRAPHE>
+    <PARAGRAPHE>Display types <CODE>file</CODE> and <CODE>symbol</CODE> <EM>must</EM> have a parameter specifying the attribute with the file name.</PARAGRAPHE>
+    <PARAGRAPHE>Display types <CODE>table</CODE> <EM>must</EM> have parameters specifying the elements for the rows and the cells.</PARAGRAPHE>
+    <PARAGRAPHE>Display types <CODE>style</CODE> <EM>must</EM> have a parameter specifying the style.</PARAGRAPHE>
+    <PARAGRAPHE>Display types <CODE>area</CODE> and <CODE>string</CODE> can have a parameter specifying the style, a parameter with the font family, and a parameter with the font size.</PARAGRAPHE>
+    <PARAGRAPHE>Display types <CODE>equationmem</CODE> and <CODE>equatexmem</CODE> <EM>must</EM> have a parameter specifying the attribute to use for the equation text.</PARAGRAPHE>
+    <PARAGRAPHE>Here is a list of all the parameters:</PARAGRAPHE>
+    <TABLEAU>
+      <TR><TH>type</TH><TH>parameter name</TH><TH>description</TH></TR>
+      <TR><TD>division and area</TD><TD>titreAtt</TD><TD>attribute for the title</TD></TR>
+      <TR><TD>division, area, string and empty</TD><TD>attributsVisibles</TD><TD>displays all the attributes on the start tag (true|false)</TD></TR>
+      <TR><TD>table</TD><TD>trTag</TD><TD>element for a line</TD></TR>
+      <TR><TD>table</TD><TD>tdTag</TD><TD>element for a cell</TD></TR>
+      <TR><TD>table</TD><TD>thTag</TD><TD>element for a header cell</TD></TR>
+      <TR><TD>table</TD><TD>colspanAttr</TD><TD>attribute to merge columns</TD></TR>
+      <TR><TD>table</TD><TD>rowspanAttr</TD><TD>attribute to merge rows</TD></TR>
+      <TR><TD>table</TD><TD>alignAttr</TD><TD>attribute to align text</TD></TR>
+      <TR><TD>wlist</TD><TD>type</TD><TD>type of list (<CODE>ul|ol</CODE>) (unordered/ordered)</TD></TR>
+      <TR><TD>style, area and string</TD><TD>style</TD><TD><CODE>BOLD</CODE> | <CODE>ITALIC</CODE> | <CODE>SUPERSCRIPT</CODE> | <CODE>SUBSCRIPT</CODE> | <CODE>UNDERLINE</CODE> | <CODE>STRIKETHROUGH</CODE> | <CODE>FOREGROUND[###,###,###]</CODE> | <CODE>BACKGROUND[###,###,###]</CODE></TD></TR>
+      <TR><TD>area and string</TD><TD>font</TD><TD>font family</TD></TR>
+      <TR><TD>area and string</TD><TD>size</TD><TD>font size</TD></TR>
+      <TR><TD>file</TD><TD>srcAtt</TD><TD>attribute with the file name</TD></TR>
+      <TR><TD>file</TD><TD>chooser</TD><TD>when set to "true", the file chooser is used to select a file, from the XML file directory</TD></TR>
+      <TR><TD>file</TD><TD>widthAtt</TD><TD>the name of the attribute with the width (in pixels)</TD></TR>
+      <TR><TD>file</TD><TD>heightAtt</TD><TD>the name of the attribute with the width (in pixels)</TD></TR>
+      <TR><TD>item</TD><TD>image1</TD><TD>first bullet image</TD></TR>
+      <TR><TD>item</TD><TD>image2</TD><TD>second bullet image</TD></TR>
+      <TR><TD>equationmem and equatexmem</TD><TD>texteAtt</TD><TD>attribute with the equation text</TD></TR>
+      <TR><TD>anchor</TD><TD>nameAtt</TD><TD>the name of the name attribute</TD></TR>
+      <TR><TD>anchor</TD><TD>hrefAtt</TD><TD>the name of the href attribute</TD></TR>
+      <TR><TD>hiddenp, hiddendiv and stylespan</TD><TD>styleAtt</TD><TD>the name of the CSS style attribute</TD></TR>
+    </TABLEAU>
+  </PAGE>
+  
+  <PAGE label="strings" titre="Strings">
+    <PARAGRAPHE>All the texts (also called <EM>strings</EM>) may have to be changed in the interface created with the configuration. Either to improve readability without having to change the schema, or to provide an interface in another natural language for the same schema. Texts may also have to be provided for a set of languages, so that users can edit the same documents, with the same Daxe configuration, but with an interface entirely in their native language.</PARAGRAPHE>
+    <PARAGRAPHE>For these reasons, the <CODE>Strings</CODE> element represents a set of strings for a given language and country, and it is possible to specify several in the same config file. On can use for instance <CODE>language="pt" country="BR"</CODE> for Brazilian Portuguese, or just <CODE>language="en"</CODE> so specify English without any precision about the country.</PARAGRAPHE>
+    <PARAGRAPHE>You may have noticed that the real config file XML elements have French names, even though you see them in English in Daxe and in this documentation. This is because the config file for config files is using these <CODE>Strings</CODE> elements to define titles to use for elements when the user's system language is English.</PARAGRAPHE>
+    <SECTION titre="Element definition">
+      <LISTE>
+        <ITEM><CODE>Configuration description</CODE><PARAGRAPHE>Short line to describe the configuration, displayed in the dialog to create new documents with Jaxe.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Menu strings</CODE><PARAGRAPHE>Strings associated to a menu, identified with its name</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Title</CODE><PARAGRAPHE>A title</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Documentation</CODE><PARAGRAPHE>A documentation</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Element strings</CODE><PARAGRAPHE>Strings associated to an XML element. Used to display the element, but also for this element's insertion menu if no string was defined for the menu.</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Title for value</CODE><PARAGRAPHE>A title to use for an element or attribute value</PARAGRAPHE>
+        </ITEM>
+        <ITEM><CODE>Attribute strings</CODE><PARAGRAPHE>Strings associated to an attributes</PARAGRAPHE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+    <SECTION titre="Element tree">
+      <PARAGRAPHE>Element tree under <CODE>Strings</CODE> :</PARAGRAPHE>
+      <LISTE>
+        <ITEM><CODE>Strings @language @country (Configuration description | Menu strings | Element strings)+</CODE><LISTE>
+            <ITEM><CODE>Configuration description</CODE></ITEM>
+            <ITEM><CODE>Menu strings @menu (Title?, Documentation?, Menu strings*)</CODE><LISTE>
+                <ITEM><CODE>Title</CODE></ITEM>
+                <ITEM><CODE>Documentation</CODE></ITEM>
+                <ITEM><CODE>Menu strings @menu</CODE></ITEM>
+              </LISTE>
+            </ITEM>
+            <ITEM><CODE>Element strings @element (Title?, Documentation?, Title for value*, Attribute strings*)</CODE><LISTE>
+                <ITEM><CODE>Title</CODE></ITEM>
+                <ITEM><CODE>Documentation</CODE></ITEM>
+                <ITEM><CODE>Title for value @valeur</CODE></ITEM>
+                <ITEM><CODE>Attribute strings @attribut (Title?, Documentation?, Title for value*)</CODE><LISTE>
+                    <ITEM><CODE>Title</CODE></ITEM>
+                    <ITEM><CODE>Documentation</CODE></ITEM>
+                    <ITEM><CODE>Title for value @valeur</CODE></ITEM>
+                  </LISTE>
+                </ITEM>
+              </LISTE>
+            </ITEM>
+          </LISTE>
+        </ITEM>
+      </LISTE>
+    </SECTION>
+  </PAGE>
+  
+</XPAGES>

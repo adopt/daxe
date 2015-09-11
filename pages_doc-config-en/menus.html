@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Menus</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_doc-config-en/file-saving-options.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="../pages_doc-config-en/node-display.html" rel="Next">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="Daxe configuration files : Page for printing" href="../pages_doc-config-en/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_doc-config-en/file-saving-options.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"><a title="Next page" accesskey="l" href="../pages_doc-config-en/node-display.html"><img border="0" alt="->" height="16" width="25" src="../interface/nuages/petiteflechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_doc-config-en/intro-doc-config-en.html">&nbsp;Daxe configuration files</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/intro-doc-config-en.html">&bull; Introduction</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/definition-xml-language.html">&bull; Definition of the XML language</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/file-saving-options.html">&bull; File saving options</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Menus</span>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/node-display.html">&bull; Node display</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/display-types.html">&bull; Display types</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_doc-config-en/strings.html">&bull; Strings</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Menus</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>Menus defined in config files are displayed above Daxe's text area, after the file and edit menus.</p>
+    
+<div class="section_normale">
+<h2>Element definition</h2>
+      
+<ul>
+<li>
+
+<span class="code">Menu</span>
+
+<p>A main menu, possibly containing sub-menus.</p>
+        
+</li>
+<li>
+
+<span class="code">Insertion menu</span>
+
+<p>A menu to insert an XML node at the cursor position. The node name and the node type (element by default) must be specified. It is also possible to specify a keyboard shortcut, with the corresponding key.</p>
+        
+</li>
+<li>
+
+<span class="code">Function menu</span>
+
+<p>Menu to execute a <em>function</em> with its name. The only predefined function in Jaxe is <span class="code">jaxe.FonctionNormal</span>, which is used to remove all the styles in a text area. Other functions can be added by extending Daxe.</p>
+        
+</li>
+<li>
+
+<span class="code">Separator</span>
+
+<p>Menu separator.</p>
+        
+</li>
+</ul>
+    
+</div>
+    
+<div class="section_normale">
+<h2>Element tree</h2>
+      
+<p>Element tree under <span class="code">Menus</span> :</p>
+      
+<ul>
+<li>
+
+<span class="code">Menus (Menu+)</span>
+
+<ul>
+<li>
+
+<span class="code">Menu @nom (Menu | Insertion menu | Function menu | Separator)+</span>
+
+<ul>
+<li>
+
+<span class="code">Insertion menu @name @node type (element|instruction|comment) @shortcut</span>
+
+</li>
+<li>
+
+<span class="code">Function menu @name @class @shortcut</span>
+
+<ul>
+<li>
+
+<span class="code">Parameter @name @value</span>
+
+</li>
+</ul>
+                
+</li>
+<li>
+
+<span class="code">Separator</span>
+
+</li>
+<li>
+
+<span class="code">Menu</span>
+
+</li>
+</ul>
+            
+</li>
+</ul>
+        
+</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_doc-config-en/file-saving-options.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"><a title="Next page" href="../pages_doc-config-en/node-display.html"><img border="0" alt="Next page" height="31" width="48" src="../interface/nuages/flechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

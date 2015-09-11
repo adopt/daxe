@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><CONFIG_JAXE>
+<LANGAGE>
+<FICHIER_SCHEMA nom="SimplerSchema.xsd"/>
+<RACINE element="schema"/>
+</LANGAGE>
+
+<ENREGISTREMENT>
+<PREFIXE_ESPACE prefixe="xs" uri="http://www.w3.org/2001/XMLSchema"/>
+</ENREGISTREMENT>
+
+<MENUS>
+<MENU nom="top-level">
+<MENU_INSERTION nom="include" type_noeud="element"/>
+<MENU_INSERTION nom="redefine"/>
+<MENU_INSERTION nom="import" type_noeud="element"/>
+<MENU_INSERTION nom="element" type_noeud="element"/>
+<MENU_INSERTION nom="attribute" type_noeud="element"/>
+<MENU_INSERTION nom="simpleType" type_noeud="element"/>
+<MENU_INSERTION nom="complexType" type_noeud="element"/>
+<MENU_INSERTION nom="group" type_noeud="element"/>
+<MENU_INSERTION nom="attributeGroup" type_noeud="element"/>
+<MENU_INSERTION nom="annotation" type_noeud="element"/>
+<MENU_INSERTION nom="documentation" type_noeud="element"/>
+</MENU>
+<MENU nom="structure">
+<MENU_INSERTION nom="choice" type_noeud="element"/>
+<MENU_INSERTION nom="sequence" type_noeud="element"/>
+<MENU_INSERTION nom="all"/>
+<MENU_INSERTION nom="simpleContent" type_noeud="element"/>
+<MENU_INSERTION nom="complexContent" type_noeud="element"/>
+<MENU_INSERTION nom="extension" type_noeud="element"/>
+<MENU_INSERTION nom="restriction" type_noeud="element"/>
+<MENU_INSERTION nom="any" type_noeud="element"/>
+</MENU>
+<MENU nom="keys">
+<MENU_INSERTION nom="unique"/>
+<MENU_INSERTION nom="key"/>
+<MENU_INSERTION nom="keyref"/>
+<MENU_INSERTION nom="selector"/>
+<MENU_INSERTION nom="field"/>
+</MENU>
+<MENU nom="types">
+<MENU_INSERTION nom="list"/>
+<MENU_INSERTION nom="union"/>
+<MENU_INSERTION nom="enumeration" type_noeud="element"/>
+<MENU_INSERTION nom="minExclusive" type_noeud="element"/>
+<MENU_INSERTION nom="minInclusive" type_noeud="element"/>
+<MENU_INSERTION nom="maxExclusive" type_noeud="element"/>
+<MENU_INSERTION nom="maxInclusive" type_noeud="element"/>
+<MENU_INSERTION nom="totalDigits" type_noeud="element"/>
+<MENU_INSERTION nom="fractionDigits" type_noeud="element"/>
+<MENU_INSERTION nom="length" type_noeud="element"/>
+<MENU_INSERTION nom="minLength" type_noeud="element"/>
+<MENU_INSERTION nom="maxLength" type_noeud="element"/>
+<MENU_INSERTION nom="pattern" type_noeud="element"/>
+</MENU>
+</MENUS>
+
+<AFFICHAGE_NOEUDS>
+<AFFICHAGE_ELEMENT element="schema" type="division">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+
+<AFFICHAGE_ELEMENT element="include" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="redefine" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="import" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="element" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="attribute" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="simpleType" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="complexType" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="group" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="attributeGroup" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="annotation" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="documentation" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+
+<AFFICHAGE_ELEMENT element="choice" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="sequence" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="all" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="simpleContent" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="complexContent" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="extension" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="restriction" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+
+<AFFICHAGE_ELEMENT element="any" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="unique" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="key" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="keyref" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="selector" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="field" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+
+<AFFICHAGE_ELEMENT element="list" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="union" type="zone">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="enumeration" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="minExclusive" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="minInclusive" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="maxExclusive" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="maxInclusive" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="totalDigits" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="fractionDigits" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="length" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="minLength" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="maxLength" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+<AFFICHAGE_ELEMENT element="pattern" type="vide">
+<PARAMETRE nom="attributsVisibles" valeur="true"/>
+</AFFICHAGE_ELEMENT>
+</AFFICHAGE_NOEUDS>
+
+<EXPORTS>
+<EXPORT nom="schemaVersConfig" sortie="XML">
+<FICHIER_XSL nom="xsd_vers_config_1.xsl">
+<PARAMETRE nom="jaxe-uri-xml" valeur="*"/>
+</FICHIER_XSL>
+<FICHIER_XSL nom="xsd_vers_config_2.xsl">
+<PARAMETRE nom="jaxe-uri-xml" valeur="*"/>
+</FICHIER_XSL>
+</EXPORT>
+<EXPORT nom="HTML" sortie="HTML">
+<FICHIER_XSL nom="XMLSchema.xsl">
+<PARAMETRE nom="jaxe-uri-xsl" valeur="*"/>
+</FICHIER_XSL>
+</EXPORT>
+</EXPORTS>
+
+<STRINGS langue="en">
+<DESCRIPTION_CONFIG>W3C XML Schema</DESCRIPTION_CONFIG>
+
+<STRINGS_MENU menu="top-level">
+<TITRE>Top-level</TITRE>
+</STRINGS_MENU>
+<STRINGS_MENU menu="structure">
+<TITRE>Structure</TITRE>
+</STRINGS_MENU>
+<STRINGS_MENU menu="keys">
+<TITRE>Keys</TITRE>
+</STRINGS_MENU>
+<STRINGS_MENU menu="types">
+<TITRE>Types</TITRE>
+</STRINGS_MENU>
+
+<STRINGS_ELEMENT element="schema">
+<TITRE>Schema</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="include">
+<TITRE>Include</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="redefine">
+<TITRE>Redefine</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="import">
+<TITRE>Import</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="element">
+<TITRE>Element</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="attribute">
+<TITRE>Attribute</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="simpleType">
+<TITRE>Simple type</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="complexType">
+<TITRE>Complex type</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="group">
+<TITRE>Group</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="attributeGroup">
+<TITRE>Attribute group</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="annotation">
+<TITRE>Annotation</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="documentation">
+<TITRE>Documentation</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="choice">
+<TITRE>Choice</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="sequence">
+<TITRE>Sequence</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="all">
+<TITRE>All</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="simpleContent">
+<TITRE>Simple content</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="complexContent">
+<TITRE>Complex content</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="extension">
+<TITRE>Extension</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="restriction">
+<TITRE>Restriction</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="any">
+<TITRE>Any</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="unique">
+<TITRE>Unique</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="key">
+<TITRE>Key</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="keyref">
+<TITRE>Keyref</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="selector">
+<TITRE>Selector</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="field">
+<TITRE>Field</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="list">
+<TITRE>List</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="union">
+<TITRE>Union</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="enumeration">
+<TITRE>Enumeration</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="minExclusive">
+<TITRE>minExclusive</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="minInclusive">
+<TITRE>minInclusive</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="maxExclusive">
+<TITRE>maxExclusive</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="maxInclusive">
+<TITRE>maxInclusive</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="totalDigits">
+<TITRE>totalDigits</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="fractionDigits">
+<TITRE>fractionDigits</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="length">
+<TITRE>length</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="minLength">
+<TITRE>minLength</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="maxLength">
+<TITRE>maxLength</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="pattern">
+<TITRE>pattern</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_EXPORT export="schemaVersConfig">
+<TITRE>Create Jaxe configuration...</TITRE>
+</STRINGS_EXPORT>
+</STRINGS>
+
+<STRINGS langue="fr">
+<DESCRIPTION_CONFIG>Schéma XML du W3C</DESCRIPTION_CONFIG>
+
+<STRINGS_MENU menu="top-level">
+<TITRE>Plus haut niveau</TITRE>
+</STRINGS_MENU>
+<STRINGS_MENU menu="structure">
+<TITRE>Structure</TITRE>
+</STRINGS_MENU>
+<STRINGS_MENU menu="keys">
+<TITRE>Clés</TITRE>
+</STRINGS_MENU>
+<STRINGS_MENU menu="types">
+<TITRE>Types</TITRE>
+</STRINGS_MENU>
+
+<STRINGS_ELEMENT element="schema">
+<TITRE>Schéma</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="include">
+<TITRE>Inclusion</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="redefine">
+<TITRE>Redéfinition</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="import">
+<TITRE>Importation</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="element">
+<TITRE>Elément</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="attribute">
+<TITRE>Attribut</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="simpleType">
+<TITRE>Type simple</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="complexType">
+<TITRE>Type complexe</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="group">
+<TITRE>Groupe</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="attributeGroup">
+<TITRE>Groupe d'attributs</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="annotation">
+<TITRE>Annotation</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="documentation">
+<TITRE>Documentation</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="choice">
+<TITRE>Choix</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="sequence">
+<TITRE>Séquence</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="all">
+<TITRE>Tous parmi</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="simpleContent">
+<TITRE>Contenu simple</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="complexContent">
+<TITRE>Contenu complexe</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="extension">
+<TITRE>Extension</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="restriction">
+<TITRE>Restriction</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="any">
+<TITRE>N'importe quel élément</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="unique">
+<TITRE>Unique</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="key">
+<TITRE>Clé</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="keyref">
+<TITRE>Réf. clé</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="selector">
+<TITRE>Sélecteur</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="field">
+<TITRE>Champ</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_ELEMENT element="list">
+<TITRE>Liste</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="union">
+<TITRE>Union</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="enumeration">
+<TITRE>Enumération</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="minExclusive">
+<TITRE>Min exclusif</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="minInclusive">
+<TITRE>Min inclusif</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="maxExclusive">
+<TITRE>Max exclusif</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="maxInclusive">
+<TITRE>Max inclusif</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="totalDigits">
+<TITRE>Total chiffres</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="fractionDigits">
+<TITRE>Fraction chiffres</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="length">
+<TITRE>Longueur</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="minLength">
+<TITRE>Longueur min</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="maxLength">
+<TITRE>Longueur max</TITRE>
+</STRINGS_ELEMENT>
+<STRINGS_ELEMENT element="pattern">
+<TITRE>pattern</TITRE>
+</STRINGS_ELEMENT>
+
+<STRINGS_EXPORT export="schemaVersConfig">
+<TITRE>Créer une configuration Jaxe...</TITRE>
+</STRINGS_EXPORT>
+</STRINGS>
+
+</CONFIG_JAXE>

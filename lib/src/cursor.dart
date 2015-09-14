@@ -1298,14 +1298,22 @@ class Cursor {
    * Returns true if it was pasted without error.
    */
   bool pasteText(String s) {
+    DaxeNode parent = selectionStart.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    if (parent == null)
+      return false;
+    x.Element hiddenp;
+    if (parent.ref != null && doc.hiddenParaRefs != null)
+      hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
+    else
+      hiddenp = null;
+    bool parentWithText = parent.ref != null && doc.cfg.canContainText(parent.ref);
     bool problem = false;
     if (s.trim() != '') {
-      DaxeNode parent = selectionStart.dn;
-      if (parent.nodeType == DaxeNode.TEXT_NODE)
-        parent = parent.parent;
       if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
         problem = true;
-      else if (parent.ref != null && !doc.cfg.canContainText(parent.ref))
+      else if (!parentWithText && hiddenp == null)
         problem = true;
     }
     if (problem) {
@@ -1313,15 +1321,8 @@ class Cursor {
       return(false);
     }
     // use hidden paragraphs instead of newlines if allowed at current position
-    bool useParagraphs = (doc.hiddenParaRefs != null && s.contains('\n'));
-    x.Element hiddenp;
-    if (useParagraphs) {
-      DaxeNode parent = selectionStart.dn;
-      if (parent is DNText)
-        parent = parent.parent;
-      hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
-      useParagraphs = (hiddenp != null);
-    }
+    // also use hidden paragraphs if a paragraph is required to insert text
+    bool useParagraphs = hiddenp != null && (s.contains('\n') || !parentWithText);
     if (!useParagraphs) {
       doc.insertString(selectionStart, s);
       return(true);

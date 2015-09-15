@@ -317,6 +317,14 @@ class WebPage {
     event.preventDefault();
   }
   
+  void stopSelection() {
+    // this is called by Cursor when a character is typed
+    lastClickPosition = null;
+    selectionStart = null;
+    selectionEnd = null;
+    selectionByWords = false;
+  }
+  
   void onContextMenu(h.MouseEvent event) {
     if (event.shiftKey)
       return;

@@ -123,6 +123,7 @@ class Cursor {
   void keyDown(h.KeyboardEvent event) {
     if (selectionStart == null)
       return;
+    page.stopSelection();
     donePaste = false;
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;

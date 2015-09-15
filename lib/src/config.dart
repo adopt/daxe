@@ -183,7 +183,7 @@ class Config {
    * Adds the attributes for the namespaces to the root node
    */
   void addNamespaceAttributes(final DaxeNode root) {
-    final List<String> espaces = _namespaceList();
+    final List<String> espaces = namespaceList();
     for (final String espace in espaces) {
       if (espace != "") {
         final String prefixe = namespacePrefix(espace);
@@ -526,7 +526,7 @@ class Config {
   /**
    * Returns the list of all namespaces in the schema
    */
-  List<String> _namespaceList() {
+  List<String> namespaceList() {
     if (_namespaceCache != null)
       return(_namespaceCache);
     final List<String> liste = new List<String>();
@@ -543,7 +543,7 @@ class Config {
    * Returns -1 if the namespace is not found in the config.
    */
   int namespaceNumber(final String namespace) {
-    final List<String> liste = _namespaceList();
+    final List<String> liste = namespaceList();
     return(liste.indexOf(namespace));
   }
   

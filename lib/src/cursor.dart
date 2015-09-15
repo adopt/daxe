@@ -1283,9 +1283,25 @@ class Cursor {
    */
   bool pasteString(String s) {
     x.Document tmpdoc;
+    String parse = "<root";
+    if (doc.cfg != null) {
+      // add namespaces to a root element to get the right references later
+      for (String namespace in doc.cfg.namespaceList()) {
+        if (namespace != '') {
+          String prefix = doc.cfg.namespacePrefix(namespace);
+          String attname;
+          if (prefix != null && prefix != '')
+            attname = "xmlns:$prefix";
+          else
+            attname = "xmlns";
+          parse += ' $attname="$namespace"';
+        }
+      }
+    }
+    parse += ">$s</root>";
     try {
       x.DOMParser dp = new x.DOMParser();
-      tmpdoc = dp.parseFromString("<root>$s</root>");
+      tmpdoc = dp.parseFromString(parse);
     } on x.DOMException {
       // this is not XML, it is inserted as string if it is possible
       return(pasteText(s));
@@ -1356,6 +1372,7 @@ class Cursor {
       parent = parent.parent;
     // to call fixLineBreaks(), we need a real DaxeNode for the "root", with the right ref
     DaxeNode dnRoot = NodeFactory.create(parent.ref);
+    doc.cfg.addNamespaceAttributes(dnRoot);
     if (root.childNodes != null) {
       for (x.Node n in root.childNodes) {
         DaxeNode dn = NodeFactory.createFromNode(n, dnRoot);

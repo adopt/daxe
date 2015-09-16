@@ -248,7 +248,7 @@ class DaxeDocument {
   
   DaxeNode getRootElement() {
     for (DaxeNode dn=dndoc.firstChild; dn != null; dn=dn.nextSibling) {
-      if (dn.nodeType == DaxeNode.ELEMENT_NODE)
+      if (dn.isXMLElement())
         return(dn);
     }
     return(null);

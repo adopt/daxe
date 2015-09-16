@@ -268,6 +268,11 @@ abstract class DaxeNode {
     return(hnode is h.DivElement || hnode is h.TableElement || hnode is h.UListElement);
   }
   
+  bool isXMLElement() {
+    return(nodeType == DaxeNode.ELEMENT_NODE && this is! DNComment &&
+        this is! DNProcessingInstruction && this is! DNCData);
+  }
+  
   /**
    * The child nodes in a convenient list.
    */

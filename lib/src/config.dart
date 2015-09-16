@@ -660,12 +660,12 @@ class Config {
   bool insertIsPossible(DaxeNode parent, final int startOffset, final int endOffset, final x.Element toInsert) {
     if (parent.nodeType == DaxeNode.DOCUMENT_NODE) {
       for (DaxeNode dn in parent.childNodes) {
-        if (dn.nodeType == DaxeNode.ELEMENT_NODE)
+        if (dn.isXMLElement())
           return(false);
       }
       return(true);
     }
-    assert(parent.nodeType == DaxeNode.ELEMENT_NODE);
+    assert(parent.isXMLElement());
     if (_schema is SimpleSchema)
       return(true); // on suppose que le test de sous-élément a déjà été fait
     if (startOffset < 0) {
@@ -676,7 +676,7 @@ class Config {
       final List<x.Element> sousElements = new List<x.Element>();
       bool ajoute = false;
       for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
-        if (dn.nodeType == DaxeNode.ELEMENT_NODE) {
+        if (dn.isXMLElement()) {
           int offset = parent.offsetOf(dn);
           if (offset < startOffset || offset >= endOffset) {
             if (!ajoute && offset >= endOffset) {
@@ -715,8 +715,15 @@ class Config {
    * its first level children, its node value, and its parent if there is one.
    */
   bool elementIsValid(final DaxeNode parent) {
-    if (parent is DNComment || parent is DNProcessingInstruction || parent is DNCData)
+    if (parent is DNComment || parent is DNProcessingInstruction || parent is DNCData) {
+      // these can only contain text DaxeNodes, and no attribute.
+      for (DaxeNode dn in parent.childNodes)
+        if (dn.nodeType != DaxeNode.TEXT_NODE)
+          return(false);
+      if (parent.attributes != null && parent.attributes.length > 0)
+        return(false);
       return(true);
+    }
     
     if (parent.ref == null)
       return(false);
@@ -739,7 +746,7 @@ class Config {
       final List<x.Element> sousElements = new List<x.Element>();
       bool avectexte = false;
       for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
-        if (dn.nodeType == DaxeNode.ELEMENT_NODE && dn.ref != null) {
+        if (dn.isXMLElement() && dn.ref != null) {
           sousElements.add(dn.ref);
         } else if (dn.nodeType == DaxeNode.TEXT_NODE) {
           if (dn.nodeValue.trim() != "")
@@ -766,7 +773,7 @@ class Config {
       if (child is DNCData) {
         if (child.firstChild != null && child.firstChild.nodeValue.trim() != '')
           avectexte = true;
-      } else if (child.nodeType == DaxeNode.ELEMENT_NODE && child is! DNComment && child is! DNProcessingInstruction)  {
+      } else if (child.isXMLElement())  {
         cettexp.write(child.localName);
         cettexp.write(",");
       } else if (child.nodeType == DaxeNode.TEXT_NODE) {

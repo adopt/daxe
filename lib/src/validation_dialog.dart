@@ -84,9 +84,9 @@ class ValidationDialog {
   
   List<DaxeNode> invalidElements(DaxeNode dn) {
     List<DaxeNode> invalid = new List<DaxeNode>();
-    if (dn.nodeType == DaxeNode.ELEMENT_NODE && dn is! DNCData) {
+    if (dn.nodeType == DaxeNode.ELEMENT_NODE) {
       // note: empty DNForm nodes are ignored unless they are required
-      if (dn.parent is DNForm) {
+      if (dn.parent is DNForm && dn.ref != null) {
         bool required = doc.cfg.requiredElement(dn.parent.ref, dn.ref);
         if (required && dn.firstChild == null) {
           invalid.add(dn);

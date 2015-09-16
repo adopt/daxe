@@ -188,6 +188,8 @@
       <xs:element ref="textarea"/>
       <xs:element ref="label"/>
       <xs:element ref="button"/>
+      <xs:element ref="bdo"/>
+      <xs:element ref="ruby"/>
     </xs:choice>
   </xs:group>
   
@@ -306,7 +308,7 @@
     <xs:annotation>
       <xs:documentation>
         The HTML Meta Element (&lt;meta&gt;) represents any metadata information that cannot be represented by one of the other HTML meta-related elements (&lt;base&gt;, &lt;link&gt;, &lt;script&gt;, &lt;style&gt; or &lt;title&gt;).
-
+        
         Depending on the attributes set, the kind of metadata can be one of the following:
         - If name is set, it is document-level metadata, applying to the whole page.
         - If http-equiv is set, it is a pragma directive, i.e. information normally given by the web server about how the - web page should be served.
@@ -1384,6 +1386,79 @@
       </xs:attribute>
     </xs:complexType>
   </xs:element>
+  <xs:element name="bdo">
+    <xs:annotation>
+      <xs:documentation>
+        The HTML &lt;bdo&gt; Element (or HTML bidirectional override element) is used to override the current directionality of text. It causes the directionality of the characters to be ignored in favor of the specified directionality.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:group ref="phrasingContent"/>
+      </xs:choice>
+      <xs:attributeGroup ref="coreattrs"/>
+      <xs:attribute name="dir">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="ltr"/>
+            <xs:enumeration value="rtl"/>
+            <xs:enumeration value="auto"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ruby">
+    <xs:annotation>
+      <xs:documentation>
+        The HTML &lt;ruby&gt; Element represents a ruby annotation. Ruby annotations are for showing pronunciation of East Asian characters.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="rb"/>
+        <xs:element ref="rp"/>
+        <xs:element ref="rt"/>
+        <xs:element ref="rtc"/>
+        <xs:group ref="phrasingContent"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="rb" type="phrasingType">
+    <xs:annotation>
+      <xs:documentation>
+        The &lt;rb&gt; element marks the base text component of a ruby annotation.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="rp" type="phrasingType">
+    <xs:annotation>
+      <xs:documentation>
+        The HTML &lt;rp&gt; element is used to provide fall-back parenthesis for browsers non-supporting ruby annotations. Ruby annotations are for showing pronounciation of East Asian characters, like using Japanese furigana or Taiwainese bopomofo characters. The &lt;rp&gt; element is used in the case of lack of &lt;ruby&gt; element support its content has what should be displayed in order to indicate the presence of a ruby annotation, usually parentheses.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="rt" type="phrasingType">
+    <xs:annotation>
+      <xs:documentation>
+        The HTML &lt;rt&gt; Element embraces pronunciation of characters presented in a ruby annotations, which are used to describe the pronunciation of East Asian characters. This element is always used inside a &lt;ruby&gt; element.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="rtc">
+    <xs:annotation>
+      <xs:documentation>
+        The HTML &lt;rtc&gt; Element embraces semantic annotations of characters presented in a ruby of &lt;rb&gt; elements used inside of &lt;ruby&gt; element. &lt;rb&gt; elements can have both pronunciation (&lt;rt&gt; and semantic (&lt;rtc&gt;) annotations.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="rt"/>
+        <xs:group ref="phrasingContent"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
   <xs:element name="img">
     <xs:annotation>
       <xs:documentation>

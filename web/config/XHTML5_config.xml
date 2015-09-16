@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><CONFIG_JAXE>
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG_JAXE>
   <LANGAGE>
     <FICHIER_SCHEMA nom="XHTML5.xsd"/>
     <RACINE element="html"/>
@@ -76,6 +77,14 @@
         <MENU_INSERTION nom="small"/>
         <MENU_INSERTION nom="big"/>
         <MENU_INSERTION nom="address"/>
+        <MENU_INSERTION nom="bdo"/>
+        <MENU nom="Ruby">
+          <MENU_INSERTION nom="ruby"/>
+          <MENU_INSERTION nom="rb"/>
+          <MENU_INSERTION nom="rp"/>
+          <MENU_INSERTION nom="rt"/>
+          <MENU_INSERTION nom="rtc"/>
+        </MENU>
       </MENU>
       <MENU nom="Block">
         <MENU_INSERTION nom="blockquote"/>
@@ -112,10 +121,14 @@
   <AFFICHAGE_NOEUDS>
     <AFFICHAGE_ELEMENT element="html" type="division"/>
     <AFFICHAGE_ELEMENT element="head" type="division"/>
-    <AFFICHAGE_ELEMENT element="title" type="string"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="title" type="string">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="base" type="zone"/>
-    <AFFICHAGE_ELEMENT element="meta" type="zone"/>
-    <AFFICHAGE_ELEMENT element="link" type="zone"/>
+    <AFFICHAGE_ELEMENT element="meta" type="vide">
+      <PARAMETRE nom="titreAtt" valeur="name"/>
+    </AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="link" type="vide"/>
     <AFFICHAGE_ELEMENT element="style" type="zone"/>
     <AFFICHAGE_ELEMENT element="script" type="zone">
       <PARAMETRE nom="police" valeur="Monospaced"/>
@@ -128,12 +141,24 @@
     <AFFICHAGE_ELEMENT element="article" type="zone"/>
     <AFFICHAGE_ELEMENT element="aside" type="zone"/>
     <AFFICHAGE_ELEMENT element="nav" type="zone"/>
-    <AFFICHAGE_ELEMENT element="h1" type="h1"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h2" type="zone"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h3" type="zone"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h4" type="zone"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h5" type="zone"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h6" type="zone"><PARAMETRE nom="style" valeur="GRAS"/></AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="h1" type="zone">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="h2" type="zone">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="h3" type="zone">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="h4" type="zone">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="h5" type="zone">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
+    <AFFICHAGE_ELEMENT element="h6" type="zone">
+      <PARAMETRE nom="style" valeur="GRAS"/>
+    </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="div" type="hiddendiv"/>
     <AFFICHAGE_ELEMENT element="p" type="hiddenp"/>
     <AFFICHAGE_ELEMENT element="ul" type="wlist">
@@ -212,6 +237,14 @@
     <AFFICHAGE_ELEMENT element="hr" type="hr"/>
     <AFFICHAGE_ELEMENT element="address" type="zone"/>
     <AFFICHAGE_ELEMENT element="blockquote" type="zone"/>
+    <AFFICHAGE_ELEMENT element="bdo" type="string"/>
+    
+    <AFFICHAGE_ELEMENT element="ruby" type="string"/>
+    <AFFICHAGE_ELEMENT element="rb" type="string"/>
+    <AFFICHAGE_ELEMENT element="rp" type="string"/>
+    <AFFICHAGE_ELEMENT element="rt" type="string"/>
+    <AFFICHAGE_ELEMENT element="rtc" type="string"/>
+    
     <AFFICHAGE_ELEMENT element="img" type="file">
       <PARAMETRE nom="srcAtt" valeur="src"/>
       <PARAMETRE nom="chooser" valeur="false"/>
@@ -221,7 +254,9 @@
     <AFFICHAGE_ELEMENT element="figure" type="zone"/>
     <AFFICHAGE_ELEMENT element="figcaption" type="zone"/>
     <AFFICHAGE_ELEMENT element="object" type="zone"/>
-    <AFFICHAGE_ELEMENT element="param" type="string"/>
+    <AFFICHAGE_ELEMENT element="param" type="vide">
+      <PARAMETRE nom="titreAtt" valeur="name"/>
+    </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="embed" type="zone"/>
     <AFFICHAGE_ELEMENT element="applet" type="zone"/>
     <AFFICHAGE_ELEMENT element="video" type="zone"/>
@@ -230,16 +265,22 @@
     <AFFICHAGE_ELEMENT element="map" type="zone"/>
     <AFFICHAGE_ELEMENT element="area" type="zone"/>
     <AFFICHAGE_ELEMENT element="canvas" type="zone"/>
-    <AFFICHAGE_ELEMENT element="form" type="zone"/>
+    <AFFICHAGE_ELEMENT element="form" type="zone">
+      <PARAMETRE nom="titreAtt" valeur="name"/>
+    </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="label" type="string"/>
-    <AFFICHAGE_ELEMENT element="input" type="string"/>
-    <AFFICHAGE_ELEMENT element="select" type="string"/>
+    <AFFICHAGE_ELEMENT element="input" type="vide"/>
+    <AFFICHAGE_ELEMENT element="select" type="string">
+      <PARAMETRE nom="titreAtt" valeur="name"/>
+    </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="optgroup" type="zone"/>
-    <AFFICHAGE_ELEMENT element="option" type="zone"/>
+    <AFFICHAGE_ELEMENT element="option" type="string"/>
     <AFFICHAGE_ELEMENT element="textarea" type="zone"/>
     <AFFICHAGE_ELEMENT element="fieldset" type="zone"/>
     <AFFICHAGE_ELEMENT element="legend" type="zone"/>
-    <AFFICHAGE_ELEMENT element="button" type="string"/>
+    <AFFICHAGE_ELEMENT element="button" type="string">
+      <PARAMETRE nom="titreAtt" valeur="name"/>
+    </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="iframe" type="zone"/>
   </AFFICHAGE_NOEUDS>
   
@@ -425,19 +466,19 @@
       <STRINGS_ATTRIBUT attribut="type">
         <TITRE>type</TITRE>
         <DOCUMENTATION>
-          This attribute identifies the scripting language of code embedded within a script element or referenced via the element&#8217;s src attribute. This is specified as a MIME type; examples of supported MIME types include text/javascript, text/ecmascript, application/javascript, and application/ecmascript.
+          This attribute identifies the scripting language of code embedded within a script element or referenced via the element’s src attribute. This is specified as a MIME type; examples of supported MIME types include text/javascript, text/ecmascript, application/javascript, and application/ecmascript.
         </DOCUMENTATION>
       </STRINGS_ATTRIBUT>
       <STRINGS_ATTRIBUT attribut="language">
         <TITRE>language</TITRE>
         <DOCUMENTATION>
-          Like the type attribute, this attribute identifies the scripting language in use. Unlike the type attribute, however, this attribute&#8217;s possible values were never standardized. The type attribute should be used instead.
+          Like the type attribute, this attribute identifies the scripting language in use. Unlike the type attribute, however, this attribute’s possible values were never standardized. The type attribute should be used instead.
         </DOCUMENTATION>
       </STRINGS_ATTRIBUT>
       <STRINGS_ATTRIBUT attribut="defer">
         <TITRE>defer</TITRE>
         <DOCUMENTATION>
-          This Boolean attribute is set to indicate to a browser that the script is meant to be executed after the document has been parsed. Since this feature hasn't yet been implemented by all other major browsers, authors should not assume that the script&#8217;s execution will actually be deferred. The defer attribute shouldn't be used on scripts that don't have the src attribute. Since Gecko 1.9.2, the defer attribute is ignored on scripts that don't have the src attribute. However, in Gecko 1.9.1 even inline scripts are deferred if the defer attribute is set.
+          This Boolean attribute is set to indicate to a browser that the script is meant to be executed after the document has been parsed. Since this feature hasn't yet been implemented by all other major browsers, authors should not assume that the script’s execution will actually be deferred. The defer attribute shouldn't be used on scripts that don't have the src attribute. Since Gecko 1.9.2, the defer attribute is ignored on scripts that don't have the src attribute. However, in Gecko 1.9.1 even inline scripts are deferred if the defer attribute is set.
         </DOCUMENTATION>
       </STRINGS_ATTRIBUT>
       <STRINGS_ATTRIBUT attribut="async">
@@ -1310,6 +1351,40 @@
         <TITRE>align</TITRE>
       </STRINGS_ATTRIBUT>
     </STRINGS_ELEMENT>
+    <STRINGS_ELEMENT element="bdo">
+      <TITRE>bdo</TITRE>
+      <DOCUMENTATION>
+        The HTML &lt;bdo&gt; Element (or HTML bidirectional override element) is used to override the current directionality of text. It causes the directionality of the characters to be ignored in favor of the specified directionality.
+      </DOCUMENTATION>
+    </STRINGS_ELEMENT>
+    
+    <STRINGS_ELEMENT element="ruby">
+      <TITRE>Ruby</TITRE>
+      <DOCUMENTATION>
+        The HTML &lt;ruby&gt; Element represents a ruby annotation. Ruby annotations are for showing pronunciation of East Asian characters.
+      </DOCUMENTATION>
+    </STRINGS_ELEMENT>
+    <STRINGS_ELEMENT element="rb">
+      <TITRE>rb</TITRE><DOCUMENTATION>
+        The &lt;rb&gt; element marks the base text component of a ruby annotation.
+      </DOCUMENTATION>
+    </STRINGS_ELEMENT>
+    <STRINGS_ELEMENT element="rp">
+      <TITRE>rp</TITRE><DOCUMENTATION>
+        The HTML &lt;rp&gt; element is used to provide fall-back parenthesis for browsers non-supporting ruby annotations. Ruby annotations are for showing pronounciation of East Asian characters, like using Japanese furigana or Taiwainese bopomofo characters. The &lt;rp&gt; element is used in the case of lack of &lt;ruby&gt; element support its content has what should be displayed in order to indicate the presence of a ruby annotation, usually parentheses.
+      </DOCUMENTATION>
+    </STRINGS_ELEMENT>
+    <STRINGS_ELEMENT element="rt">
+      <TITRE>rt</TITRE><DOCUMENTATION>
+        The HTML &lt;rt&gt; Element embraces pronunciation of characters presented in a ruby annotations, which are used to describe the pronunciation of East Asian characters. This element is always used inside a &lt;ruby&gt; element.
+      </DOCUMENTATION>
+    </STRINGS_ELEMENT>
+    <STRINGS_MENU menu="rtc">
+      <TITRE>rtc</TITRE><DOCUMENTATION>
+        The HTML &lt;rtc&gt; Element embraces semantic annotations of characters presented in a ruby of &lt;rb&gt; elements used inside of &lt;ruby&gt; element. &lt;rb&gt; elements can have both pronunciation (&lt;rt&gt; and semantic (&lt;rtc&gt;) annotations.
+      </DOCUMENTATION>
+    </STRINGS_MENU>
+    
     <STRINGS_ELEMENT element="img">
       <TITRE>Image</TITRE>
       <DOCUMENTATION>

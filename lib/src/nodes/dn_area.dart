@@ -85,7 +85,7 @@ class DNArea extends DaxeNode {
   @override
   void updateAttributes() {
     h.Element old = getHTMLNode().nodes[0];
-    _b1 = new Tag(this, Tag.START, true);
+    _b1 = new Tag(this, Tag.START);
     old.replaceWith(_b1.html());
   }
   

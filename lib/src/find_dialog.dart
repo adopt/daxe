@@ -52,6 +52,12 @@ class FindDialog {
       ..name = 'find'
       ..size = 40
       ..value = findString;
+    inputFind.onKeyDown.listen((h.KeyboardEvent event) {
+      if (event.keyCode == h.KeyCode.ENTER) {
+        event.preventDefault();
+        next();
+      }
+    });
     td.append(inputFind);
     tr.append(td);
     table.append(tr);
@@ -144,7 +150,8 @@ class FindDialog {
   void next() {
     //FIXME: does not work with DNForm and DNSimpleType: selection is not visible
     //  (but then, how could we select a part of a select element anyway ?)
-    findString = ((h.document.getElementById('find_dlg_find_field')) as h.TextInputElement).value;
+    h.TextInputElement inputFind = h.document.getElementById('find_dlg_find_field');
+    findString = inputFind.value;
     if (findString == '')
       return;
     Position pos;
@@ -162,6 +169,7 @@ class FindDialog {
     if (pos != null) {
       page.moveCursorTo(pos);
       page.cursor.setSelection(pos, new Position(pos.dn, pos.dnOffset + findString.length));
+      inputFind.focus();
     }
   }
   
@@ -228,7 +236,7 @@ class FindDialog {
   void replace() {
     Position start = new Position.clone(page.getSelectionStart());
     Position end = new Position.clone(page.getSelectionEnd());
-    if (start == null || start.dn is! DNText)
+    if (start == null || start.dn is! DNText) // FIXME: text node might be entirely selected
       return;
     String replaceString = ((h.document.getElementById('find_dlg_replace_field')) as h.TextInputElement).value;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('find.replace'));

@@ -234,21 +234,31 @@ class FindDialog {
   }
   
   void replace() {
+    if (page.getSelectionStart() == null)
+      return;
     Position start = new Position.clone(page.getSelectionStart());
     Position end = new Position.clone(page.getSelectionEnd());
-    if (start == null || start.dn is! DNText) // FIXME: text node might be entirely selected
+    DaxeNode parent = start.dn;
+    if (parent is DNText)
+      parent = parent.parent;
+    if (parent.ref == null || !doc.cfg.canContainText(parent.ref)) {
+      h.window.alert(Strings.get('insert.text_not_allowed'));
       return;
-    String replaceString = ((h.document.getElementById('find_dlg_replace_field')) as h.TextInputElement).value;
+    }
+    h.TextInputElement inputReplace = h.document.getElementById('find_dlg_replace_field');
+    String replaceString = inputReplace.value;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('find.replace'));
-    // we should not remove the whole string before inserting the new one, because this might
-    // cause the text node referenced by pos to disappear, and the insert won't work
-    // -> we do the insert first to make sure not to remove a text node
+    Position loStart = new Position.leftOffsetPosition(start);
+    if (start != end)
+      edit.addSubEdit(doc.removeBetweenEdit(start, end));
     if (replaceString != '')
-      edit.addSubEdit(new UndoableEdit.insertString(end, replaceString));
-    if (start != end && start.dn == end.dn)
-      edit.addSubEdit(new UndoableEdit.removeString(start, end.dnOffset - start.dnOffset));
+      edit.addSubEdit(new UndoableEdit.insertString(loStart, replaceString));
+    // FIXME: a hidden paragraph might be needed to insert the string
     doc.doNewEdit(edit);
-    page.cursor.setSelection(start, new Position(start.dn, start.dnOffset + replaceString.length));
+    start = new Position.nodeOffsetPosition(loStart);
+    start.moveInsideTextNodeIfPossible();
+    if (start.dn is DNText)
+      page.cursor.setSelection(start, new Position(start.dn, start.dnOffset + replaceString.length));
   }
   
   void replaceFind() {
@@ -257,10 +267,12 @@ class FindDialog {
   }
   
   void replaceAll() {
-    findString = ((h.document.getElementById('find_dlg_find_field')) as h.TextInputElement).value;
+    h.TextInputElement inputFind = h.document.getElementById('find_dlg_find_field');
+    findString = inputFind.value;
     if (findString == '')
       return;
-    String replaceString = ((h.document.getElementById('find_dlg_replace_field')) as h.TextInputElement).value;
+    h.TextInputElement inputReplace = h.document.getElementById('find_dlg_replace_field');
+    String replaceString = inputReplace.value;
     Position pos = previousAt(new Position(doc.dndoc, doc.dndoc.offsetLength));
     // we are going backwards in order to be able to combine edits
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('find.replace_all'));

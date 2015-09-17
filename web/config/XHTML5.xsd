@@ -517,14 +517,12 @@
         The HTML Body Element (&lt;body&gt;) represents the content of an HTML document. There can be only one &lt;body&gt; element in a document.
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="true">
       <xs:choice maxOccurs="unbounded" minOccurs="0">
         <xs:group ref="flowContent"/>
       </xs:choice>
       <xs:attributeGroup ref="coreattrs"/>
       <xs:attributeGroup ref="i18n"/>
-      <xs:attribute name="onload" type="xs:string"/>
-      <xs:attribute name="onunload" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="section">
@@ -1158,17 +1156,6 @@
             <xs:length fixed="true" value="1"/>
           </xs:restriction>
         </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="onclick" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>
-            Javascript event handler content attribute for the "click" event.
-            
-            Warning: event handler content attributes should be avoided. They make the markup bigger and less readable. Concerns of content/structure and behavior are not well-separated, making a bug harder to find. Furthermore, usage of event attributes almost always causes scripts to expose global functions on the Window object, polluting the global namespace.
-            
-            The EventTarget.addEventListener() function should be used instead to add a listener for the event.
-          </xs:documentation>
-        </xs:annotation>
       </xs:attribute>
     </xs:complexType>
   </xs:element>
@@ -2060,8 +2047,6 @@
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="onsubmit" type="xs:string"/>
-      <xs:attribute name="onreset" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="label">
@@ -2099,8 +2084,6 @@
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
-          <xs:attribute name="onfocus" type="xs:string"/>
-          <xs:attribute name="onblur" type="xs:string"/>
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
@@ -2162,20 +2145,7 @@
       <xs:attribute name="src" type="xs:anyURI"/>
       <xs:attribute name="alt"/>
       <xs:attribute name="usemap" type="xs:anyURI"/>
-      <xs:attribute name="onselect" type="xs:string"/>
-      <xs:attribute name="onchange" type="xs:string"/>
       <xs:attribute name="accept" type="xs:string"/>
-      <xs:attribute name="onclick" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>
-            Javascript event handler content attribute for the "click" event.
-            
-            Warning: event handler content attributes should be avoided. They make the markup bigger and less readable. Concerns of content/structure and behavior are not well-separated, making a bug harder to find. Furthermore, usage of event attributes almost always causes scripts to expose global functions on the Window object, polluting the global namespace.
-            
-            The EventTarget.addEventListener() function should be used instead to add a listener for the event.
-          </xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="select">
@@ -2206,9 +2176,6 @@
         </xs:simpleType>
       </xs:attribute>
       <xs:attribute name="tabindex" type="xs:nonNegativeInteger"/>
-      <xs:attribute name="onfocus" type="xs:string"/>
-      <xs:attribute name="onblur" type="xs:string"/>
-      <xs:attribute name="onchange" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="optgroup">
@@ -2280,8 +2247,6 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
-      <xs:attribute name="onselect" type="xs:string"/>
-      <xs:attribute name="onchange" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="fieldset">

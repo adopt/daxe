@@ -18,7 +18,8 @@
 part of nodes;
 
 /**
- * Invisible block with CSS style.
+ * Invisible block with CSS style, using only the style attribute.
+ * Tags are displayed if the style attribute is empty.
  * Jaxe display type: 'hiddendiv'.
  */
 class DNHiddenDiv extends DaxeNode {
@@ -40,24 +41,46 @@ class DNHiddenDiv extends DaxeNode {
     div.classes.add('dn');
     if (!valid)
       div.classes.add('invalid');
-    if (css != null)
-      div.setAttribute('style', css);
-    // FIXME: align:justify is incompatible with whitespace:pre-wrap
-    for (DaxeNode dn = firstChild; dn != null; ) {
-      div.append(dn.html());
-      dn = dn.nextSibling;
+    if (noDelimiter) { // TODO: support CSS classes
+      if (css != null)
+        div.setAttribute('style', css);
+      // FIXME: align:justify is incompatible with whitespace:pre-wrap
+      for (DaxeNode dn = firstChild; dn != null; ) {
+        div.append(dn.html());
+        dn = dn.nextSibling;
+      }
+      if (lastChild == null || lastChild.nodeType == DaxeNode.TEXT_NODE)
+        div.appendText('\n');
+      //this kind of conditional HTML makes it hard to optimize display updates:
+      //we have to override updateHTMLAfterChildrenChange
+      // also, it seems that in IE this adds a BR instead of a text node !
+    } else {
+      Tag b1 = new Tag(this, Tag.START, true);
+      Tag b2 = new Tag(this, Tag.END, true);
+      div.append(b1.html());
+      h.DivElement contents = new h.DivElement();
+      contents.classes.add('indent');
+      if (css != null)
+        contents.setAttribute('style', css);
+      DaxeNode dn = firstChild;
+      while (dn != null) {
+        contents.append(dn.html());
+        dn = dn.nextSibling;
+      }
+      if (lastChild == null || lastChild.nodeType == DaxeNode.TEXT_NODE)
+        contents.appendText('\n');
+      div.append(contents);
+      div.append(b2.html());
     }
-    if (lastChild == null || lastChild.nodeType == DaxeNode.TEXT_NODE)
-      div.appendText('\n');
-    //this kind of conditional HTML makes it hard to optimize display updates:
-    //we have to override updateHTMLAfterChildrenChange
-    // also, it seems that in IE this adds a BR instead of a text node !
     return(div);
   }
   
   @override
   h.Element getHTMLContentsNode() {
-    return(getHTMLNode());
+    if (noDelimiter)
+      return(getHTMLNode());
+    else
+      return(getHTMLNode().nodes[1]);
   }
   
   @override
@@ -78,13 +101,18 @@ class DNHiddenDiv extends DaxeNode {
   }
   
   @override
+  void updateAttributes() {
+    super.updateHTML();
+  }
+  
+  @override
   bool newlineAfter() {
     return(true);
   }
   
   @override
   bool get noDelimiter {
-    return(true);
+    return(getAttribute('style') != null);
   }
   
   void set css(String value) {

@@ -19,6 +19,7 @@ part of nodes;
 
 /**
  * Invisible style node using a style attribute with CSS.
+ * Tags are displayed if the span is empty or if the style attribute is empty.
  * The style can be changed with the toolbar.
  * Jaxe display type: 'stylespan'.
  */
@@ -38,7 +39,7 @@ class DNStyleSpan extends DNStyle {
     h.Element span = new h.SpanElement();
     span.id = "$id";
     span.classes.add('dn');
-    if (firstChild != null) { // TODO: test for empty sub-styles
+    if (noDelimiter) { // TODO: test for empty sub-styles, support CSS class
       h.SpanElement contents = new h.SpanElement();
       DaxeNode dn = firstChild;
       while (dn != null) {
@@ -57,10 +58,20 @@ class DNStyleSpan extends DNStyle {
       h.SpanElement contents = new h.SpanElement();
       if (css != null)
         contents.setAttribute('style', css);
+      DaxeNode dn = firstChild;
+      while (dn != null) {
+        contents.append(dn.html());
+        dn = dn.nextSibling;
+      }
       span.append(contents);
       span.append(b2.html());
     }
     return(span);
+  }
+  
+  @override
+  bool get noDelimiter {
+    return(firstChild != null && getAttribute('style') != null);
   }
   
   void set css(String css) {
@@ -82,7 +93,7 @@ class DNStyleSpan extends DNStyle {
   
   @override
   h.Element getHTMLContentsNode() {
-    if (firstChild != null)
+    if (noDelimiter)
       return(getHTMLNode().nodes.first);
     else
       return(getHTMLNode().nodes[1]);
@@ -90,6 +101,11 @@ class DNStyleSpan extends DNStyle {
   
   static x.Element styleSpanRef() {
     return(doc.cfg.firstElementWithType('stylespan'));
+  }
+  
+  @override
+  void updateAttributes() {
+    super.updateHTML();
   }
   
   @override

@@ -32,6 +32,7 @@ class Cursor {
   Timer timer;
   HashMap<int, ActionFunction> shortcuts;
   bool donePaste;
+  int metaKeyCode; // previous keyDown keyCode if event.metaKey was true
   
   Cursor() {
     ta = h.querySelector("#tacursor");
@@ -55,6 +56,7 @@ class Cursor {
       }
     });
     donePaste = false;
+    metaKeyCode = 0;
     newTimer();
   }
   
@@ -128,6 +130,10 @@ class Cursor {
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
+    if (event.metaKey)
+      metaKeyCode = keyCode;
+    else
+      metaKeyCode = 0;
     if (ctrl && keyCode == h.KeyCode.X) {
       ta.value = copy();
       ta.select();
@@ -178,9 +184,15 @@ class Cursor {
   }
   
   void keyUp(h.KeyboardEvent event) {
-    bool ctrl = event.ctrlKey || event.metaKey; // does metaKey work on keyUp ?
+    // NOTE: on MacOS, keyUp events are not fired when the command key is down
+    // see: http://bitspushedaround.com/on-a-few-things-you-may-not-know-about-the-hellish-command-key-and-javascript-events/
+    bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
+    if (event.metaKey && metaKeyCode != 0 &&
+        (keyCode == 224 || keyCode == 91 || keyCode == 93 || keyCode == 17))
+      keyCode = metaKeyCode;
+    metaKeyCode = 0;
     if (selectionStart == null)
       return;
     if (ctrl && !shift && keyCode == h.KeyCode.Z) { // Ctrl Z

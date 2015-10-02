@@ -8045,10 +8045,7 @@ z=J.RE(a)
 y=z.geh(a)===!0||z.gNl(a)===!0
 x=z.gqx(a)
 w=z.gIG(a)
-if(a.metaKey===!0)if(this.z!==0)z=w===224||w===91||w===93||w===17
-else z=!1
-else z=!1
-if(z)w=this.z
+if((w===224||w===91||w===93||w===17)&&this.z!==0)w=this.z
 this.z=0
 z=this.b
 if(z==null)return
@@ -8403,35 +8400,48 @@ if(J.mG(this.b,y)){this.Xj(!1)
 $.uc.Uj()
 return}if(this.b.A(0,this.c)){x=this.b
 this.b=this.c
-this.c=x}while(!0){if(!((this.b.gD5() instanceof S.ec||this.b.gD5() instanceof S.ze||this.b.gD5() instanceof S.AM)&&J.mG(this.b.gZM(),0)))break
+this.c=x}while(!0){if(this.b.gD5().gB5())if(J.mG(this.b.gZM(),0)){if(this.b.gD5() instanceof S.AM){y=this.c
+w=this.b.gD5()
+v=this.b.gD5().gXI()
+u=new Z.hT(null,null)
+u.Q=w
+u.a=v
+u=y.B(0,u)
+y=u}else y=!1
+y=!y}else y=!1
+else y=!1
+if(!y)break
 y=J.fR(this.b.gD5())
 w=J.fR(this.b.gD5()).mf(this.b.gD5())
 v=new Z.hT(null,null)
 v.Q=y
 v.a=w
-this.b=v}while(!0){if(!((this.b.gD5() instanceof S.ec||this.b.gD5() instanceof S.ze||this.b.gD5() instanceof S.AM)&&J.mG(this.b.gZM(),this.b.gD5().gXI())))break
+this.b=v}while(!0){if(!(this.b.gD5().gB5()&&J.mG(this.b.gZM(),this.b.gD5().gXI())))break
 y=J.fR(this.b.gD5())
 w=J.fR(this.b.gD5()).mf(this.b.gD5())
 v=new Z.hT(null,null)
 v.Q=y
 v.a=w+1
-this.b=v}while(!0){if(!((this.c.gD5() instanceof S.ec||this.c.gD5() instanceof S.ze||this.c.gD5() instanceof S.AM)&&J.mG(this.c.gZM(),this.c.gD5().gXI())))break
+this.b=v}while(!0){if(!(this.c.gD5().gB5()&&J.mG(this.c.gZM(),this.c.gD5().gXI())))break
 y=J.fR(this.c.gD5())
 w=J.fR(this.c.gD5()).mf(this.c.gD5())
 v=new Z.hT(null,null)
 v.Q=y
 v.a=w+1
-this.c=v}while(!0){if(!((this.c.gD5() instanceof S.ec||this.c.gD5() instanceof S.ze||this.c.gD5() instanceof S.AM)&&J.mG(this.c.gZM(),0)))break
+this.c=v}while(!0){if(this.c.gD5().gB5())if(J.mG(this.c.gZM(),0))y=!(this.c.gD5() instanceof S.AM&&J.mG(this.c,this.b))
+else y=!1
+else y=!1
+if(!y)break
 y=J.fR(this.c.gD5())
 w=J.fR(this.c.gD5()).mf(this.c.gD5())
 v=new Z.hT(null,null)
 v.Q=y
 v.a=w
-this.c=v}if(!J.mG(this.b,this.c)){if((this.b.gD5() instanceof S.ec||this.b.gD5() instanceof S.ze||this.b.gD5() instanceof S.AM)&&J.mG(this.b.gZM(),this.b.gD5().gXI())){u=J.Fj(this.b.gD5())
-y=J.RE(u)
-this.b=Z.pl(y.gI9(u),y.gI9(u).mf(u))}if((this.c.gD5() instanceof S.ec||this.c.gD5() instanceof S.ze||this.c.gD5() instanceof S.AM)&&J.mG(this.c.gZM(),0)){t=J.Nf(this.c.gD5())
+this.c=v}if(!J.mG(this.b,this.c)){if(this.b.gD5().gB5()&&J.mG(this.b.gZM(),this.b.gD5().gXI())){t=J.Fj(this.b.gD5())
 y=J.RE(t)
-this.c=Z.pl(y.gI9(t),y.gI9(t).mf(t)+1)}do if(!(this.b.gD5() instanceof S.ec)&&J.UN(this.b.gZM(),this.b.gD5().gXI())){u=this.b.gD5().cq(this.b.gZM())
+this.b=Z.pl(y.gI9(t),y.gI9(t).mf(t))}if(this.c.gD5().gB5()&&J.mG(this.c.gZM(),0)){s=J.Nf(this.c.gD5())
+y=J.RE(s)
+this.c=Z.pl(y.gI9(s),y.gI9(s).mf(s)+1)}do if(!(this.b.gD5() instanceof S.ec)&&J.UN(this.b.gZM(),this.b.gD5().gXI())){t=this.b.gD5().cq(this.b.gZM())
 y=this.b.gD5()
 w=J.WB(this.b.gZM(),1)
 v=new Z.hT(null,null)
@@ -8439,69 +8449,69 @@ v.Q=y
 v.a=w
 w=this.c
 if(!(v.m(0,w)||v.w(0,w))){y=new Z.hT(null,null)
-y.Q=u
+y.Q=t
 y.a=0
 y=y.w(0,this.c)}else y=!1
 if(y){y=new Z.hT(null,null)
-y.Q=u
+y.Q=t
 y.a=0
 this.b=y
-s=!0}else s=!1}else s=!1
-while(s)
-do if(!(this.c.gD5() instanceof S.ec)&&J.vU(this.c.gZM(),0)){t=this.c.gD5().cq(J.D5(this.c.gZM(),1))
+r=!0}else r=!1}else r=!1
+while(r)
+do if(!(this.c.gD5() instanceof S.ec)&&J.vU(this.c.gZM(),0)){s=this.c.gD5().cq(J.D5(this.c.gZM(),1))
 y=this.c.gD5()
 w=J.D5(this.c.gZM(),1)
 v=new Z.hT(null,null)
 v.Q=y
 v.a=w
-if(v.w(0,this.b)){y=t.gXI()
+if(v.w(0,this.b)){y=s.gXI()
 w=new Z.hT(null,null)
-w.Q=t
+w.Q=s
 w.a=y
 y=this.b
 y=!(w.m(0,y)||w.w(0,y))}else y=!1
-if(y){y=t.gXI()
+if(y){y=s.gXI()
 w=new Z.hT(null,null)
-w.Q=t
+w.Q=s
 w.a=y
 this.c=w
-s=!0}else s=!1}else s=!1
-while(s)}y=J.mG(this.b.gD5(),this.c.gD5())
+r=!0}else r=!1}else r=!1
+while(r)}y=J.mG(this.b.gD5(),this.c.gD5())
 w=this.b
-if(y){r=w.gD5()
-if(J.z7(r)===3)this.tK(r,this.b.gZM(),this.c.gZM())
-else for(q=this.b.gZM(),y=this.e;w=J.Wx(q),w.w(q,this.c.gZM());q=w.g(q,1)){p=r.cq(q)
-p.KZ(!0)
-y.push(p)}}else{o=w.gD5()
-y=J.RE(o)
-if(y.gzp(o)===3)o=y.gI9(o)
-if(this.c.A(0,Z.pl(o,o.gXI())))this.c=Z.pl(o,o.gXI())
-else{n=this.c.gD5()
+if(y){q=w.gD5()
+if(J.z7(q)===3)this.tK(q,this.b.gZM(),this.c.gZM())
+else for(p=this.b.gZM(),y=this.e;w=J.Wx(p),w.w(p,this.c.gZM());p=w.g(p,1)){o=q.cq(p)
+o.KZ(!0)
+y.push(o)}}else{n=w.gD5()
 y=J.RE(n)
 if(y.gzp(n)===3)n=y.gI9(n)
-if(!J.mG(n,o)){for(;y=J.RE(n),!J.mG(y.gI9(n),o);)n=y.gI9(n)
-this.c=Z.pl(o,o.mf(n))}}y=J.z7(this.b.gD5())===1||J.z7(this.b.gD5())===9
+if(this.c.A(0,Z.pl(n,n.gXI())))this.c=Z.pl(n,n.gXI())
+else{m=this.c.gD5()
+y=J.RE(m)
+if(y.gzp(m)===3)m=y.gI9(m)
+if(!J.mG(m,n)){for(;y=J.RE(m),!J.mG(y.gI9(m),n);)m=y.gI9(m)
+this.c=Z.pl(n,n.mf(m))}}y=J.z7(this.b.gD5())===1||J.z7(this.b.gD5())===9
 w=this.b
-if(y){m=w.gD5().cq(this.b.gZM())
-if(m!=null){l=Z.pl(this.b.gD5(),J.WB(this.b.gZM(),1))
-if(this.c.C(0,l)){m.KZ(!0)
-this.e.push(m)}}}else{m=w.gD5()
-this.tK(m,this.b.gZM(),m.gXI())}if(m!=null)for(u=m.gC9(),y=this.e;u!=null;u=u.gC9()){w=J.RE(u)
-v=w.gI9(u)
-k=w.gI9(u).mf(u)
+if(y){l=w.gD5().cq(this.b.gZM())
+if(l!=null){k=Z.pl(this.b.gD5(),J.WB(this.b.gZM(),1))
+if(this.c.C(0,k)){l.KZ(!0)
+this.e.push(l)}}}else{l=w.gD5()
+this.tK(l,this.b.gZM(),l.gXI())}if(l!=null)for(t=l.gC9(),y=this.e;t!=null;t=t.gC9()){w=J.RE(t)
+v=w.gI9(t)
+u=w.gI9(t).mf(t)
 j=new Z.hT(null,null)
 j.Q=v
-j.a=k
-if(j.w(0,this.c)){if(w.gzp(u)===3){v=this.c
-k=w.gI9(u)
-w=w.gI9(u).mf(u)
+j.a=u
+if(j.w(0,this.c)){if(w.gzp(t)===3){v=this.c
+u=w.gI9(t)
+w=w.gI9(t).mf(t)
 i=new Z.hT(null,null)
-i.Q=k
+i.Q=u
 i.a=w+1
 i=v.C(0,i)
 w=i}else w=!0
-if(w){u.KZ(!0)
-y.push(u)}}else break}if(J.z7(this.c.gD5())===3)this.tK(this.c.gD5(),0,this.c.gZM())}if(!J.mG(this.c,this.b)){this.f=!1
+if(w){t.KZ(!0)
+y.push(t)}}else break}if(J.z7(this.c.gD5())===3)this.tK(this.c.gD5(),0,this.c.gZM())}if(!J.mG(this.c,this.b)){this.f=!1
 y=this.a.style
 y.visibility="hidden"}if(!J.mG(this.b,z))$.uc.Uj()},
 tK:function(a,b,c){var z,y,x,w,v,u,t

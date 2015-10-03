@@ -192,6 +192,9 @@ class Cursor {
   void keyUp(h.KeyboardEvent event) {
     // NOTE: on MacOS, keyUp events are not fired when the command key is down
     // see: http://bitspushedaround.com/on-a-few-things-you-may-not-know-about-the-hellish-command-key-and-javascript-events/
+    // 2 possible solutions: using keyPress, or keyUp for the command key
+    // here keyUp for command key is used (event.metaKey is false because the key is released)
+    // pb with this solution: cmd_down, Z, Z, cmd_up will only do a single cmd-Z
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;

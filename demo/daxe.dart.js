@@ -8009,9 +8009,10 @@ z=J.RE(a)
 y=z.geh(a)===!0||z.gNl(a)===!0
 x=z.gqx(a)
 w=z.gIG(a)
-if(a.metaKey===!0)this.z=w
-else this.z=0
-if(y&&w===88){J.IA(this.Q,this.Wy())
+if(a.metaKey===!0){this.z=w
+J.IA(this.Q,"")}else this.z=0
+if(w===91||w===93){J.IA(this.Q," ")
+J.wi(this.Q)}else if(y&&w===88){J.IA(this.Q,this.Wy())
 J.wi(this.Q)}else if(y&&w===67){J.IA(this.Q,this.Wy())
 J.wi(this.Q)}else if(w===34)this.Eu()
 else if(w===33)this.pk()
@@ -8045,7 +8046,9 @@ z=J.RE(a)
 y=z.geh(a)===!0||z.gNl(a)===!0
 x=z.gqx(a)
 w=z.gIG(a)
-if((w===224||w===91||w===93||w===17)&&this.z!==0){w=this.z
+z=w!==91
+if((!z||w===93)&&J.SW(this.Q)!==""&&this.z===0)J.IA(this.Q,"")
+if((w===224||!z||w===93||w===17)&&this.z!==0){w=this.z
 y=!0}this.z=0
 z=this.b
 if(z==null)return

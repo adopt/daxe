@@ -130,11 +130,17 @@ class Cursor {
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
-    if (event.metaKey)
+    if (event.metaKey) {
       metaKeyCode = keyCode;
-    else
+      ta.value = ''; // remove content added for Safari
+    } else
       metaKeyCode = 0;
-    if (ctrl && keyCode == h.KeyCode.X) {
+    if (keyCode == 91 || keyCode == 93) {
+      // for Safari, command key down, put something in the field and select it
+      // so that it will not beep and refuse to copy with a command-C
+      ta.value = ' ';
+      ta.select();
+    } else if (ctrl && keyCode == h.KeyCode.X) {
       ta.value = copy();
       ta.select();
     } else if (ctrl && keyCode == h.KeyCode.C) {
@@ -189,6 +195,9 @@ class Cursor {
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
+    if ((keyCode == 91 || keyCode == 93) && ta.value != '' && metaKeyCode == 0) {
+      ta.value = ''; // remove content added for Safari
+    }
     if ((keyCode == 224 || keyCode == 91 || keyCode == 93 || keyCode == 17) && metaKeyCode != 0) {
       ctrl = true;
       keyCode = metaKeyCode;

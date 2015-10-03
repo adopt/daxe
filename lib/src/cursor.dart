@@ -189,8 +189,10 @@ class Cursor {
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
-    if ((keyCode == 224 || keyCode == 91 || keyCode == 93 || keyCode == 17) && metaKeyCode != 0)
+    if ((keyCode == 224 || keyCode == 91 || keyCode == 93 || keyCode == 17) && metaKeyCode != 0) {
+      ctrl = true;
       keyCode = metaKeyCode;
+    }
     metaKeyCode = 0;
     if (selectionStart == null)
       return;

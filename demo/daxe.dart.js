@@ -8045,8 +8045,8 @@ z=J.RE(a)
 y=z.geh(a)===!0||z.gNl(a)===!0
 x=z.gqx(a)
 w=z.gIG(a)
-if((w===224||w===91||w===93||w===17)&&this.z!==0)w=this.z
-this.z=0
+if((w===224||w===91||w===93||w===17)&&this.z!==0){w=this.z
+y=!0}this.z=0
 z=this.b
 if(z==null)return
 if(y&&x!==!0&&w===90){$.aq.E3()

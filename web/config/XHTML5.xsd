@@ -1536,6 +1536,7 @@
           <xs:element minOccurs="0" ref="figcaption"/>
         </xs:sequence>
       </xs:choice>
+      <xs:attributeGroup ref="coreattrs"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="figcaption">

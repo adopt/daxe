@@ -521,6 +521,8 @@ class DNStyle extends DaxeNode {
    * Merge the styles at Position if possible, or returns null.
    */
   static EditAndNewPositions mergeAt(Position pos) {
+    if (pos.dn is DNStyle && pos.dn.offsetLength == 0)
+      return(null);
     DNStyle leftStyle = null, rightStyle = null;
     if (pos.dn is DNStyle && pos.dnOffset == pos.dn.offsetLength)
       leftStyle = pos.dn;

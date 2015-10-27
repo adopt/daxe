@@ -61,8 +61,8 @@ class CSSMap extends MapBase<String, String> {
   }
   
   bool equivalent(CSSMap cssMap) {
-    List<String> keys1 = keys;
-    List<String> keys2 = cssMap.map.keys;
+    Iterable<String> keys1 = keys;
+    Iterable<String> keys2 = cssMap.map.keys;
     return(keys1.every((String key1) => map[key1] == cssMap.map[key1]) &&
         keys2.every((String key2) => map[key2] == cssMap.map[key2]));
   }

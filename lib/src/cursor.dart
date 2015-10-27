@@ -225,9 +225,6 @@ class Cursor {
       if (donePaste) {
         return;
       }
-      if (selectionStart != selectionEnd) {
-        removeSelection();
-      }
       if (ta.value != '') {
         pasteString(ta.value);
         ta.value = '';
@@ -1368,7 +1365,22 @@ class Cursor {
     // also use hidden paragraphs if a paragraph is required to insert text
     bool useParagraphs = hiddenp != null && (s.contains('\n') || !parentWithText);
     if (!useParagraphs) {
-      doc.insertString(selectionStart, s);
+      if (selectionStart == selectionEnd)
+        doc.insertString(selectionStart, s);
+      else {
+        UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));
+        // save and move start position so it keeps reliable for insert
+        Position start = new Position.clone(selectionStart);
+        while ((start.dn is DNText || start.dn is DNStyle) && start.dnOffset == 0)
+          start = new Position(start.dn.parent, start.dn.parent.offsetOf(start.dn));
+        if (start.dn is! DNText && start.dn.childAtOffset(start.dnOffset-1) is DNText) {
+          DNText previous = start.dn.childAtOffset(start.dnOffset-1);
+          start = new Position(previous, previous.offsetLength);
+        }
+        edit.addSubEdit(doc.removeBetweenEdit(selectionStart, selectionEnd));
+        edit.addSubEdit(new UndoableEdit.insertString(start, s));
+        doc.doNewEdit(edit);
+      }
       return(true);
     }
     x.DOMImplementation domimpl = new x.DOMImplementationImpl();
@@ -1414,13 +1426,50 @@ class Cursor {
       doc.removeWhitespaceForHiddenParagraphs(dnRoot);
     }
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));
+    
+    // save and move positions so they keep reliable for insert and merge
+    Position start = new Position.clone(selectionStart);
+    while ((start.dn is DNText || start.dn is DNStyle) && start.dnOffset == 0)
+      start = new Position(start.dn.parent, start.dn.parent.offsetOf(start.dn));
+    while ((start.dn is DNText || start.dn is DNStyle) && start.dnOffset == start.dn.offsetLength)
+      start = new Position(start.dn.parent, start.dn.parent.offsetOf(start.dn)+1);
+    if (start.dn is! DNText && start.dn.childAtOffset(start.dnOffset-1) is DNText) {
+      DNText previous = start.dn.childAtOffset(start.dnOffset-1);
+      start = new Position(previous, previous.offsetLength);
+    }
+    Position end = new Position.clone(selectionEnd);
+    while ((end.dn is DNText || end.dn is DNStyle) && end.dnOffset == 0)
+      end = new Position(end.dn.parent, end.dn.parent.offsetOf(end.dn));
+    while ((end.dn is DNText || end.dn is DNStyle) && end.dnOffset == end.dn.offsetLength)
+      end = new Position(end.dn.parent, end.dn.parent.offsetOf(end.dn)+1);
+    if (end.dn is! DNText && end.dn.childAtOffset(end.dnOffset) is DNText) {
+      DNText next = end.dn.childAtOffset(end.dnOffset);
+      end = new Position(next, 0);
+    }
+    end = new Position.rightOffsetPosition(end);
+    
+    if (selectionStart != selectionEnd)
+      edit.addSubEdit(doc.removeBetweenEdit(selectionStart, selectionEnd));
     try {
-      edit.addSubEdit(doc.insertChildrenEdit(dnRoot, selectionStart, checkValidity:true));
+      edit.addSubEdit(doc.insertChildrenEdit(dnRoot, start, checkValidity:true));
     } on DaxeException catch (ex) {
       h.window.alert(ex.toString());
       return(false);
     }
     doc.doNewEdit(edit);
+    setSelection(end, end);
+    // merge styles if possible
+    EditAndNewPositions ep = DNStyle.mergeAt(start);
+    if (ep != null) {
+      doc.doNewEdit(ep.edit);
+      doc.combineLastEdits(Strings.get('undo.paste'), 2);
+    }
+    ep = DNStyle.mergeAt(end);
+    if (ep != null) {
+      doc.doNewEdit(ep.edit);
+      doc.combineLastEdits(Strings.get('undo.paste'), 2);
+      setSelection(ep.end, ep.end);
+    }
     return(true);
   }
   

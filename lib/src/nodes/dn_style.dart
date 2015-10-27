@@ -532,6 +532,8 @@ class DNStyle extends DaxeNode {
     else if (pos.dn is! DNText && pos.dnOffset > 0 && pos.dn.offsetLength > 0 &&
         pos.dn.childAtOffset(pos.dnOffset - 1) is DNStyle)
       leftStyle = pos.dn.childAtOffset(pos.dnOffset - 1);
+    else if (pos.dn is DNStyle && pos.dnOffset == 0 && pos.dn.previousSibling is DNStyle)
+      leftStyle = pos.dn.previousSibling;
     if (pos.dn is DNStyle && pos.dnOffset == 0)
       rightStyle= pos.dn;
     else if (pos.dn is DNText && pos.dnOffset == 0 && pos.dn.parent is DNStyle &&
@@ -540,6 +542,9 @@ class DNStyle extends DaxeNode {
     else if (pos.dn is! DNText && pos.dnOffset < pos.dn.offsetLength && pos.dn.offsetLength > 0 &&
         pos.dn.childAtOffset(pos.dnOffset) is DNStyle)
       rightStyle = pos.dn.childAtOffset(pos.dnOffset);
+    else if (pos.dn is DNStyle && pos.dnOffset == pos.dn.offsetLength &&
+        pos.dn.nextSibling is DNStyle)
+      rightStyle = pos.dn.nextSibling;
     if (leftStyle == null || rightStyle == null)
       return(null);
     if (!leftStyle.matches(rightStyle))

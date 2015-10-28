@@ -36,15 +36,15 @@ abstract class WXSExplicitGroup extends WXSAnnotated implements WithSubElements,
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "element")
-          _nestedParticles.add(new WXSElement(n as Element, this, schema));
+          _nestedParticles.add(new WXSElement(n, this, schema));
         else if (n.localName == "group")
-          _nestedParticles.add(new WXSGroup(n as Element, this, schema));
+          _nestedParticles.add(new WXSGroup(n, this, schema));
         else if (n.localName == "choice")
-          _nestedParticles.add(new WXSChoice(n as Element, this, schema));
+          _nestedParticles.add(new WXSChoice(n, this, schema));
         else if (n.localName == "sequence")
-          _nestedParticles.add(new WXSSequence(n as Element, this, schema));
+          _nestedParticles.add(new WXSSequence(n, this, schema));
         else if (n.localName == "any")
-          _nestedParticles.add(new WXSAny(n as Element, this, schema));
+          _nestedParticles.add(new WXSAny(n, this, schema));
       }
     }
     try {

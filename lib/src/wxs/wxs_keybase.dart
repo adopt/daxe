@@ -32,9 +32,9 @@ abstract class WXSKeybase extends WXSAnnotated {
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "selector")
-          _selector = new WXSSelector(n as Element);
+          _selector = new WXSSelector(n);
         else if (n.localName == "field")
-          _fields.add(new WXSField(n as Element));
+          _fields.add(new WXSField(n));
       }
     }
     if (el.hasAttribute("name"))

@@ -435,7 +435,7 @@ class XMLParser {
       el.namespaceURI = el.parentNode.lookupNamespaceURI(el.prefix);
     for (Node n = el.firstChild; n != null; n = n.nextSibling) {
       if (n is Element)
-        _fixNamespaces(n as Element);
+        _fixNamespaces(n);
     }
   }
 }

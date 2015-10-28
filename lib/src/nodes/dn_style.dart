@@ -32,14 +32,14 @@ part of nodes;
  */
 class DNStyle extends DaxeNode {
   
-  String _style;
+  //String _style; // unused
   
   DNStyle.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
-    _style = doc.cfg.elementParameterValue(elementRef, 'style', null);
+    //_style = doc.cfg.elementParameterValue(elementRef, 'style', null);
   }
   
   DNStyle.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
-    _style = doc.cfg.elementParameterValue(ref, 'style', null);
+    //_style = doc.cfg.elementParameterValue(ref, 'style', null);
   }
   
   @override
@@ -242,9 +242,9 @@ class DNStyle extends DaxeNode {
           _matchingCssName(dn, styleRef, cssName)) {
         if (dn is DNStyleSpan && cssName != null && (new CSSMap((dn as DNStyleSpan).css)).keys.length > 1) {
           // actually, in this case we can just remove a part of the style attribute
-          CSSMap map = new CSSMap((dn as DNStyleSpan).css);
+          CSSMap map = new CSSMap(dn.css);
           map.remove(cssName);
-          (dn as DNStyleSpan).css = map.toString();
+          dn.css = map.toString();
         } else {
           DaxeNode first = dn.firstChild;
           for (DaxeNode dn2 = dn.firstChild; dn2 != null; ) {
@@ -295,9 +295,9 @@ class DNStyle extends DaxeNode {
       if ((styleRef == null && dn is DNStyle) || _matchingCssName(dn, styleRef, cssName)) {
         if (dn is DNStyleSpan && cssName != null && (new CSSMap((dn as DNStyleSpan).css)).keys.length > 1) {
           // actually, in this case we can just remove a part of the style attribute
-          CSSMap map = new CSSMap((dn as DNStyleSpan).css);
+          CSSMap map = new CSSMap(dn.css);
           map.remove(cssName);
-          DaxeAttr attr = new DaxeAttr((dn as DNStyleSpan)._styleAtt, map.toString());
+          DaxeAttr attr = new DaxeAttr(dn._styleAtt, map.toString());
           return(new UndoableEdit.changeAttribute(dn, attr));
         } else {
           UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_element'));

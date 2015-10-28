@@ -30,7 +30,7 @@ abstract class WXSAnnotated implements WXSThing {
   void _parseAnnotation(final Element el) {
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element && n.localName == "annotation") {
-        _annotation = new WXSAnnotation(n as Element);
+        _annotation = new WXSAnnotation(n);
         break;
       }
     }

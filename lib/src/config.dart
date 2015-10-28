@@ -373,7 +373,7 @@ class Config {
       final String nodename = menunode.nodeName;
       String shortcut = null;
       if (menunode is x.Element) {
-        final String commande = (menunode as x.Element).getAttribute("raccourci");
+        final String commande = menunode.getAttribute("raccourci");
         if (commande != null && commande != "") {
           shortcut = commande.toUpperCase()[0];
         }

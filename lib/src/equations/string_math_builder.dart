@@ -655,7 +655,7 @@ class JEQFonction implements JEQ {
       MathOperator mop = new MathOperator();
       if (p2 is JEQNombre) {
         try {
-          final int n = int.parse((p2 as JEQNombre).valeur);
+          final int n = int.parse(p2.valeur);
           String spts = "";
           for (int i=0; i<n; i++)
             spts = spts + '.';

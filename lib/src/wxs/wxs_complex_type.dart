@@ -253,7 +253,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
           wxsBase = res._wxsBase;
       }
       if (wxsBase is WXSComplexType)
-        return((wxsBase as WXSComplexType).containsText());
+        return(wxsBase.containsText());
     }
     if (getMixed())
       return(true);

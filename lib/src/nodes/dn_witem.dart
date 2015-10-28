@@ -52,4 +52,14 @@ class DNWItem extends DaxeNode {
   bool newlineAfter() {
     return(true);
   }
+  @override
+  bool get noDelimiter {
+    return(true);
+  }
+  
+  @override
+  bool get block {
+    return(true);
+  }
+  
 }

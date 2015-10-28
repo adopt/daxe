@@ -429,6 +429,12 @@ class Cursor {
       int offset = selectionStart.dnOffset;
       if (dn is DNDocument && offset == 0)
         return;
+      if (dn is DNText && offset == 0 && dn.parent is DNWItem &&
+          dn.previousSibling == null && dn.parent.previousSibling == null) {
+        // at the beginning of a WYSIWYG list
+        DNWList.riseLevel();
+        return;
+      }
       // if the cursor is at a newline after a node with an automatic (not DOM) newline,
       // the user probably wants to remove the newline instead of the previous node.
       if (dn is DNText && offset == 0 && dn.nodeValue[0] == '\n' &&
@@ -897,9 +903,10 @@ class Cursor {
     // fix selection start and end for styles (different positions look the same for the user)
     // and to keep only the elements entirely inside the selection
     // move the start and end positions out of text and style if possible
-    // exception for hidden paragraphs: selection is not extended when it is just the line
+    // exception for hidden paragraphs and list items:
+    //   selection is not extended when it is just the line
     while (selectionStart.dn.noDelimiter && selectionStart.dnOffset == 0 &&
-        !(selectionStart.dn is DNHiddenP &&
+        !((selectionStart.dn is DNHiddenP || selectionStart.dn is DNWItem) &&
         selectionEnd <= new Position(selectionStart.dn, selectionStart.dn.offsetLength))) {
       selectionStart = new Position(selectionStart.dn.parent,
           selectionStart.dn.parent.offsetOf(selectionStart.dn));
@@ -915,7 +922,8 @@ class Cursor {
           selectionEnd.dn.parent.offsetOf(selectionEnd.dn) + 1);
     }
     while (selectionEnd.dn.noDelimiter && selectionEnd.dnOffset == 0 &&
-        !(selectionEnd.dn is DNHiddenP && selectionEnd == selectionStart)) {
+        !((selectionEnd.dn is DNHiddenP || selectionEnd.dn is DNWItem) &&
+        selectionEnd == selectionStart)) {
       selectionEnd = new Position(selectionEnd.dn.parent,
           selectionEnd.dn.parent.offsetOf(selectionEnd.dn));
     }
@@ -1457,13 +1465,13 @@ class Cursor {
       return(false);
     }
     doc.doNewEdit(edit);
-    setSelection(end, end);
     // merge styles if possible
     EditAndNewPositions ep = DNStyle.mergeAt(start);
     if (ep != null) {
       doc.doNewEdit(ep.edit);
       doc.combineLastEdits(Strings.get('undo.paste'), 2);
     }
+    setSelection(end, end);
     ep = DNStyle.mergeAt(end);
     if (ep != null) {
       doc.doNewEdit(ep.edit);

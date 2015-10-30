@@ -1196,7 +1196,7 @@ class DaxeDocument {
             dn.nodeValue = s;
         }
       } else if (dn.firstChild != null)
-        removeWhitespaceForHiddenParagraphs(dn, para || paraInside);
+        removeWhitespaceForHiddenParagraphs(dn, (para || paraInside) && !dn.block);
     }
   }
   

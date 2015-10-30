@@ -44,6 +44,12 @@ class Cursor {
     ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
     ta.onBlur.listen((h.Event event) => blur(event));
     ta.onPaste.listen((h.Event e) {
+      // check if current language might understand HTML.
+      // If not, onPaste is not useful.
+      List<String> hnames = ['p', 'ul', 'a'];
+      for (String name in hnames)
+        if (doc.cfg.elementReference(name) == null)
+          return;
       h.DataTransfer data = e.clipboardData;
       if (data.types.contains('text/html')) {
         pasteHTML(data.getData('text/html'), data.getData('text/plain'));
@@ -1314,7 +1320,7 @@ class Cursor {
    * Parses the given String and pastes the XML or text at the current position.
    * Returns true if it was pasted without error.
    */
-  bool pasteString(String s) {
+  void pasteString(String s) {
     x.Document tmpdoc;
     String parse = "<root";
     if (doc.cfg != null) {
@@ -1333,25 +1339,30 @@ class Cursor {
     }
     parse += ">$s</root>";
     try {
-      x.DOMParser dp = new x.DOMParser();
-      tmpdoc = dp.parseFromString(parse);
-    } on x.DOMException {
-      // this is not XML, it is inserted as string if it is possible
-      return(pasteText(s));
+      try {
+        x.DOMParser dp = new x.DOMParser();
+        tmpdoc = dp.parseFromString(parse);
+      } on x.DOMException {
+        // this is not XML, it is inserted as string if it is possible
+        pasteText(s);
+        return;
+      }
+      pasteXML(tmpdoc);
+    } on DaxeException catch(ex) {
+      h.window.alert(ex.toString());
     }
-    return(pasteXML(tmpdoc));
   }
   
   /**
    * Pastes the text at the current position (using hidden paragraphs if possible).
-   * Returns true if it was pasted without error.
+   * Throws a DaxeException if it was not valid.
    */
-  bool pasteText(String s) {
+  void pasteText(String s) {
     DaxeNode parent = selectionStart.dn;
     if (parent is DNText)
       parent = parent.parent;
     if (parent == null)
-      return false;
+      throw new DaxeException(Strings.get('insert.text_not_allowed'));
     x.Element hiddenp;
     if (parent.ref != null && doc.hiddenParaRefs != null)
       hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
@@ -1365,10 +1376,9 @@ class Cursor {
       else if (!parentWithText && hiddenp == null)
         problem = true;
     }
-    if (problem) {
-      h.window.alert(Strings.get('insert.text_not_allowed'));
-      return(false);
-    }
+    if (problem)
+      throw new DaxeException(Strings.get('insert.text_not_allowed'));
+    
     // use hidden paragraphs instead of newlines if allowed at current position
     // also use hidden paragraphs if a paragraph is required to insert text
     bool useParagraphs = hiddenp != null && (s.contains('\n') || !parentWithText);
@@ -1389,7 +1399,7 @@ class Cursor {
         edit.addSubEdit(new UndoableEdit.insertString(start, s));
         doc.doNewEdit(edit);
       }
-      return(true);
+      return;
     }
     x.DOMImplementation domimpl = new x.DOMImplementationImpl();
     x.Document tmpdoc = domimpl.createDocument(null, null, null);
@@ -1402,18 +1412,38 @@ class Cursor {
         p.appendChild(tmpdoc.createTextNode(part));
       root.appendChild(p);
     }
-    return(pasteXML(tmpdoc));
+    pasteXML(tmpdoc);
   }
   
   /**
    * Pastes the XML (without the root element) at the current position.
-   * Returns true if it was pasted without error.
+   * Throws a DaxeException if it was not valid.
    */
-  bool pasteXML(x.Document tmpdoc) {
+  void pasteXML(x.Document tmpdoc) {
     x.Element root = tmpdoc.documentElement;
     if (root.firstChild != null && root.firstChild.nextSibling == null &&
         root.firstChild.nodeType == x.Node.TEXT_NODE) {
-      return(pasteText(root.firstChild.nodeValue));
+      pasteText(root.firstChild.nodeValue);
+      return;
+    }
+    if (selectionStart == selectionEnd && doc.hiddenParaRefs != null &&
+        selectionStart.dn is DNText &&
+        selectionStart.dnOffset == selectionStart.dn.offsetLength) {
+      DaxeNode parent = selectionStart.dn.parent;
+      if (parent.parent != null && parent.parent.ref != null &&
+          doc.hiddenParaRefs.contains(parent.ref)) {
+        // at the end of a hidden paragraph: move paste position outside
+        // if it helps to insert the first node
+        // NOTE: we could generalize this behavior when the cursor is elsewhere
+        //       and we could test more children
+        if (!doc.cfg.isSubElementByName(parent.ref, root.firstChild.nodeName)) {
+          if (doc.cfg.isSubElementByName(parent.parent.ref, root.firstChild.nodeName)) {
+            selectionStart = new Position(parent.parent,
+                parent.parent.offsetOf(parent)+1);
+            selectionEnd = new Position.clone(selectionStart);
+          }
+        }
+      }
     }
     DaxeNode parent = selectionStart.dn;
     if (parent is DNText)
@@ -1458,12 +1488,7 @@ class Cursor {
     
     if (selectionStart != selectionEnd)
       edit.addSubEdit(doc.removeBetweenEdit(selectionStart, selectionEnd));
-    try {
-      edit.addSubEdit(doc.insertChildrenEdit(dnRoot, start, checkValidity:true));
-    } on DaxeException catch (ex) {
-      h.window.alert(ex.toString());
-      return(false);
-    }
+    edit.addSubEdit(doc.insertChildrenEdit(dnRoot, start, checkValidity:true));
     doc.doNewEdit(edit);
     // merge styles if possible
     EditAndNewPositions ep = DNStyle.mergeAt(start);
@@ -1478,7 +1503,6 @@ class Cursor {
       doc.combineLastEdits(Strings.get('undo.paste'), 2);
       setSelection(ep.end, ep.end);
     }
-    return(true);
   }
   
   /**
@@ -1513,10 +1537,32 @@ class Cursor {
       else
         refGrandParent = parent.parent.ref;
       doc._removeWhitespace(tmpdoc.documentElement, refGrandParent, false, true);
-      if (!pasteXML(tmpdoc))
-        pasteText(plain);
+      try {
+        pasteXML(tmpdoc);
+        return;
+      } on DaxeException catch(ex) {
+        String errmsg = ex.toString();
+        if (errmsg != Strings.get('insert.text_not_allowed') &&
+            parent.ref != null && doc.cfg.canContainText(parent.ref)) {
+          try {
+            pasteText(plain);
+            errmsg = Strings.get('cursor.pasting_xml_failed') +
+                ' (' + errmsg + ')';
+          } on DaxeException {
+          }
+        } else
+          errmsg = Strings.get('insert.text_not_allowed');
+        // see Blink bug:
+        // https://code.google.com/p/chromium/issues/detail?id=299805
+        // workaround: using a Timer
+        Timer.run(()=>h.window.alert(errmsg));
+      }
     } on x.DOMException {
-      pasteText(plain);
+      try {
+        pasteText(plain);
+      } on DaxeException catch(ex) {
+        Timer.run(()=>h.window.alert(ex.toString()));
+      }
     }
   }
   

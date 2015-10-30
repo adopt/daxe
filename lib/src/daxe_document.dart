@@ -1153,7 +1153,7 @@ class DaxeDocument {
    * Replace newlines by spaces where hidden paragraphs can be found and inside them,
    * and remove whitespace before and after blocks where hidden paragraphs can be found.
    */
-  void removeWhitespaceForHiddenParagraphs(DaxeNode parent) {
+  void removeWhitespaceForHiddenParagraphs(DaxeNode parent, [bool paraAncestor=false]) {
     x.Element paraRef;
     if (parent.ref != null)
       paraRef = cfg.findSubElement(parent.ref, hiddenParaRefs);
@@ -1166,7 +1166,7 @@ class DaxeDocument {
     for (DaxeNode dn=parent.firstChild; dn != null; dn=next) {
       next = dn.nextSibling;
       if (dn is DNText) {
-        if (paraInside || para || style) {
+        if (paraInside || para || style || paraAncestor) {
           String s = dn.nodeValue;
           // replace newlines by spaces except between XML comments
           if (dn.previousSibling == null || dn.previousSibling is! DNComment ||
@@ -1196,7 +1196,7 @@ class DaxeDocument {
             dn.nodeValue = s;
         }
       } else if (dn.firstChild != null)
-        removeWhitespaceForHiddenParagraphs(dn);
+        removeWhitespaceForHiddenParagraphs(dn, para || paraInside);
     }
   }
   

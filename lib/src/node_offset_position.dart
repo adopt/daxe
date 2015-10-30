@@ -155,16 +155,16 @@ class NodeOffsetPosition implements Position {
   
   void moveInsideTextNodeIfPossible() {
     if (_dn.nodeType == DaxeNode.ELEMENT_NODE && _dnOffset > 0 &&
-        _dn.childAtOffset(_dnOffset - 1).nodeType == DaxeNode.TEXT_NODE) {
+        _dn.childAtOffset(_dnOffset - 1) is DNText) {
       _dn = _dn.childAtOffset(_dnOffset - 1);
       _dnOffset = _dn.offsetLength;
     } else if (_dn.nodeType == DaxeNode.ELEMENT_NODE &&
         _dnOffset < _dn.offsetLength &&
-        _dn.childAtOffset(_dnOffset).nodeType == DaxeNode.TEXT_NODE) {
+        _dn.childAtOffset(_dnOffset) is DNText) {
       _dn = _dn.childAtOffset(_dnOffset);
       _dnOffset = 0;
     } else if (_dnOffset == 0 && _dn.firstChild != null &&
-        _dn.firstChild.nodeType == DaxeNode.TEXT_NODE) {
+        _dn.firstChild is DNText) {
       _dn = _dn.firstChild;
     }
   }

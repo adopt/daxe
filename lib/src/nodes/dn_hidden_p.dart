@@ -322,6 +322,7 @@ class DNHiddenP extends DaxeNode {
         fragment.removeChild(dn2);
       }
     }
+    fragment.normalize();
     x.Element hiddenp;
     if (parent.ref != null)
       hiddenp = doc.cfg.findSubElement(parent.ref, doc.hiddenParaRefs);
@@ -339,6 +340,8 @@ class DNHiddenP extends DaxeNode {
           fragment.removeChild(dn2);
           if (prev != null && prev.ref == hiddenp) {
             prev.appendChild(dn2);
+            if (dn2 is DNText)
+              prev.normalize();
           } else {
             DNHiddenP p = new DNHiddenP.fromRef(hiddenp);
             p.appendChild(dn2);

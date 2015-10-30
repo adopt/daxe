@@ -1027,7 +1027,7 @@ class DaxeDocument {
       refElement = cfg.getElementRef(el, refParent);
     else
       refElement = null;
-    bool spacePreserve = _spacePreserve(el, refElement, refParent, spacePreserveParent);
+    bool spacePreserve = _spacePreserve(el, refElement, spacePreserveParent);
     final bool fte = _isFirstTextElement(el, refElement, refParent, fteParent);
     x.Node next;
     for (x.Node n = el.firstChild; n != null; n = next) {
@@ -1088,7 +1088,7 @@ class DaxeDocument {
   /**
    * Returns true if the text should be preserved in an element.
    */
-  bool _spacePreserve(final x.Element el, final x.Element refElement, final x.Element refParent,
+  bool _spacePreserve(final x.Element el, final x.Element refElement,
                       final bool spacePreserveParent) {
     bool spacePreserve;
     final String xmlspace = el.getAttribute("xml:space");
@@ -1100,6 +1100,35 @@ class DaxeDocument {
       spacePreserve = spacePreserveParent;
     if (refElement != null && xmlspace == "") {
       final List<x.Element> attributs = cfg.elementAttributes(refElement);
+      for (x.Element attref in attributs) {
+        if (cfg.attributeName(attref) == "space" &&
+            cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
+          final String defaut = cfg.defaultAttributeValue(attref);
+          if (defaut == "preserve")
+            spacePreserve = true;
+          else if (defaut == "default")
+            spacePreserve = false;
+          break;
+        }
+      }
+    }
+    return(spacePreserve);
+  }
+  
+  /**
+   * Returns true if the text should be preserved in a Daxe Node.
+   */
+  bool _spacePreserveDN(final DaxeNode dn, [final bool spacePreserveParent=false]) {
+    bool spacePreserve;
+    final String xmlspace = dn.getAttribute("xml:space");
+    if (xmlspace == "preserve")
+      spacePreserve = true;
+    else if (xmlspace == "default")
+      spacePreserve = false;
+    else
+      spacePreserve = spacePreserveParent;
+    if (dn.ref != null && xmlspace == null) {
+      final List<x.Element> attributs = cfg.elementAttributes(dn.ref);
       for (x.Element attref in attributs) {
         if (cfg.attributeName(attref) == "space" &&
             cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
@@ -1165,7 +1194,7 @@ class DaxeDocument {
     DaxeNode next;
     for (DaxeNode dn=parent.firstChild; dn != null; dn=next) {
       next = dn.nextSibling;
-      if (dn is DNText) {
+      if (dn is DNText && !_spacePreserveDN(dn)) {
         if (paraInside || para || style || paraAncestor) {
           String s = dn.nodeValue;
           // replace newlines by spaces except between XML comments
@@ -1217,7 +1246,7 @@ class DaxeDocument {
       refElement = cfg.getElementRef(el, refParent);
     else
       refElement = null;
-    bool spacePreserve = _spacePreserve(el, refElement, refParent, spacePreserveParent);
+    bool spacePreserve = _spacePreserve(el, refElement, spacePreserveParent);
     for (x.Node n = el.firstChild; n != null; n = n.nextSibling) {
       if (n.nodeType == x.Node.ELEMENT_NODE)
         _indentDOMNode(n as x.Element, refElement, spacePreserve, level+1);

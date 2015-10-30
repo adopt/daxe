@@ -53,7 +53,7 @@ class Tag {
       bool hasAttributes;
       if (_dn.ref != null) {
         List<x.Element> attRefs = doc.cfg.elementAttributes(_dn.ref);
-        hasAttributes = (attRefs != null && attRefs.length > 0);
+        hasAttributes = ((attRefs != null && attRefs.length > 0) || _dn.attributes.length > 0);
       } else {
         hasAttributes = (_dn is! DNComment && _dn is! DNCData);
       }

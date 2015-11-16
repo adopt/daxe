@@ -597,10 +597,10 @@ class DaxeDocument {
           if (insertOffset > 0 && (pos.dn is DNText ||
               parent.childAtOffset(insertOffset - 1) is DNText))
             merge = true;
-          first = false;
         }
         edit.addSubEdit(new UndoableEdit.insertString(insertPos, dn.nodeValue));
       }
+      first = false;
     }
     return(edit);
   }

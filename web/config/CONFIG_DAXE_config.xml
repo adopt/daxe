@@ -9,7 +9,6 @@
     <MENU nom="Langage">
       <MENU_INSERTION nom="LANGAGE" type_noeud="element"/>
       <MENU_INSERTION nom="FICHIER_SCHEMA"/>
-      <MENU_INSERTION nom="SCHEMA_SIMPLE"/>
       <MENU_INSERTION nom="RACINE"/>
     </MENU>
     <MENU nom="Enregistrement">
@@ -34,13 +33,6 @@
       <MENU_INSERTION nom="PLUGIN_INSTRUCTION"/>
       <MENU_INSERTION nom="PLUGIN_COMMENTAIRE"/>
       <MENU_INSERTION nom="PARAMETRE"/>
-      <MENU_INSERTION nom="VALEUR"/>
-    </MENU>
-    <MENU nom="Exports">
-      <MENU_INSERTION nom="EXPORTS"/>
-      <MENU_INSERTION nom="EXPORT"/>
-      <MENU_INSERTION nom="FICHIER_XSL"/>
-      <MENU_INSERTION nom="PARAMETRE"/>
     </MENU>
     <MENU nom="Textes">
       <MENU_INSERTION nom="STRINGS"/>
@@ -48,7 +40,6 @@
       <MENU_INSERTION nom="STRINGS_MENU"/>
       <MENU_INSERTION nom="STRINGS_ELEMENT"/>
       <MENU_INSERTION nom="STRINGS_ATTRIBUT"/>
-      <MENU_INSERTION nom="STRINGS_EXPORT"/>
       <MENU_INSERTION nom="TITRE"/>
       <MENU_INSERTION nom="DOCUMENTATION"/>
       <MENU_INSERTION nom="TITRE_VALEUR"/>
@@ -128,14 +119,6 @@
     </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="PLUGIN_COMMENTAIRE" type="zone"/>
     
-    <AFFICHAGE_ELEMENT element="EXPORTS" type="division"/>
-    <AFFICHAGE_ELEMENT element="EXPORT" type="zone">
-      <PARAMETRE nom="titreAtt" valeur="nom"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="FICHIER_XSL" type="zone">
-      <PARAMETRE nom="titreAtt" valeur="nom"/>
-    </AFFICHAGE_ELEMENT>
-    
     <AFFICHAGE_ELEMENT element="STRINGS" type="division">
       <PARAMETRE nom="titreAtt" valeur="langue"/>
     </AFFICHAGE_ELEMENT>
@@ -153,9 +136,6 @@
     </AFFICHAGE_ELEMENT>
     <AFFICHAGE_ELEMENT element="TITRE_VALEUR" type="string">
       <PARAMETRE nom="titreAtt" valeur="valeur"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="STRINGS_EXPORT" type="zone">
-      <PARAMETRE nom="titreAtt" valeur="export"/>
     </AFFICHAGE_ELEMENT>
     
   </AFFICHAGE_NOEUDS>
@@ -175,13 +155,6 @@
         Définition du langage XML associé à la configuration
       </DOCUMENTATION>
     </STRINGS_MENU>
-    <STRINGS_MENU menu="Schéma simple">
-      <TITRE>Schéma simple</TITRE>
-      <DOCUMENTATION>
-        Définition des éléments du langage quand un schéma simple est utilisé
-        au lieu d'un fichier de schéma XML
-      </DOCUMENTATION>
-    </STRINGS_MENU>
     <STRINGS_MENU menu="Enregistrement">
       <TITRE>Enregistrement</TITRE>
       <DOCUMENTATION>
@@ -198,12 +171,6 @@
       <TITRE>Affichage</TITRE>
       <DOCUMENTATION>
         Affichage des éléments dans Jaxe
-      </DOCUMENTATION>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="Exports">
-      <TITRE>Exports</TITRE>
-      <DOCUMENTATION>
-        Exports XSLT possibles à partir des documents
       </DOCUMENTATION>
     </STRINGS_MENU>
     <STRINGS_MENU menu="Textes">
@@ -490,42 +457,6 @@
         Un plugin à utiliser pour afficher les commentaires
       </DOCUMENTATION>
     </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="EXPORTS">
-      <TITRE>Exports</TITRE>
-      <DOCUMENTATION>
-        Un ensemble de méthodes d'exportation, vers des documents XML ou HTML,
-        utilisant des transformations XSLT.
-      </DOCUMENTATION>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="EXPORT">
-      <TITRE>Export</TITRE>
-      <DOCUMENTATION>
-        Informations permettant l'affichage d'un aperçu HTML ou d'une sortie XML,
-        avec une suite de transformations XSLT. La sortie peut aussi être en PDF
-        si XSL-FO est utilisé dans la dernière transformation XSLT.
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="nom">
-        <TITRE>nom</TITRE>
-        <DOCUMENTATION>
-          Nom de l'export. Utilisé comme titre si aucun titre n'est défini.
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-      <STRINGS_ATTRIBUT attribut="sortie">
-        <TITRE>sortie</TITRE>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="FICHIER_XSL">
-      <TITRE>Fichier XSL</TITRE>
-      <DOCUMENTATION>
-        Un fichier XSL et des paramètres à lui transmettre.
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="nom">
-        <TITRE>nom</TITRE>
-        <DOCUMENTATION>
-          Chemin vers le fichier XSL relatif à ce fichier de configuration
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
     <STRINGS_ELEMENT element="STRINGS">
       <TITRE>Textes</TITRE>
       <DOCUMENTATION>
@@ -612,18 +543,6 @@
         Titre à utiliser pour une valeur d'élément ou d'attribut
       </DOCUMENTATION>
     </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="STRINGS_EXPORT">
-      <TITRE>Textes pour export</TITRE>
-      <DOCUMENTATION>
-        Titre et documentation pour une action d'export
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="export">
-        <TITRE>export</TITRE>
-        <DOCUMENTATION>
-          Le nom de l'export
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
     
     <STRINGS_EXPORT export="tri">
       <TITRE>Tri des affichages et des strings...</TITRE>
@@ -642,13 +561,6 @@
         Informations about the XML language
       </DOCUMENTATION>
     </STRINGS_MENU>
-    <STRINGS_MENU menu="Schéma simple">
-      <TITRE>Simple schema</TITRE>
-      <DOCUMENTATION>
-        Definitions for the elements when a simple schema is used
-        instead of an XML schema file
-      </DOCUMENTATION>
-    </STRINGS_MENU>
     <STRINGS_MENU menu="Enregistrement">
       <TITRE>Saving</TITRE>
       <DOCUMENTATION>
@@ -665,12 +577,6 @@
       <TITRE>Display</TITRE>
       <DOCUMENTATION>
         Nodes display
-      </DOCUMENTATION>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="Exports">
-      <TITRE>Exports</TITRE>
-      <DOCUMENTATION>
-        XSLT exports for the documents
       </DOCUMENTATION>
     </STRINGS_MENU>
     <STRINGS_MENU menu="Textes">
@@ -937,42 +843,6 @@
         Plugin to use to display XML comments
       </DOCUMENTATION>
     </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="EXPORTS">
-      <TITRE>Exports</TITRE>
-      <DOCUMENTATION>
-        A set of export methods, to XML or HTML documents,
-        using XSLT transforms.
-      </DOCUMENTATION>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="EXPORT">
-      <TITRE>Export</TITRE>
-      <DOCUMENTATION>
-        Informations to display an HTML preview or export to another XML language,
-        with a list of successive XSLT transforms. The output can also be a PDF file
-        if XSL-FO is used in the last XSLT transform.
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="nom">
-        <TITRE>name</TITRE>
-        <DOCUMENTATION>
-          Export name. Used as a title if no title is defined.
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-      <STRINGS_ATTRIBUT attribut="sortie">
-        <TITRE>output</TITRE>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="FICHIER_XSL">
-      <TITRE>XSL file</TITRE>
-      <DOCUMENTATION>
-        An XML file with its parameters
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="nom">
-        <TITRE>name</TITRE>
-        <DOCUMENTATION>
-          Path to the XSL file, relative to this configuration file
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
     <STRINGS_ELEMENT element="STRINGS">
       <TITRE>Strings</TITRE>
       <DOCUMENTATION>
@@ -1058,18 +928,6 @@
         Title to use for an element or attribute value
       </DOCUMENTATION>
     </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="STRINGS_EXPORT">
-      <TITRE>Export strings</TITRE>
-      <DOCUMENTATION>
-        Title and documentation for an export action
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="export">
-        <TITRE>export</TITRE>
-        <DOCUMENTATION>
-          The export name
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
     
     <STRINGS_EXPORT export="tri">
       <TITRE>Sort node display and strings...</TITRE>
@@ -1090,14 +948,6 @@
         Информация о языке XML, который определяется в данном конфигурационном файле.
       </DOCUMENTATION>
     </STRINGS_MENU>
-    <STRINGS_MENU menu="Schéma simple">
-      <TITRE>Простая schema</TITRE>
-      <DOCUMENTATION>
-        Определение элементов, когда вместо внешнего файла XML schema
-        используется встроенная упрощенная версия (для серьезных задач 
-        лучше использовать W3C стандарт)
-      </DOCUMENTATION>
-    </STRINGS_MENU>
     <STRINGS_MENU menu="Enregistrement">
       <TITRE>Сохранение</TITRE>
       <DOCUMENTATION>
@@ -1115,12 +965,6 @@
       <TITRE>Вид элементов</TITRE>
       <DOCUMENTATION>
         Здесь возможно настроить внешний вид элементов в самом окне текста.
-      </DOCUMENTATION>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="Exports">
-      <TITRE>Экспорт</TITRE>
-      <DOCUMENTATION>
-        Пункты, определяющие экспорт документа, используя преобразование XSLT.
       </DOCUMENTATION>
     </STRINGS_MENU>
     <STRINGS_MENU menu="Textes">
@@ -1386,42 +1230,6 @@
         Plugin to use to display XML comments
       </DOCUMENTATION>
     </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="EXPORTS">
-      <TITRE>Опции экспорта</TITRE>
-      <DOCUMENTATION>
-        A set of export methods, to XML or HTML documents,
-        using XSLT transforms.
-      </DOCUMENTATION>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="EXPORT">
-      <TITRE>Export</TITRE>
-      <DOCUMENTATION>
-        Informations to display an HTML preview or export to another XML language,
-        with a list of successive XSLT transforms. The output can also be a PDF file
-        if XSL-FO is used in the last XSLT transform.
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="nom">
-        <TITRE>name</TITRE>
-        <DOCUMENTATION>
-          Export name. Used as a title if no title is defined.
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-      <STRINGS_ATTRIBUT attribut="sortie">
-        <TITRE>output</TITRE>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="FICHIER_XSL">
-      <TITRE>Файл XSL</TITRE>
-      <DOCUMENTATION>
-        Файл XSL преобразования.
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="nom">
-        <TITRE>Имя/путь</TITRE>
-        <DOCUMENTATION>
-          Путь до XSL файла, начиная от файла конфигурации.
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
-    </STRINGS_ELEMENT>
     <STRINGS_ELEMENT element="STRINGS">
       <TITRE>Опции описания</TITRE>
       <DOCUMENTATION>
@@ -1505,18 +1313,6 @@
       <DOCUMENTATION>
         Текст, который будет виден для соответствующего значения атрибута или элемента
       </DOCUMENTATION>
-    </STRINGS_ELEMENT>
-    <STRINGS_ELEMENT element="STRINGS_EXPORT">
-      <TITRE>Описание экспорта</TITRE>
-      <DOCUMENTATION>
-        Заголовок и описание для действия экспорта.
-      </DOCUMENTATION>
-      <STRINGS_ATTRIBUT attribut="export">
-        <TITRE>Экспорт</TITRE>
-        <DOCUMENTATION>
-          Имя экспорта
-        </DOCUMENTATION>
-      </STRINGS_ATTRIBUT>
     </STRINGS_ELEMENT>
   </STRINGS>
 </CONFIG_JAXE>

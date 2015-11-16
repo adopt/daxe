@@ -426,6 +426,8 @@ span.long {
   display: inline-block;
   width: 90%;
   line-height: 1.2em;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 span.attribute_name {
@@ -918,6 +920,9 @@ select.invalid {
 /* DNSimpleType */
 span.simple_type {
   padding: 3px;
+}
+span.simple_type-title {
+  padding-right: 3px;
 }
 
 /* Fonts for symbols and equations */

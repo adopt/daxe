@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<XPAGES>
+<?xml version="1.0" encoding="UTF-8"?><XPAGES>
   <INFORMATIONS>
     <LABEL>daxe</LABEL>
     <TITRE>Daxe</TITRE>
@@ -19,7 +18,8 @@
     </SECTION>
     <SECTION titre="Demo">
       <LISTE>
-        <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml">New XHTML document</LIENWEB></ITEM>
+        <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml">New XHTML 1.0 document</LIENWEB></ITEM>
+        <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML5_config.xml">New XHTML 5 document</LIENWEB></ITEM>
         <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XPAGES_config.xml">New XPAGES document</LIENWEB></ITEM>
       </LISTE>
     </SECTION>
@@ -44,6 +44,14 @@
         <ITEM>copy the <CODE>build/web</CODE> directory on a server (here localhost, with the contents of <CODE>build/web</CODE> inside a <CODE>daxe</CODE> directory)</ITEM>
         <ITEM>run with the URL <CODE>http://localhost/daxe/daxe_js.html?config=config/XPAGES_config.xml</CODE></ITEM>
       </LISTE>
+    </SECTION>
+    <SECTION titre="Precompiled version">
+      <PARAGRAPHE>
+        If you have trouble compiling (the Dart SDK is not available on all platforms), you can use this precompiled version, but it will not be up-to-date.
+      </PARAGRAPHE>
+      <PARAGRAPHE>
+        <LIENWEB url="daxe.zip">daxe.zip</LIENWEB>
+      </PARAGRAPHE>
     </SECTION>
     <SECTION titre="Documentation">
       <PARAGRAPHE>Although it doesn't have as many features, Daxe was designed to look like Jaxe, and use Jaxe configuration files. So Jaxe documentation can be used as well<NBSP/>:</PARAGRAPHE>

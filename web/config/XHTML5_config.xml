@@ -11,17 +11,22 @@
       <MENU_INSERTION nom="head"/>
       <MENU_INSERTION nom="title"/>
       <MENU_INSERTION nom="body"/>
-      <MENU_INSERTION nom="h1"/>
       <MENU_INSERTION nom="section"/>
+      <MENU_INSERTION nom="h1"/>
       <MENU_INSERTION nom="div"/>
       <MENU_INSERTION nom="hr"/>
     </MENU>
     <MENU nom="Text">
+      <MENU_INSERTION nom="a"/>
       <MENU_INSERTION nom="em"/>
       <MENU_INSERTION nom="strong"/>
       <MENU_INSERTION nom="code"/>
     </MENU>
     <MENU nom="Block">
+      <MENU_INSERTION nom="ul"/>
+      <MENU_INSERTION nom="ol"/>
+      <MENU_INSERTION nom="li"/>
+      <MENU_INSERTION nom="table"/>
       <MENU_INSERTION nom="dl"/>
       <MENU_INSERTION nom="dt"/>
       <MENU_INSERTION nom="dd"/>
@@ -36,20 +41,16 @@
       <MENU_INSERTION nom="audio"/>
       <MENU_INSERTION nom="map"/>
       <MENU_INSERTION nom="area"/>
+      <MENU_INSERTION nom="figure"/>
+      <MENU_INSERTION nom="figcaption"/>
     </MENU>
     <MENU nom="Advanced">
-      <MENU nom="Toolbar">
-        <MENU_INSERTION nom="ul"/>
-        <MENU_INSERTION nom="ol"/>
-        <MENU_INSERTION nom="li"/>
-        <MENU_INSERTION nom="table"/>
-        <MENU_INSERTION nom="a"/>
-        <MENU nom="Styles">
-          <MENU_INSERTION nom="b"/>
-          <MENU_INSERTION nom="i"/>
-          <MENU_INSERTION nom="sup"/>
-          <MENU_INSERTION nom="sub"/>
-        </MENU>
+      <MENU nom="Structure">
+        <MENU_INSERTION nom="header"/>
+        <MENU_INSERTION nom="footer"/>
+        <MENU_INSERTION nom="article"/>
+        <MENU_INSERTION nom="aside"/>
+        <MENU_INSERTION nom="nav"/>
       </MENU>
       <MENU nom="Header">
         <MENU_INSERTION nom="meta"/>
@@ -78,6 +79,12 @@
         <MENU_INSERTION nom="big"/>
         <MENU_INSERTION nom="address"/>
         <MENU_INSERTION nom="bdo"/>
+        <MENU nom="Styles">
+          <MENU_INSERTION nom="b"/>
+          <MENU_INSERTION nom="i"/>
+          <MENU_INSERTION nom="sup"/>
+          <MENU_INSERTION nom="sub"/>
+        </MENU>
         <MENU nom="Ruby">
           <MENU_INSERTION nom="ruby"/>
           <MENU_INSERTION nom="rb"/>
@@ -87,21 +94,12 @@
         </MENU>
       </MENU>
       <MENU nom="Block">
-        <MENU_INSERTION nom="blockquote"/>
+        <MENU_INSERTION nom="canvas"/>
         <MENU_INSERTION nom="embed"/>
         <MENU_INSERTION nom="applet"/>
         <MENU_INSERTION nom="iframe"/>
         <MENU_INSERTION nom="noscript"/>
-      </MENU>
-      <MENU nom="HTML5">
-        <MENU_INSERTION nom="header"/>
-        <MENU_INSERTION nom="footer"/>
-        <MENU_INSERTION nom="article"/>
-        <MENU_INSERTION nom="aside"/>
-        <MENU_INSERTION nom="nav"/>
-        <MENU_INSERTION nom="figure"/>
-        <MENU_INSERTION nom="figcaption"/>
-        <MENU_INSERTION nom="canvas"/>
+        <MENU_INSERTION nom="blockquote"/>
       </MENU>
       <MENU nom="Forms">
         <MENU_INSERTION nom="form"/>

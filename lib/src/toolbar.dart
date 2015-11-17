@@ -497,16 +497,18 @@ class Toolbar {
       button.enable();
       button.select();
     } else {
-      if (selectedNode != null && doc.hiddenParaRefs.contains(selectedNode.ref) &&
-          (selectedNode as DNHiddenP).matchesCss(info.cssName, info.cssValue)) {
-        button.select();
-      } else {
+      List<DNHiddenP> selectedParagaphs = DNHiddenP.paragraphsInSelection();
+      if (selectedParagaphs.length == 0) {
         button.deselect();
-      }
-      if (DNHiddenP.paragraphsInSelection().length > 0)
-        button.enable();
-      else
         button.disable();
+      } else {
+        button.enable();
+        if (selectedParagaphs.every(
+            (DNHiddenP p) => p.matchesCss(info.cssName, info.cssValue)))
+          button.select();
+        else
+          button.deselect();
+      }
     }
   }
   

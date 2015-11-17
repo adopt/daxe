@@ -104,9 +104,10 @@ class DNHiddenP extends DaxeNode {
     if (cssMap[cssName] != null) {
       cssMap.remove(cssName);
       String newCss = cssMap.toString();
-      DaxeAttr att = p.getAttributeNode(p._styleAtt);
-      att.value = newCss;
-      return(new UndoableEdit.changeAttributes(p, [att], updateDisplay:true));
+      if (newCss == '')
+        newCss = null;
+      DaxeAttr att = new DaxeAttr(p._styleAtt, newCss);
+      return(new UndoableEdit.changeAttribute(p, att, updateDisplay:true));
     }
     return(null);
   }
@@ -129,12 +130,8 @@ class DNHiddenP extends DaxeNode {
     CSSMap cssMap = new CSSMap(p.css);
     cssMap[cssName] = cssValue;
     String newCss = cssMap.toString();
-    DaxeAttr att = p.getAttributeNode(p._styleAtt);
-    if (att == null)
-      att = new DaxeAttr(p._styleAtt, newCss);
-    else
-      att.value = newCss;
-    return(new UndoableEdit.changeAttributes(p, [att], updateDisplay:true));
+    DaxeAttr att = new DaxeAttr(p._styleAtt, newCss);
+    return(new UndoableEdit.changeAttribute(p, att, updateDisplay:true));
   }
   
   static List<DNHiddenP> paragraphsInSelection() {

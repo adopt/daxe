@@ -350,26 +350,33 @@ class NodeOffsetPosition implements Position {
           DaxeNode dn1 = children[_dnOffset - 1];
           DaxeNode dn2 = children[_dnOffset];
           h.Element hn1 = dn1.getHTMLNode();
-          h.Element hn2 = hn;
-          if (dn1.block && !dn2.block) {
-            // block-inline
-            List<h.Rectangle> rects2 = hn2.getClientRects();
-            if (rects2.length == 0 )
-              return(null);
-            h.Rectangle r2 = rects2.first;
-            return(new Point(r2.left, r2.top));
-          } else if (dn1.block && dn2.block) {
-            // block-block
-            h.Rectangle r1 = hn1.getBoundingClientRect();
-            h.Rectangle r2 = hn2.getBoundingClientRect();
-            return(new Point(r2.left, (r1.bottom + r2.top)/2));
-          } else {
-            // inline-inline or inline-block
-            List<h.Rectangle> rects1 = hn1.getClientRects();
-            if (rects1.length == 0 )
-              return(null);
-            h.Rectangle r1 = rects1.last;
-            return(new Point(r1.right, r1.top));
+          if (hn1 == null && _dnOffset > 1) {
+            // dn1 is invisible, try previous one
+            dn1 = children[_dnOffset - 2];
+            hn1 = dn1.getHTMLNode();
+          }
+          if (hn1 != null) {
+            h.Element hn2 = hn;
+            if (dn1.block && !dn2.block) {
+              // block-inline
+              List<h.Rectangle> rects2 = hn2.getClientRects();
+              if (rects2.length == 0 )
+                return(null);
+              h.Rectangle r2 = rects2.first;
+              return(new Point(r2.left, r2.top));
+            } else if (dn1.block && dn2.block) {
+              // block-block
+              h.Rectangle r1 = hn1.getBoundingClientRect();
+              h.Rectangle r2 = hn2.getBoundingClientRect();
+              return(new Point(r2.left, (r1.bottom + r2.top)/2));
+            } else {
+              // inline-inline or inline-block
+              List<h.Rectangle> rects1 = hn1.getClientRects();
+              if (rects1.length == 0 )
+                return(null);
+              h.Rectangle r1 = rects1.last;
+              return(new Point(r1.right, r1.top));
+            }
           }
         }
         // before the first node

@@ -120,6 +120,14 @@ class DNWList extends DaxeNode {
     return(true);
   }
   
+  @override
+  void updateHTMLAfterChildrenChange(List<DaxeNode> changed) {
+    if (firstChild == null)
+      super.updateHTML();
+    else
+      super.updateHTMLAfterChildrenChange(changed);
+  }
+  
   static x.Element findItemRef(x.Element listRef) {
     List<x.Element> subElements = doc.cfg.subElements(listRef);
     if (subElements.length > 0)

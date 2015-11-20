@@ -31,7 +31,7 @@ class InsertPanel {
     if (cfg == null)
       return;
     if (parent.nodeType == DaxeNode.ELEMENT_NODE && parent.ref != null) {
-      divInsert.append(_makeHelpButton(parent.ref));
+      divInsert.append(makeHelpButton(parent.ref));
       String name = cfg.elementName(parent.ref);
       h.SpanElement span = new h.SpanElement();
       span.appendText(cfg.menuTitle(name));
@@ -49,7 +49,7 @@ class InsertPanel {
         continue;
       if (doc.hiddenParaRefs != null && doc.hiddenParaRefs.contains(ref))
         continue;
-      divInsert.append(_makeHelpButton(ref));
+      divInsert.append(makeHelpButton(ref));
       h.ButtonElement button = new h.ButtonElement();
       button.attributes['type'] = 'button';
       button.classes.add('insertb');
@@ -71,7 +71,7 @@ class InsertPanel {
     }
   }
   
-  h.ButtonElement _makeHelpButton(x.Element ref) {
+  h.ButtonElement makeHelpButton(x.Element ref) {
     h.ButtonElement bHelp = new h.ButtonElement();
     bHelp.attributes['type'] = 'button';
     bHelp.classes.add('help');

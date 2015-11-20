@@ -36,9 +36,12 @@ class WebPage {
   bool application; // Desktop application
   bool hasQuit; // for Desktop application only
   
-  WebPage({this.application:false}) {
+  WebPage({this.application:false, LeftPanel left}) {
     _cursor = new Cursor();
-    _left = new LeftPanel();
+    if (left != null)
+      _left = left;
+    else
+      _left = new LeftPanel();
     lastClickPosition = null;
     lastClickTime = null;
     selectionByWords = false;

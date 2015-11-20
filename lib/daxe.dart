@@ -102,8 +102,9 @@ void main() {
  * This Future can be used to initialize Daxe and customize the user interface afterwards.
  * The display types and the strings have to be loaded before this method is called.
  * In the Daxe application, the results of the Future are not used.
+ * The optional LeftPanel can be used to extend the LeftPanel class.
  */
-Future initDaxe() {
+Future initDaxe({LeftPanel left}) {
   Completer completer = new Completer();
   
   // check parameters for a config and file to open
@@ -130,7 +131,7 @@ Future initDaxe() {
       application = true;
   }
   doc = new DaxeDocument();
-  page = new WebPage(application:application);
+  page = new WebPage(application:application, left:left);
   if (saveURL != null)
     doc.saveURL = saveURL;
   if (config != null && file != null)

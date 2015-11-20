@@ -25,9 +25,12 @@ class LeftPanel {
   InsertPanel _insertP;
   TreePanel _treeP;
   
-  LeftPanel() {
+  LeftPanel({InsertPanel insert}) {
     _selected = 0;
-    _insertP = new InsertPanel();
+    if (insert != null)
+      _insertP = insert;
+    else
+      _insertP = new InsertPanel();
     _treeP = new TreePanel();
   }
   

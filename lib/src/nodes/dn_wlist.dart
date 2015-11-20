@@ -128,6 +128,13 @@ class DNWList extends DaxeNode {
       super.updateHTMLAfterChildrenChange(changed);
   }
   
+  @override
+  void newNodeCreationUI(ActionFunction okfct) {
+    appendChild(new DNWItem.fromRef(_itemref));
+    // do not display an attribute dialog when the node is created
+    okfct();
+  }
+  
   static x.Element findItemRef(x.Element listRef) {
     List<x.Element> subElements = doc.cfg.subElements(listRef);
     if (subElements.length > 0)
@@ -176,7 +183,8 @@ class DNWList extends DaxeNode {
       //NOTE: items inside a hidden paragraph are assumed to be valid under list item
       for (DaxeNode child = p.firstChild; child != null; child=child.nextSibling)
         item.appendChild(new DaxeNode.clone(child));
-      if (p.previousSibling is DNWList && p.nextSibling is DNWList) {
+      if (p.previousSibling is DNWList && p.previousSibling.ref == listRef &&
+          p.nextSibling is DNWList && p.nextSibling.ref == listRef) {
         // merge with the 2 lists around
         edit.addSubEdit(new UndoableEdit.insertNode(
             new Position(p.previousSibling, p.previousSibling.offsetLength), item));
@@ -184,11 +192,11 @@ class DNWList extends DaxeNode {
         edit.addSubEdit(doc.insertChildrenEdit(cloneNext,
             new Position(p.previousSibling, p.previousSibling.offsetLength + 1)));
         edit.addSubEdit(new UndoableEdit.removeNode(p.nextSibling));
-      } else if (p.previousSibling is DNWList) {
+      } else if (p.previousSibling is DNWList && p.previousSibling.ref == listRef) {
         // merge with preceding list
         edit.addSubEdit(new UndoableEdit.insertNode(
             new Position(p.previousSibling, p.previousSibling.offsetLength), item));
-      } else if (p.nextSibling is DNWList) {
+      } else if (p.nextSibling is DNWList && p.nextSibling.ref == listRef) {
         // merge with following list
         edit.addSubEdit(new UndoableEdit.insertNode(
             new Position(p.nextSibling, 0), item));
@@ -273,7 +281,8 @@ class DNWList extends DaxeNode {
         nextNode = pEnd.dn.childAtOffset(pEnd.dnOffset);
       else
         nextNode = null;
-      if (previousNode is DNWList && nextNode is DNWList) {
+      if (previousNode is DNWList && previousNode.ref == listRef &&
+          nextNode is DNWList && nextNode.ref == listRef) {
         // merge with the 2 lists around
         edit.addSubEdit(new UndoableEdit.insertNode(
             new Position(previousNode, previousNode.offsetLength), item));
@@ -281,11 +290,11 @@ class DNWList extends DaxeNode {
         edit.addSubEdit(doc.insertChildrenEdit(cloneNext,
             new Position(previousNode, previousNode.offsetLength + 1)));
         edit.addSubEdit(new UndoableEdit.removeNode(nextNode));
-      } else if (previousNode is DNWList) {
+      } else if (previousNode is DNWList && previousNode.ref == listRef) {
         // merge with preceding list
         edit.addSubEdit(new UndoableEdit.insertNode(
             new Position(previousNode, previousNode.offsetLength), item));
-      } else if (nextNode is DNWList) {
+      } else if (nextNode is DNWList && nextNode.ref == listRef) {
         // merge with following list
         edit.addSubEdit(new UndoableEdit.insertNode(
             new Position(nextNode, 0), item));

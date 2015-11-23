@@ -284,11 +284,13 @@ class WebPage {
     String s = pos.dn.nodeValue;
     int i1 = pos.dnOffset;
     int i2 = pos.dnOffset;
-    String wstop = ' \n,;:.?!/()[]{}';
-    while (i1 > 0 && wstop.indexOf(s[i1-1]) == -1)
-      i1--;
-    while (i2 < s.length && wstop.indexOf(s[i2]) == -1)
-      i2++;
+    if (s != null) {
+      String wstop = ' \n,;:.?!/()[]{}';
+      while (i1 > 0 && wstop.indexOf(s[i1-1]) == -1)
+        i1--;
+      while (i2 < s.length && wstop.indexOf(s[i2]) == -1)
+        i2++;
+    }
     positions.add(new Position(pos.dn, i1));
     positions.add(new Position(pos.dn, i2));
     return(positions);

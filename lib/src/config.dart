@@ -731,6 +731,12 @@ class Config {
     if (!attributesAreValid(parent))
       throw new DaxeException(Strings.get('config.invalid_attributes'));
     
+    if (parent.parent is DNDocument) {
+      for (DaxeNode prev=parent.previousSibling; prev!=null; prev=prev.previousSibling) {
+        if (prev.isXMLElement())
+          throw new DaxeException(Strings.get('config.more_than_one_root'));
+      }
+    }
     if (parent.parent != null && parent.parent.ref != null && !isSubElement(parent.parent.ref, parent.ref))
       throw new DaxeException(Strings.get('config.not_allowed_inside_parent'));
     

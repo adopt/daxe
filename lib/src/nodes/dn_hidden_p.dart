@@ -303,7 +303,7 @@ class DNHiddenP extends DaxeNode {
    * Adjust hidden paragraphs in fragment before insert
    */
   static void fixFragment(DaxeNode parent, DaxeNode fragment) {
-    if (doc.hiddenParaRefs == null)
+    if (doc.hiddenParaRefs == null || parent.ref == null)
       return;
     // do not put a hidden paragraph where it is not allowed (remove one level)
     DaxeNode next;

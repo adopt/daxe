@@ -1450,7 +1450,11 @@ class Cursor {
     if (parent is DNText)
       parent = parent.parent;
     // to call fixLineBreaks(), we need a real DaxeNode for the "root", with the right ref
-    DaxeNode dnRoot = NodeFactory.create(parent.ref);
+    DaxeNode dnRoot;
+    if (parent.ref == null)
+      dnRoot = new DNDocument();
+    else
+      dnRoot = NodeFactory.create(parent.ref);
     doc.cfg.addNamespaceAttributes(dnRoot);
     if (root.childNodes != null) {
       for (x.Node n in root.childNodes) {

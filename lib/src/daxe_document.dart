@@ -543,6 +543,8 @@ class DaxeDocument {
               if (dn is DNComment || dn is DNProcessingInstruction)
                 ;
               else if (dn is DNCData || !cfg.rootElements().contains(dn.ref)) {
+                // NOTE: we should test if getRootElement() != null
+                // but at this point we don't know if the root element will be replaced
                 String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
                 throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_here'));
               }
@@ -573,13 +575,17 @@ class DaxeDocument {
     bool first = true;
     for (DaxeNode dn in children) {
       if (dn is DNText) {
-        if (checkValidity && parent.nodeType == DaxeNode.DOCUMENT_NODE)
-          throw new DaxeException(Strings.get('insert.text_not_allowed'));
-        String value = dn.nodeValue;
-        if (value == null)
-          value = '';
-        if (checkValidity && value.trim() != '' && !cfg.canContainText(parent.ref)) {
-          throw new DaxeException(Strings.get('insert.text_not_allowed'));
+        if (checkValidity) {
+          String value = dn.nodeValue;
+          if (value == null)
+            value = '';
+          if (value.trim() != '') {
+            if (parent.nodeType == DaxeNode.DOCUMENT_NODE)
+              throw new DaxeException(Strings.get('insert.text_not_allowed'));
+            else if (!cfg.canContainText(parent.ref)) {
+              throw new DaxeException(Strings.get('insert.text_not_allowed'));
+            }
+          }
         }
         int insertOffset = offset + children.indexOf(dn);
         if (pos.dn is DNText)

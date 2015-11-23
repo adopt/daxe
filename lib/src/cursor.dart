@@ -1321,6 +1321,7 @@ class Cursor {
    * Returns true if it was pasted without error.
    */
   void pasteString(String s) {
+    s = s.replaceAll(new RegExp(r'<\?xml[^?]*\?>'), ''); // remove doc decl
     x.Document tmpdoc;
     String parse = "<root";
     if (doc.cfg != null) {

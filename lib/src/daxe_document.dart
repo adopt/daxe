@@ -522,11 +522,7 @@ class DaxeDocument {
       if (dn is! DNText) {
         if (checkValidity &&
             (parent is DNComment || parent is DNCData || parent is DNProcessingInstruction)) {
-          String title;
-          if (dn.ref == null)
-            title = dn.nodeName;
-          else
-            title = cfg.elementTitle(dn.ref);
+          String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
           throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_here'));
         }
         if (dn is DNCData) {
@@ -544,20 +540,21 @@ class DaxeDocument {
         } else {
           if (checkValidity) {
             if (parent.nodeType == DaxeNode.DOCUMENT_NODE) {
-              if (!cfg.rootElements().contains(dn.ref))
-                throw new DaxeException(cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
+              if (dn is DNComment || dn is DNProcessingInstruction)
+                ;
+              else if (dn is DNCData || !cfg.rootElements().contains(dn.ref)) {
+                String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
+                throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_here'));
+              }
             } else if (dn is! DNComment && dn is! DNProcessingInstruction) {
               if (dn.ref == null || !cfg.isSubElement(parent.ref, dn.ref)) {
-                String title;
-                if (dn.ref == null)
-                  title = dn.nodeName;
-                else
-                  title = cfg.elementTitle(dn.ref);
+                String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
                 String parentTitle = cfg.elementTitle(parent.ref);
                 throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_inside') + ' ' + parentTitle);
               }
               if (!cfg.insertIsPossible(parent, offset, offset, dn.ref)) {
-                throw new DaxeException(cfg.elementTitle(dn.ref) + ' ' + Strings.get('insert.not_authorized_here'));
+                String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
+                throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_here'));
               }
             }
           }

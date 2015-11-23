@@ -36,7 +36,7 @@ class ValidationDialog {
     title.text = Strings.get('validation.validation');
     div3.append(title);
     
-    List<DaxeNode> invalid = invalidElements(doc.dndoc);
+    List<NodeAndMessage> invalid = invalidElements(doc.dndoc);
     if (invalid.length == 0) {
       div3.appendText(Strings.get('validation.no_error'));
     } else {
@@ -45,7 +45,8 @@ class ValidationDialog {
       div4.style.overflow = 'auto';
       div4.appendText(Strings.get('validation.errors'));
       h.UListElement ul = new h.UListElement();
-      for (DaxeNode dn in invalid) {
+      for (NodeAndMessage nm in invalid) {
+        DaxeNode dn = nm.dn;
         h.LIElement li = new h.LIElement();
         String title;
         if (dn.ref != null)
@@ -58,6 +59,7 @@ class ValidationDialog {
           itemText = "$title ${pos.xPath()}";
         else
           itemText = pos.xPath();
+        itemText += ' : ' + nm.message;
         li.appendText(itemText);
         li.onClick.listen((h.MouseEvent event) => select(dn));
         li.style.cursor = 'default';
@@ -82,21 +84,24 @@ class ValidationDialog {
     bOk.focus();
   }
   
-  List<DaxeNode> invalidElements(DaxeNode dn) {
-    List<DaxeNode> invalid = new List<DaxeNode>();
+  List<NodeAndMessage> invalidElements(DaxeNode dn) {
+    List<NodeAndMessage> invalid = new List<NodeAndMessage>();
     if (dn.nodeType == DaxeNode.ELEMENT_NODE) {
       // note: empty DNForm nodes are ignored unless they are required
       if (dn.parent is DNForm && dn.ref != null) {
         bool required = doc.cfg.requiredElement(dn.parent.ref, dn.ref);
         if (required && dn.firstChild == null) {
-          invalid.add(dn);
+          invalid.add(new NodeAndMessage(dn, Strings.get('validation.required_inside_form')));
           return(invalid);
         } else if (!required && dn.firstChild == null && (dn.attributes == null || dn.attributes.length == 0)) {
           return(invalid);
         }
       }
-      if (!doc.cfg.elementIsValid(dn))
-        invalid.add(dn);
+      try {
+        doc.cfg.testValidity(dn);
+      } on DaxeException catch(ex) {
+        invalid.add(new NodeAndMessage(dn, ex.message));
+      }
     }
     for (DaxeNode child=dn.firstChild; child != null; child=child.nextSibling)
       invalid.addAll(invalidElements(child));
@@ -115,4 +120,10 @@ class ValidationDialog {
     div1.remove();
     page.focusCursor();
   }
+}
+
+class NodeAndMessage {
+  DaxeNode dn;
+  String message;
+  NodeAndMessage(this.dn, this.message);
 }

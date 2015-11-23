@@ -711,95 +711,106 @@ class Config {
   }
   
   /**
-   * Returns true if the parent element is valid, considering its attributes,
+   * Throws an exception if the parent element is not valid, considering its attributes,
    * its first level children, its node value, and its parent if there is one.
    */
-  bool elementIsValid(final DaxeNode parent) {
+  void testValidity(final DaxeNode parent) {
     if (parent is DNComment || parent is DNProcessingInstruction || parent is DNCData) {
       // these can only contain text DaxeNodes, and no attribute.
       for (DaxeNode dn in parent.childNodes)
         if (dn.nodeType != DaxeNode.TEXT_NODE)
-          return(false);
+          throw new DaxeException(Strings.get('config.subelement_in_special_node'));
       if (parent.attributes != null && parent.attributes.length > 0)
-        return(false);
-      return(true);
+        throw new DaxeException(Strings.get('config.attribute_in_special_node'));
+      return;
     }
     
     if (parent.ref == null)
-      return(false);
+      throw new DaxeException(Strings.get('config.element_without_reference'));
     
     if (!attributesAreValid(parent))
-      return(false);
+      throw new DaxeException(Strings.get('config.invalid_attributes'));
     
     if (parent.parent != null && parent.parent.ref != null && !isSubElement(parent.parent.ref, parent.ref))
-      return(false);
+      throw new DaxeException(Strings.get('config.not_allowed_inside_parent'));
+    
+    bool avectexte = false;
+    for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
+      if (dn.nodeType == DaxeNode.TEXT_NODE) {
+        if (dn.nodeValue.trim() != '')
+          avectexte = true;
+      } else if (dn is DNCData) {
+        if (dn.firstChild != null && dn.firstChild.nodeValue.trim() != '')
+          avectexte = true;
+      }
+    }
+    if (avectexte && !_schema.canContainText(parent.ref))
+      throw new DaxeException(Strings.get('config.text_not_allowed'));
     
     if (parent.firstChild == null && !isElementValueValid(parent.ref, ''))
-      return(false);
+      throw new DaxeException(Strings.get('config.invalid_value'));
     else if (parent.childNodes.length == 1 && parent.firstChild is DNText && parent.firstChild.nodeValue != null &&
         !isElementValueValid(parent.ref, parent.firstChild.nodeValue))
-      return(false);
+      throw new DaxeException(Strings.get('config.invalid_value'));
     
     if (_schema is SimpleSchema)
-      return(true); // on suppose que le test de sous-balise a déjà été fait
+      return; // sub-element test should have been done already
+    
     if (_schema is DaxeWXS) {
       final List<x.Element> sousElements = new List<x.Element>();
-      bool avectexte = false;
       for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
         if (dn.isXMLElement() && dn.ref != null) {
           sousElements.add(dn.ref);
-        } else if (dn.nodeType == DaxeNode.TEXT_NODE) {
-          if (dn.nodeValue.trim() != "")
-            avectexte = true;
-        } else if (dn is DNCData) {
-          if (dn.firstChild != null && dn.firstChild.nodeValue.trim() != '')
-            avectexte = true;
         }
       }
-      if (avectexte && !_schema.canContainText(parent.ref))
-        return(false);
       final DaxeWXS sch = _schema as DaxeWXS;
-      return(sch.validElement(parent.ref, sousElements, false));
+      if (!sch.validElement(parent.ref, sousElements, false))
+        throw new DaxeException(Strings.get('config.invalid_children'));
+      return;
     }
     
+    // not a simple or WXS schema: test with a regular expression
     final x.Element refParent = parent.ref;
     final StringBuffer cettexp = new StringBuffer();
     if (_validPatternCache == null)
       _validPatternCache = new HashMap<x.Element, Pattern>();
-    
-    bool avectexte = false;
-    DaxeNode child = parent.firstChild;
-    while (child != null) {
-      if (child is DNCData) {
-        if (child.firstChild != null && child.firstChild.nodeValue.trim() != '')
-          avectexte = true;
-      } else if (child.isXMLElement())  {
-        cettexp.write(child.localName);
+    for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
+      if (dn.isXMLElement())  {
+        cettexp.write(dn.localName);
         cettexp.write(",");
-      } else if (child.nodeType == DaxeNode.TEXT_NODE) {
-        if (child.nodeValue.trim() != '')
-          avectexte = true;
       }
-      child = child.nextSibling;
     }
-    if (avectexte && !_schema.canContainText(refParent))
-      return(false);
     RegExp r = _validPatternCache[refParent];
     if (r == null) {
       final String expr = _regularExpression(refParent, false, true);
       if (expr == null || expr == "")
-        return(true);
+        return;
       try {
         r = new RegExp(r"^$expr$");
       } on Exception catch(ex) {
         logError("elementValide(JaxeElement, bool, List<String>) - Malformed Pattern: ^${expr}\$:", ex);
-        return(true);
+        return;
       }
       _validPatternCache[refParent] = r;
     }
 
     final bool matched = r.hasMatch(cettexp.toString());
-    return(matched);
+    if (!matched)
+      throw new DaxeException(Strings.get('config.invalid_children'));
+    return;
+  }
+  
+  /**
+   * Returns true if the parent element is valid, considering its attributes,
+   * its first level children, its node value, and its parent if there is one.
+   */
+  bool elementIsValid(final DaxeNode parent) {
+    try {
+      testValidity(parent);
+    } on DaxeException {
+      return false;
+    }
+    return true;
   }
   
   /**

@@ -41,26 +41,22 @@ class ValidationDialog {
       div3.appendText(Strings.get('validation.no_error'));
     } else {
       h.DivElement div4 = new h.DivElement();
-      div4.style.maxHeight = '30em';
-      div4.style.overflow = 'auto';
+      div4.classes.add('validation_div');
       div4.appendText(Strings.get('validation.errors'));
       h.UListElement ul = new h.UListElement();
       for (NodeAndMessage nm in invalid) {
         DaxeNode dn = nm.dn;
         h.LIElement li = new h.LIElement();
-        String title;
         if (dn.ref != null)
-          title = doc.cfg.elementTitle(dn.ref);
-        else
-          title = null;
+          li.appendText(doc.cfg.elementTitle(dn.ref) + ' ');
+        h.SpanElement span = new h.SpanElement();
+        span.classes.add('validation_path');
         Position pos = new Position(dn, 0);
-        String itemText;
-        if (title != null)
-          itemText = "$title ${pos.xPath()}";
-        else
-          itemText = pos.xPath();
-        itemText += ' : ' + nm.message;
-        li.appendText(itemText);
+        span.appendText(pos.xPath());
+        li.append(span);
+        li.appendText('\u00a0:');
+        li.append(new h.BRElement());
+        li.appendText(nm.message);
         li.onClick.listen((h.MouseEvent event) => select(dn));
         li.style.cursor = 'default';
         ul.append(li);

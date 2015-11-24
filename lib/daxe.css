@@ -731,6 +731,7 @@ span.source_doctype {
 div.validation_div {
   max-height: 30em;
   overflow: auto;
+  padding-right: 16px; /* for the vertical scrollbar */
 }
 span.validation_path {
   font-family: monospace;

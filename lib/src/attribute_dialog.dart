@@ -92,6 +92,8 @@ class AttributeDialog {
       table.append(tr);
     }
     for (DaxeAttr att in el.attributes) {
+      if (att.name == 'xmlns')
+        continue;
       bool found = false;
       for (x.Element attref in controls.keys) {
         if (att.localName == doc.cfg.attributeName(attref) &&

@@ -16,7 +16,7 @@ packages:
   crypto:
     description: crypto
     source: hosted
-    version: "0.9.0"
+    version: "0.9.1"
   intl:
     description: intl
     source: hosted
@@ -28,11 +28,11 @@ packages:
   path:
     description: path
     source: hosted
-    version: "1.3.6"
+    version: "1.3.7"
   petitparser:
     description: petitparser
     source: hosted
-    version: "1.4.3"
+    version: "1.5.0"
   watcher:
     description: watcher
     source: hosted

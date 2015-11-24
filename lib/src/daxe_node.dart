@@ -1141,9 +1141,18 @@ abstract class DaxeNode {
   }
   
   /**
-   * Returns true if the children should be using ParentUpdatingDNText instead of DNText
+   * Returns true if the children should be using ParentUpdatingDNText
+   * or another class defined by specialDNTextConstructor instead of DNText
    */
-  bool get needsParentUpdatingDNText {
+  bool get needsSpecialDNText {
     return false;
+  }
+  
+  /**
+   * Only used when needsSpecialDNText is true.
+   * Returns a ParentUpdatingDNText by default.
+   */
+  DNText specialDNTextConstructor(String text) {
+    return new ParentUpdatingDNText(text);
   }
 }

@@ -170,6 +170,7 @@ class DNFile extends DaxeNode {
             setAttribute(_widthAtt, img.naturalWidth.toString());
             setAttribute(_heightAtt, img.naturalHeight.toString());
           }
+          error = false;
           super.newNodeCreationUI(okfct);
         });
       } else

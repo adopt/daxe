@@ -221,7 +221,10 @@ class FileChooser {
     List<DirectoryItem> items = new List<DirectoryItem>();
     x.DOMParser dp = new x.DOMParser();
     try {
-      x.Document xmldoc = await dp.parseFromURL(uri.toString(), disableCache:false);
+      String suri = uri.toString();
+      if (!suri.endsWith('/'))
+        suri = suri + '/';
+      x.Document xmldoc = await dp.parseFromURL(suri, disableCache:false);
       x.Element root = xmldoc.documentElement;
       if (root == null || root.nodeName != 'directory') {
         throw new DaxeException(Strings.get('open.error') + ': <${root.nodeName}>');

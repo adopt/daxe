@@ -104,7 +104,7 @@ void main() {
  * In the Daxe application, the results of the Future are not used.
  * The optional LeftPanel can be used to extend the LeftPanel class.
  */
-Future initDaxe({LeftPanel left}) {
+Future initDaxe({LeftPanel left, ActionFunction saveFunction}) {
   Completer completer = new Completer();
   
   // check parameters for a config and file to open
@@ -131,7 +131,7 @@ Future initDaxe({LeftPanel left}) {
       application = true;
   }
   doc = new DaxeDocument();
-  page = new WebPage(application:application, left:left);
+  page = new WebPage(application:application, left:left, saveFunction:saveFunction);
   if (saveURL != null)
     doc.saveURL = saveURL;
   if (config != null && file != null)

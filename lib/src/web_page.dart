@@ -35,8 +35,9 @@ class WebPage {
   bool selectionByWords; // double-click+drag
   bool application; // Desktop application
   bool hasQuit; // for Desktop application only
+  ActionFunction saveFunction; // optional save function, replacing the default
   
-  WebPage({this.application:false, LeftPanel left}) {
+  WebPage({this.application:false, LeftPanel left, ActionFunction this.saveFunction}) {
     _cursor = new Cursor();
     if (left != null)
       _left = left;
@@ -624,11 +625,15 @@ class WebPage {
   }
   
   void save() {
-    doc.save().then((_) {
-      h.window.alert(Strings.get('save.success'));
-    }, onError: (DaxeException ex) {
-      h.window.alert(Strings.get('save.error') + ': ' + ex.message);
-    });
+    if (saveFunction != null)
+      saveFunction();
+    else {
+      doc.save().then((_) {
+        h.window.alert(Strings.get('save.success'));
+      }, onError: (DaxeException ex) {
+        h.window.alert(Strings.get('save.error') + ': ' + ex.message);
+      });
+    }
   }
   
   void showSource() {

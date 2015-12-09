@@ -28,8 +28,6 @@ class DOMException implements Exception {
     String msg = "DOMException";
     if (message != null)
       msg += ": $message";
-    if (errorCode != null)
-      msg += ": $errorCode";
     return(msg);
   }
   

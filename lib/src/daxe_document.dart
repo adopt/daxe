@@ -79,7 +79,7 @@ class DaxeDocument {
       this.filePath = filePath;
       x.DOMParser dp = new x.DOMParser();
       dp.parseFromURL(filePath).then((x.Document xmldoc) {
-        if (removeIndents)
+        if (removeIndents && xmldoc.documentElement != null)
           removeWhitespace(xmldoc.documentElement);
         dndoc = NodeFactory.createFromNode(xmldoc, null);
         if (cfg != null && hiddenParaRefs != null)

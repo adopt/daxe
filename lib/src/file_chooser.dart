@@ -301,7 +301,7 @@ class FileChooser {
     try {
       items = await readDirectory(uri);
     } on DaxeException catch (ex) {
-      h.window.alert(ex.message);
+      h.window.alert(ex.toString());
       return;
     }
     this.uri = uri;

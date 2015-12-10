@@ -48,7 +48,8 @@ class DOMParser {
     request.onLoad.listen((h.ProgressEvent event) {
       if (request.status != 200) {
         String message = "Error reading $url: ${request.statusText}";
-        if (request.responseText != null && request.responseText.length < 400)
+        if (request.responseHeaders['content-type'] == 'text/plain' &&
+            request.responseText != null && request.responseText.length < 400)
           message += ': ' + request.responseText;
         completer.completeError(new DOMException(message,
             errorCode: request.status));

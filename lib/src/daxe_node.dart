@@ -984,9 +984,11 @@ abstract class DaxeNode {
             range.setEnd(ht, i+1);
             List<h.Rectangle> rects = range.getClientRects();
             for (h.Rectangle r in rects) {
-              if (h.window.navigator.appVersion.contains("Trident") && pp + i + 1 < nodeValue.length &&
+              if ((h.window.navigator.appVersion.contains("Trident") ||
+                  h.window.navigator.appVersion.contains("Edge")) &&
+                  pp + i + 1 < nodeValue.length &&
                   nodeValue[pp + i + 1] == '\n' && r.width == 0) {
-                // With IE11, ignore a 0-width rect for the character before a \n
+                // With IE11/Edge, ignore a 0-width rect for the character before a \n
                 continue;
               }
               if (i < nodeValue.length - 1 && r.left == r.right &&
@@ -1017,8 +1019,9 @@ abstract class DaxeNode {
             range.setEnd(ht, i+1);
             List<h.Rectangle> rects = range.getClientRects();
             ht.text = s;
-            if (h.window.navigator.appVersion.contains("Trident")) {
-              // tested on IE11
+            if (h.window.navigator.appVersion.contains("Trident") ||
+                h.window.navigator.appVersion.contains("Edge")) {
+              // tested on IE11 and Edge 20
               if (y <= rects.first.bottom) {
                 // before the line bottom
                 return(new Position(this, pp + i));

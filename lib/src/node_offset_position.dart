@@ -225,10 +225,11 @@ class NodeOffsetPosition implements Position {
       // this does not work in the case of an element following a line breaking space
       h.Range range = new h.Range();
       Point pt;
-      if (h.window.navigator.appVersion.contains("Trident") &&
+      if ((h.window.navigator.appVersion.contains("Trident") ||
+          h.window.navigator.appVersion.contains("Edge")) &&
           !(offset == s.length && s[offset-1] == '\n')) {
-        // works in IE11, TODO: test other IE versions
-        // as opposed to other browsers, IE11 seems to support empty ranges pretty well
+        // works in IE11 and Edge 20
+        // as opposed to other browsers, IE11 and Edge seem to support empty ranges pretty well
         range.setStart(n, offset);
         range.setEnd(n, offset);
         h.Rectangle r = range.getClientRects().first;

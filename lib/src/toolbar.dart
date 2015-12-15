@@ -52,6 +52,9 @@ class Toolbar {
     if (cfg != null) {
       // Buttons to insert new elements
       List<x.Element> refs = cfg.elementsWithType('fichier');
+      List<x.Element> refs2 = cfg.elementsWithType('file');
+      if (refs2 != null)
+        refs.addAll(refs2);
       if (refs != null && refs.length > 0) {
         ToolbarBox fileBox = new ToolbarBox();
         addInsertButton(cfg, fileBox, refs, iconPath + 'insert_image.png');
@@ -63,6 +66,9 @@ class Toolbar {
         addInsertButton(cfg, mathBox, refs, iconPath + 'equation.png');
       }
       refs = cfg.elementsWithType('symbole2');
+      refs2 = cfg.elementsWithType('symbol2');
+      if (refs2 != null)
+        refs.addAll(refs2);
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, mathBox, refs, iconPath + 'insert_symbol.png');
       } else {
@@ -71,10 +77,16 @@ class Toolbar {
       items.add(mathBox);
       ToolbarBox insertBox = new ToolbarBox();
       refs = cfg.elementsWithType('tabletexte');
+      refs2 = cfg.elementsWithType('texttable');
+      if (refs2 != null)
+        refs.addAll(refs2);
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, insertBox, refs, iconPath + 'insert_table.png');
       }
       refs = cfg.elementsWithType('liste');
+      refs2 = cfg.elementsWithType('list');
+      if (refs2 != null)
+        refs.addAll(refs2);
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, insertBox, refs, iconPath + 'ul.png');
       }

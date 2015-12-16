@@ -349,6 +349,11 @@ div.indent {
   margin-left: 1.5em;
 }
 
+div.block {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
 /* Tag */
 span.empty_tag, span.start_tag, span.end_tag, span.simple_type {
   font-family: sans-serif;

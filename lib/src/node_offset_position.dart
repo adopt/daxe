@@ -377,7 +377,10 @@ class NodeOffsetPosition implements Position {
           return(new Point(r.left - 21, r.top + 2));
         }
         h.Rectangle r = hn.getClientRects()[0];
-        return(new Point(r.left, r.top));
+        if (children[_dnOffset].block)
+          return(new Point(r.left, r.top - 1));
+        else
+          return(new Point(r.left, r.top));
       } else {
         // no child inside _dn
         assert(_dnOffset == 0);
@@ -388,7 +391,7 @@ class NodeOffsetPosition implements Position {
         if (rects.length == 0)
           return(null);
         h.Rectangle r = rects[0];
-        Point pt = new Point(r.left, r.top);
+        Point pt = new Point(r.left, r.top + 1);
         h.CssStyleDeclaration cssdec = hn.getComputedStyle();
         String paddingLeft = cssdec.paddingLeft;
         if (paddingLeft != null && paddingLeft.endsWith('px')) {

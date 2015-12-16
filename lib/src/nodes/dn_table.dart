@@ -107,6 +107,7 @@ class DNTable extends DaxeNode {
     h.DivElement div = new h.DivElement();
     div.id = "$id";
     div.classes.add('dn');
+    div.classes.add('block');
     div.classes.add('table');
     
     h.FormElement form = new h.FormElement();

@@ -44,6 +44,7 @@ class DNArea extends DaxeNode {
     h.DivElement div = new h.DivElement();
     div.id = "$id";
     div.classes.add('dn');
+    div.classes.add('block');
     if (!valid)
       div.classes.add('invalid');
     div.append(_b1.html());

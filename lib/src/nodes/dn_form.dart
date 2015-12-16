@@ -149,6 +149,7 @@ class DNForm extends DaxeNode {
       h.DivElement div = new h.DivElement();
       div.id = "$id";
       div.classes.add('dn');
+      div.classes.add('block');
       div.classes.add('form');
       
       h.SpanElement spanTitle = new h.SpanElement();

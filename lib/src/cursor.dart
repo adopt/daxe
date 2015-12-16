@@ -21,6 +21,7 @@ part of daxe;
  * Cursor and related operations (such as keyboard input)
  */
 class Cursor {
+  static final String wordDelimiters = "\n \t`~!@#^&*()-+=[{]}|;:'\",<.>/?";
   
   h.TextAreaElement ta;
   h.SpanElement caret;
@@ -162,16 +163,16 @@ class Cursor {
       lineStart();
     } else if (keyCode == h.KeyCode.LEFT) {
       if (shift)
-        shiftLeft();
+        shiftLeft(ctrl);
       else
-        left();
+        left(ctrl);
     } else if (keyCode == h.KeyCode.UP) {
       up();
     } else if (keyCode == h.KeyCode.RIGHT) {
       if (shift)
-        shiftRight();
+        shiftRight(ctrl);
       else
-        right();
+        right(ctrl);
     } else if (keyCode == h.KeyCode.DOWN) {
       down();
     } else if (keyCode == h.KeyCode.BACKSPACE) {
@@ -307,9 +308,12 @@ class Cursor {
   /**
    * Action for the left arrow key.
    */
-  void left() {
+  void left(bool ctrl) {
     deSelect();
-    selectionStart = previousCaretPosition(selectionStart);
+    if (ctrl)
+      selectionStart = previousWordPosition(selectionStart);
+    else
+      selectionStart = previousCaretPosition(selectionStart);
     selectionEnd = new Position.clone(selectionStart);
     updateCaretPosition(true);
     page.updateAfterPathChange();
@@ -318,9 +322,12 @@ class Cursor {
   /**
    * Action for the right arrow key.
    */
-  void right() {
+  void right(bool ctrl) {
     Position end = new Position.clone(selectionEnd);
-    end = nextCaretPosition(end);
+    if (ctrl)
+      end = nextWordPosition(end);
+    else
+      end = nextCaretPosition(end);
     deSelect();
     selectionStart = new Position.clone(end);
     selectionEnd = new Position.clone(end);
@@ -375,18 +382,24 @@ class Cursor {
   /**
    * Action for the shift + left arrow keys.
    */
-  void shiftLeft() {
+  void shiftLeft(bool ctrl) {
     Position start = new Position.clone(selectionStart);
-    start = previousCaretPosition(start);
+    if (ctrl)
+      start = previousWordPosition(selectionStart);
+    else
+      start = previousCaretPosition(start);
     setSelection(start, selectionEnd);
   }
   
   /**
    * Action for the shift + right arrow keys.
    */
-  void shiftRight() {
+  void shiftRight(bool ctrl) {
     Position end = new Position.clone(selectionEnd);
-    end = nextCaretPosition(end);
+    if (ctrl)
+      end = nextWordPosition(end);
+    else
+      end = nextCaretPosition(end);
     setSelection(selectionStart, end);
   }
   
@@ -757,6 +770,42 @@ class Cursor {
         nodeBefore = null;
     }
     return(new Position(dn, offset));
+  }
+  
+  /**
+   * Returns position one word to the left if possible,
+   * otherwise returns the previous position.
+   */
+  Position previousWordPosition(Position pos) {
+    if (pos.dn is DNText) {
+      int offset = pos.dnOffset;
+      String s = pos.dn.nodeValue;
+      while (offset-1 >= 0 && wordDelimiters.contains(s[offset-1]))
+        offset--;
+      while (offset-1 >= 0 && !wordDelimiters.contains(s[offset-1]))
+        offset--;
+      if (offset != pos.dnOffset)
+        return new Position(pos.dn, offset);
+    }
+    return previousCaretPosition(pos);
+  }
+  
+  /**
+   * Returns position one word to the right if possible,
+   * otherwise returns the next position.
+   */
+  Position nextWordPosition(Position pos) {
+    if (pos.dn is DNText) {
+      int offset = pos.dnOffset;
+      String s = pos.dn.nodeValue;
+      while (offset < s.length && wordDelimiters.contains(s[offset]))
+        offset++;
+      while (offset < s.length && !wordDelimiters.contains(s[offset]))
+        offset++;
+      if (offset != pos.dnOffset)
+        return new Position(pos.dn, offset);
+    }
+    return nextCaretPosition(pos);
   }
   
   /**

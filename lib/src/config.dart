@@ -33,6 +33,7 @@ class Config {
   HashMap<String, x.Element> _elementDisplayCache; // cache for associations nom -> AFFICHAGE_ELEMENT
   HashMap<x.Element, String> _elementsToNamesCache; // cache for associations element reference -> name
   HashMap<x.Element, String> _elementsTitlesCache; // cache for associations element reference -> title
+  HashMap<String, String> _menuTitleCache; // cache for associations menu name -> title
   HashMap<x.Element, Pattern> _validPatternCache = null;
   HashMap<x.Element, HashMap<String, List<String>>> _parametersCache = null;
   List<String> _namespaceCache = null; // namespace list
@@ -78,6 +79,7 @@ class Config {
       // AUTRE_CONFIG: ignored
       
       _buildElementDisplayCache();
+      _buildMenuTitleCache();
       
       _elementsTitlesCache = new HashMap<x.Element, String>();
       
@@ -256,6 +258,29 @@ class Config {
       final String nom = _schema.elementName(ref);
       if (nom != null)
         _elementsToNamesCache[ref] = nom;
+    }
+  }
+  
+  void _buildMenuTitleCache() {
+    _menuTitleCache = new HashMap<String, String>();
+    final List<x.Element> lstrings = _stringsElements();
+    for (final x.Element strings in lstrings) {
+      List<x.Node> menuList = strings.getElementsByTagName("STRINGS_MENU");
+      for (x.Node smn in menuList) {
+        if (smn is! x.Element)
+          continue;
+        x.Element sm = smn;
+        String name = sm.getAttribute("menu");
+        if (_menuTitleCache[name] == null) {
+          final x.Element eltitle = _findElement(sm, "TITRE");
+          if (eltitle != null) {
+            String title = _dom_elementValue(eltitle);
+            if (title != null && title != '') {
+              _menuTitleCache[name] = title;
+            }
+          }
+        }
+      }
     }
   }
   
@@ -1318,20 +1343,8 @@ class Config {
    * Returns a menu title based on its name
    */
   String menuTitle(final String name) {
-    final List<x.Element> lstrings = _stringsElements();
-    for (final x.Element strings in lstrings) {
-      x.Element sm = _findElementDeep(strings, "STRINGS_MENU");
-      while (sm != null) {
-        if (name == sm.getAttribute("menu")) {
-          final x.Element eltitre = _findElement(sm, "TITRE");
-          if (eltitre != null && eltitre.firstChild != null) {
-            return(_dom_elementValue(eltitre));
-          }
-          break;
-        }
-        sm = _nextElementDeep(strings, sm, "STRINGS_MENU");
-      }
-    }
+    if (_menuTitleCache[name] != null)
+      return _menuTitleCache[name];
     final x.Element refel = elementReference(name);
     if (refel != null)
       return(elementTitle(refel));

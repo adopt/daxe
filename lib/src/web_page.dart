@@ -275,7 +275,7 @@ class WebPage {
         else
           selectionEnd = positions[0];
       }
-      _cursor.setSelection(selectionStart, selectionEnd);
+      _cursor.setSelection(selectionStart, selectionEnd, updateUI:false);
     }
     event.preventDefault();
   }

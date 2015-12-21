@@ -525,6 +525,8 @@ class Cursor {
       selectionEnd = new Position.clone(selectionStart);
       selectionStart.move(-1);
       removeChar(selectionStart);
+      if (dn is DNText && offset > 1)
+        return; // updateAfterPathChange is not needed in this case
     } else {
       removeSelection();
     }
@@ -932,7 +934,7 @@ class Cursor {
     ta.value = '';
   }
   
-  setSelection(Position start, Position end) {
+  setSelection(Position start, Position end, {updateUI:true}) {
     if (selectionStart == start && selectionEnd == end) {
       if (start == end) {
         updateCaretPosition(false);
@@ -1083,7 +1085,7 @@ class Cursor {
     }
     if (selectionEnd != selectionStart)
       hide();
-    if (selectionStart != previousStart)
+    if (updateUI && selectionStart != previousStart)
       page.updateAfterPathChange();
   }
   

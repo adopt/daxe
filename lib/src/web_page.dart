@@ -218,7 +218,8 @@ class WebPage {
     if (event.target is h.ImageElement ||
         event.target is h.ButtonElement ||
         event.target is h.TextInputElement ||
-        event.target is h.SelectElement)
+        event.target is h.SelectElement ||
+        event.target is h.OptionElement)
       return;
     h.Element parent = event.target;
     while (parent is h.Element && !parent.classes.contains('dn')) {

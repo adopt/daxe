@@ -20,7 +20,7 @@ packages:
   intl:
     description: intl
     source: hosted
-    version: "0.12.4+2"
+    version: "0.12.5"
   meta:
     description: meta
     source: hosted
@@ -28,7 +28,7 @@ packages:
   path:
     description: path
     source: hosted
-    version: "1.3.7"
+    version: "1.3.9"
   petitparser:
     description: petitparser
     source: hosted

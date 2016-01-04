@@ -619,7 +619,7 @@ class WebPage {
         port:htmlUri.port, pathSegments:segments);
     FileChooser dlg;
     ActionFunction action = () {
-      openDocument(dlg.getSelectedUri().toString(), doc.configPath);
+      openDocument(dlg.getSelectedUri().path, doc.configPath);
     };
     dlg = new FileChooser(openDir, action);
     dlg.show();

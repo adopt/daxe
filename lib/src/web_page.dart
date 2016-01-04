@@ -36,6 +36,7 @@ class WebPage {
   bool application; // Desktop application
   bool hasQuit; // for Desktop application only
   ActionFunction saveFunction; // optional save function, replacing the default
+  bool _inited;
   
   WebPage({this.application:false, LeftPanel left, ActionFunction this.saveFunction}) {
     _cursor = new Cursor();
@@ -47,6 +48,7 @@ class WebPage {
     lastClickTime = null;
     selectionByWords = false;
     hasQuit = false;
+    _inited = false;
   }
   
   Future newDocument(String configPath) {
@@ -87,12 +89,14 @@ class WebPage {
   void init() {
     h.Element divdoc = h.document.getElementById('doc2');
     divdoc.children.clear();
-    h.document.body.insertBefore(_left.html(), h.document.getElementById('doc1'));
-    
-    // adjust positions when the toolbar is on more than 1 lines
-    // (this cannot be done with CSS)
-    adjustPositionsUnderToolbar();
-    h.window.onResize.listen((h.Event event) => adjustPositionsUnderToolbar());
+    if (!_inited) {
+      h.document.body.insertBefore(_left.html(), h.document.getElementById('doc1'));
+      
+      // adjust positions when the toolbar is on more than 1 lines
+      // (this cannot be done with CSS)
+      adjustPositionsUnderToolbar();
+      h.window.onResize.listen((h.Event event) => adjustPositionsUnderToolbar());
+    }
     
     // insert document content
     h.Element elhtml = doc.html();
@@ -102,37 +106,40 @@ class WebPage {
     _cursor.moveTo(pos);
     updateAfterPathChange();
     
-    divdoc.onMouseDown.listen((h.MouseEvent event) => onMouseDown(event));
-    divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));
-    divdoc.onMouseUp.listen((h.MouseEvent event) => onMouseUp(event));
-    divdoc.onContextMenu.listen((h.MouseEvent event) => onContextMenu(event));
-    h.document.getElementById('doc1').onScroll.listen((h.Event event) => onScroll(event));
-    h.document.onMouseUp.listen((h.MouseEvent event) {
-      if (contextualMenu != null) {
-        h.Element div = contextualMenu.getMenuHTMLNode();
-        if (div.scrollHeight > div.clientHeight && event.target == div &&
-            event.client.x > div.offsetLeft + div.clientWidth)
-          return; // in the scrollbar
-        if (event.client != ctxMenuPos)
-          closeContextualMenu();
-        event.preventDefault();
-      }
-    });
-    if (doc.saveURL != null) {
-      h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
-        if (doc.changed() && !hasQuit) {
-          String message = Strings.get('save.document_not_saved');
-          e.returnValue = message;
-          return message;
+    if (!_inited) {
+      divdoc.onMouseDown.listen((h.MouseEvent event) => onMouseDown(event));
+      divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));
+      divdoc.onMouseUp.listen((h.MouseEvent event) => onMouseUp(event));
+      divdoc.onContextMenu.listen((h.MouseEvent event) => onContextMenu(event));
+      h.document.getElementById('doc1').onScroll.listen((h.Event event) => onScroll(event));
+      h.document.onMouseUp.listen((h.MouseEvent event) {
+        if (contextualMenu != null) {
+          h.Element div = contextualMenu.getMenuHTMLNode();
+          if (div.scrollHeight > div.clientHeight && event.target == div &&
+              event.client.x > div.offsetLeft + div.clientWidth)
+            return; // in the scrollbar
+          if (event.client != ctxMenuPos)
+            closeContextualMenu();
+          event.preventDefault();
         }
       });
-      if (application) {
-        h.window.onUnload.listen((h.Event e) {
-          if (hasQuit)
-            return null;
-          quit(false);
+      if (doc.saveURL != null) {
+        h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
+          if (doc.changed() && !hasQuit) {
+            String message = Strings.get('save.document_not_saved');
+            e.returnValue = message;
+            return message;
+          }
         });
+        if (application) {
+          h.window.onUnload.listen((h.Event e) {
+            if (hasQuit)
+              return null;
+            quit(false);
+          });
+        }
       }
+      _inited = true;
     }
   }
   

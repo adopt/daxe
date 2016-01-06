@@ -888,15 +888,15 @@ abstract class DaxeNode {
             span_test.remove();
             if (hn is h.LIElement) {
               h.Node lastDescendant = hn;
-              while (lastDescendant.firstChild != null &&
-                  (lastDescendant.lastChild is! h.Text ||
-                      (lastDescendant.lastChild.nodeValue == '\n' && lastDescendant.lastChild.previousNode != null)) &&
-                  lastDescendant.lastChild is! h.ImageElement && lastDescendant.lastChild is! h.ScriptElement) {
-                if (lastDescendant.lastChild is h.Text && lastDescendant.lastChild.nodeValue == '\n' &&
-                    lastDescendant.lastChild.previousNode != null)
-                  lastDescendant = lastDescendant.lastChild.previousNode; // case of a hidden paragraph or block inside li
-                else
-                  lastDescendant = lastDescendant.lastChild;
+              while (true) {
+                h.Node lastTest = lastDescendant.lastChild;
+                if (lastTest is h.Text && lastTest.nodeValue == '\n')
+                  lastTest = lastTest.previousNode; // case of a hidden paragraph or block inside li
+                while (lastTest is h.ScriptElement)
+                  lastTest = lastTest.previousNode;
+                if (lastTest == null || lastTest is h.Text || lastTest is h.ImageElement)
+                  break;
+                lastDescendant = lastTest;
               }
               lastDescendant.append(span_test);
             } else

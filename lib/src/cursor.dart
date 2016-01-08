@@ -34,6 +34,7 @@ class Cursor {
   HashMap<int, ActionFunction> shortcuts;
   bool donePaste;
   int metaKeyCode; // previous keyDown keyCode if event.metaKey was true
+  bool shiftOnKeyPress; // shift active during keyPress
   
   Cursor() {
     ta = h.querySelector("#tacursor");
@@ -42,6 +43,7 @@ class Cursor {
     shortcuts = new HashMap<int, ActionFunction>();
     // FIXME: IE is always intercepting Ctrl-P
     ta.onKeyUp.listen((h.KeyboardEvent event) => keyUp(event));
+    ta.onKeyPress.listen((h.KeyboardEvent event) => keyPress(event));
     ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
     ta.onBlur.listen((h.Event event) => blur(event));
     ta.onPaste.listen((h.Event e) {
@@ -142,6 +144,7 @@ class Cursor {
       ta.value = ''; // remove content added for Safari
     } else
       metaKeyCode = 0;
+    shiftOnKeyPress = false;
     if (keyCode == 91 || keyCode == 93) {
       // for Safari, command key down, put something in the field and select it
       // so that it will not beep and refuse to copy with a command-C
@@ -196,6 +199,14 @@ class Cursor {
     newTimer();
   }
   
+  void keyPress(h.KeyboardEvent event) {
+    // Save the state of shift when a key is pressed,
+    // because shift might be released by the time of keyUp,
+    // but should still be taken into account.
+    if (event.shiftKey)
+      shiftOnKeyPress = true;
+  }
+  
   void keyUp(h.KeyboardEvent event) {
     // NOTE: on MacOS, keyUp events are not fired when the command key is down
     // see: http://bitspushedaround.com/on-a-few-things-you-may-not-know-about-the-hellish-command-key-and-javascript-events/
@@ -203,7 +214,8 @@ class Cursor {
     // here keyUp for command key is used (event.metaKey is false because the key is released)
     // pb with this solution: cmd_down, Z, Z, cmd_up will only do a single cmd-Z
     bool ctrl = event.ctrlKey || event.metaKey;
-    bool shift = event.shiftKey;
+    bool shift = event.shiftKey || shiftOnKeyPress;
+    shiftOnKeyPress = false;
     int keyCode = event.keyCode;
     if ((keyCode == 91 || keyCode == 93) && ta.value != '' && metaKeyCode == 0) {
       ta.value = ''; // remove content added for Safari

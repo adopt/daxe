@@ -101,6 +101,6 @@ class DNDivision extends DaxeNode {
   
   @override
   bool newlineInside() {
-    return(true);
+    return(!spacePreserve());
   }
 }

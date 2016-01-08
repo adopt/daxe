@@ -102,6 +102,6 @@ class DNArea extends DaxeNode {
   
   @override
   bool newlineInside() {
-    return(firstChild != null);
+    return(firstChild != null && !spacePreserve());
   }
 }

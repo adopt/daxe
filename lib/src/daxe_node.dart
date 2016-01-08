@@ -650,6 +650,36 @@ abstract class DaxeNode {
   }
   
   /**
+   * Returns true if spaces should be preserved (with a WXS schema, xml:space="preserve").
+   * The parent's value is only used if provided as an argument.
+   */
+  bool spacePreserve([final bool spacePreserveParent=false]) {
+    bool spacePreserve;
+    final String xmlspace = getAttribute("xml:space");
+    if (xmlspace == "preserve")
+      spacePreserve = true;
+    else if (xmlspace == "default")
+      spacePreserve = false;
+    else
+      spacePreserve = spacePreserveParent;
+    if (ref != null && xmlspace == null) {
+      final List<x.Element> attributs = doc.cfg.elementAttributes(ref);
+      for (x.Element attref in attributs) {
+        if (doc.cfg.attributeName(attref) == "space" &&
+            doc.cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
+          final String defaut = doc.cfg.defaultAttributeValue(attref);
+          if (defaut == "preserve")
+            spacePreserve = true;
+          else if (defaut == "default")
+            spacePreserve = false;
+          break;
+        }
+      }
+    }
+    return(spacePreserve);
+  }
+  
+  /**
    * Remove newlines that will be added at serialization.
    */
   void fixLineBreaks() {

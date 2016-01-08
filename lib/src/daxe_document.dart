@@ -1119,35 +1119,6 @@ class DaxeDocument {
   }
   
   /**
-   * Returns true if the text should be preserved in a Daxe Node.
-   */
-  bool _spacePreserveDN(final DaxeNode dn, [final bool spacePreserveParent=false]) {
-    bool spacePreserve;
-    final String xmlspace = dn.getAttribute("xml:space");
-    if (xmlspace == "preserve")
-      spacePreserve = true;
-    else if (xmlspace == "default")
-      spacePreserve = false;
-    else
-      spacePreserve = spacePreserveParent;
-    if (dn.ref != null && xmlspace == null) {
-      final List<x.Element> attributs = cfg.elementAttributes(dn.ref);
-      for (x.Element attref in attributs) {
-        if (cfg.attributeName(attref) == "space" &&
-            cfg.attributeNamespace(attref) == "http://www.w3.org/XML/1998/namespace") {
-          final String defaut = cfg.defaultAttributeValue(attref);
-          if (defaut == "preserve")
-            spacePreserve = true;
-          else if (defaut == "default")
-            spacePreserve = false;
-          break;
-        }
-      }
-    }
-    return(spacePreserve);
-  }
-  
-  /**
    * Returns false if whitespaces should not be removed at the start of the element.
    */
   bool _isFirstTextElement(final x.Element el, final x.Element refEl, final x.Element refParent,
@@ -1186,7 +1157,7 @@ class DaxeDocument {
    * and remove whitespace before and after blocks where hidden paragraphs can be found.
    */
   void removeWhitespaceForHiddenParagraphs(DaxeNode parent, [bool paraAncestor=false]) {
-    if (_spacePreserveDN(parent))
+    if (parent.spacePreserve())
       return;
     x.Element paraRef;
     if (parent.ref != null)

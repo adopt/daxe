@@ -34,7 +34,7 @@ class Cursor {
   HashMap<int, ActionFunction> shortcuts;
   bool donePaste;
   int metaKeyCode; // previous keyDown keyCode if event.metaKey was true
-  bool shiftOnKeyPress; // shift active during keyPress
+  bool shiftOnKeyPress = false; // shift active during keyPress
   
   Cursor() {
     ta = h.querySelector("#tacursor");

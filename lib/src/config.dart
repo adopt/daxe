@@ -460,7 +460,6 @@ class Config {
       x.Element menudef = _findElement(menus, "MENU");
       while (menudef != null) {
         final Menu jmenu = _creationMenu(doc, menudef);
-        jmenu.parent = mbar;
         mbar.add(jmenu);
         menudef = _nextElement(menudef, "MENU");
       }

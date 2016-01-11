@@ -154,7 +154,6 @@ class WebPage {
   void _buildMenus() {
     mbar = doc.cfg.makeMenus(doc);
     Menu fileMenu = new Menu(Strings.get('menu.file'));
-    fileMenu.parent = mbar;
     MenuItem item;
     if (application && doc.saveURL != null) {
       item = new MenuItem(Strings.get('menu.open'), () => open(), shortcut: 'O');
@@ -174,7 +173,6 @@ class WebPage {
     }
     mbar.insert(fileMenu, 0);
     Menu editMenu = new Menu(Strings.get('menu.edit'));
-    editMenu.parent = mbar;
     undoMenu = new MenuItem(Strings.get('undo.undo'), () => doc.undo(), shortcut: 'Z');
     undoMenu.enabled = false;
     editMenu.add(undoMenu);

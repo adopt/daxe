@@ -205,6 +205,10 @@ table.menu tr.checked td:nth-of-type(2)::after {
   content: "✓";
 }
 
+table.menu tr:focus {
+  outline: none;
+}
+
 div.submenu {
   position: absolute;
   left: 100%;

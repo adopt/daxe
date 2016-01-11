@@ -48,9 +48,11 @@ class Menu extends MenuItem {
         (parent as Menu).selectNext(this);
       } else if (keyCode == h.KeyCode.LEFT) {
         if (parent is Menu) {
-          if ((parent as Menu).parent is Menu)
+          if ((parent as Menu).parent is Menu) {
+            (parent as Menu).deselect();
             (parent as Menu).select();
-          else if ((parent as Menu).parent is MenuBar)
+            event.stopPropagation();
+          } else if ((parent as Menu).parent is MenuBar)
             ((parent as Menu).parent as MenuBar).selectPrevious(parent as Menu);
         }
       } else if (keyCode == h.KeyCode.RIGHT) {

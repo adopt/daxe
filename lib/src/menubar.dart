@@ -29,10 +29,12 @@ class MenuBar {
   }
   
   add(Menu m) {
+    m.parent = this;
     menus.add(m);
   }
   
   insert(Menu m, int position) {
+    m.parent = this;
     menus.insert(position, m);
   }
   

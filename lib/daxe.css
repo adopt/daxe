@@ -78,7 +78,7 @@ button {
   top: 2em;
   bottom: 0em;
   left: 0em;
-  width: 15em;
+  width: 100%;
   overflow: auto;
   text-align: center;
   background-color: #F0F0F0;
@@ -89,7 +89,7 @@ button {
   top: 2em;
   bottom: 0em;
   left: 0em;
-  width: 15em;
+  width: 100%;
   overflow: auto;
   background-color: #F0F0F0;
   white-space: pre;

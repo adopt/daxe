@@ -290,7 +290,7 @@ class FindDialog {
     h.DivElement div_find = h.document.getElementById('find_dlg');
     div_find.remove();
     h.Element divdoc = h.querySelector("#doc1");
-    divdoc.style.bottom = '1.5em';
+    divdoc.style.bottom = '1.3em';
     page.focusCursor();
   }
 }

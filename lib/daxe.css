@@ -587,6 +587,7 @@ li.help_selectable:hover {
 /* find */
 div.find {
   position: absolute;
+  z-index: 2;
   bottom: 1.5em;
   left: 15em;
   right: 0em;

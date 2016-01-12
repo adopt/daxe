@@ -38,6 +38,7 @@ class FindDialog {
     div_find = new h.DivElement();
     div_find.id = 'find_dlg';
     div_find.classes.add('find');
+    div_find.style.left = "${divdoc.offsetLeft}px";
     
     h.FormElement form = new h.FormElement();
     h.TableElement table = new h.TableElement();

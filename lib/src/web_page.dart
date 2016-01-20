@@ -251,11 +251,13 @@ class WebPage {
           lastClickTime.difference(new DateTime.now()).inMilliseconds.abs() < doubleClickTime &&
           selectionStart.dn.nodeType != DaxeNode.ELEMENT_NODE) {
         // double click
-        List<Position> positions = _extendPositionOnWord(selectionStart);
-        selectionStart = positions[0];
-        selectionEnd = positions[1];
-        _cursor.setSelection(selectionStart, selectionEnd);
-        selectionByWords = true;
+        if (selectionStart.dn.parent is! DNAnchor) {
+          List<Position> positions = _extendPositionOnWord(selectionStart);
+          selectionStart = positions[0];
+          selectionEnd = positions[1];
+          _cursor.setSelection(selectionStart, selectionEnd);
+          selectionByWords = true;
+        }
       }
     }
   }

@@ -1173,11 +1173,7 @@ class DaxeDocument {
       if (dn is DNText) {
         if (paraInside || para || style || paraAncestor) {
           String s = dn.nodeValue;
-          // replace newlines by spaces except between XML comments
-          if (dn.previousSibling == null || dn.previousSibling is! DNComment ||
-              dn.nextSibling == null || dn.nextSibling is! DNComment) {
-            s = s.replaceAll('\n', ' ');
-          }
+          s = s.replaceAll('\n', ' ');
           s = s.replaceAll('  ', ' ');
           if (paraInside) {
             // also trim left if there is a block before, and right if there is a block after
@@ -1200,7 +1196,7 @@ class DaxeDocument {
           else
             dn.nodeValue = s;
         }
-      } else if (dn.firstChild != null)
+      } else if (dn.firstChild != null && dn is! DNComment)
         removeWhitespaceForHiddenParagraphs(dn, (para || paraInside) && !dn.block);
     }
   }

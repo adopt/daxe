@@ -196,6 +196,9 @@ class SimpleTypeControl {
         } else if (ctrl && ((!shift && keyCode == h.KeyCode.Y) ||
             (shift && keyCode == h.KeyCode.Z))) { // Ctrl-Y and Ctrl-Shift-Z
           event.preventDefault();
+        } else if (doc.saveURL != null && ctrl && !shift && keyCode == h.KeyCode.S) {
+          // also catch ctrl-S
+          event.preventDefault();
         }
       });
       hcontrol.onKeyUp.listen((h.KeyboardEvent event) {
@@ -209,6 +212,10 @@ class SimpleTypeControl {
             (shift && keyCode == h.KeyCode.Z))) { // Ctrl-Y and Ctrl-Shift-Z
           event.preventDefault();
           doc.redo();
+        } else if (doc.saveURL != null && ctrl && !shift && keyCode == h.KeyCode.S) {
+          // also catch ctrl-S
+          event.preventDefault();
+          page.save();
         }
       });
     }

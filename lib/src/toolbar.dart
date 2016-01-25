@@ -575,7 +575,11 @@ class Toolbar {
   static void insertLinkButtonUpdate(ToolbarButton button, DaxeNode parent, DaxeNode selectedNode,
                              List<x.Element> validRefs, List<x.Element> ancestorRefs) {
     ToolbarStyleInfo info = button.data;
-    if (page.getSelectionStart().dn is DNText && info.findValidRef(validRefs))
+    Position start = page.getSelectionStart();
+    if (start == null)
+      return;
+    if ((start.dn is DNText || start.dn.childAtOffset(start.dnOffset) is DNText) &&
+        info.findValidRef(validRefs))
       button.enable();
     else
       button.disable();

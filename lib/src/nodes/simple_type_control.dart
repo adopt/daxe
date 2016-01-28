@@ -145,7 +145,7 @@ class SimpleTypeControl {
         // add a custom menu, because datalist UI sucks and there is no way to configure it or script it safely
         // set width to less than 100%, to give some room to arrowSpan
         input.style.width = "90%"; // fallback for calc
-        input.style.width = "calc(100% - 1.5em)";
+        input.style.width = "calc(100% - 1.8em)";
         h.SpanElement arrowSpan = new h.SpanElement();
         arrowSpan.text = '▼';
         arrowSpan.style.cursor = 'default';

@@ -394,6 +394,25 @@ class DNForm extends DaxeNode {
   }
   
   @override
+  void newNodeCreationUI(ActionFunction okfct) {
+    // override to focus the first control after a new node creation
+    super.newNodeCreationUI(() {
+      okfct();
+      if (attributeControls != null && attributeControls.length > 0) {
+        x.Element refAttr = attRefs.first;
+        String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+        // run later in case scrolling generates a focus event
+        Timer.run(() => attributeControls[name].focus());
+      } else if (firstChild is DNForm) {
+        DNForm first = firstChild;
+        if (first.simpleField && first.control != null) {
+          Timer.run(() => first.control.focus());
+        }
+      }
+    });
+  }
+
+  @override
   x.Node toDOMNode(x.Document domDocument) {
     if (childrenRefs.length == 0)
       return(super.toDOMNode(domDocument));

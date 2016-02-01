@@ -57,7 +57,7 @@ class DNSimpleType extends DaxeNode {
     span.classes.add('simple_type');
     List<x.Element> attRefs = doc.cfg.elementAttributes(ref);
     if (attRefs != null && attRefs.length > 0) {
-      h.ImageElement img = new h.ImageElement(src:'images/attributes.png', width:16, height:15);
+      h.ImageElement img = new h.ImageElement(src:'packages/daxe/images/attributes.png', width:16, height:16);
       img.onClick.listen((h.MouseEvent event) => attributeDialog());
       span.append(img);
     }
@@ -125,6 +125,17 @@ class DNSimpleType extends DaxeNode {
   Position lastCursorPositionInside() {
     return(null);
   }
+  
+  @override
+  void newNodeCreationUI(ActionFunction okfct) {
+    // override to focus the control after a new node creation
+    super.newNodeCreationUI(() {
+      okfct();
+      if (control != null)
+        control.focus();
+    });
+  }
+
 }
 
 

@@ -304,12 +304,15 @@ class SimpleTypeControl {
   
   void focus() {
     //TODO: update insert panel
-    // to focus and move the cursor at the end :
+    // to focus, and move the cursor at the end if it was not in focus before :
     if (hcontrol is h.TextInputElement) {
       h.TextInputElement input = hcontrol as h.TextInputElement;
       // to work around a bug with Firefox (focus doesn't work)
+      int pos = input.selectionStart;
+      if (pos < 0 || h.document.activeElement != input)
+        pos = input.value.length;
       input.select();
-      input.selectionStart = input.selectionEnd = input.value.length;
+      input.selectionStart = input.selectionEnd = pos;
       // this works in Chromium but not Firefox :
       //input.onFocus.first.then((h.Event event) => input.selectionStart = input.selectionEnd = input.value.length);
       //input.focus();

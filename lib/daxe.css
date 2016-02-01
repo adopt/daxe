@@ -420,7 +420,7 @@ span.end_tag {
   background-color: #FFE0A0;
 }
 
-span.start_tag img, span.empty_tag img {
+span.start_tag img, span.empty_tag img, span.simple_type img {
   vertical-align: middle;
 }
 span.start_tag img:hover, span.empty_tag img:hover {

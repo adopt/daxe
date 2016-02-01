@@ -78,7 +78,7 @@ button {
   top: 2em;
   bottom: 0em;
   left: 0em;
-  width: 15em;
+  width: 100%;
   overflow: auto;
   text-align: center;
   background-color: #F0F0F0;
@@ -89,7 +89,7 @@ button {
   top: 2em;
   bottom: 0em;
   left: 0em;
-  width: 15em;
+  width: 100%;
   overflow: auto;
   background-color: #F0F0F0;
   white-space: pre;
@@ -203,6 +203,10 @@ table.menu tr td {
 
 table.menu tr.checked td:nth-of-type(2)::after {
   content: "✓";
+}
+
+table.menu tr:focus {
+  outline: none;
 }
 
 div.submenu {
@@ -349,6 +353,11 @@ div.indent {
   margin-left: 1.5em;
 }
 
+div.block {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
 /* Tag */
 span.empty_tag, span.start_tag, span.end_tag, span.simple_type {
   font-family: sans-serif;
@@ -411,7 +420,7 @@ span.end_tag {
   background-color: #FFE0A0;
 }
 
-span.start_tag img, span.empty_tag img {
+span.start_tag img, span.empty_tag img, span.simple_type img {
   vertical-align: middle;
 }
 span.start_tag img:hover, span.empty_tag img:hover {
@@ -578,7 +587,8 @@ li.help_selectable:hover {
 /* find */
 div.find {
   position: absolute;
-  bottom: 1.5em;
+  z-index: 2;
+  bottom: 1.3em;
   left: 15em;
   right: 0em;
   height: 9em;
@@ -725,6 +735,16 @@ span.source_pi {
 
 span.source_doctype {
   color: #646400;
+}
+
+/* validation */
+div.validation_div {
+  max-height: 30em;
+  overflow: auto;
+  padding-right: 16px; /* for the vertical scrollbar */
+}
+span.validation_path {
+  font-family: monospace;
 }
 
 /* selection */

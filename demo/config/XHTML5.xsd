@@ -1201,12 +1201,18 @@
       </xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:element name="pre" type="phrasingType">
+  <xs:element name="pre">
     <xs:annotation>
       <xs:documentation>
         The HTML &lt;pre&gt; Element (or HTML Preformatted Text) represents preformatted text. Text within this element is typically displayed in a non-proportional font exactly as it is laid out in the file. Whitespaces inside this element are displayed as typed.
       </xs:documentation>
     </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:group ref="phrasingContent"/>
+      </xs:choice>
+      <xs:attribute fixed="preserve" ref="xml:space"/>
+    </xs:complexType>
   </xs:element>
   <xs:element name="code" type="phrasingType">
     <xs:annotation>

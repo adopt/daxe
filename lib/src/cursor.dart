@@ -1491,19 +1491,23 @@ class Cursor {
       return;
     }
     if (selectionStart == selectionEnd && doc.hiddenParaRefs != null &&
-        selectionStart.dn is DNText &&
-        selectionStart.dnOffset == selectionStart.dn.offsetLength) {
+        selectionStart.dn is DNText && (selectionStart.dnOffset == 0 ||
+        selectionStart.dnOffset == selectionStart.dn.offsetLength)) {
       DaxeNode parent = selectionStart.dn.parent;
       if (parent.parent != null && parent.parent.ref != null &&
           doc.hiddenParaRefs.contains(parent.ref)) {
-        // at the end of a hidden paragraph: move paste position outside
+        // at the beginning or end of a hidden paragraph: move paste position outside
         // if it helps to insert the first node
         // NOTE: we could generalize this behavior when the cursor is elsewhere
         //       and we could test more children
         if (!doc.cfg.isSubElementByName(parent.ref, root.firstChild.nodeName)) {
           if (doc.cfg.isSubElementByName(parent.parent.ref, root.firstChild.nodeName)) {
-            selectionStart = new Position(parent.parent,
-                parent.parent.offsetOf(parent)+1);
+            if (selectionStart.dnOffset == 0)
+              selectionStart = new Position(parent.parent,
+                  parent.parent.offsetOf(parent));
+            else
+              selectionStart = new Position(parent.parent,
+                  parent.parent.offsetOf(parent)+1);
             selectionEnd = new Position.clone(selectionStart);
           }
         }

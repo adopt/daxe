@@ -144,6 +144,8 @@ class DNEquaTexMem extends DaxeNode {
       if (response is ByteBuffer) {
         Uint8List bytes = new Uint8List.view(response);
         String data = CryptoUtils.bytesToBase64(bytes);
+        // NOTE: As of 0.9.2 of the crypto package, CryptoUtils is deprecated.
+        // Instead we should use BASE64 from the dart:convert package.
         completer.complete(data);
       } else
         completer.completeError(new DaxeException('request response is not a ByteBuffer'));

@@ -1136,6 +1136,8 @@ class Cursor {
   void deSelect() {
     for (h.SpanElement span in spansSelection) {
       h.Element parent = span.parent;
+      if (parent == null)
+        continue;
       StringBuffer sb = new StringBuffer();
       for (h.Node hn in parent.nodes) {
         sb.write(hn.text);

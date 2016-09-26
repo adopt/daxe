@@ -21,19 +21,19 @@ part of daxe;
  * A position in the XML document.
  */
 abstract class Position {
-  
+
   factory Position(DaxeNode node, int offset) {
     return(new NodeOffsetPosition(node, offset));
   }
-  
+
   factory Position.fromLeft(int leftOffset) {
     return(new LeftOffsetPosition(leftOffset));
   }
-  
+
   factory Position.fromRight(int rightOffset) {
     return(new RightOffsetPosition(rightOffset));
   }
-  
+
   factory Position.nodeOffsetPosition(Position pos) {
     if (pos is NodeOffsetPosition)
       return(new NodeOffsetPosition.clone(pos));
@@ -41,8 +41,9 @@ abstract class Position {
       return(new NodeOffsetPosition.fromLeftOffsetPosition(pos));
     else if (pos is RightOffsetPosition)
       return(new NodeOffsetPosition.fromRightOffsetPosition(pos));
+    return null;
   }
-  
+
   factory Position.leftOffsetPosition(Position pos) {
     if (pos is NodeOffsetPosition)
       return(new LeftOffsetPosition.fromNodeOffsetPosition(pos));
@@ -50,8 +51,9 @@ abstract class Position {
       return(new LeftOffsetPosition.clone(pos));
     else if (pos is RightOffsetPosition)
       return(new LeftOffsetPosition.fromRightOffsetPosition(pos));
+    return null;
   }
-  
+
   factory Position.rightOffsetPosition(Position pos) {
     if (pos is NodeOffsetPosition)
       return(new RightOffsetPosition.fromNodeOffsetPosition(pos));
@@ -59,8 +61,9 @@ abstract class Position {
       return(new RightOffsetPosition.fromLeftOffsetPosition(pos));
     else if (pos is RightOffsetPosition)
       return(new RightOffsetPosition.clone(pos));
+    return null;
   }
-  
+
   factory Position.clone(Position pos) {
     if (pos is NodeOffsetPosition)
       return(new NodeOffsetPosition(pos.dn, pos.dnOffset));
@@ -68,52 +71,53 @@ abstract class Position {
       return(new LeftOffsetPosition(pos.leftOffset));
     else if (pos is RightOffsetPosition)
       return(new RightOffsetPosition(pos.rightOffset));
+    return null;
   }
-  
+
   /**
    * Returns the parent node for this position.
    */
   DaxeNode get dn;
-  
+
   /**
    * Returns the offset within the parent node.
    */
   int get dnOffset;
-  
+
   /**
    * Returns the left offset in the document.
    */
   int get leftOffset;
-  
+
   /**
    * Returns the right offset in the document.
    */
   int get rightOffset;
-  
+
   bool operator ==(Position other);
-  
+
   bool operator <(Position other);
-  
+
   bool operator <=(Position other);
-  
+
   bool operator >(Position other);
-  
+
   bool operator >=(Position other);
-  
+
   /**
    * Moves the position right by the offset, counting movements to enter or exit a text node.
    */
   void move(int offset);
-  
+
   void moveInsideTextNodeIfPossible();
-  
+
   /**
    * offset top-left coordinates for the position
    */
   Point positionOnScreen();
-  
+
   String xPath({bool titles:false});
-  
+
   String toString();
 }
 

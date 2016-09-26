@@ -22,7 +22,7 @@ part of daxe;
  */
 class Cursor {
   static final String wordDelimiters = "\n \t`~!@#^&*()-+=[{]}|;:'\",<.>/?";
-  
+
   h.TextAreaElement ta;
   h.SpanElement caret;
   Position selectionStart, selectionEnd;
@@ -35,7 +35,7 @@ class Cursor {
   bool donePaste;
   int metaKeyCode; // previous keyDown keyCode if event.metaKey was true
   bool shiftOnKeyPress = false; // shift active during keyPress
-  
+
   Cursor() {
     ta = h.querySelector("#tacursor");
     caret = h.querySelector("#caret");
@@ -46,7 +46,7 @@ class Cursor {
     ta.onKeyPress.listen((h.KeyboardEvent event) => keyPress(event));
     ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
     ta.onBlur.listen((h.Event event) => blur(event));
-    ta.onPaste.listen((h.Event e) {
+    ta.onPaste.listen((h.ClipboardEvent e) {
       // check if current language might understand HTML.
       // If not, onPaste is not useful.
       List<String> hnames = ['p', 'ul', 'a'];
@@ -68,7 +68,7 @@ class Cursor {
     metaKeyCode = 0;
     newTimer();
   }
-  
+
   void setShortcuts(HashMap<String, ActionFunction> stringShortcuts) {
     HashMap<String, int> mappings = new HashMap<String, int>();
     mappings['A'] = h.KeyCode.A;
@@ -103,7 +103,7 @@ class Cursor {
         shortcuts[mappings[up]] = stringShortcuts[key];
     }
   }
-  
+
   static Position findPosition(h.MouseEvent event) {
     Position pos1 = doc.findPosition(event.client.x, event.client.y);
     if (pos1 == null)
@@ -130,7 +130,7 @@ class Cursor {
     */
     return(pos1);
   }
-  
+
   void keyDown(h.KeyboardEvent event) {
     if (selectionStart == null)
       return;
@@ -198,7 +198,7 @@ class Cursor {
     }
     newTimer();
   }
-  
+
   void keyPress(h.KeyboardEvent event) {
     // Save the state of shift when a key is pressed,
     // because shift might be released by the time of keyUp,
@@ -206,7 +206,7 @@ class Cursor {
     if (event.shiftKey)
       shiftOnKeyPress = true;
   }
-  
+
   void keyUp(h.KeyboardEvent event) {
     // NOTE: on MacOS, keyUp events are not fired when the command key is down
     // see: http://bitspushedaround.com/on-a-few-things-you-may-not-know-about-the-hellish-command-key-and-javascript-events/
@@ -262,11 +262,11 @@ class Cursor {
     }
     newTimer();
   }
-  
+
   void blur(h.Event event) {
     hide();
   }
-  
+
   /**
    * Action for the line start key.
    */
@@ -291,7 +291,7 @@ class Cursor {
       page.updateAfterPathChange();
     }
   }
-  
+
   /**
    * Action for the line end key.
    */
@@ -316,7 +316,7 @@ class Cursor {
       page.updateAfterPathChange();
     }
   }
-  
+
   /**
    * Action for the left arrow key.
    */
@@ -330,7 +330,7 @@ class Cursor {
     updateCaretPosition(true);
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Action for the right arrow key.
    */
@@ -346,7 +346,7 @@ class Cursor {
     updateCaretPosition(true);
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Action for the up arrow key.
    */
@@ -368,7 +368,7 @@ class Cursor {
     updateCaretPosition(true);
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Action for the down arrow key.
    */
@@ -390,7 +390,7 @@ class Cursor {
     updateCaretPosition(true);
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Action for the shift + left arrow keys.
    */
@@ -402,7 +402,7 @@ class Cursor {
       start = previousCaretPosition(start);
     setSelection(start, selectionEnd);
   }
-  
+
   /**
    * Action for the shift + right arrow keys.
    */
@@ -414,7 +414,7 @@ class Cursor {
       end = nextCaretPosition(end);
     setSelection(selectionStart, end);
   }
-  
+
   /**
    * Action for the page up key.
    */
@@ -422,7 +422,7 @@ class Cursor {
     Point pt = selectionStart.positionOnScreen();
     if (pt == null)
       return;
-    h.DivElement doc1 = h.document.getElementById('doc1'); 
+    h.DivElement doc1 = h.document.getElementById('doc1');
     pt.y -= doc1.offsetHeight;
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos != null) {
@@ -432,7 +432,7 @@ class Cursor {
       page.updateAfterPathChange();
     }
   }
-  
+
   /**
    * Action for the page down key.
    */
@@ -440,7 +440,7 @@ class Cursor {
     Point pt = selectionStart.positionOnScreen();
     if (pt == null)
       return;
-    h.DivElement doc1 = h.document.getElementById('doc1'); 
+    h.DivElement doc1 = h.document.getElementById('doc1');
     pt.y += doc1.offsetHeight;
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos != null) {
@@ -450,7 +450,7 @@ class Cursor {
       page.updateAfterPathChange();
     }
   }
-  
+
   /**
    * Action for the backspace key.
    */
@@ -544,7 +544,7 @@ class Cursor {
     }
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Action for the suppr key.
    */
@@ -601,7 +601,7 @@ class Cursor {
     }
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Action for the tab key.
    * Inserts 4 spaces only if spaces are preserved in the element
@@ -636,7 +636,7 @@ class Cursor {
       event.preventDefault();
     }
   }
-  
+
   Position nextCaretPosition(Position pos) {
     if (pos.dn is DNDocument && pos.dnOffset == pos.dn.offsetLength)
       return(pos);
@@ -661,7 +661,7 @@ class Cursor {
       else
         nodeAtOffset = null;
     }
-    
+
     // visible change of position
     // consecutive moves between blocks with no delimiter are not considered cursor moves
     bool noDelimiterBlockMove = false;
@@ -693,7 +693,7 @@ class Cursor {
         dn = dn.parent;
       }
     }
-    
+
     // move inside non-block nodes with no delimiter at current offset
     if (dn.firstChild != null && offset < dn.offsetLength)
       nodeAtOffset = dn.childAtOffset(offset);
@@ -710,7 +710,7 @@ class Cursor {
     }
     return(new Position(dn, offset));
   }
-  
+
   Position previousCaretPosition(Position pos) {
     if (pos.dn is DNDocument && pos.dnOffset == 0)
       return(pos);
@@ -735,7 +735,7 @@ class Cursor {
       else
         nodeBefore = null;
     }
-    
+
     // visible change of position
     // consecutive moves between blocks with no delimiter are not considered cursor moves
     bool noDelimiterBlockMove = false;
@@ -768,7 +768,7 @@ class Cursor {
         dn = dn.parent;
       }
     }
-    
+
     // move inside non-block nodes with no delimiter before current offset
     if (dn.firstChild != null && offset > 0)
       nodeBefore = dn.childAtOffset(offset - 1);
@@ -785,7 +785,7 @@ class Cursor {
     }
     return(new Position(dn, offset));
   }
-  
+
   /**
    * Returns position one word to the left if possible,
    * otherwise returns the previous position.
@@ -803,7 +803,7 @@ class Cursor {
     }
     return previousCaretPosition(pos);
   }
-  
+
   /**
    * Returns position one word to the right if possible,
    * otherwise returns the next position.
@@ -821,7 +821,7 @@ class Cursor {
     }
     return nextCaretPosition(pos);
   }
-  
+
   /**
    * Update the caret position when selectionStart == selectionEnd
    */
@@ -833,7 +833,7 @@ class Cursor {
       visible = false;
     } else {
       visible = true;
-      h.DivElement doc1 = h.document.getElementById('doc1'); 
+      h.DivElement doc1 = h.document.getElementById('doc1');
       int doctop = doc1.offset.top;
       int docheight = doc1.offset.height;
       if (pt.y - doctop < 0 || pt.y - doctop > docheight) {
@@ -858,7 +858,7 @@ class Cursor {
       caret.style.visibility = 'hidden';
     }
   }
-  
+
   /**
    * Sets the caret style (horizontal or vertical)
    */
@@ -896,11 +896,11 @@ class Cursor {
     else if (caret.classes.contains('horizontal'))
       caret.classes.remove('horizontal');
   }
-  
+
   bool _isBlock(h.Element el) {
     return(el is h.DivElement || el is h.TableElement || el is h.UListElement || el is h.LIElement);
   }
-  
+
   /**
    * Moves the caret to the given Position.
    */
@@ -911,7 +911,7 @@ class Cursor {
     selectionEnd = new Position.clone(selectionStart);
     updateCaretPosition(true);
   }
-  
+
   /**
    * Hides the cursor.
    */
@@ -919,7 +919,7 @@ class Cursor {
     visible = false;
     caret.style.visibility = 'hidden';
   }
-  
+
   /**
    * Shows the cursor.
    */
@@ -929,7 +929,7 @@ class Cursor {
       caret.style.visibility = 'visible';
     }
   }
-  
+
   /**
    * Obtains the focus.
    */
@@ -938,14 +938,14 @@ class Cursor {
       show();
     ta.focus();
   }
-  
+
   /**
    * Clears the hidden field
    */
   void clearField() {
     ta.value = '';
   }
-  
+
   setSelection(Position start, Position end, {updateUI:true}) {
     if (selectionStart == start && selectionEnd == end) {
       if (start == end) {
@@ -968,7 +968,7 @@ class Cursor {
       selectionStart = selectionEnd;
       selectionEnd = temp;
     }
-    
+
     // fix selection start and end for styles (different positions look the same for the user)
     // and to keep only the elements entirely inside the selection
     // move the start and end positions out of text and style if possible
@@ -1034,7 +1034,7 @@ class Cursor {
         }
       } while (cont);
     }
-    
+
     if (selectionStart.dn == selectionEnd.dn) {
       DaxeNode dn = selectionStart.dn;
       if (dn.nodeType == DaxeNode.TEXT_NODE) {
@@ -1100,7 +1100,7 @@ class Cursor {
     if (updateUI && selectionStart != previousStart)
       page.updateAfterPathChange();
   }
-  
+
   void selectText(DaxeNode dn, int offset1, int offset2) {
     h.Element parent = dn.getHTMLNode();
     if (parent == null)
@@ -1132,7 +1132,7 @@ class Cursor {
         parent.insertBefore(n3, span.nextNode);
     }
   }
-  
+
   void deSelect() {
     for (h.SpanElement span in spansSelection) {
       h.Element parent = span.parent;
@@ -1177,7 +1177,7 @@ class Cursor {
     }
     */
   }
-  
+
   void newTimer() {
     if (!visible)
       return;
@@ -1186,7 +1186,7 @@ class Cursor {
     caret.style.visibility = "visible";
     timer = new Timer.periodic(delay, (Timer t) => caretBlink());
   }
-  
+
   void caretBlink() {
     if (!visible)
       return;
@@ -1195,7 +1195,7 @@ class Cursor {
     else if (caret.style.visibility == "visible")
       caret.style.visibility = "hidden";
   }
-  
+
   /**
    * Removes the first character or Daxe node coming after the cursor.
    */
@@ -1299,7 +1299,7 @@ class Cursor {
       }
     }
   }
-  
+
   /**
    * Removes everything inside the current selection.
    */
@@ -1324,7 +1324,7 @@ class Cursor {
       }
     }
   }
-  
+
   /**
    * Refresh display
    */
@@ -1335,7 +1335,7 @@ class Cursor {
     selectionEnd = null;
     setSelection(start, end);
   }
-  
+
   /**
    * Returns the current XML selection as a String.
    */
@@ -1380,7 +1380,7 @@ class Cursor {
     }
     return(sb.toString());
   }
-  
+
   /**
    * Parses the given String and pastes the XML or text at the current position.
    * Returns true if it was pasted without error.
@@ -1418,7 +1418,7 @@ class Cursor {
       h.window.alert(ex.toString());
     }
   }
-  
+
   /**
    * Pastes the text at the current position (using hidden paragraphs if possible).
    * Throws a DaxeException if it was not valid.
@@ -1444,7 +1444,7 @@ class Cursor {
     }
     if (problem)
       throw new DaxeException(Strings.get('insert.text_not_allowed'));
-    
+
     // use hidden paragraphs instead of newlines if allowed at current position
     // also use hidden paragraphs if a paragraph is required to insert text
     bool useParagraphs = hiddenp != null && (s.contains('\n') || !parentWithText);
@@ -1480,7 +1480,7 @@ class Cursor {
     }
     pasteXML(tmpdoc);
   }
-  
+
   /**
    * Pastes the XML (without the root element) at the current position.
    * Throws a DaxeException if it was not valid.
@@ -1538,7 +1538,7 @@ class Cursor {
       doc.removeWhitespaceForHiddenParagraphs(dnRoot);
     }
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.paste'));
-    
+
     // save and move positions so they keep reliable for insert and merge
     Position start = new Position.clone(selectionStart);
     while ((start.dn is DNText || start.dn is DNStyle) && start.dnOffset == 0)
@@ -1559,7 +1559,7 @@ class Cursor {
       end = new Position(next, 0);
     }
     end = new Position.rightOffsetPosition(end);
-    
+
     if (selectionStart != selectionEnd)
       edit.addSubEdit(doc.removeBetweenEdit(selectionStart, selectionEnd));
     edit.addSubEdit(doc.insertChildrenEdit(dnRoot, start, checkValidity:true));
@@ -1578,7 +1578,7 @@ class Cursor {
       setSelection(ep.end, ep.end);
     }
   }
-  
+
   /**
    * Try to paste HTML, paste the plain alternative if that does not work.
    */
@@ -1639,7 +1639,7 @@ class Cursor {
       }
     }
   }
-  
+
   void _removeNamespace(x.Element el) {
     el.namespaceURI = null;
     for (x.Node n=el.firstChild; n!=null; n=n.nextSibling) {
@@ -1648,7 +1648,7 @@ class Cursor {
       }
     }
   }
-  
+
   /**
    * Try to cleanup the HTML, removing all style information and
    * some text processor crap.
@@ -1736,7 +1736,7 @@ class Cursor {
       }
     }
   }
-  
+
   /**
    * Returns true if the image will probably be pasted.
    */
@@ -1798,7 +1798,7 @@ class Cursor {
     }
     return true;
   }
-  
+
   Future _uploadAndCreateImage(h.Blob blob, x.Element imageRef) async {
     String type = blob.type;
     String filename;
@@ -1842,7 +1842,7 @@ class Cursor {
     doc.insertNode(img, selectionStart);
     return true;
   }
-  
+
   void mergeBlocks(DaxeNode dn1, DaxeNode dn2) {
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
     DaxeNode clone;
@@ -1863,7 +1863,7 @@ class Cursor {
     doc.doNewEdit(edit);
     page.moveCursorTo(futureCursorPos);
   }
-  
+
   void mergeBlockWithPreviousNodes(DaxeNode dn) {
     assert(dn.previousSibling != null);
     int offset = dn.parent.offsetOf(dn);
@@ -1892,7 +1892,7 @@ class Cursor {
     page.updateAfterPathChange();
     return;
   }
-  
+
   void mergeBlockWithNextNodes(DaxeNode dn) {
     assert(dn.nextSibling != null);
     int offset = dn.parent.offsetOf(dn.nextSibling);
@@ -1921,7 +1921,7 @@ class Cursor {
     page.updateAfterPathChange();
     return;
   }
-  
+
   /**
    * Copies the current selection to the clipboard when the browser allows it.
    * Otherwise display a message suggesting to use Ctrl-C.
@@ -1942,7 +1942,7 @@ class Cursor {
       h.window.alert(Strings.get('menu.copy_with_keyboard'));
     }
   }
-  
+
   /**
    * Copies the current selection to the clipboard when the browser allows it.
    * Otherwise display a message suggesting to use Ctrl-C.
@@ -1980,7 +1980,7 @@ class LaxUriPolicy implements h.UriPolicy {
  */
 class MyTreeSanitizer implements h.NodeTreeSanitizer {
   h.NodeValidator validator;
-  
+
   MyTreeSanitizer() {
     h.UriPolicy policy = new LaxUriPolicy();
     validator = new h.NodeValidatorBuilder.common()
@@ -1989,7 +1989,7 @@ class MyTreeSanitizer implements h.NodeTreeSanitizer {
     // NOTE: we could allow inline style with allowInlineStyles(),
     // but then we will have to clean that up in cleanupHTML().
   }
-  
+
   void sanitizeTree(h.Node node) {
     h.Node next;
     for (h.Node n=node.firstChild; n != null; n = next) {

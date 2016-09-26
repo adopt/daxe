@@ -20,35 +20,35 @@ part of wxs;
 
 
 class WXSRedefine implements WXSThing, Parent {
-  
+
   // annotations : inutile ici
   List<WXSThing> _redefinables; // (simpleType|complexType|group|attributeGroup)
   String _schemaLocation = null; // URI
-  
+
   WXSSchema _schemaInclu = null;
   WXSSchema _schema;
-  
-  
+
+
   WXSRedefine(final Element el, final WXSSchema schema) {
     _redefinables = new List<WXSThing>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "simpleType")
-          _redefinables.add(new WXSSimpleType(n as Element, this, schema));
+          _redefinables.add(new WXSSimpleType(n, this, schema));
         else if (n.localName == "complexType")
-          _redefinables.add(new WXSComplexType(n as Element, this, schema));
+          _redefinables.add(new WXSComplexType(n, this, schema));
         else if (n.localName == "group")
-          _redefinables.add(new WXSGroup(n as Element, this, schema));
+          _redefinables.add(new WXSGroup(n, this, schema));
         else if (n.localName == "attributeGroup")
-          _redefinables.add(new WXSAttributeGroup(n as Element, this, schema));
+          _redefinables.add(new WXSAttributeGroup(n, this, schema));
       }
     }
     if (el.hasAttribute("schemaLocation"))
       _schemaLocation = el.getAttribute("schemaLocation");
-    
+
     this._schema = schema;
   }
-  
+
   Future _inclusions(final WXSSchema schema) { // can throw a WXSException
     Completer completer = new Completer();
     schema.newIncludedSchema(_schemaLocation, null, schema).then((WXSSchema schema) {
@@ -59,18 +59,18 @@ class WXSRedefine implements WXSThing, Parent {
     });
     return(completer.future);
   }
-  
+
   List<WXSThing> getRedefinables() {
     return(_redefinables);
   }
-  
+
   // from Parent
   List<WXSElement> parentElements() {
     return(new List<WXSElement>());
   }
-  
+
   String getNamespace() {
     return(_schema.getTargetNamespace());
   }
-  
+
 }

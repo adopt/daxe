@@ -19,7 +19,7 @@ part of wxs;
 
 
 class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, Parent {
-  
+
   // (simpleContent | complexContent | ((group|all|choice|sequence)?, (attribute|attributeGroup)*))
   WXSSimpleContent _simpleContent = null;
   WithSubElements _model = null; // WXSComplexContent | WXSGroup | WXSAll | WXSChoice | WXSSequence
@@ -27,34 +27,34 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   String _name = null;
   bool _mixed = false;
   bool _abstractAtt = false;
-  
+
   Parent _parent; // WXSElement | WXSRedefine
   WXSSchema _schema;
   List<WXSElement> _references;
   List<WXSExtension> _extensions;
-  
-  
+
+
   WXSComplexType(final Element el, final Parent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     _attrDecls = new List<WXSThing>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "simpleContent")
-          _simpleContent = new WXSSimpleContent(n as Element, schema);
+          _simpleContent = new WXSSimpleContent(n, schema);
         else if (n.localName == "complexContent")
-          _model = new WXSComplexContent(n as Element, this, schema);
+          _model = new WXSComplexContent(n, this, schema);
         else if (n.localName == "group")
-          _model = new WXSGroup(n as Element, this, schema);
+          _model = new WXSGroup(n, this, schema);
         else if (n.localName == "all")
-          _model = new WXSAll(n as Element, this, schema);
+          _model = new WXSAll(n, this, schema);
         else if (n.localName == "choice")
-          _model = new WXSChoice(n as Element, this, schema);
+          _model = new WXSChoice(n, this, schema);
         else if (n.localName == "sequence")
-          _model = new WXSSequence(n as Element, this, schema);
+          _model = new WXSSequence(n, this, schema);
         else if (n.localName == "attribute")
-          _attrDecls.add(new WXSAttribute(n as Element, this, schema));
+          _attrDecls.add(new WXSAttribute(n, this, schema));
         else if (n.localName == "attributeGroup")
-          _attrDecls.add(new WXSAttributeGroup(n as Element, this, schema));
+          _attrDecls.add(new WXSAttributeGroup(n, this, schema));
       }
     }
     if (el.hasAttribute("name"))
@@ -63,36 +63,36 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
       _mixed = el.getAttribute("mixed") == "true" || el.getAttribute("mixed") == "1";
     if (el.hasAttribute("abstract"))
       _abstractAtt = el.getAttribute("abstract") == "true" || el.getAttribute("abstract") == "1";
-    
+
     this._parent = parent;
     this._schema = schema;
     _references = null;
     _extensions = null;
   }
-  
+
   WXSSimpleContent getSimpleContent() {
     return(_simpleContent);
   }
-  
+
   // from WXSType
   String getName() {
     return(_name);
   }
-  
+
   bool getMixed() {
     return(_mixed);
   }
-  
+
   // from WXSType
   String getNamespace() {
     return(_schema.getTargetNamespace());
   }
-  
+
   // from WXSType
   Parent getParent() {
     return(_parent);
   }
-  
+
   // from WithSubElements and WXSType
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_simpleContent != null)
@@ -106,26 +106,26 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
         attrDecl.resolveReferences(schema, redefine);
     }
   }
-  
+
   void addReference(final WXSElement element) {
     if (_references == null)
       _references = new List<WXSElement>();
     _references.add(element);
   }
-  
+
   void addExtension(final WXSExtension ext) {
     if (_extensions == null)
       _extensions = new List<WXSExtension>();
     _extensions.add(ext);
   }
-  
+
   // from WithSubElements
   List<WXSElement> allElements() {
     if (_model != null)
       return(_model.allElements());
     return(new List<WXSElement>());
   }
-  
+
   // from WithSubElements
   List<WXSElement> subElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -133,7 +133,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
       liste.addAll(_model.subElements());
     return(liste);
   }
-  
+
   // from Parent
   List<WXSElement> parentElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -159,42 +159,42 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
     }
     return(liste);
   }
-  
+
   // from WithSubElements
   String regularExpression() {
     if (_model != null)
       return(_model.regularExpression());
     return(null);
   }
-  
+
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
     if (_model != null)
       return(_model.requiredChild(child));
     return(null);
   }
-  
+
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
     if (_model != null)
       return(_model.multipleChildren(child));
     return(null);
   }
-  
+
   // from WXSType
   List<String> possibleValues() {
     if (_simpleContent != null)
       return(_simpleContent.possibleValues());
     return(null);
   }
-  
+
   // from WXSType
   List<String> suggestedValues() {
     if (_simpleContent != null)
       return(_simpleContent.suggestedValues());
     return(null);
   }
-  
+
   List<WXSAttribute> attributes() {
     if (_simpleContent != null)
       return(_simpleContent.attributes());
@@ -209,7 +209,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
     }
     return(liste);
   }
-  
+
   // from WithSubElements
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
     if (_simpleContent != null)
@@ -218,7 +218,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
       return(_model.validate(subElements, start, insertion));
     return(start);
   }
-  
+
   // from WithSubElements
   bool isOptionnal() {
     if (_simpleContent != null)
@@ -227,7 +227,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
       return(_model.isOptionnal());
     return(true);
   }
-  
+
   // from WXSType
   bool validValue(final String value) {
     if (_simpleContent != null)
@@ -235,7 +235,7 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
     // FIXME: we should check whether spaces matter or not here
     return(value.trim() == '' || containsText());
   }
-  
+
   bool containsText() {
     // on teste le type parent quand un type est dérivé
     // par un autre qui ne redonne pas la liste des sous-éléments...

@@ -20,7 +20,7 @@ part of wxs;
 
 
 class WXSSchema implements WXSThing {
-  
+
   List<WXSInclude> _includes;
   List<WXSImport> _imports;
   List<WXSRedefine> _redefines;
@@ -33,14 +33,14 @@ class WXSSchema implements WXSThing {
   String _targetNamespace = null;
   String _attributeFormDefault = null;
   String _elementFormDefault = null;
-  
+
   String _url;
   DaxeWXS _jwxs;
   List<WXSSchema> _includedSchemas;
   WXSSchema _parentSchema;
   HashMap<String, String> _namespaceToPrefix;
-  
-  
+
+
   WXSSchema(final Element el, final String url, final DaxeWXS jwxs, final WXSSchema schemaParent) {
     this._url = url;
     this._jwxs = jwxs;
@@ -59,11 +59,11 @@ class WXSSchema implements WXSThing {
       if (n is Element) {
         String localName = n.localName;
         if (localName == "include")
-          _includes.add(new WXSInclude(n as Element, this));
+          _includes.add(new WXSInclude(n, this));
         else if (localName == "import")
-          _imports.add(new WXSImport(n as Element, this));
+          _imports.add(new WXSImport(n, this));
         else if (localName == "redefine") {
-          final WXSRedefine redefine = new WXSRedefine(n as Element, this);
+          final WXSRedefine redefine = new WXSRedefine(n, this);
           _redefines.add(redefine);
           for (WXSThing redefinable in redefine.getRedefinables()) {
             if (redefinable is WXSSimpleType) {
@@ -81,22 +81,22 @@ class WXSSchema implements WXSThing {
             }
           }
         } else if (localName == "simpleType") {
-          final WXSSimpleType simpleType = new WXSSimpleType(n as Element, null, this);
+          final WXSSimpleType simpleType = new WXSSimpleType(n, null, this);
           _simpleTypes[simpleType.getName()] = simpleType;
         } else if (localName == "complexType") {
-          final WXSComplexType complexType = new WXSComplexType(n as Element, null, this);
+          final WXSComplexType complexType = new WXSComplexType(n, null, this);
           _complexTypes[complexType.getName()] = complexType;
         } else if (localName == "group") {
-          final WXSGroup group = new WXSGroup(n as Element, null, this);
+          final WXSGroup group = new WXSGroup(n, null, this);
           _groups[group.getName()] = group;
         } else if (localName == "attributeGroup") {
-          final WXSAttributeGroup attributeGroup = new WXSAttributeGroup(n as Element, null, this);
+          final WXSAttributeGroup attributeGroup = new WXSAttributeGroup(n, null, this);
           _attributeGroups[attributeGroup.getName()] = attributeGroup;
         } else if (localName == "element") {
-          final WXSElement element = new WXSElement(n as Element, null, this);
+          final WXSElement element = new WXSElement(n, null, this);
           _elements[element.getName()] = element;
         } else if (localName == "attribute") {
-          final WXSAttribute attribute = new WXSAttribute(n as Element, null, this);
+          final WXSAttribute attribute = new WXSAttribute(n, null, this);
           _attributes[attribute.getName()] = attribute;
         }
       }
@@ -110,7 +110,7 @@ class WXSSchema implements WXSThing {
       _attributeFormDefault = el.getAttribute("attributeFormDefault");
     if (el.hasAttribute("elementFormDefault"))
       _elementFormDefault = el.getAttribute("elementFormDefault");
-    
+
     _namespaceToPrefix = new HashMap<String, String>();
     if (el.attributes != null) {
       for (Attr att in el.attributes.values) {
@@ -121,7 +121,7 @@ class WXSSchema implements WXSThing {
       }
     }
   }
-  
+
   Future _inclusions() { // can throw a WXSException
     List<Future> futures = new List<Future>();
     for (WXSInclude include in _includes)
@@ -132,31 +132,31 @@ class WXSSchema implements WXSThing {
       futures.add(redefine._inclusions(this));
     return(Future.wait(futures));
   }
-  
+
   Iterable<WXSElement> getTopElements() {
     return(_elements.values);
   }
-  
+
   Iterable<WXSAttribute> getTopAttributes() {
     return(_attributes.values);
   }
-  
+
   String getTargetNamespace() {
     return(_targetNamespace);
   }
-  
+
   String getAttributeFormDefault() {
     return(_attributeFormDefault);
   }
-  
+
   String getElementFormDefault() {
     return(_elementFormDefault);
   }
-  
+
   String getURL() {
     return(_url);
   }
-  
+
   Future<WXSSchema> newIncludedSchema(final String schemaLocation,
       final String importNamespace, final WXSSchema parentSchema) { // can throw a WXSException
     Completer completer = new Completer();
@@ -169,7 +169,7 @@ class WXSSchema implements WXSThing {
     });
     return(completer.future);
   }
-  
+
   void _resolveReferences() {
     for (WXSSimpleType simpleType in _simpleTypes.values)
       simpleType.resolveReferences(this, simpleType.getParent() is WXSRedefine ? simpleType : null);
@@ -184,11 +184,11 @@ class WXSSchema implements WXSThing {
     for (WXSAttribute attribute in _attributes.values)
       attribute.resolveReferences(this);
   }
-  
+
   String namespacePrefix(final String ns) {
     return(_namespaceToPrefix[ns]);
   }
-  
+
   String prefixNamespace(final String prefix) {
     if (prefix == null)
       return(null);
@@ -198,7 +198,7 @@ class WXSSchema implements WXSThing {
     }
     return(null);
   }
-  
+
   List<WXSElement> allElements() {
     final List<WXSElement> liste = new List<WXSElement>();
     for (WXSComplexType complexType in _complexTypes.values)
@@ -209,31 +209,31 @@ class WXSSchema implements WXSThing {
       liste.addAll(element.allElements());
     return(liste);
   }
-  
+
   List<WXSElement> anies(final String namespace) {
     return(_jwxs._anies(namespace, _targetNamespace));
   }
-  
+
   WXSElement resolveElementReference(final String localName, final String namespace) {
     return(_resolveReference(localName, namespace, null, null, 'WXSElement') as WXSElement);
   }
-  
+
   WXSType resolveTypeReference(final String localName, final String namespace, final WXSThing redefine) {
     return(_resolveReference(localName, namespace, null, redefine, 'WXSType') as WXSType);
   }
-  
+
   WXSGroup resolveGroupReference(final String localName, final String namespace, final WXSThing redefine) {
     return(_resolveReference(localName, namespace, null, redefine, 'WXSGroup') as WXSGroup);
   }
-  
+
   WXSAttributeGroup resolveAttributeGroupReference(final String localName, final String namespace, final WXSThing redefine) {
     return(_resolveReference(localName, namespace, null, redefine, 'WXSAttributeGroup') as WXSAttributeGroup);
   }
-  
+
   WXSAttribute resolveAttributeReference(final String localName, final String namespace) {
     return(_resolveReference(localName, namespace, null, null, 'WXSAttribute') as WXSAttribute);
   }
-  
+
   WXSThing _resolveReference(final String localName, final String namespace, final HashSet<WXSSchema> exclude,
                              final WXSThing redefine, final String classe) {
     if (localName == null)
@@ -287,9 +287,9 @@ class WXSSchema implements WXSThing {
     }
     return(null);
   }
-  
+
   String elementTitle(final WXSElement el) {
     return(_jwxs._elementTitle(el));
   }
-  
+
 }

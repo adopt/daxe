@@ -19,7 +19,7 @@ part of wxs;
 
 
 class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
-  
+
   // if not ref: (all|choice|sequence)
   WithSubElements _modele = null; // (WXSAll | WXSChoice | WXSSequence)
   String _name = null;
@@ -27,23 +27,23 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
   WXSGroup _wxsRef = null;
   int _minOccurs = 1;
   int _maxOccurs = 1;
-  
+
   Element _domElement;
   Parent _parent; // WXSComplexType | WXSRestriction | WXSExtension | WXSExplicitGroup | WXSRedefine
   WXSSchema _schema;
   List<WXSGroup> _references;
-  
-  
+
+
   WXSGroup(final Element el, final Parent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "all")
-          _modele = new WXSAll(n as Element, this, schema);
+          _modele = new WXSAll(n, this, schema);
         else if (n.localName == "choice")
-          _modele = new WXSChoice(n as Element, this, schema);
+          _modele = new WXSChoice(n, this, schema);
         else if (n.localName == "sequence")
-          _modele = new WXSSequence(n as Element, this, schema);
+          _modele = new WXSSequence(n, this, schema);
       }
     }
     if (el.hasAttribute("name"))
@@ -61,27 +61,27 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
       }
     } on FormatException {
     }
-    
+
     _domElement = el;
     this._parent = parent;
     this._schema = schema;
     _references = null;
   }
-  
+
   String getName() {
     if (_name == null && _wxsRef != null)
       return(_wxsRef.getName());
     return(_name);
   }
-  
+
   String getNamespace() {
     return(_schema.getTargetNamespace());
   }
-  
+
   Parent getParent() {
     return(_parent);
   }
-  
+
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_modele != null)
@@ -95,20 +95,20 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
         print("Référence de groupe introuvable : $_ref");
     }
   }
-  
+
   void addReference(final WXSGroup group) {
     if (_references == null)
       _references = new List<WXSGroup>();
     _references.add(group);
   }
-  
+
   // from WithSubElements
   List<WXSElement> allElements() {
     if (_modele != null)
       return(_modele.allElements());
     return(new List<WXSElement>());
   }
-  
+
   // from WithSubElements
   List<WXSElement> subElements() {
     if (_wxsRef != null)
@@ -117,7 +117,7 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
       return(_modele.subElements());
     return(new List<WXSElement>());
   }
-  
+
   // from Parent
   List<WXSElement> parentElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -129,7 +129,7 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
     }
     return(liste);
   }
-  
+
   // from WithSubElements
   String regularExpression() {
     String er;
@@ -148,7 +148,7 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
     else
       return(er);
   }
-  
+
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
     if (_wxsRef != null)
@@ -159,7 +159,7 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
       bb = _modele.requiredChild(child);
     return(bb);
   }
-  
+
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
     if (_wxsRef != null)
@@ -170,7 +170,7 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
       bb = _modele.multipleChildren(child);
     return(bb);
   }
-  
+
   // from WithSubElements
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
     if (!insertion && subElements.length < _minOccurs)
@@ -191,7 +191,7 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
     }
     return(subElements.length);
   }
-  
+
   // from WithSubElements
   bool isOptionnal() {
     if (_minOccurs == 0)

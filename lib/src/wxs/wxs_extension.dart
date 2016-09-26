@@ -19,43 +19,43 @@ part of wxs;
 
 
 class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
-  
+
   // (group|all|choice|sequence)?, (attribute|attributeGroup)*
   WithSubElements _model = null; // WXSGroup | WXSAll | WXSChoice | WXSSequence
   List<WXSThing> _attrDecls; // attrDecls: (attribute|attributeGroup)*
   String _base = null;
   WXSType _wxsBase = null;
-  
+
   Element _domElement;
   WXSComplexContent _parent;
-  
-  
+
+
   WXSExtension(final Element el, final WXSComplexContent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     _attrDecls = new List<WXSThing>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "group")
-          _model = new WXSGroup(n as Element, this, schema);
+          _model = new WXSGroup(n, this, schema);
         else if (n.localName == "all")
-          _model = new WXSAll(n as Element, this, schema);
+          _model = new WXSAll(n, this, schema);
         else if (n.localName == "choice")
-          _model = new WXSChoice(n as Element, this, schema);
+          _model = new WXSChoice(n, this, schema);
         else if (n.localName == "sequence")
-          _model = new WXSSequence(n as Element, this, schema);
+          _model = new WXSSequence(n, this, schema);
         else if (n.localName == "attribute")
-          _attrDecls.add(new WXSAttribute(n as Element, this, schema));
+          _attrDecls.add(new WXSAttribute(n, this, schema));
         else if (n.localName == "attributeGroup")
-          _attrDecls.add(new WXSAttributeGroup(n as Element, this, schema));
+          _attrDecls.add(new WXSAttributeGroup(n, this, schema));
       }
     }
     if (el.hasAttribute("base"))
       _base = el.getAttribute("base");
-    
+
     _domElement = el;
     this._parent = parent;
   }
-  
+
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_model != null)
@@ -73,7 +73,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
         (_wxsBase as WXSComplexType).addExtension(this);
     }
   }
-  
+
   // from WithSubElements
   List<WXSElement> allElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -81,7 +81,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       liste.addAll(_model.allElements());
     return(liste);
   }
-  
+
   // from WithSubElements
   List<WXSElement> subElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -91,7 +91,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       liste.addAll(_model.subElements());
     return(liste);
   }
-  
+
   // from Parent
   List<WXSElement> parentElements() {
     if (_parent != null)
@@ -99,7 +99,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     else
       return(new List<WXSElement>());
   }
-  
+
   // from WithSubElements
   String regularExpression() {
     String erBase;
@@ -121,7 +121,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     else
       return("($erBase, $erModele)");
   }
-  
+
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
     bool bb1 = null;
@@ -136,7 +136,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       return(bb2);
     return(bb1 != null ? bb1 : bb2);
   }
-  
+
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
     bool bb1 = null;
@@ -149,7 +149,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       bb2 = _model.multipleChildren(child);
     return(bb1 != null ? bb1 : bb2);
   }
-  
+
   List<String> possibleValues() {
     if (_wxsBase != null)
       return(_wxsBase.possibleValues());
@@ -157,7 +157,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       return(DaxeWXS._booleanValues(_base, _domElement));
     return(null);
   }
-  
+
   List<String> suggestedValues() {
     if (_wxsBase != null)
       return(_wxsBase.suggestedValues());
@@ -165,7 +165,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       return(DaxeWXS._booleanValues(_base, _domElement));
     return(null);
   }
-  
+
   List<WXSAttribute> attributes() {
     final List<WXSAttribute> liste = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
@@ -193,7 +193,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     }
     return(liste);
   }
-  
+
   // from WithSubElements
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
     int pos = start;
@@ -210,7 +210,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
     }
     return(pos);
   }
-  
+
   // from WithSubElements
   bool isOptionnal() {
     if (_wxsBase is WXSComplexType && !(_wxsBase as WXSComplexType).isOptionnal())
@@ -219,7 +219,7 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
       return(_model.isOptionnal());
     return(true);
   }
-  
+
   bool validValue(final String value) {
     if (_wxsBase != null)
       return(_wxsBase.validValue(value));

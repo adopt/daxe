@@ -19,7 +19,7 @@ part of wxs;
 
 
 class WXSAttribute extends WXSAnnotated {
-  
+
   WXSSimpleType _simpleType = null;
   String _name = null;
   String _ref = null;
@@ -28,18 +28,18 @@ class WXSAttribute extends WXSAnnotated {
   String _defaultAtt = null;
   String _fixed = null;
   String _form = null; // (qualified|unqualified)
-  
+
   WXSAttribute _wxsRef = null;
   Element _domElement;
   Parent _parent; // WXSComplexType | WXSRestriction | WXSExtension | WXSAttributeGroup
   WXSSchema _schema;
-  
-  
+
+
   WXSAttribute(final Element el, final Parent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element && n.localName == "simpleType") {
-        _simpleType = new WXSSimpleType(n as Element, null, schema);
+        _simpleType = new WXSSimpleType(n, null, schema);
         break;
       }
     }
@@ -57,12 +57,12 @@ class WXSAttribute extends WXSAnnotated {
       _fixed = el.getAttribute("fixed");
     if (el.hasAttribute("form"))
       _form = el.getAttribute("form");
-    
+
     _domElement = el;
     this._parent = parent;
     this._schema = schema;
   }
-  
+
   void resolveReferences(final WXSSchema schema) {
     if (_simpleType != null)
       _simpleType.resolveReferences(schema, null);
@@ -90,25 +90,25 @@ class WXSAttribute extends WXSAnnotated {
     if (_simpleType == null && _wxsRef != null)
       _simpleType = _wxsRef._simpleType;
   }
-  
+
   String getName() {
     if (_name == null && _wxsRef != null)
       return(_wxsRef.getName());
     return(_name);
   }
-  
+
   String getUse() {
     return(_use);
   }
-  
+
   String getForm() {
     return(_form);
   }
-  
+
   Element getDOMElement() {
     return(_domElement);
   }
-  
+
   String getNamespace() {
     if (_ref != null) {
       final String prefixe = DaxeWXS._namePrefix(_ref);
@@ -137,17 +137,17 @@ class WXSAttribute extends WXSAnnotated {
     } else
       return(null);
   }
-  
+
   WXSAttribute getWXSRef() {
     return(_wxsRef);
   }
-  
+
   List<WXSElement> parentElements() {
     if (_parent != null)
       return(_parent.parentElements());
     return(new List<WXSElement>());
   }
-  
+
   List<String> possibleValues() {
     if (_fixed != null) {
       final List<String> fixedval = new List<String>();
@@ -163,7 +163,7 @@ class WXSAttribute extends WXSAnnotated {
       return(DaxeWXS._booleanValues(_type, _domElement));
     return(null);
   }
-  
+
   List<String> suggestedValues() {
     if (_fixed != null) {
       final List<String> fixedval = new List<String>();
@@ -179,7 +179,7 @@ class WXSAttribute extends WXSAnnotated {
       return(DaxeWXS._booleanValues(_type, _domElement));
     return(null);
   }
-  
+
   String defaultValue() {
     if (_defaultAtt != null)
       return(_defaultAtt);
@@ -189,7 +189,7 @@ class WXSAttribute extends WXSAnnotated {
       return(_wxsRef.defaultValue());
     return(null);
   }
-  
+
   bool validValue(final String value) {
     if (_fixed != null)
       return(_fixed == value);

@@ -19,51 +19,51 @@ part of wxs;
 
 
 class WXSSimpleType extends WXSAnnotated implements WXSType {
-  
+
   // (restriction|list|union)
   WXSRestriction _restriction = null;
   WXSList _list = null;
   WXSUnion _union = null;
   String _name = null;
-  
+
   Parent _parent; // WXSRedefine | WXSElement | WXSRestriction
   WXSSchema _schema;
-  
-  
+
+
   WXSSimpleType(final Element el, final Parent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "restriction")
-          _restriction = new WXSRestriction(n as Element, null, schema);
+          _restriction = new WXSRestriction(n, null, schema);
         else if (n.localName == "list")
-          _list = new WXSList(n as Element, schema);
+          _list = new WXSList(n, schema);
         else if (n.localName == "union")
-          _union = new WXSUnion(n as Element, schema);
+          _union = new WXSUnion(n, schema);
       }
     }
     if (el.hasAttribute("name"))
       _name = el.getAttribute("name");
-    
+
     this._parent = parent;
     this._schema = schema;
   }
-  
+
   // from WXSType
   String getName() {
     return(_name);
   }
-  
+
   // from WXSType
   String getNamespace() {
     return(_schema.getTargetNamespace());
   }
-  
+
   // from WXSType
   Parent getParent() {
     return(_parent);
   }
-  
+
   // from WXSType
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_restriction != null)
@@ -73,7 +73,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
     if (_union != null)
       _union.resolveReferences(schema, redefine);
   }
-  
+
   // from WXSType
   List<String> possibleValues() {
     if (_restriction != null)
@@ -82,7 +82,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
       return(_union.possibleValues());
     return(null);
   }
-  
+
   // from WXSType
   List<String> suggestedValues() {
     if (_restriction != null)
@@ -91,7 +91,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
       return(_union.suggestedValues());
     return(null);
   }
-  
+
   // from WXSType
   bool validValue(final String value) {
     if (_restriction != null)
@@ -102,7 +102,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
       return(_union.validValue(value));
     return(false);
   }
-  
+
   /**
    * Validation of a value by a simple type (the type must not have a prefix).
    */
@@ -307,12 +307,12 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
     else
       return(true);
   }
-  
+
   static bool _verifExpr(final String value, final String regexp) {
     // NOTE: would a cache be useful here ? (beware memory leaks if it's static)
     final RegExp r = new RegExp("^(${regexp})\$");
     // NOTE: parenthesis are needed for regexps like "a|b".
     return(r.hasMatch(value));
   }
-  
+
 }

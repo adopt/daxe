@@ -18,21 +18,21 @@
 part of wxs;
 
 class WXSAnnotation implements WXSThing {
-  
+
   // (documentation*)
   List<WXSDocumentation> _documentations;
-  
-  
+
+
   WXSAnnotation(final Element el) {
     _documentations = new List<WXSDocumentation>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element && n.localName == "documentation") {
-        _documentations.add(new WXSDocumentation(n as Element));
+        _documentations.add(new WXSDocumentation(n));
         break;
       }
     }
   }
-  
+
   String getDocumentation() {
     if (_documentations == null)
       return(null);

@@ -20,27 +20,27 @@ part of wxs;
 
 
 class WXSList extends WXSAnnotated {
-  
+
   WXSSimpleType _simpleType = null;
   String _itemType = null;
-  
+
   Element _domElement;
-  
-  
+
+
   WXSList(final Element el, final WXSSchema schema) {
     _parseAnnotation(el);
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element && n.localName == "simpleType") {
-        _simpleType = new WXSSimpleType(n as Element, null, schema);
+        _simpleType = new WXSSimpleType(n, null, schema);
         break;
       }
     }
     if (el.hasAttribute("itemType"))
       _itemType = el.getAttribute("itemType");
-    
+
     _domElement = el;
   }
-  
+
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_simpleType != null)
       _simpleType.resolveReferences(schema, redefine);
@@ -56,7 +56,7 @@ class WXSList extends WXSAnnotated {
       }
     }
   }
-  
+
   bool validValue(final String value) {
     if (_simpleType == null && _itemType == null)
       return(false);

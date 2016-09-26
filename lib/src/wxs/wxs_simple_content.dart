@@ -20,31 +20,31 @@ part of wxs;
 
 
 class WXSSimpleContent extends WXSAnnotated {
-  
+
   // (restriction|extension)
   WXSRestriction _restriction = null;
   WXSExtension _extension = null;
-  
-  
+
+
   WXSSimpleContent(final Element el, final WXSSchema schema) {
     _parseAnnotation(el);
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "restriction")
-          _restriction = new WXSRestriction(n as Element, null, schema);
+          _restriction = new WXSRestriction(n, null, schema);
         else if (n.localName == "extension")
-          _extension = new WXSExtension(n as Element, null, schema);
+          _extension = new WXSExtension(n, null, schema);
       }
     }
   }
-  
+
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_restriction != null)
       _restriction.resolveReferences(schema, redefine);
     else if (_extension != null)
       _extension.resolveReferences(schema, redefine);
   }
-  
+
   List<String> possibleValues() {
     if (_restriction != null)
       return(_restriction.possibleValues());
@@ -52,7 +52,7 @@ class WXSSimpleContent extends WXSAnnotated {
       return(_extension.possibleValues());
     return(null);
   }
-  
+
   List<String> suggestedValues() {
     if (_restriction != null)
       return(_restriction.suggestedValues());
@@ -60,7 +60,7 @@ class WXSSimpleContent extends WXSAnnotated {
       return(_extension.suggestedValues());
     return(null);
   }
-  
+
   List<WXSAttribute> attributes() {
     if (_restriction != null)
       return(_restriction.attributes());
@@ -68,7 +68,7 @@ class WXSSimpleContent extends WXSAnnotated {
       return(_extension.attributes());
     return(new List<WXSAttribute>());
   }
-  
+
   bool validValue(final String value) {
     if (_restriction != null)
       return(_restriction.validValue(value));
@@ -76,5 +76,5 @@ class WXSSimpleContent extends WXSAnnotated {
       return(_extension.validValue(value));
     return(false);
   }
-  
+
 }

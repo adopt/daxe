@@ -20,29 +20,29 @@ part of wxs;
 
 
 class WXSUnion extends WXSAnnotated {
-  
+
   // (simpleType)*
   List<WXSSimpleType> _simpleTypes;
   List<String> _memberTypes = null;
-  
+
   Element _domElement;
   List<WXSSimpleType> _wxsMemberTypes;
-  
-  
+
+
   WXSUnion(final Element el, final WXSSchema schema) {
     _parseAnnotation(el);
     _simpleTypes = new List<WXSSimpleType>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element && n.localName == "simpleType")
-        _simpleTypes.add(new WXSSimpleType(n as Element, null, schema));
+        _simpleTypes.add(new WXSSimpleType(n, null, schema));
     }
     if (el.hasAttribute("memberTypes"))
       _memberTypes = (el.getAttribute("memberTypes")).split(new RegExp(r"\s+"));
-    
+
     _domElement = el;
     _wxsMemberTypes = null;
   }
-  
+
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     for (WXSSimpleType simpleType in _simpleTypes)
       simpleType.resolveReferences(schema, redefine);
@@ -63,7 +63,7 @@ class WXSUnion extends WXSAnnotated {
       }
     }
   }
-  
+
   List<String> possibleValues() {
     final List<String> liste = new List<String>();
     if (_memberTypes != null) {
@@ -96,7 +96,7 @@ class WXSUnion extends WXSAnnotated {
       return(null);
     return(liste);
   }
-  
+
   List<String> suggestedValues() {
     final List<String> liste = new List<String>();
     if (_memberTypes != null) {
@@ -126,7 +126,7 @@ class WXSUnion extends WXSAnnotated {
       return(null);
     return(liste);
   }
-  
+
   bool validValue(final String value) {
     if (_memberTypes != null) {
       for (int i=0; i<_memberTypes.length; i++) {

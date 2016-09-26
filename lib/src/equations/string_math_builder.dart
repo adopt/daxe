@@ -26,7 +26,7 @@ part of equations;
 class StringMathBuilder {
 
   MathRootElement _rootElement;
-  
+
   // opérateurs remplacés en premier, avant l'analyse de la syntaxe
   static final List<List<String>> special = [
      ["<==", "\u21D0"], ["==>", "\u21D2"], ["<=>", "\u21D4"],
@@ -46,12 +46,12 @@ class StringMathBuilder {
      ["cap", "\u2229"], ["cup", "\u222A"],
      ["...", "\u2026"]
   ];
-  
+
   // opérateurs
-  static final String sops = 
+  static final String sops =
       "_^#*/\u2207±\u2213\u2227-+\u2200\u2203\u2202×=\u2260\u2248\u223C\u2261<>\u2264\u2265\u226A\u226B\u221D" +
       "|\u2229\u222A\u2190\u2192\u2194\u21D0\u21D2\u21D4";
-  
+
   // symboles qui peuvent être en italique s'ils servent d'identifiant
   static final List<List<String>> symboles_id = [
      // grec-minuscule
@@ -76,11 +76,11 @@ class StringMathBuilder {
      ["thetasym", "\u03D1"], ["upsih", "\u03D2"], ["piv", "\u03D6"],
      ["phiv", "\u03D5"], ["phi1", "\u03D5"]
   ];
-  
+
   // symboles qu'il ne faut pas mettre en italique
   static final List<List<String>> symboles_droits = [
      // grec-minuscule
-     ["pi", "\u03C0"], 
+     ["pi", "\u03C0"],
      // autres caractères
      ["infin", "\u221E"], ["infty", "\u221E"], ["infini", "\u221E"],
      ["parallel", "\u2225"], ["parallèle", "\u2225"],
@@ -125,13 +125,13 @@ class StringMathBuilder {
      ["Yscr", "\u{1D4B4}"], ["bigy", "\u{1D4B4}"], ["grandy", "\u{1D4B4}"], // \uD835\uDCB4
      ["Zscr", "\u{1D4B5}"], ["bigz", "\u{1D4B5}"], ["grandz", "\u{1D4B5}"] // \uD835\uDCB5
   ];
-  
+
   // fonctions qui peuvent se passer de parenthèses quand il n'y a qu'un argument simple
   static final List<String> fctnopar = ["sin", "cos", "tan", "acos", "asin", "atan"];
-  
+
   static final RegExp _numbersExpr = new RegExp("^\\s?([0-9]+([\\.,][0-9]+)?|[\\.,][0-9]+)([Ee][+-]?[0-9]+)?\\s?\$");
-  
-  
+
+
   StringMathBuilder(final String s) {
     _rootElement = new MathRootElement();
     final String s2 = ajParentheses(replaceSpecial(s));
@@ -145,7 +145,7 @@ class StringMathBuilder {
       _rootElement.addMathElement(me);
     }
   }
-  
+
   /**
    * Return the root  element of a math tree
   *
@@ -155,7 +155,7 @@ class StringMathBuilder {
   {
     return _rootElement;
   }
-  
+
   String replaceSpecial(String s) {
     for (final List<String> spec in special) {
       int ind = s.indexOf(spec[0]);
@@ -166,7 +166,7 @@ class StringMathBuilder {
     }
     return s;
   }
-  
+
   // renvoie true si le caractère avec la position donnée dans le String est bien un opérateur
   // (en résolvant la difficulté d'expressions comme "1e-1/2+e-1/2")
   static bool operateurEn(String s, int pos) {
@@ -185,7 +185,7 @@ class StringMathBuilder {
       return(false);
     return(true);
   }
-  
+
   static String ajParentheses(String s) {
     // d'abord ajouter des parenthèses pour séparer les éléments des fonctions
     // f(a+1;b;c) -> f((a+1);b;c)
@@ -232,7 +232,7 @@ class StringMathBuilder {
       else
         indop += indop2 + 1;
     }
-    
+
     // les autres parenthèses
     for (int iops=0; iops<sops.length; iops++) {
       final String cops = sops[iops];
@@ -289,11 +289,11 @@ class StringMathBuilder {
     }
     return s;
   }
-  
+
   JEQ parser(String s) {
     if (s == null || s == '')
       return null;
-    
+
     if (s[0] == '(' && s[s.length-1] == ')') {
       int pp = 0;
       for (int i=1; i<s.length-1; i++) {
@@ -307,7 +307,7 @@ class StringMathBuilder {
       if (pp != -1)
         s = s.substring(1, s.length-1);
     }
-    
+
     int indop = -1;
     int pp = 0;
     for (int i=0; i<s.length; i++) {
@@ -393,7 +393,7 @@ class StringMathBuilder {
       } else
         return(new JEQVariable(s));
     }
-    
+
     final String op = s[indop];
     final String s1 = s.substring(0,indop).trim();
     JEQ p1;
@@ -407,10 +407,10 @@ class StringMathBuilder {
       p2 = null;
     else
       p2 = parser(s2);
-    
+
     return(new JEQOperation(op, p1, p2));
   }
-  
+
   static MathElement elemOrQuestion(final JEQ jeq) {
     if (jeq != null)
       return jeq.versMathML();
@@ -418,8 +418,8 @@ class StringMathBuilder {
     mtext.addText("?");
     return mtext;
   }
-  
-  
+
+
 }
 
 abstract class JEQ {
@@ -586,7 +586,7 @@ class JEQFonction implements JEQ {
       final MathOver mover = new MathOver();
       mover.setAccent(true);
       mover.addMathElement(StringMathBuilder.elemOrQuestion(p1));
-      if (p2 is JEQOperation && (p2 as JEQOperation).op == '\u223C') {
+      if (p2 is JEQOperation && p2.op == '\u223C') {
         final MathOperator mo = new MathOperator();
         mo.setStretchy(true);
         mo.addText("\u223C");
@@ -800,7 +800,7 @@ class JEQOperation implements JEQ {
           par = false;
         else
           par = true;
-        
+
       } else
         par = false;
       MathElement me1;
@@ -827,7 +827,7 @@ class JEQOperation implements JEQ {
       if (p1 is JEQOperation && "+-".indexOf((p1 as JEQOperation).op) != -1)
         me1 = ajPar(me1);
       mrow.addMathElement(me1);
-      
+
       /*
       JEQ dernierDansP1 = p1;
       if (p1 != null)
@@ -838,7 +838,7 @@ class JEQOperation implements JEQ {
        */
       JEQ premierDansP2 = p2;
       if (p2 != null)
-        while (premierDansP2 is JEQOperation && (premierDansP2 as JEQOperation).p1 != null) {
+        while (premierDansP2 is JEQOperation && premierDansP2.p1 != null) {
           premierDansP2 = (premierDansP2 as JEQOperation).p1;
         }
       final bool p2nombre = premierDansP2 is JEQNombre;
@@ -866,7 +866,7 @@ class JEQOperation implements JEQ {
         }
         // else <mo> &InvisibleTimes; </mo>
       }
-      
+
       MathElement me2 = StringMathBuilder.elemOrQuestion(p2);
       if (p2 is JEQOperation && "+-".indexOf((p2 as JEQOperation).op) != -1)
         me2 = ajPar(me2);

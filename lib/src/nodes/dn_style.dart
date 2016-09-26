@@ -20,28 +20,28 @@ part of nodes;
 /**
  * Style node (changes the style without showing tags).
  * Jaxe display type: 'style'.
- * 
+ *
  * parameter: `style`: `GRAS` (bold) | `ITALIQUE` (italic) | `EXPOSANT` (superscript) |
  * `INDICE` (subscript) | `SOULIGNE` (underlined) | `BARRE` (strikethrough) |
  * `PCOULEUR[###,###,###]` (text color) | `FCOULEUR[###,###,###]` (background color)
  * (several styles can be combined with a ';')
- * 
+ *
  * parameter: 'police' (font)
- * 
+ *
  * parameter: 'taille' (size)
  */
 class DNStyle extends DaxeNode {
-  
+
   //String _style; // unused
-  
+
   DNStyle.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     //_style = doc.cfg.elementParameterValue(elementRef, 'style', null);
   }
-  
+
   DNStyle.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
     //_style = doc.cfg.elementParameterValue(ref, 'style', null);
   }
-  
+
   @override
   h.Element html() {
     h.Element span = new h.SpanElement();
@@ -67,12 +67,12 @@ class DNStyle extends DaxeNode {
     }
     return(span);
   }
-  
+
   @override
   void updateHTMLAfterChildrenChange(List<DaxeNode> changed) {
     super.updateHTML();
   }
-  
+
   @override
   h.Element getHTMLContentsNode() {
     if (firstChild != null)
@@ -80,34 +80,34 @@ class DNStyle extends DaxeNode {
     else
       return(getHTMLNode().nodes[1]);
   }
-  
+
   @override
   bool get noDelimiter {
     return(true);
   }
-  
+
   void set css(String css) {
     assert(false);
   }
-  
+
   String get css {
     return(null);
   }
-  
+
   bool matches(DNStyle dn) {
     if (dn is DNStyleSpan)
       return(false);
     return(ref == dn.ref);
   }
-  
+
   bool matchesCss(String cssName, String cssValue) {
     return(false);
   }
-  
+
   bool matchesCssName(String cssName) {
     return(false);
   }
-  
+
   /**
    * Removes all styles or one style from the current selection
    */
@@ -186,7 +186,7 @@ class DNStyle extends DaxeNode {
     EditAndNewPositions ep = new EditAndNewPositions(compound, newStart, newEnd);
     return(ep);
   }
-  
+
   /**
    * Returns the two nodes' first common ancestor.
    */
@@ -208,7 +208,7 @@ class DNStyle extends DaxeNode {
     }
     return(null);
   }
-  
+
   /**
    * Removes all style descendants from the parent, keeping their contents
    * (no validity check).
@@ -231,7 +231,7 @@ class DNStyle extends DaxeNode {
     }
     parent.normalize();
   }
-  
+
   /**
    * Removes all style descendants of a style from the parent, keeping their contents
    * (no validity check).
@@ -240,7 +240,7 @@ class DNStyle extends DaxeNode {
     for (DaxeNode dn = parent.firstChild; dn != null; ) {
       if ((cssValue != null && _matchingCss(dn, styleRef, cssName, cssValue)) ||
           _matchingCssName(dn, styleRef, cssName)) {
-        if (dn is DNStyleSpan && cssName != null && (new CSSMap((dn as DNStyleSpan).css)).keys.length > 1) {
+        if (dn is DNStyleSpan && cssName != null && (new CSSMap(dn.css)).keys.length > 1) {
           // actually, in this case we can just remove a part of the style attribute
           CSSMap map = new CSSMap(dn.css);
           map.remove(cssName);
@@ -262,7 +262,7 @@ class DNStyle extends DaxeNode {
     }
     parent.normalize();
   }
-  
+
   static int _offsetsInsideNode(DaxeNode parent) {
     DaxeNode targetDn = parent;
     int targetDnOffset = parent.offsetLength;
@@ -283,7 +283,7 @@ class DNStyle extends DaxeNode {
     }
     return(n);
   }
-  
+
   /**
    * Edit to remove the first matching style for the node at given Position
    */
@@ -293,7 +293,7 @@ class DNStyle extends DaxeNode {
       parent = parent.parent;
     for (DaxeNode dn = parent; dn != null; dn = dn.parent) {
       if ((styleRef == null && dn is DNStyle) || _matchingCssName(dn, styleRef, cssName)) {
-        if (dn is DNStyleSpan && cssName != null && (new CSSMap((dn as DNStyleSpan).css)).keys.length > 1) {
+        if (dn is DNStyleSpan && cssName != null && (new CSSMap(dn.css)).keys.length > 1) {
           // actually, in this case we can just remove a part of the style attribute
           CSSMap map = new CSSMap(dn.css);
           map.remove(cssName);
@@ -311,7 +311,7 @@ class DNStyle extends DaxeNode {
     }
     return(null);
   }
-  
+
   /**
    * Removes the given style from the current selection. If the selection is empty,
    * removes the style from all ancestors of the node at the cursor position.
@@ -335,7 +335,7 @@ class DNStyle extends DaxeNode {
       page.updateAfterPathChange();
     }
   }
-  
+
   static bool _matchingCssName(DaxeNode dn, x.Element styleRef, String cssName) {
     if (dn is! DNStyle)
       return(false);
@@ -347,7 +347,7 @@ class DNStyle extends DaxeNode {
       return(false);
     return((dn as DNStyle).matchesCssName(cssName));
   }
-  
+
   static bool _matchingCss(DaxeNode dn, x.Element styleRef, String cssName, String cssValue) {
     if (dn is! DNStyle)
       return(false);
@@ -357,7 +357,7 @@ class DNStyle extends DaxeNode {
       return(true);
     return((dn as DNStyle).matchesCss(cssName, cssValue));
   }
-  
+
   /**
    * Edit to create a new node at Position
    */
@@ -369,7 +369,7 @@ class DNStyle extends DaxeNode {
     return(new UndoableEdit.insertNode(pos, styleNode));
   }
   */
-  
+
   /**
    * Edit to apply style between 2 positions (start < end)
    */
@@ -384,7 +384,7 @@ class DNStyle extends DaxeNode {
     Position testStart = new Position.clone(start);
     testStart.moveInsideTextNodeIfPossible();
     if (testStart.dn is DNText && testStart.dnOffset == 0) {
-      DaxeNode previous = testStart.dn.previousSibling; 
+      DaxeNode previous = testStart.dn.previousSibling;
       if (previous is DNStyle && _matchingCss(previous, styleRef, cssName, cssValue)) {
         p1 = new Position(previous.parent, previous.parent.offsetOf(previous));
         newStart = new Position.leftOffsetPosition(testStart);
@@ -398,7 +398,7 @@ class DNStyle extends DaxeNode {
     Position testEnd = new Position.clone(end);
     testEnd.moveInsideTextNodeIfPossible();
     if (testEnd.dn is DNText && testEnd.dnOffset == testEnd.dn.offsetLength) {
-      DaxeNode next = testStart.dn.nextSibling; 
+      DaxeNode next = testStart.dn.nextSibling;
       if (next is DNStyle && _matchingCss(next, styleRef, cssName, cssValue)) {
         p2 = new Position(next.parent, next.parent.offsetOf(next) + 1);
         newEnd = new Position.rightOffsetPosition(testEnd);
@@ -414,7 +414,7 @@ class DNStyle extends DaxeNode {
     edit.addSubEdit(doc.removeBetweenEdit(p1, p2));
     return(new EditAndNewPositions(edit, newStart, newEnd));
   }
-  
+
   /**
    * Apply given style to selection, or create a new node if selection is empty.
    * The style must no be already applied to ancestors of the selection nodes
@@ -458,7 +458,7 @@ class DNStyle extends DaxeNode {
     page.cursor.setSelection(ep.start, ep.end);
     page.updateAfterPathChange();
   }
-  
+
   /**
    * Apply given style inside given parent wherever it is valid.
    */
@@ -494,7 +494,7 @@ class DNStyle extends DaxeNode {
       }
     }
   }
-  
+
   /**
    * Remove any style matching cssName in the selection, and apply the css style to it,
    * or create a new style node if the selection is empty.
@@ -516,7 +516,7 @@ class DNStyle extends DaxeNode {
       page.updateAfterPathChange();
     }
   }
-  
+
   /**
    * Merge the styles at Position if possible, or returns null.
    */
@@ -565,6 +565,6 @@ class DNStyle extends DaxeNode {
 class EditAndNewPositions {
   UndoableEdit edit;
   Position start, end;
-  
+
   EditAndNewPositions(this.edit, this.start, this.end);
 }

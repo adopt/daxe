@@ -19,20 +19,20 @@ part of wxs;
 
 
 class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
-  
+
   List<WXSElement> _elements; // (element)*
   int _minOccurs = 1; // 0 | 1
   int _maxOccurs = 1; // 1
-  
+
   Parent _parent; // WXSComplexType | WXSGroup | WXSRestriction | WXSExtension
-  
-  
+
+
   WXSAll(final Element el, final Parent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     _elements = new List<WXSElement>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element && n.localName == "element")
-        _elements.add(new WXSElement(n as Element, this, schema));
+        _elements.add(new WXSElement(n, this, schema));
     }
     try {
       if (el.hasAttribute("minOccurs"))
@@ -41,13 +41,13 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
     }
     this._parent = parent;
   }
-  
+
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     for (WXSElement element in _elements)
       element.resolveReferences(schema, redefine);
   }
-  
+
   // from WithSubElements
   List<WXSElement> allElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -55,7 +55,7 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
       liste.addAll(element.allElements());
     return(liste);
   }
-  
+
   // from WithSubElements
   List<WXSElement> subElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -63,14 +63,14 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
       liste.addAll(element.matchingElements());
     return(liste);
   }
-  
+
   // from Parent
   List<WXSElement> parentElements() {
     if (_parent != null)
       return(_parent.parentElements());
     return(new List<WXSElement>());
   }
-  
+
   // from WithSubElements
   String regularExpression() {
     final StringBuffer sb = new StringBuffer();
@@ -90,7 +90,7 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
       sb.write('?');
     return(sb.toString());
   }
-  
+
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
     // renvoie null si l'enfant n'en est pas un
@@ -100,7 +100,7 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
           return(_minOccurs > 0 && element.getMinOccurs() > 0);
     return(null);
   }
-  
+
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
     // renvoie null si l'enfant n'en est pas un
@@ -110,7 +110,7 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
           return(false);
     return(null);
   }
-  
+
   // from WithSubElements
   int validate(final List<WXSElement> subElements, final int start, final bool insertion) {
     if (_elements.length == 0)
@@ -143,7 +143,7 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
     }
     return(start + nb);
   }
-  
+
   // from WithSubElements
   bool isOptionnal() {
     if (_elements.length == 0)

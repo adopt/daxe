@@ -20,7 +20,7 @@ part of wxs;
 
 
 class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
-  
+
   // (simpleType|complexType)?, (unique|key|keyref)*
   WXSSimpleType _simpleType = null;
   WXSComplexType _complexType = null;
@@ -35,7 +35,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   String _fixed = null;
   bool _abstractAtt = false;
   String _form = null; // (qualified|unqualified)
-  
+
   WXSElement _wxsRef = null;
   WXSElement _wxsSubstitutionGroup = null;
   Element _domElement;
@@ -45,23 +45,23 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
   List<WXSElement> _substitutions;
   List<WXSElement> _correspondant; // corresponding elements cache
   List<WXSElement> _subElements; // sub-elements cache
-  
-  
+
+
   WXSElement(final Element el, final Parent parent, final WXSSchema schema) {
     _parseAnnotation(el);
     _identityConstraints = new List<WXSThing>();
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "simpleType")
-          _simpleType = new WXSSimpleType(n as Element, this, schema);
+          _simpleType = new WXSSimpleType(n, this, schema);
         else if (n.localName == "complexType")
-          _complexType = new WXSComplexType(n as Element, this, schema);
+          _complexType = new WXSComplexType(n, this, schema);
         else if (n.localName == "unique")
-          _identityConstraints.add(new WXSUnique(n as Element));
+          _identityConstraints.add(new WXSUnique(n));
         else if (n.localName == "key")
-          _identityConstraints.add(new WXSKey(n as Element));
+          _identityConstraints.add(new WXSKey(n));
         else if (n.localName == "keyref")
-          _identityConstraints.add(new WXSKeyref(n as Element));
+          _identityConstraints.add(new WXSKeyref(n));
       }
     }
     if (el.hasAttribute("name"))
@@ -91,7 +91,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       _abstractAtt = el.getAttribute("abstract") == "true" || el.getAttribute("abstract") == "1";
     if (el.hasAttribute("form"))
       _form = el.getAttribute("form");
-    
+
     _domElement = el;
     this._parent = parent;
     this._schema = schema;
@@ -100,34 +100,34 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     _subElements = null;
     _correspondant = null;
   }
-  
+
   String getName() {
     if (_name == null && _wxsRef != null)
       return(_wxsRef.getName());
     return(_name);
   }
-  
+
   String getRef() {
     return(_ref);
   }
-  
+
   int getMinOccurs() {
     return(_minOccurs);
   }
-  
+
   int getMaxOccurs() {
     return(_maxOccurs);
   }
-  
+
   bool getAbstract() {
     return(_abstractAtt);
   }
-  
-  
+
+
   Element getDOMElement() {
     return(_domElement);
   }
-  
+
   String getNamespace() {
     bool qualified;
     if (_schema.getTopElements().contains(this))
@@ -141,11 +141,11 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     else
       return(null);
   }
-  
+
   Parent getParent() {
     return(_parent);
   }
-  
+
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
     if (_simpleType != null)
@@ -175,23 +175,23 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       _wxsSubstitutionGroup.addSubstitution(this);
     }
   }
-  
+
   void addReference(final WXSThing thing) {
     if (_references == null)
       _references = new List<WXSThing>();
     _references.add(thing);
   }
-  
+
   void addSubstitution(final WXSElement el) {
     if (_substitutions == null)
       _substitutions = new List<WXSElement>();
     _substitutions.add(el);
   }
-  
+
   List<WXSElement> getSubstitutions() {
     return(_substitutions);
   }
-  
+
   // from WithSubElements
   List<WXSElement> allElements() {
     final List<WXSElement> liste = new List<WXSElement>();
@@ -200,7 +200,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       liste.addAll(_complexType.allElements());
     return(liste);
   }
-  
+
   /**
    * Matching non-abstract named elements
    * (this element if it is named, named element if this is a reference, and substitutions).
@@ -218,7 +218,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
         _correspondant.addAll(substitution.matchingElements());
           return(_correspondant);
   }
-  
+
   // from WithSubElements
   List<WXSElement> subElements() {
     if (_subElements != null)
@@ -233,7 +233,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     _subElements = new List.from(set);
     return(_subElements);
   }
-  
+
   // from Parent
   List<WXSElement> parentElements() {
     final LinkedHashSet<WXSElement> set = new LinkedHashSet<WXSElement>();
@@ -251,7 +251,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       set.addAll(_wxsSubstitutionGroup.parentElements());
     return(new List.from(set));
   }
-  
+
   /**
    * Regular expression for the user interface (with the element titles: cannot be used for validation)
    */
@@ -263,7 +263,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(null);
     return(_complexType.regularExpression());
   }
-  
+
   /**
    * Regular expression for this element as a model sub-element.
    * Returns null if there is no non-abstract element matching this element.
@@ -292,7 +292,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
         sb.write('+');
       return(sb.toString());
   }
-  
+
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
     // this element is assumed to have a name
@@ -302,7 +302,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(null);
     return(_complexType.requiredChild(child));
   }
-  
+
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
     // this element is assumed to have a name
@@ -312,7 +312,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(null);
     return(_complexType.multipleChildren(child));
   }
-  
+
   List<String> possibleValues() {
     if (_fixed != null) {
       final List<String> fixedval = new List<String>();
@@ -329,7 +329,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(_wxsSubstitutionGroup.possibleValues());
     return(null);
   }
-  
+
   List<String> suggestedValues() {
     if (_fixed != null) {
       final List<String> fixedval = new List<String>();
@@ -346,7 +346,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(_wxsSubstitutionGroup.suggestedValues());
     return(null);
   }
-  
+
   List<WXSAttribute> attributes() {
     if (_wxsRef != null)
       return(_wxsRef.attributes());
@@ -356,7 +356,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(_wxsSubstitutionGroup.attributes());
     return(new List<WXSAttribute>());
   }
-  
+
   bool containsText() {
     if (_type != null) {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_type));
@@ -374,7 +374,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(_wxsSubstitutionGroup.containsText());
     return(false);
   }
-  
+
   /**
    * Validation of a named element.
    * Returns true if the given list of sub-elements is a valid set of sub-elements.
@@ -395,7 +395,7 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
     final int pos = _complexType.validate(subElements, 0, insert);
     return(pos > 0 && pos == subElements.length);
   }
-  
+
   /**
    * Validation of a sub-element.
    * Returns the position in the list as far as validation is possible
@@ -423,12 +423,12 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       return(start);
     return(start + nb);
   }
-  
+
   // from WithSubElements
   bool isOptionnal() {
     return(_minOccurs == 0);
   }
-  
+
   bool validValue(final String value) {
     if (_fixed != null)
       return(_fixed == value);

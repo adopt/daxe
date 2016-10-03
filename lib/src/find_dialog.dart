@@ -21,16 +21,17 @@ part of daxe;
  * Find and Replace dialog.
  */
 class FindDialog {
-  
+
   static bool caseSensitive = false;
   static bool backwards = false;
   static String findString = '';
-  
+
   void show() {
     h.DivElement div_find = h.document.getElementById('find_dlg');
     if (div_find != null) {
       h.TextInputElement inputFind = h.document.getElementById('find_dlg_find_field');
       inputFind.focus();
+      inputFind.setSelectionRange(0, inputFind.value.length);
       return;
     }
     h.Element divdoc = h.querySelector("#doc1");
@@ -39,7 +40,7 @@ class FindDialog {
     div_find.id = 'find_dlg';
     div_find.classes.add('find');
     div_find.style.left = "${divdoc.offsetLeft}px";
-    
+
     h.FormElement form = new h.FormElement();
     h.TableElement table = new h.TableElement();
     h.TableRowElement tr = new h.TableRowElement();
@@ -76,7 +77,7 @@ class FindDialog {
     tr.append(td);
     table.append(tr);
     div_find.append(table);
-    
+
     h.DivElement div_options = new h.DivElement();
     div_options.classes.add('options');
     h.CheckboxInputElement cbCaseSensitive = new h.CheckboxInputElement();
@@ -103,7 +104,7 @@ class FindDialog {
     div_options.append(labelBackwards);
     // TODO: option to look at attribute values, XPath search
     form.append(div_options);
-    
+
     h.DivElement div_buttons = new h.DivElement();
     div_buttons.classes.add('buttons');
     h.ButtonElement bClose = new h.ButtonElement();
@@ -137,7 +138,7 @@ class FindDialog {
       ..onClick.listen((h.MouseEvent event) => next());
     div_buttons.append(bNext);
     form.append(div_buttons);
-    
+
     div_find.append(form);
     h.document.body.append(div_find);
     div_find.onKeyDown.listen((h.KeyboardEvent event) {
@@ -146,8 +147,9 @@ class FindDialog {
       }
     });
     inputFind.focus();
+    inputFind.setSelectionRange(0, inputFind.value.length);
   }
-  
+
   void next() {
     //FIXME: does not work with DNForm and DNSimpleType: selection is not visible
     //  (but then, how could we select a part of a select element anyway ?)
@@ -173,13 +175,26 @@ class FindDialog {
       inputFind.focus();
     }
   }
-  
+
   Position nextAt(Position pos) {
     DaxeNode parent = pos.dn;
     int offset = pos.dnOffset;
     if (parent is! DNText) {
-      parent = parent.childAtOffset(offset);
-      offset = 0;
+      if (offset < parent.offsetLength) {
+        parent = parent.childAtOffset(offset);
+      } else {
+        DaxeNode p = parent;
+        parent = null;
+        while (p != null) {
+          if (p.nextSibling != null) {
+            parent = p.nextSibling;
+            break;
+          }
+          p = p.parent;
+        }
+      }
+      if (parent != null)
+        offset = 0;
     }
     while (parent != null) {
       if (parent is DNText) {
@@ -196,7 +211,7 @@ class FindDialog {
     }
     return(null);
   }
-  
+
   Position previousAt(Position pos) {
     DaxeNode parent = pos.dn;
     int offset = pos.dnOffset;
@@ -233,7 +248,7 @@ class FindDialog {
     }
     return(null);
   }
-  
+
   void replace() {
     if (page.getSelectionStart() == null)
       return;
@@ -261,12 +276,12 @@ class FindDialog {
     if (start.dn is DNText)
       page.cursor.setSelection(start, new Position(start.dn, start.dnOffset + replaceString.length));
   }
-  
+
   void replaceFind() {
     replace();
     next();
   }
-  
+
   void replaceAll() {
     h.TextInputElement inputFind = h.document.getElementById('find_dlg_find_field');
     findString = inputFind.value;
@@ -286,7 +301,7 @@ class FindDialog {
     }
     doc.doNewEdit(edit);
   }
-  
+
   void close() {
     h.DivElement div_find = h.document.getElementById('find_dlg');
     div_find.remove();

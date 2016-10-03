@@ -77,7 +77,7 @@ class Menu extends MenuItem {
     tr.append(td);
     td = new h.TableCellElement();
     h.ImageElement submenu_img = new h.ImageElement(src:'packages/daxe/images/submenu.png');
-    submenu_img.style.verticalAlign = 'middle';
+    submenu_img.classes.add('submenu_icon');
     td.append(submenu_img);
     h.DivElement divSubMenu = htmlMenu();
     divSubMenu.classes.remove('dropdown_menu');

@@ -106,6 +106,8 @@ class FindDialog {
     form.append(div_options);
 
     h.DivElement div_buttons = new h.DivElement();
+    div_buttons.classes.add('buttons');
+    div_buttons.style.textAlign = 'left';
     h.ButtonElement bClose = new h.ButtonElement();
     bClose
       ..attributes['type'] = 'button'

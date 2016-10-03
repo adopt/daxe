@@ -20,17 +20,17 @@ part of daxe;
 class Menu extends MenuItem {
   List<MenuItem> items;
   String menuid;
-  
+
   Menu(String title) : super(title, null) {
     items = new List<MenuItem>();
     this.menuid = "menu_${MenuItem.itemidcount-1}";
   }
-  
+
   add(MenuItem item) {
     item.parent = this;
     items.add(item);
   }
-  
+
   @override
   h.Element htmlItem() {
     h.TableRowElement tr = new h.TableRowElement();
@@ -76,7 +76,9 @@ class Menu extends MenuItem {
     });
     tr.append(td);
     td = new h.TableCellElement();
-    td.text = ">";
+    h.ImageElement submenu_img = new h.ImageElement(src:'packages/daxe/images/submenu.png');
+    submenu_img.style.verticalAlign = 'middle';
+    td.append(submenu_img);
     h.DivElement divSubMenu = htmlMenu();
     divSubMenu.classes.remove('dropdown_menu');
     divSubMenu.classes.add('submenu');
@@ -95,7 +97,7 @@ class Menu extends MenuItem {
       tr.title = toolTipText;
     return(tr);
   }
-  
+
   h.Element htmlMenu() {
     h.DivElement div = new h.DivElement();
     div.classes.add('dropdown_menu');
@@ -108,11 +110,11 @@ class Menu extends MenuItem {
     div.append(table);
     return(div);
   }
-  
+
   h.Element getMenuHTMLNode() {
     return(h.querySelector("#$menuid"));
   }
-  
+
   void show() {
     h.DivElement div = getMenuHTMLNode();
     div.style.display = 'block';
@@ -124,7 +126,7 @@ class Menu extends MenuItem {
     //hMenu.style.top = "${top}px";
     //hMenu.style.left = "${left}px";
   }
-  
+
   void hide() {
     for (MenuItem item in items) {
       if (item is Menu)
@@ -134,23 +136,23 @@ class Menu extends MenuItem {
     h.DivElement div = getMenuHTMLNode();
     div.style.display = 'none';
   }
-  
+
   bool isVisible() {
     h.DivElement div = getMenuHTMLNode();
     return(div.style.display != 'none');
   }
-  
+
   void addSeparator() {
     items.add(new MenuItem.separator());
   }
-  
+
   void deselectOtherItems(MenuItem menuitem) {
     for (MenuItem item in items) {
       if (item != menuitem)
         item.deselect();
     }
   }
-  
+
   void set title(String title) {
     _title = title;
     h.Element hel = h.querySelector("#$itemid");
@@ -164,7 +166,7 @@ class Menu extends MenuItem {
         firstNode.text = title;
     }
   }
-  
+
   void checkEnabled() {
     bool en = false;
     for (MenuItem item in items) {
@@ -184,7 +186,7 @@ class Menu extends MenuItem {
     if (parent is Menu)
       (parent as Menu).checkEnabled();
   }
-  
+
   /*
   @override
   void close() {
@@ -194,7 +196,7 @@ class Menu extends MenuItem {
       hide();
   }
   */
-  
+
   void selectFirst() {
     for (MenuItem item in items) {
       if (item.enabled) {
@@ -203,7 +205,7 @@ class Menu extends MenuItem {
       }
     }
   }
-  
+
   void selectPrevious(MenuItem current) {
     bool found = false;
     for (MenuItem item in items.reversed) {
@@ -216,7 +218,7 @@ class Menu extends MenuItem {
       }
     }
   }
-  
+
   void selectNext(MenuItem current) {
     bool found = false;
     for (MenuItem item in items) {
@@ -229,5 +231,5 @@ class Menu extends MenuItem {
       }
     }
   }
-  
+
 }

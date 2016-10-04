@@ -55,6 +55,8 @@ abstract class Node {
   bool hasAttributes();
   String lookupPrefix(String namespaceURI);
   String lookupNamespaceURI(String prefix);
+  Object setUserData(String key, Object data, UserDataHandler handler);
+  Object getUserData(String key);
 
   // unsupported features
   
@@ -78,6 +80,4 @@ abstract class Node {
   //bool isDefaultNamespace(String namespaceURI);
   //bool isEqualNode(Node arg);
   //DOMObject getFeature(String feature, String version);
-  //DOMUserData setUserData(String key, DOMUserData data, UserDataHandler handler);
-  //DOMUserData getUserData(String key);
 }

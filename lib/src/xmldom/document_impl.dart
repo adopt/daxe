@@ -25,10 +25,8 @@ class DocumentImpl extends NodeImpl implements Document {
   bool xmlStandalone;
   String xmlVersion;
   String documentURI;
-  
-  HashMap<String, Element> _idToElement; // todo: fill this with something !
-  
-  
+
+
   DocumentImpl.clone(final Document doc, final bool deep) {
     implementation = doc.implementation;
     inputEncoding = doc.inputEncoding;
@@ -36,9 +34,7 @@ class DocumentImpl extends NodeImpl implements Document {
     xmlStandalone = doc.xmlStandalone;
     xmlVersion = doc.xmlVersion;
     documentURI = doc.documentURI;
-    
-    _idToElement = new HashMap<String, Element>();
-    
+
     nodeName = doc.nodeName;
     nodeValue = doc.nodeValue;
     nodeType = doc.nodeType;
@@ -72,7 +68,7 @@ class DocumentImpl extends NodeImpl implements Document {
     prefix = doc.prefix;
     localName = doc.localName;
   }
-  
+
   DocumentImpl(final DOMImplementation implementation, final String namespaceURI,
                final String qualifiedName, final DocumentType doctype) {
     this.implementation = implementation;
@@ -81,8 +77,7 @@ class DocumentImpl extends NodeImpl implements Document {
     xmlStandalone = false;
     xmlVersion = "1.0";
     documentURI = null;
-    _idToElement = new HashMap<String, Element>();
-    
+
     nodeName = "#document";
     nodeValue = null;
     nodeType = Node.DOCUMENT_NODE;
@@ -97,7 +92,7 @@ class DocumentImpl extends NodeImpl implements Document {
     this.namespaceURI = null;
     prefix = null;
     localName = null;
-    
+
     if (qualifiedName != null) {
       if (namespaceURI != null)
         documentElement = new ElementImpl.NS(this, namespaceURI, qualifiedName);
@@ -105,11 +100,11 @@ class DocumentImpl extends NodeImpl implements Document {
         documentElement = new ElementImpl(this, qualifiedName);
       documentElement.parentNode = this;
     }
-    
+
     if (doctype != null)
       this.doctype = doctype;
   }
-  
+
   /*
   DocumentImpl.fromDH(final DOMImplementation implementation, final h.Document doc) {
     // lots of info missing !
@@ -120,9 +115,9 @@ class DocumentImpl extends NodeImpl implements Document {
     xmlVersion = "1.0";
     documentURI = null;
     doctype = null; // new DocumentTypeImpl.fromDH(this, doc.doctype);
-    
+
     _idToElement = new HashMap<String, Element>();
-    
+
     nodeName = "#document";
     nodeValue = doc.nodeValue;
     nodeType = Node.DOCUMENT_NODE;
@@ -137,43 +132,43 @@ class DocumentImpl extends NodeImpl implements Document {
     namespaceURI = null;
     prefix = null;
     localName = null;
-    
+
     appendChild(new ElementImpl.fromDH(this, doc.documentElement));
   }
   */
-  
+
   Element createElement(String tagName) { // throws DOMException
     return(new ElementImpl(this, tagName));
   }
-  
+
   DocumentFragment createDocumentFragment() {
     return(new DocumentFragmentImpl(this));
   }
-  
+
   Text createTextNode(String data) {
     return(new TextImpl(this, data));
   }
-  
+
   Comment createComment(String data) {
     return(new CommentImpl(this, data));
   }
-  
+
   CDATASection createCDATASection(String data) { // throws DOMException
     return(new CDATASectionImpl(this, data));
   }
-  
+
   ProcessingInstruction createProcessingInstruction(String target, String data) { // throws DOMException
     return(new ProcessingInstructionImpl(this, target, data));
   }
-  
+
   Attr createAttribute(String name) { // throws DOMException
     return(new AttrImpl(this, name));
   }
-  
+
   EntityReference createEntityReference(String name) { // throws DOMException
     return(new EntityReferenceImpl(this, name));
   }
-  
+
   List<Node> getElementsByTagName(String tagname) {
     List<Node> nodes = new List<Node>();
     for (Node child in childNodes) {
@@ -184,24 +179,26 @@ class DocumentImpl extends NodeImpl implements Document {
     }
     return(nodes);
   }
-  
+
   Node importNode(Node importedNode, bool deep) { // throws DOMException
     Node clone = importedNode.cloneNode(deep);
     if (clone.nodeType == Node.ENTITY_NODE || clone.nodeType == Node.NOTATION_NODE) {
       clone.ownerDocument = this;
     } else
       adoptNode(clone);
+    if (importedNode is NodeImpl)
+      importedNode._notifyUserDataHandlers(UserDataHandler.NODE_IMPORTED, importedNode, clone);
     return(clone);
   }
-  
+
   Element createElementNS(String namespaceURI, String qualifiedName) { // throws DOMException
     return(new ElementImpl.NS(this, namespaceURI, qualifiedName));
   }
-  
+
   Attr createAttributeNS(String namespaceURI, String qualifiedName) { // throws DOMException
     return(new AttrImpl.NS(this, namespaceURI, qualifiedName));
   }
-  
+
   List<Node> getElementsByTagNameNS(String namespaceURI, String localName) {
     List<Node> nodes = new List<Node>();
     for (Node child in childNodes) {
@@ -212,32 +209,34 @@ class DocumentImpl extends NodeImpl implements Document {
     }
     return(nodes);
   }
-  
+
   /*
   Element getElementById(String elementId) {
     return(_idToElement[elementId]);
   }
   */
-  
+
   Node adoptNode(Node source) { // throws DOMException
     if (source.nodeType == Node.DOCUMENT_NODE || source.nodeType == Node.DOCUMENT_TYPE_NODE ||
         source.nodeType == Node.ENTITY_NODE || source.nodeType == Node.NOTATION_NODE)
       throw new DOMException("NOT_SUPPORTED_ERR");
-    
+
     if (source.parentNode != null) {
       source.parentNode.removeChild(source);
     }
-    
+
     if (source is Attr) {
       Attr att = source;
       att.ownerElement = null;
       att.specified = true;
     }
-    
+
     _adoptNodeRecursion(source);
+    if (source is NodeImpl)
+      source._notifyUserDataHandlers(UserDataHandler.NODE_ADOPTED, source, source);
     return(source);
   }
-  
+
   void _adoptNodeRecursion(Node source) {
     source.ownerDocument = this;
     if (source.attributes != null) {
@@ -260,11 +259,32 @@ class DocumentImpl extends NodeImpl implements Document {
       }
     }
   }
-  
-  Node cloneNode(bool deep) {
-    return(new DocumentImpl.clone(this, deep));
+
+  Node renameNode(Node n, String namespaceURI, String qualifiedName) {
+    if (n.ownerDocument != this)
+      throw new DOMException("WRONG_DOCUMENT_ERR");
+    // TODO: more checks
+    if (n is Element || n is Attr) {
+      if (n is Element)
+        n.tagName = qualifiedName;
+      n.nodeName = qualifiedName;
+      n.namespaceURI = namespaceURI;
+      int ind = qualifiedName.indexOf(":");
+      if (ind != -1) {
+        n.prefix = qualifiedName.substring(0, ind);
+        n.localName = qualifiedName.substring(ind + 1);
+      } else {
+        n.prefix = null;
+        n.localName = qualifiedName;
+      }
+      if (n is NodeImpl)
+        n._notifyUserDataHandlers(UserDataHandler.NODE_RENAMED, n, n);
+      return n;
+    } else {
+      throw new DOMException("NOT_SUPPORTED_ERR");
+    }
   }
-  
+
   String toString() {
     StringBuffer sb = new StringBuffer();
     sb.write("<?xml");
@@ -278,14 +298,14 @@ class DocumentImpl extends NodeImpl implements Document {
     }
     return(sb.toString());
   }
-  
+
   DocumentType get doctype {
     for (Node n=firstChild; n!=null; n=n.nextSibling)
       if (n is DocumentType)
         return n;
     return null;
   }
-  
+
   // NOTE: setting a doctype is not DOM3
   set doctype(DocumentType dt) {
     Node next;

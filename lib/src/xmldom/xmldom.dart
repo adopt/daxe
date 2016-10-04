@@ -39,6 +39,7 @@ part 'entity_reference.dart';
 part 'node.dart';
 part 'processing_instruction.dart';
 part 'text.dart';
+part 'user_data_handler.dart';
 
 part 'attr_impl.dart';
 part 'cdata_section_impl.dart';

@@ -18,7 +18,7 @@
 part of xmldom;
 
 class TextImpl extends NodeImpl implements Text {
-  
+
   TextImpl.clone(final Text txt) {
     nodeName = txt.nodeName;
     nodeValue = txt.nodeValue;
@@ -35,7 +35,7 @@ class TextImpl extends NodeImpl implements Text {
     prefix = null;
     localName = null;
   }
-  
+
   TextImpl(final Document doc, final String data) {
     nodeName = "#text";
     nodeValue = data;
@@ -52,7 +52,7 @@ class TextImpl extends NodeImpl implements Text {
     prefix = null;
     localName = null;
   }
-  
+
   /*
   TextImpl.fromDH(final Document doc, final h.Text txt) {
     nodeName = "#text";
@@ -71,15 +71,11 @@ class TextImpl extends NodeImpl implements Text {
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new TextImpl.clone(this));
-  }
-  
+
   String toString() {
     return(_escape(nodeValue));
   }
-  
+
   /// escapes XML character entities for serialization
   static String _escape(String s) {
     s = s.replaceAll('&', '&amp;');
@@ -88,4 +84,3 @@ class TextImpl extends NodeImpl implements Text {
     return(s);
   }
 }
-

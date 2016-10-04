@@ -18,7 +18,7 @@
 part of xmldom;
 
 class CommentImpl extends NodeImpl implements Comment {
-  
+
   CommentImpl.clone(final Comment com) {
     nodeName = "#comment";
     nodeValue = com.nodeValue;
@@ -35,7 +35,7 @@ class CommentImpl extends NodeImpl implements Comment {
     prefix = null;
     localName = null;
   }
-  
+
   CommentImpl(final Document doc, final String data) {
     nodeName = "#comment";
     nodeValue = data;
@@ -52,7 +52,7 @@ class CommentImpl extends NodeImpl implements Comment {
     prefix = null;
     localName = null;
   }
-  
+
   /*
   CommentImpl.fromDH(final Document doc, final h.Comment com) {
     nodeName = "#comment";
@@ -71,13 +71,8 @@ class CommentImpl extends NodeImpl implements Comment {
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new CommentImpl.clone(this));
-  }
-  
+
   String toString() {
     return("<!--$nodeValue-->");
   }
 }
-

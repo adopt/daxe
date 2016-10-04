@@ -24,12 +24,12 @@ class AttrImpl extends NodeImpl implements Attr {
   bool specified;
   Element ownerElement;
   bool isId;
-  
+
   AttrImpl.clone(final Attr attr) {
     specified = true;
     ownerElement = attr.ownerElement;
     isId = attr.isId;
-    
+
     nodeName = attr.nodeName;
     nodeValue = attr.nodeValue;
     nodeType = attr.nodeType;
@@ -45,12 +45,12 @@ class AttrImpl extends NodeImpl implements Attr {
     prefix = attr.prefix;
     localName = attr.localName;
   }
-  
+
   AttrImpl(final Document doc, final String name) {
     specified = true;
     ownerElement = null;
     isId = false;
-    
+
     nodeName = name;
     nodeValue = null;
     nodeType = Node.ATTRIBUTE_NODE;
@@ -66,12 +66,12 @@ class AttrImpl extends NodeImpl implements Attr {
     prefix = null;
     localName = null;
   }
-  
+
   AttrImpl.NS(final Document doc, final String namespaceURI, final String qualifiedName) {
     specified = true;
     ownerElement = null;
     isId = false;
-    
+
     nodeName = qualifiedName;
     nodeValue = null;
     nodeType = Node.ATTRIBUTE_NODE;
@@ -93,13 +93,13 @@ class AttrImpl extends NodeImpl implements Attr {
       localName = name;
     }
   }
-  
+
   /*
   AttrImpl.fromDH(final Document doc, final String localName, final String value) {
     specified = true;
     ownerElement = null;
     isId = false;
-    
+
     nodeName = localName; // KNOWN BUG: should be name
     nodeValue = value;
     nodeType = Node.ATTRIBUTE_NODE;
@@ -116,31 +116,27 @@ class AttrImpl extends NodeImpl implements Attr {
     this.localName = localName;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new AttrImpl.clone(this));
-  }
-  
+
   String get name {
     return(nodeName);
   }
-  
+
   void set name(String name) {
     nodeName = name;
   }
-  
+
   String get value {
     return(nodeValue);
   }
-  
+
   void set value(String value) {
     nodeValue = value;
   }
-  
+
   String toString() {
     return('$nodeName="${_escape(nodeValue)}"');
   }
-  
+
   /// escapes XML character entities for serialization
   static String _escape(String s) {
     s = s.replaceAll('&', '&amp;');

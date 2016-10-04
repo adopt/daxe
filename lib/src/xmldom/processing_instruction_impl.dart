@@ -20,11 +20,11 @@ part of xmldom;
 class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstruction {
   String target;
   String data;
-  
+
   ProcessingInstructionImpl.clone(final ProcessingInstruction pi) {
     target = pi.target;
     data = pi.data;
-    
+
     nodeName = pi.nodeName;
     nodeValue = pi.nodeValue;
     nodeType = pi.nodeType;
@@ -40,11 +40,11 @@ class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstructio
     prefix = null;
     localName = null;
   }
-  
+
   ProcessingInstructionImpl(final Document doc, final String target, final String data) {
     this.target = target;
     this.data = data;
-    
+
     nodeName = target;
     nodeValue = data;
     nodeType = Node.PROCESSING_INSTRUCTION_NODE;
@@ -60,12 +60,12 @@ class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstructio
     prefix = null;
     localName = null;
   }
-  
+
   /*
   ProcessingInstructionImpl.fromDH(final Document doc, final h.ProcessingInstruction pi) {
     target = pi.target;
     data = pi.data;
-    
+
     nodeName = target;
     nodeValue = pi.nodeValue;
     nodeType = Node.PROCESSING_INSTRUCTION_NODE;
@@ -82,13 +82,8 @@ class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstructio
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new ProcessingInstructionImpl.clone(this));
-  }
-  
+
   String toString() {
     return("<?$target $data?>");
   }
 }
-

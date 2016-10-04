@@ -19,10 +19,10 @@ part of xmldom;
 
 class ElementImpl extends NodeImpl implements Element {
   String tagName;
-  
+
   ElementImpl.clone(final Element el, final bool deep) {
     tagName = el.tagName;
-    
+
     nodeName = el.nodeName;
     nodeValue = el.nodeValue;
     nodeType = el.nodeType;
@@ -59,7 +59,7 @@ class ElementImpl extends NodeImpl implements Element {
     prefix = el.prefix;
     localName = el.localName;
   }
-  
+
   ElementImpl(final Document doc, final String tagName) {
     this.tagName = tagName;
     nodeName = tagName;
@@ -77,7 +77,7 @@ class ElementImpl extends NodeImpl implements Element {
     prefix = null;
     localName = null;
   }
-  
+
   ElementImpl.NS(final Document doc, final String namespaceURI, final String qualifiedName) {
     tagName = qualifiedName;
     nodeName = qualifiedName;
@@ -101,7 +101,7 @@ class ElementImpl extends NodeImpl implements Element {
       localName = qualifiedName;
     }
   }
-  
+
   /*
   ElementImpl.fromDH(final Document doc, final h.Element el) {
     tagName = el.tagName;
@@ -141,7 +141,7 @@ class ElementImpl extends NodeImpl implements Element {
       prefix = null;
     }
     localName = el.localName;
-    
+
     for (h.Node n in el.nodes) {
       Node n2 = null;
       switch (n.nodeType) {
@@ -173,7 +173,7 @@ class ElementImpl extends NodeImpl implements Element {
       if (n2 != null)
         appendChild(n2);
     }
-    
+
     // merge text nodes (useful with Firefox)
     for (Node n = firstChild; n != null; n = n.nextSibling) {
       if (n.nodeType == Node.TEXT_NODE) {
@@ -185,7 +185,7 @@ class ElementImpl extends NodeImpl implements Element {
     }
   }
   */
-  
+
   String getAttribute(String name) {
     if (attributes == null)
       return("");
@@ -197,7 +197,7 @@ class ElementImpl extends NodeImpl implements Element {
       return("");
     return(v);
   }
-  
+
   void setAttribute(String name, String value) { // throws DOMException
     if (attributes == null)
       attributes = new LinkedHashMap<String, Attr>();
@@ -210,21 +210,21 @@ class ElementImpl extends NodeImpl implements Element {
     }
     att.nodeValue = value;
   }
-  
+
   void removeAttribute(String name) { // throws DOMException
     attributes.remove(name);
   }
-  
+
   Attr getAttributeNode(String name) {
     if (attributes == null)
       return(null);
     return(attributes[name]);
   }
-  
+
   Attr setAttributeNode(Attr newAttr) { // throws DOMException
     if (ownerDocument != newAttr.ownerDocument)
       throw new DOMException("WRONG_DOCUMENT_ERR");
-    
+
     if (attributes == null)
       attributes = new LinkedHashMap<String, Attr>();
     newAttr.parentNode = this;
@@ -232,15 +232,15 @@ class ElementImpl extends NodeImpl implements Element {
     attributes[newAttr.name] = newAttr;
     return(newAttr);
   }
-  
+
   Attr removeAttributeNode(Attr oldAttr) { // throws DOMException
     if (attributes == null || !attributes.containsValue(oldAttr))
       throw new DOMException("NOT_FOUND_ERR");
-    
+
     attributes.remove(oldAttr.name);
     return(oldAttr);
   }
-  
+
   List<Node> getElementsByTagName(String name) {
     List<Node> nodes = new List<Node>();
     if (childNodes == null)
@@ -253,7 +253,7 @@ class ElementImpl extends NodeImpl implements Element {
     }
     return(nodes);
   }
-  
+
   String getAttributeNS(String namespaceURI, String localName) { // throws DOMException
     if (attributes == null)
       return("");
@@ -266,7 +266,7 @@ class ElementImpl extends NodeImpl implements Element {
     }
     return("");
   }
-  
+
   void setAttributeNS(String namespaceURI, String qualifiedName, String value) { // throws DOMException
     if (attributes == null)
       attributes = new LinkedHashMap<String, Attr>();
@@ -291,13 +291,13 @@ class ElementImpl extends NodeImpl implements Element {
     att.nodeValue = value;
     attributes[qualifiedName] = att;
   }
-  
+
   void removeAttributeNS(String namespaceURI, String localName) { // throws DOMException
     Attr att = getAttributeNodeNS(namespaceURI, localName);
     if (att != null)
         attributes.remove(att.name);
   }
-  
+
   Attr getAttributeNodeNS(String namespaceURI, String localName) { // throws DOMException
     if (attributes == null)
       return(null);
@@ -308,13 +308,13 @@ class ElementImpl extends NodeImpl implements Element {
     }
     return(null);
   }
-  
+
   Attr setAttributeNodeNS(Attr newAttr) { // throws DOMException
     if (ownerDocument != newAttr.ownerDocument)
       throw new DOMException("WRONG_DOCUMENT_ERR");
     if (newAttr.ownerElement != null)
       throw new DOMException("INUSE_ATTRIBUTE_ERR");
-    
+
     if (attributes == null)
       attributes = new LinkedHashMap<String, Attr>();
     Attr att = getAttributeNodeNS(newAttr.namespaceURI, newAttr.localName);
@@ -323,7 +323,7 @@ class ElementImpl extends NodeImpl implements Element {
     attributes[newAttr.name] = newAttr;
     return(att);
   }
-  
+
   List<Node> getElementsByTagNameNS(String namespaceURI, String localName) { // throws DOMException
     List<Node> nodes = new List<Node>();
     if (childNodes == null)
@@ -336,22 +336,18 @@ class ElementImpl extends NodeImpl implements Element {
     }
     return(nodes);
   }
-  
+
   bool hasAttribute(String name) {
     if (attributes == null)
       return(false);
     return(attributes[name] != null);
   }
-  
+
   bool hasAttributeNS(String namespaceURI, String localName) { // throws DOMException
     Attr att = getAttributeNodeNS(namespaceURI, localName);
     return(att != null);
   }
-  
-  Node cloneNode(bool deep) {
-    return(new ElementImpl.clone(this, deep));
-  }
-  
+
   String toString() {
     StringBuffer sb = new StringBuffer();
     sb.write("<$tagName");
@@ -373,6 +369,3 @@ class ElementImpl extends NodeImpl implements Element {
     return(sb.toString());
   }
 }
-
-
-

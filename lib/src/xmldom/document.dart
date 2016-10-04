@@ -26,7 +26,7 @@ abstract class Document extends Node {
   String xmlVersion;
   String documentURI;
   DocumentType doctype;
-  
+
   Element createElement(String tagName); // throws DOMException
   DocumentFragment createDocumentFragment();
   Text createTextNode(String data);
@@ -41,6 +41,7 @@ abstract class Document extends Node {
   Attr createAttributeNS(String namespaceURI, String qualifiedName); // throws DOMException
   List<Node> getElementsByTagNameNS(String namespaceURI, String localName);
   Node adoptNode(Node source); // throws DOMException
+  Node renameNode(Node n, String namespaceURI, String qualifiedName); // throws DOMException
   
   // unsupported features
   /*
@@ -48,7 +49,5 @@ abstract class Document extends Node {
   bool strictErrorChecking;
   DOMConfiguration domConfig;
   void normalizeDocument();
-  Node renameNode(Node n, String namespaceURI, String qualifiedName); // throws DOMException
   */
 }
-

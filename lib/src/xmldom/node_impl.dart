@@ -18,7 +18,7 @@
 part of xmldom;
 
 abstract class NodeImpl implements Node {
-  
+
   static const int ELEMENT_NODE                   = 1;
   static const int ATTRIBUTE_NODE                 = 2;
   static const int TEXT_NODE                      = 3;
@@ -46,24 +46,26 @@ abstract class NodeImpl implements Node {
   String namespaceURI;
   String prefix;//TODO: prefix setter method
   String localName;
-  
+  HashMap<String, Object> _userData;
+  HashMap<String, UserDataHandler> _userDataHandlers;
+
   Node insertBefore(Node newChild, Node refChild) { // throws DOMException
     if (childNodes == null || !childNodes.contains(refChild))
       throw new DOMException("NOT_FOUND_ERR");
-    
+
     _checkNewChildValid(newChild);
-    
+
     if (nodeType == DOCUMENT_NODE && newChild.nodeType == ELEMENT_NODE &&
         (this as Document).documentElement != null)
       throw new DOMException("HIERARCHY_REQUEST_ERR");
-    
+
     if (newChild.parentNode != null)
       newChild.parentNode.removeChild(newChild);
-    
+
     newChild.parentNode = this;
     if (nodeType == DOCUMENT_NODE && newChild.nodeType == ELEMENT_NODE)
       (this as Document).documentElement = newChild;
-    
+
     if (firstChild == refChild)
       firstChild = newChild;
     newChild.nextSibling = refChild;
@@ -74,20 +76,20 @@ abstract class NodeImpl implements Node {
     childNodes.insert(childNodes.indexOf(refChild), newChild);
     return(newChild);
   }
-  
+
   Node replaceChild(Node newChild, Node oldChild) { // throws DOMException
     if (childNodes == null || !childNodes.contains(oldChild))
       throw new DOMException("NOT_FOUND_ERR");
-    
+
     _checkNewChildValid(newChild);
-    
+
     if (newChild.parentNode != null)
       newChild.parentNode.removeChild(newChild);
-    
+
     newChild.parentNode = this;
     if (nodeType == DOCUMENT_NODE && newChild.nodeType == ELEMENT_NODE)
       (this as Document).documentElement = newChild;
-    
+
     if (firstChild == oldChild)
       firstChild = newChild;
     if (lastChild == oldChild)
@@ -103,14 +105,14 @@ abstract class NodeImpl implements Node {
     childNodes.remove(oldChild);
     return(oldChild);
   }
-  
+
   Node removeChild(Node oldChild) { // throws DOMException
     if (childNodes == null || !childNodes.contains(oldChild))
       throw new DOMException("NOT_FOUND_ERR");
-    
+
     if (nodeType == DOCUMENT_NODE && oldChild.nodeType == ELEMENT_NODE)
       (this as Document).documentElement = null;
-    
+
     if (firstChild == oldChild)
       firstChild = oldChild.nextSibling;
     if (lastChild == oldChild)
@@ -125,27 +127,27 @@ abstract class NodeImpl implements Node {
     childNodes.remove(oldChild);
     return(oldChild);
   }
-  
+
   Node appendChild(Node newChild) { // throws DOMException
-    
+
     _checkNewChildValid(newChild);
-    
+
     if (nodeType == DOCUMENT_NODE && newChild.nodeType == ELEMENT_NODE &&
         (this as Document).documentElement != null)
       throw new DOMException("HIERARCHY_REQUEST_ERR");
-    
+
     if (childNodes == null)
       childNodes = new List<Node>();
-    
+
     if (newChild.parentNode != null)
       newChild.parentNode.removeChild(newChild);
-    
+
     newChild.parentNode = this;
     if (nodeType == DOCUMENT_NODE && newChild.nodeType == ELEMENT_NODE)
       (this as Document).documentElement = newChild;
-    
+
     newChild.nextSibling = null;
-    
+
     if (firstChild == null) {
       newChild.previousSibling = null;
       firstChild = newChild;
@@ -155,21 +157,61 @@ abstract class NodeImpl implements Node {
       newChild.previousSibling = lastChild;
       lastChild = newChild;
     }
-    
+
     childNodes.add(newChild);
     return(newChild);
   }
-  
+
   bool hasChildNodes() {
     return(firstChild != null);
   }
-  
-  Node cloneNode(bool deep);
-  
+
+  Node cloneNode(bool deep) {
+    // NOTE: we could use reflection here, but it is not necessary
+    Node newNode;
+    switch (nodeType) {
+      case ELEMENT_NODE:
+        newNode = new ElementImpl.clone(this as Element, deep);
+        break;
+      case ATTRIBUTE_NODE:
+        newNode = new AttrImpl.clone(this as Attr);
+        break;
+      case TEXT_NODE:
+        newNode = new TextImpl.clone(this as Text);
+        break;
+      case CDATA_SECTION_NODE:
+        newNode = new CDATASectionImpl.clone(this as CDATASection);
+        break;
+      case ENTITY_REFERENCE_NODE:
+        newNode = new EntityReferenceImpl.clone(this as EntityReference);
+        break;
+      case PROCESSING_INSTRUCTION_NODE:
+        newNode = new ProcessingInstructionImpl.clone(this as ProcessingInstruction);
+        break;
+      case COMMENT_NODE:
+        newNode = new CommentImpl.clone(this as Comment);
+        break;
+      case DOCUMENT_NODE:
+        newNode = new DocumentImpl.clone(this as Document, deep);
+        break;
+      case DOCUMENT_TYPE_NODE:
+        newNode = new DocumentTypeImpl.clone(this as DocumentType);
+        break;
+      case DOCUMENT_FRAGMENT_NODE:
+        newNode = new DocumentFragmentImpl.clone(this as DocumentFragment, deep);
+        break;
+      default:
+        newNode = null;
+     }
+     if (newNode != null)
+       _notifyUserDataHandlers(UserDataHandler.NODE_CLONED, this, newNode);
+     return newNode;
+  }
+
   bool hasAttributes() {
     return(attributes != null && attributes.length > 0);
   }
-  
+
   String lookupPrefix(String namespaceURI) {
     // based on https://developer.mozilla.org/en-US/docs/Code_snippets/LookupPrefix
     if (namespaceURI == null || namespaceURI == '') {
@@ -197,7 +239,7 @@ abstract class NodeImpl implements Node {
             return(null);
      }
   }
-  
+
   _lookupNamespacePrefix(final String namespaceURI) {
       final RegExp xmlnsPattern = new RegExp(r"/^xmlns:(.*)$/");
       if (namespaceURI != null && this.namespaceURI == namespaceURI &&
@@ -217,7 +259,7 @@ abstract class NodeImpl implements Node {
       }
       return null;
   }
-  
+
   String lookupNamespaceURI(String prefix) {
     // cf http://www.w3.org/TR/DOM-Level-3-Core/namespaces-algorithms.html#lookupNamespaceURIAlgo
     switch (nodeType) {
@@ -261,30 +303,59 @@ abstract class NodeImpl implements Node {
         return(null);
     }
   }
-  
+
   _checkNewChildValid(Node newChild) { // throws DOMException
     if (nodeType != DOCUMENT_NODE && ownerDocument != newChild.ownerDocument)
       throw new DOMException("WRONG_DOCUMENT_ERR");
-    
+
     if (nodeType == DOCUMENT_NODE && this != newChild.ownerDocument)
       throw new DOMException("WRONG_DOCUMENT_ERR");
-    
+
     if (nodeType != ELEMENT_NODE && nodeType != DOCUMENT_NODE)
       throw new DOMException("HIERARCHY_REQUEST_ERR");
-    
+
     if (newChild.nodeType == DOCUMENT_NODE)
       throw new DOMException("HIERARCHY_REQUEST_ERR");
-    
+
     if (nodeType != DOCUMENT_NODE && newChild.nodeType == ATTRIBUTE_NODE)
       throw new DOMException("HIERARCHY_REQUEST_ERR");
-    
+
     // etc...
-    
+
     Node ancestor = this;
     while (ancestor != null) {
       if (newChild == ancestor)
         throw new DOMException("HIERARCHY_REQUEST_ERR");
       ancestor = ancestor.parentNode;
     }
+  }
+
+  Object setUserData(String key, Object data, UserDataHandler handler) {
+    if (_userDataHandlers == null && handler != null)
+      _userDataHandlers = new HashMap<String, UserDataHandler>();
+    if (_userDataHandlers != null)
+      _userDataHandlers[key] = handler;
+    if (_userData == null && data != null)
+      _userData = new HashMap<String, Object>();
+    if (_userData == null)
+      return null;
+    Object oldData = _userData[key];
+    _userData[key] = data;
+    return oldData;
+  }
+
+  Object getUserData(String key) {
+    if (_userData == null)
+      return null;
+    return _userData[key];
+  }
+
+  void _notifyUserDataHandlers(int operation, Node src, Node dst) {
+    if (_userDataHandlers == null)
+      return;
+    _userDataHandlers.forEach((String key, UserDataHandler handler) {
+      Object data = _userData[key];
+      handler.handle(operation, key, data, src, dst);
+    });
   }
 }

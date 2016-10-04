@@ -18,7 +18,7 @@
 part of xmldom;
 
 class CDATASectionImpl extends NodeImpl implements CDATASection {
-  
+
   CDATASectionImpl.clone(final CDATASection cds) {
     nodeName = cds.nodeName;
     nodeValue = cds.nodeValue;
@@ -35,7 +35,7 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     prefix = null;
     localName = null;
   }
-  
+
   CDATASectionImpl(final Document doc, final String data) {
     nodeName = "#cdata-section";
     nodeValue = data;
@@ -52,7 +52,7 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     prefix = null;
     localName = null;
   }
-  
+
   /*
   CDATASectionImpl.fromDH(final Document doc, final h.CDataSection cds) {
     nodeName = "#cdata-section";
@@ -71,11 +71,7 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new CDATASectionImpl.clone(this));
-  }
-  
+
   String toString() {
     String value = nodeValue;
     if (value == null)
@@ -83,4 +79,3 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     return("<![CDATA[$value]]>");
   }
 }
-

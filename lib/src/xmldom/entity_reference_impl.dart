@@ -18,7 +18,7 @@
 part of xmldom;
 
 class EntityReferenceImpl extends NodeImpl implements EntityReference {
-  
+
   EntityReferenceImpl.clone(final EntityReference er) {
     nodeName = er.nodeName;
     nodeValue = er.nodeValue;
@@ -35,7 +35,7 @@ class EntityReferenceImpl extends NodeImpl implements EntityReference {
     prefix = null;
     localName = null;
   }
-  
+
   EntityReferenceImpl(final Document doc, final String name) {
     nodeName = name;
     nodeValue = null;
@@ -52,7 +52,7 @@ class EntityReferenceImpl extends NodeImpl implements EntityReference {
     prefix = null;
     localName = null;
   }
-  
+
   /* h.EntityReference has been removed from the API
   EntityReferenceImpl.fromDH(final Document doc, final h.EntityReference er) {
     // not implemented in Mozilla
@@ -72,11 +72,7 @@ class EntityReferenceImpl extends NodeImpl implements EntityReference {
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new EntityReferenceImpl.clone(this));
-  }
-  
+
   String toString() {
     return("&$nodeName;");
   }

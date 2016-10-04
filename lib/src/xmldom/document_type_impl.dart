@@ -21,12 +21,12 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
   String name;
   String publicId;
   String systemId;
-  
+
   DocumentTypeImpl.clone(final DocumentType dt) {
     name = dt.name;
     publicId = dt.publicId;
     systemId = dt.systemId;
-    
+
     nodeName = dt.nodeName;
     nodeValue = dt.nodeValue;
     nodeType = dt.nodeType;
@@ -42,12 +42,12 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     prefix = null;
     localName = null;
   }
-  
+
   DocumentTypeImpl(final String qualifiedName, final String publicId, final String systemId) {
     name = qualifiedName;
     this.publicId = publicId;
     this.systemId = systemId;
-    
+
     nodeName = qualifiedName;
     nodeValue = null;
     nodeType = Node.DOCUMENT_TYPE_NODE;
@@ -63,14 +63,14 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     prefix = null;
     localName = null;
   }
-  
+
   /*
   DocumentTypeImpl.fromDH(final Document doc, final h.DocumentType dt) {
     // BUG: name, publicId, systemId ???
     name = dt.$dom_localName;
     publicId = null;
     systemId = null;
-    
+
     nodeName = name;
     nodeValue = dt.nodeValue;
     nodeType = Node.DOCUMENT_TYPE_NODE;
@@ -87,11 +87,7 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new DocumentTypeImpl.clone(this));
-  }
-  
+
   String toString() {
     if (publicId == null && systemId != null)
       return('<!DOCTYPE $name SYSTEM "$systemId">');
@@ -102,5 +98,3 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     return('<!DOCTYPE $name>');
   }
 }
-
-

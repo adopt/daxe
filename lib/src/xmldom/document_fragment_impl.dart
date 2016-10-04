@@ -18,7 +18,7 @@
 part of xmldom;
 
 class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
-  
+
   DocumentFragmentImpl.clone(final DocumentFragment df, final bool deep) {
     nodeName = df.nodeName;
     nodeValue = df.nodeValue;
@@ -49,7 +49,7 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     prefix = null;
     localName = null;
   }
-  
+
   DocumentFragmentImpl(final Document doc) {
     nodeName = "#document-fragment";
     nodeValue = null;
@@ -66,7 +66,7 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     prefix = null;
     localName = null;
   }
-  
+
   /*
   DocumentFragmentImpl.fromDH(final Document doc, final h.DocumentFragment df) {
     nodeName = "#document-fragment";
@@ -85,11 +85,7 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     localName = null;
   }
   */
-  
-  Node cloneNode(bool deep) {
-    return(new DocumentFragmentImpl.clone(this, deep));
-  }
-  
+
   String toString() {
     StringBuffer sb = new StringBuffer();
     for (Node n in childNodes) {
@@ -98,4 +94,3 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     return(sb.toString());
   }
 }
-

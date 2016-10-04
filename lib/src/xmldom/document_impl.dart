@@ -105,38 +105,6 @@ class DocumentImpl extends NodeImpl implements Document {
       this.doctype = doctype;
   }
 
-  /*
-  DocumentImpl.fromDH(final DOMImplementation implementation, final h.Document doc) {
-    // lots of info missing !
-    this.implementation = implementation;
-    inputEncoding = null;
-    xmlEncoding = doc.charset;
-    xmlStandalone = false;
-    xmlVersion = "1.0";
-    documentURI = null;
-    doctype = null; // new DocumentTypeImpl.fromDH(this, doc.doctype);
-
-    _idToElement = new HashMap<String, Element>();
-
-    nodeName = "#document";
-    nodeValue = doc.nodeValue;
-    nodeType = Node.DOCUMENT_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = null;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-
-    appendChild(new ElementImpl.fromDH(this, doc.documentElement));
-  }
-  */
-
   Element createElement(String tagName) { // throws DOMException
     return(new ElementImpl(this, tagName));
   }

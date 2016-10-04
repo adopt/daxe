@@ -53,25 +53,6 @@ class TextImpl extends NodeImpl implements Text {
     localName = null;
   }
 
-  /*
-  TextImpl.fromDH(final Document doc, final h.Text txt) {
-    nodeName = "#text";
-    nodeValue = txt.nodeValue;
-    nodeType = Node.TEXT_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     return(_escape(nodeValue));
   }

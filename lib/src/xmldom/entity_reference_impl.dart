@@ -53,26 +53,6 @@ class EntityReferenceImpl extends NodeImpl implements EntityReference {
     localName = null;
   }
 
-  /* h.EntityReference has been removed from the API
-  EntityReferenceImpl.fromDH(final Document doc, final h.EntityReference er) {
-    // not implemented in Mozilla
-    nodeName = er.localName; // BUG
-    nodeValue = er.nodeValue;
-    nodeType = Node.ENTITY_REFERENCE_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     return("&$nodeName;");
   }

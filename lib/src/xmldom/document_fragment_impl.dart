@@ -67,25 +67,6 @@ class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
     localName = null;
   }
 
-  /*
-  DocumentFragmentImpl.fromDH(final Document doc, final h.DocumentFragment df) {
-    nodeName = "#document-fragment";
-    nodeValue = df.nodeValue;
-    nodeType = Node.DOCUMENT_FRAGMENT_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     StringBuffer sb = new StringBuffer();
     for (Node n in childNodes) {

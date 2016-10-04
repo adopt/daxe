@@ -53,25 +53,6 @@ class CDATASectionImpl extends NodeImpl implements CDATASection {
     localName = null;
   }
 
-  /*
-  CDATASectionImpl.fromDH(final Document doc, final h.CDataSection cds) {
-    nodeName = "#cdata-section";
-    nodeValue = cds.nodeValue;
-    nodeType = Node.CDATA_SECTION_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     String value = nodeValue;
     if (value == null)

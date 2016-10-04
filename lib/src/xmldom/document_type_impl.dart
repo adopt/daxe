@@ -64,30 +64,6 @@ class DocumentTypeImpl extends NodeImpl implements DocumentType {
     localName = null;
   }
 
-  /*
-  DocumentTypeImpl.fromDH(final Document doc, final h.DocumentType dt) {
-    // BUG: name, publicId, systemId ???
-    name = dt.$dom_localName;
-    publicId = null;
-    systemId = null;
-
-    nodeName = name;
-    nodeValue = dt.nodeValue;
-    nodeType = Node.DOCUMENT_TYPE_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     if (publicId == null && systemId != null)
       return('<!DOCTYPE $name SYSTEM "$systemId">');

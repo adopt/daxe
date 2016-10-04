@@ -61,28 +61,6 @@ class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstructio
     localName = null;
   }
 
-  /*
-  ProcessingInstructionImpl.fromDH(final Document doc, final h.ProcessingInstruction pi) {
-    target = pi.target;
-    data = pi.data;
-
-    nodeName = target;
-    nodeValue = pi.nodeValue;
-    nodeType = Node.PROCESSING_INSTRUCTION_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     return("<?$target $data?>");
   }

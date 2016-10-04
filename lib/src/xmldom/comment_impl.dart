@@ -53,25 +53,6 @@ class CommentImpl extends NodeImpl implements Comment {
     localName = null;
   }
 
-  /*
-  CommentImpl.fromDH(final Document doc, final h.Comment com) {
-    nodeName = "#comment";
-    nodeValue = com.nodeValue;
-    nodeType = Node.COMMENT_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null;
-    localName = null;
-  }
-  */
-
   String toString() {
     return("<!--$nodeValue-->");
   }

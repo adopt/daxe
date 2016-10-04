@@ -94,29 +94,6 @@ class AttrImpl extends NodeImpl implements Attr {
     }
   }
 
-  /*
-  AttrImpl.fromDH(final Document doc, final String localName, final String value) {
-    specified = true;
-    ownerElement = null;
-    isId = false;
-
-    nodeName = localName; // KNOWN BUG: should be name
-    nodeValue = value;
-    nodeType = Node.ATTRIBUTE_NODE;
-    parentNode = null;
-    childNodes = null;
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    attributes = null;
-    ownerDocument = doc;
-    namespaceURI = null;
-    prefix = null; // KNOW BUG, see http://code.google.com/p/dart/issues/detail?id=8521
-    this.localName = localName;
-  }
-  */
-
   String get name {
     return(nodeName);
   }

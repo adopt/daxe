@@ -1128,7 +1128,7 @@ abstract class DaxeNode {
   String _getColor(String style) {
     Iterable<Match> matches = COLOR_PATTERN.allMatches(style);
     for (Match m in matches) {
-      final List<int> color = new List<int>();
+      final List<int> color = new List<int>(3);
       for (int j = 0; j < 3; j++) {
         String value = m.group(j + 1);
         if (value.startsWith("x"))

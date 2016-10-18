@@ -102,9 +102,13 @@ void main() {
  * This Future can be used to initialize Daxe and customize the user interface afterwards.
  * The display types and the strings have to be loaded before this method is called.
  * In the Daxe application, the results of the Future are not used.
- * The optional LeftPanel can be used to extend the LeftPanel class.
+ * The optional [left] parameter can be used to extend the LeftPanel class.
+ * An optional [saveFunction] parameter can be passed to customize saving documents.
+ * An optional [customizeToolbar] parameter can be passed to customize the toolbar
+ * (it is called after page.toolbar is created but before the HTML is generated).
  */
-Future initDaxe({LeftPanel left, ActionFunction saveFunction}) {
+Future initDaxe({LeftPanel left, ActionFunction saveFunction,
+    ActionFunction customizeToolbar}) {
   Completer completer = new Completer();
   
   // check parameters for a config and file to open
@@ -131,7 +135,8 @@ Future initDaxe({LeftPanel left, ActionFunction saveFunction}) {
       application = true;
   }
   doc = new DaxeDocument();
-  page = new WebPage(application:application, left:left, saveFunction:saveFunction);
+  page = new WebPage(application:application, left:left, saveFunction:saveFunction,
+    customizeToolbar: customizeToolbar);
   if (saveURL != null)
     doc.saveURL = saveURL;
   if (config != null && file != null)

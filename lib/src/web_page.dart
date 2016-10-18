@@ -36,9 +36,11 @@ class WebPage {
   bool application; // Desktop application
   bool hasQuit; // for Desktop application only
   ActionFunction saveFunction; // optional save function, replacing the default
+  ActionFunction customizeToolbar;
   bool _inited;
   
-  WebPage({this.application:false, LeftPanel left, ActionFunction this.saveFunction}) {
+  WebPage({this.application:false, LeftPanel left, ActionFunction this.saveFunction,
+      ActionFunction this.customizeToolbar}) {
     _cursor = new Cursor();
     if (left != null)
       _left = left;
@@ -195,6 +197,8 @@ class WebPage {
     headers.append(mbar.html());
     
     toolbar = new Toolbar(doc.cfg);
+    if (customizeToolbar != null)
+      customizeToolbar();
     headers.append(toolbar.html());
     HashMap<String, ActionFunction> shortcuts = new HashMap<String, ActionFunction>();
     for (ToolbarButton button in toolbar.buttons)

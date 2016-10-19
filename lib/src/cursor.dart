@@ -54,14 +54,18 @@ class Cursor {
         if (doc.cfg.elementReference(name) == null)
           return;
       h.DataTransfer data = e.clipboardData;
-      if (data.types.contains('text/html')) {
-        pasteHTML(data.getData('text/html'), data.getData('text/plain'));
-        e.preventDefault();
-        donePaste = true;
-      } else if (data.types.contains('Files')) {
-        donePaste = pasteImage(data);
-        if (donePaste)
+      // NOTE: data.types does not work in Firefox due to a bug in dart2js
+      // (dart bug #27616)
+      if (data.types is List<String>) {
+        if (data.types.contains('text/html')) {
+          pasteHTML(data.getData('text/html'), data.getData('text/plain'));
           e.preventDefault();
+          donePaste = true;
+        } else if (data.types.contains('Files')) {
+          donePaste = pasteImage(data);
+          if (donePaste)
+            e.preventDefault();
+        }
       }
     });
     donePaste = false;

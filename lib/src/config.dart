@@ -22,23 +22,27 @@ part of daxe;
  * A Jaxe configuration file. Includes many useful methods to use XML schemas.
  */
 class Config {
-  static final String _typeAffichageParDefaut = "string";
-  
-  x.Element _cfgroot; // config file root element
-  
-  String schemaURL; // schema file URL
-  
-  String _cfgdir; // config folder URL (in which the config file must be)
-  
-  HashMap<String, x.Element> _elementDisplayCache; // cache for associations nom -> AFFICHAGE_ELEMENT
-  HashMap<x.Element, String> _elementsToNamesCache; // cache for associations element reference -> name
-  HashMap<x.Element, String> _elementsTitlesCache; // cache for associations element reference -> title
-  HashMap<String, String> _menuTitleCache; // cache for associations menu name -> title
+  static final String _defaultDisplayType = "string";
+  /// config file root element
+  x.Element _cfgroot;
+  /// schema file URL
+  String schemaURL;
+  /// config folder URL (in which the config file must be)
+  String _cfgdir;
+  /// cache for associations name -> AFFICHAGE_ELEMENT
+  HashMap<String, x.Element> _elementDisplayCache;
+  /// cache for associations element reference -> name
+  HashMap<x.Element, String> _elementsToNamesCache;
+  /// cache for associations element reference -> title
+  HashMap<x.Element, String> _elementsTitlesCache;
+  /// cache for associations menu name -> title
+  HashMap<String, String> _menuTitleCache;
   HashMap<x.Element, Pattern> _validPatternCache = null;
   HashMap<x.Element, HashMap<String, List<String>>> _parametersCache = null;
   List<String> _namespaceCache = null; // namespace list
   
-  InterfaceSchema _schema; // all the schema management (validity...)
+  /// all the schema management (validity...)
+  InterfaceSchema _schema;
   
   // nodes for the config file main elements
   x.Element _languageNode;
@@ -60,7 +64,7 @@ class Config {
   /**
    * Load a config file
    *
-   * @param cfgFilePath  path to the config file
+   * [cfgFilePath]:  path to the config file
    */
   Future load(final String cfgFilePath) { // throws DaxeException
     Completer completer = new Completer();
@@ -380,8 +384,8 @@ class Config {
   /**
    * Returns a menu matching the menu definition in the config file.
    *
-   * @param doc  The Daxe document
-   * @param menudef  The MENU element in the config file
+   * [doc]: the Daxe document;
+   * [menudef]: the MENU element in the config file.
    */
   Menu _creationMenu(final DaxeDocument doc, final x.Element menudef) {
     final String nomMenu = menudef.getAttribute("nom");
@@ -449,8 +453,6 @@ class Config {
   
   /**
    * Returns a menubar to insert menus.
-   *
-   * @param doc  The Daxe document
    */
   MenuBar makeMenus(final DaxeDocument doc) {
     final MenuBar mbar = new MenuBar();
@@ -662,9 +664,10 @@ class Config {
   }
   
   /**
-   * Regular expression for a given element
-   * @param modevisu  True to get a regular expression to display to the user
-   * @param modevalid  For strict validation instead of checking if an insert is possible
+   * Regular expression for a given element.
+   * 
+   * [modevisu]: true to get a regular expression to display to the user;
+   * [modevalid]: for strict validation instead of checking if an insert is possible.
    */
   String _regularExpression(final x.Element parentRef, final bool modevisu, final bool modevalid) {
     return(_schema.regularExpression(parentRef, modevisu, modevalid));
@@ -1040,7 +1043,7 @@ class Config {
     if (nodeType == x.Node.ELEMENT_NODE) {
       final x.Element affel = getElementDisplay(localValue(name));
       if (affel == null)
-        return(_typeAffichageParDefaut);
+        return(_defaultDisplayType);
       return(affel.getAttribute("type"));
     } else if (nodeType == x.Node.PROCESSING_INSTRUCTION_NODE) {
       x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_INSTRUCTION");
@@ -1072,7 +1075,7 @@ class Config {
   String elementDisplayType(final x.Element elementRef) {
     final x.Element affel = getElementDisplay(elementName(elementRef));
     if (affel == null)
-      return(_typeAffichageParDefaut);
+      return(_defaultDisplayType);
     return(affel.getAttribute("type"));
   }
   
@@ -1108,12 +1111,12 @@ class Config {
   }
   
   /**
-   * Returns the value of an element display parameter.
-   * @param elementRef element reference
-   * @param parameterName parameter name
-   * @param defaultValue default value, used if the parameter is not found
+   * Returns the value of an element display parameter based on the
+   * element reference and the parameter name.
+   * The default value is returned if the parameter is not found.
    */
-  String elementParameterValue(final x.Element elementRef, final String parameterName, final String defaultValue) {
+  String elementParameterValue(final x.Element elementRef, final String parameterName,
+      final String defaultValue) {
     return nodeParameterValue(elementRef, "element", null, parameterName, defaultValue);
   }
 
@@ -1135,9 +1138,8 @@ class Config {
 
   /**
    * Returns a function parameter value.
-   * @param fctdef Element for the function menu in the config file
-   * @param parameterName parameter name
-   * @param defaultValue default value, used if the parameter is not found
+   * [fctdef] is the element for the function menu in the config file.
+   * [defaultValue] is returned if the parameter is not found.
    */
   String functionParameterValue(final x.Element fctdef, final String parameterName, final String defaultValue) {
     x.Element parel = _findElement(fctdef, "PARAMETRE");
@@ -1787,4 +1789,3 @@ class Config {
       print("Config: $message");
   }
 }
-

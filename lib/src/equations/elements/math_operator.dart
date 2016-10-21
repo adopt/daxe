@@ -38,9 +38,9 @@ class MathOperator extends MathElement {
   
   /**
    * Enables, or disables if the operator should fit his
-   * size to the size of the container
+   * size to the size of the container.
    *
-   * @param stretchy True, if the operater should fit this size
+   * [stretchy]: true if the operater should fit this size.
    */
   void setStretchy(final bool stretchy) {
     this._stretchy = stretchy;
@@ -61,14 +61,14 @@ class MathOperator extends MathElement {
   }
   
   /**
-   * Paints a delimitier
+   * Paints a delimiter.
    *
-   * @param context The graphics context to use for painting 
-   * @param posX The first left position for painting 
-   * @param posY The position of the baseline
-   * @param upperSymbol The symbol for upper edge
-   * @param middleSymbol The symbol for middle part
-   * @param lowerSymbol The symbol for lower edge
+   * [context]: the graphics context to use for painting;
+   * [posX]: the first left position for painting;
+   * [posY]: the position of the baseline;
+   * [upperSymbol]: the symbol for upper edge;
+   * [middleSymbol]: the symbol for middle part;
+   * [lowerSymbol]: the symbol for lower edge.
    */
   void paintDelimiter(final h.CanvasRenderingContext2D context, final double posX, final double posY,
                       final String upperSymbol, final String middleSymbol, final String lowerSymbol)
@@ -100,15 +100,15 @@ class MathOperator extends MathElement {
   }
 
   /**
-   * Paints a delimitier
+   * Paints a delimiter.
    *
-   * @param context The graphics context to use for painting 
-   * @param posX The first left position for painting 
-   * @param posY The position of the baseline 
-   * @param upperSymbol The symbol for upper edge
-   * @param middleSymbol The symbol for middle part
-   * @param connectSymbol The symbol for connecting the middle part with the edges
-   * @param lowerSymbol The symbol for lower edge
+   * [context]: the graphics context to use for painting;
+   * [posX]: the first left position for painting;
+   * [posY]: the position of the baseline;
+   * [upperSymbol]: the symbol for upper edge;
+   * [middleSymbol]: the symbol for middle part;
+   * [connectSymbol]: the symbol for connecting the middle part with the edges;
+   * [lowerSymbol]: the symbol for lower edge.
    */
   void paintCurlyDelimiter(final h.CanvasRenderingContext2D context, final double posX, final double posY,
                            final String upperSymbol, final String middleSymbol,
@@ -134,15 +134,15 @@ class MathOperator extends MathElement {
   }
 
   /**
-   * Paints a horizontal delimitier
+   * Paints a horizontal delimiter.
    *
-   * @param context The graphics context to use for painting 
-   * @param posX The first left position for painting 
-   * @param posY The position of the baseline 
-   * @param upperSymbol The symbol for upper edge
-   * @param middleSymbol The symbol for middle part
-   * @param connectSymbol The symbol for connecting the middle part with the edges
-   * @param lowerSymbol The symbol for lower edge
+   * [context]: the graphics context to use for painting;
+   * [posX]: the first left position for painting;
+   * [posY]: the position of the baseline;
+   * [upperSymbol]: the symbol for upper edge;
+   * [middleSymbol]: the symbol for middle part;
+   * [connectSymbol]: the symbol for connecting the middle part with the edges;
+   * [lowerSymbol]: the symbol for lower edge.
    */
   void paintCurlyDelimiterHorizontal(final h.CanvasRenderingContext2D context, final double posX, final double posY,
                                      final String upperSymbol,

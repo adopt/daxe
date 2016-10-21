@@ -31,9 +31,9 @@ class MathIdentifier extends MathText {
   
   
   /**
-   * Sets the mathvariant attribute
+   * Sets the mathvariant attribute.
    *
-   * @param mathvariant mathvariant (normal | bold | italic | bold-italic)
+   * [mathvariant]: normal | bold | italic | bold-italic.
    */
   void setMathvariant(final String mathvariant) {
     this._mathvariant = mathvariant;
@@ -63,4 +63,3 @@ class MathIdentifier extends MathText {
   }
 
 }
-

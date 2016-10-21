@@ -22,16 +22,26 @@ part of daxe;
  */
 class DaxeDocument {
   int _id_count = 0;
-  Map<String, DaxeNode> _idToJN = new Map<String, DaxeNode>();
+  Map<String, DaxeNode> _idToDN = new Map<String, DaxeNode>();
+  /// root DaxeNode for the document
   DNDocument dndoc;
+  /// Daxe configuration for the document
   Config cfg;
-  List<UndoableEdit> edits = new List<UndoableEdit>();
-  int undoPosition = -1;
-  UndoableEdit lastSavedEdit = null;
+  /// the edit history
+  List<UndoableEdit> _edits = new List<UndoableEdit>();
+  int _undoPosition = -1;
+  /// the current edit in the history the last time the document was saved
+  UndoableEdit _lastSavedEdit = null;
+  /// path to the XML file
   String filePath;
+  /// path to the configuration file
   String configPath;
+  /// the URL the document is sent to when saved (can be null, for instance
+  /// when a custom save function is used)
   String saveURL;
-  List<x.Element> hiddenParaRefs; /* references for hidden paragraphs */
+  /// all the element references for hidden paragraphs (can be null)
+  List<x.Element> hiddenParaRefs;
+  /// the element reference for a hidden div (can be null)
   x.Element hiddendiv;
   
   /**
@@ -116,10 +126,10 @@ class DaxeDocument {
     request.onLoad.listen((h.ProgressEvent event) {
       String response = request.responseText;
       if (response.startsWith('ok')) {
-        if (undoPosition >= 0)
-          lastSavedEdit = edits[undoPosition];
+        if (_undoPosition >= 0)
+          _lastSavedEdit = _edits[_undoPosition];
         else
-          lastSavedEdit = null;
+          _lastSavedEdit = null;
         completer.complete();
       } else {
         String errorMessage;
@@ -192,10 +202,10 @@ class DaxeDocument {
     request.onLoad.listen((h.ProgressEvent event) {
       String response = request.responseText;
       if (response.startsWith('ok')) {
-        if (undoPosition >= 0)
-          lastSavedEdit = edits[undoPosition];
+        if (_undoPosition >= 0)
+          _lastSavedEdit = _edits[_undoPosition];
         else
-          lastSavedEdit = null;
+          _lastSavedEdit = null;
         completer.complete();
       } else {
         String errorMessage;
@@ -223,29 +233,38 @@ class DaxeDocument {
    * This is used to display a dialog on beforeunload.
    */
   bool changed() {
-    if (undoPosition >= 0)
-      return(lastSavedEdit != edits[undoPosition]);
+    if (_undoPosition >= 0)
+      return(_lastSavedEdit != _edits[_undoPosition]);
     else
-      return(lastSavedEdit != null);
+      return(_lastSavedEdit != null);
   }
   
-  String newId(DaxeNode jn) {
+  /**
+   * Return a new id for a DaxeNode.
+   */
+  String newId(DaxeNode dn) {
     _id_count++;
     String sid = "a$_id_count";
-    _idToJN[sid] = jn;
+    _idToDN[sid] = dn;
     return(sid);
   }
   
   DaxeNode getNodeById(String id) {
     if (id == null)
       return(null);
-    return(_idToJN[id]);
+    return(_idToDN[id]);
   }
   
+  /**
+   * Returns the HTML for the document contents.
+   */
   h.Element html() {
     return(dndoc.html());
   }
   
+  /**
+   * Returns the [DaxeNode] for the document root element.
+   */
   DaxeNode getRootElement() {
     for (DaxeNode dn=dndoc.firstChild; dn != null; dn=dn.nextSibling) {
       if (dn.isXMLElement())
@@ -627,41 +646,41 @@ class DaxeDocument {
    */
   void doNewEdit(UndoableEdit edit) {
     edit.doit();
-    if (undoPosition < edits.length - 1)
-      edits.removeRange(undoPosition + 1, edits.length);
-    if (undoPosition < 0 || !edits[undoPosition].addEdit(edit)) {
-      edits.add(edit);
-      undoPosition++;
+    if (_undoPosition < _edits.length - 1)
+      _edits.removeRange(_undoPosition + 1, _edits.length);
+    if (_undoPosition < 0 || !_edits[_undoPosition].addEdit(edit)) {
+      _edits.add(edit);
+      _undoPosition++;
     }
     page.updateUndoMenus();
   }
   
   void undo() {
-    if (undoPosition < 0)
+    if (_undoPosition < 0)
       return;
-    UndoableEdit edit = edits[undoPosition];
+    UndoableEdit edit = _edits[_undoPosition];
     edit.undo();
-    undoPosition--;
+    _undoPosition--;
     page.updateUndoMenus();
     page.updateAfterPathChange();
   }
   
   void redo() {
-    if (undoPosition >= edits.length - 1)
+    if (_undoPosition >= _edits.length - 1)
       return;
-    UndoableEdit edit = edits[undoPosition + 1];
+    UndoableEdit edit = _edits[_undoPosition + 1];
     edit.doit();
-    undoPosition++;
+    _undoPosition++;
     page.updateUndoMenus();
     page.updateAfterPathChange();
   }
   
   bool isUndoPossible() {
-    return(undoPosition >= 0);
+    return(_undoPosition >= 0);
   }
   
   bool isRedoPossible() {
-    return(undoPosition < edits.length - 1);
+    return(_undoPosition < _edits.length - 1);
   }
   
   /**
@@ -669,8 +688,8 @@ class DaxeDocument {
    */
   String getUndoTitle() {
     String title;
-    if (undoPosition >= 0)
-      title = edits[undoPosition].title;
+    if (_undoPosition >= 0)
+      title = _edits[_undoPosition].title;
     else
       title = null;
     if (title == null)
@@ -684,8 +703,8 @@ class DaxeDocument {
    */
   String getRedoTitle() {
     String title;
-    if (undoPosition < edits.length - 1)
-      title = edits[undoPosition + 1].title;
+    if (_undoPosition < _edits.length - 1)
+      title = _edits[_undoPosition + 1].title;
     else
       title = null;
     if (title == null)
@@ -699,11 +718,11 @@ class DaxeDocument {
    */
   void combineLastEdits(String title, int nb) {
     UndoableEdit edit = new UndoableEdit.compound(title);
-    for (int i=edits.length-nb; i<edits.length; i++)
-      edit.addSubEdit(edits[i]);
-    edits.removeRange(edits.length - nb, edits.length);
-    edits.add(edit);
-    undoPosition -= (nb - 1);
+    for (int i=_edits.length-nb; i<_edits.length; i++)
+      edit.addSubEdit(_edits[i]);
+    _edits.removeRange(_edits.length - nb, _edits.length);
+    _edits.add(edit);
+    _undoPosition -= (nb - 1);
   }
   
   /**
@@ -783,10 +802,10 @@ class DaxeDocument {
     doc.insertString(selectionStart, s);
     if (remove) {
       UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
-      edit.addSubEdit(edits.removeAt(edits.length - 2));
-      edit.addSubEdit(edits.removeLast());
-      edits.add(edit);
-      undoPosition -= 1;
+      edit.addSubEdit(_edits.removeAt(_edits.length - 2));
+      edit.addSubEdit(_edits.removeLast());
+      _edits.add(edit);
+      _undoPosition -= 1;
     }
   }
   
@@ -894,7 +913,7 @@ class DaxeDocument {
         // inserting content didn't work: undo remove and insert
         undo();
         undo();
-        edits.removeRange(edits.length - 2, edits.length);
+        _edits.removeRange(_edits.length - 2, _edits.length);
         page.updateUndoMenus();
         return(false);
       }

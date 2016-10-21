@@ -44,18 +44,13 @@ class DNForm extends DaxeNode {
     // whenever the text is changed (for instance with find/replace or undo/redo),
     // DNSimpleType.updateHTML is called in order to update the control
     if (node.childNodes != null) {
-      DaxeNode prev = null;
       for (x.Node n in node.childNodes) {
         DaxeNode dn;
         if (simpleField && n.nodeType == x.Node.TEXT_NODE)
           dn = new ParentUpdatingDNText.fromNode(n, this);
         else
           dn = NodeFactory.createFromNode(n, this);
-        if (prev == null)
-          firstChild = dn;
-        else
-          prev.nextSibling = dn;
-        prev = dn;
+        appendChild(dn);
       }
     }
     if (!simpleField) {

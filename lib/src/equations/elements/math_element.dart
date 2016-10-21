@@ -35,8 +35,8 @@ class MathElement {
   /**
    * Creates a math element
    *
-   * @param base The base for the math element tree
-   * @param fontsize The font size for this element
+   * [base]: the base for the math element tree;
+   * [fontsize]: the font size for this element.
    */
   MathElement([final MathBase base, final int fontsize]) {
     if (base != null)
@@ -47,8 +47,6 @@ class MathElement {
   
   /**
    * Add a math element as a child
-   *
-   * @param child Math element
    */
   void addMathElement(final MathElement child) {
     if (child != null) {
@@ -60,11 +58,9 @@ class MathElement {
   }
 
   /**
-   * Gets a child from this element
+   * Gets a child from this element.
    *
-   * @param index Index of the child
-   *
-   * @return The child
+   * [index]: index of the child.
    */
   MathElement getMathElement(final int index) {
     if ((index >= 0) && (index < children.length))
@@ -75,9 +71,7 @@ class MathElement {
   /**
    * Sets a child from this element
    *
-   * @param index Index of the child
-   *
-   * @return The child
+   * [index]: index of the child.
    */
   void setMathElementAt(final MathElement child, final int index) {
     if ((index >= 0) && (index < children.length))
@@ -86,8 +80,6 @@ class MathElement {
 
   /**
    * Returns the count of children from this element
-   *
-   * @return Count of children
    */
   int getMathElementCount() {
     return children.length;
@@ -95,8 +87,6 @@ class MathElement {
 
   /**
    * Add the content of a String to this element
-   *
-   * @param text Text
    */
   void addText(final String text) {
     for (int i = 0; i < text.length; i++)
@@ -107,9 +97,7 @@ class MathElement {
   }
 
   /**
-   * Returns the text contentof this element
-   *
-   * @return Text content
+   * Returns the text content of this element
    */
   String getText() {
     return text.toString().trim();
@@ -117,8 +105,6 @@ class MathElement {
 
   /**
    * Sets the base for this element
-   *
-   * @param base Math base
    */
   void setMathBase(final MathBase base) {
     this.base = base;
@@ -128,8 +114,6 @@ class MathElement {
 
   /**
    * Gets the math base
-   *
-   * @return Math base
    */
   MathBase getMathBase() {
     return base;
@@ -137,8 +121,6 @@ class MathElement {
 
   /**
    * Sets the parent of this element
-   *
-   * @param parent Parent element
    */
   void setParent(final MathElement parent) {
     this.parent = parent;
@@ -146,8 +128,6 @@ class MathElement {
 
   /**
    * Returns get parent of this element
-   *
-   * @return Parent element
    */
   MathElement getParent() {
     return parent;
@@ -155,8 +135,6 @@ class MathElement {
 
   /**
    * Sets the font size for this component
-   *
-   * @param fontsize Font size
    */
   void setFontSize(final int fontsize) {
     this.fontsize = max(fontsize, 8);
@@ -166,8 +144,6 @@ class MathElement {
 
   /**
    * Gets the used font size
-   *
-   * @return Font Size
    */
   int getFontSize() {
     return fontsize;
@@ -175,8 +151,6 @@ class MathElement {
 
   /**
    * Gets the used font
-   *
-   * @return Font
    */
   String getFont() {
     if (base != null)
@@ -204,8 +178,6 @@ class MathElement {
 
   /**
    * Gets the font metrics of the used font
-   *
-   * @return Font metrics
    */
   TextMetrics getFontMetrics() {
     if (base != null)
@@ -222,11 +194,11 @@ class MathElement {
   }
   
   /**
-   * Paints a border around this element as debug information
+   * Paints a border around this element as debug information.
    *
-   * @param context The graphics context to use for painting
-   * @param posX The first left position for painting
-   * @param posY The position of the baseline
+   * [context]: the graphics context to use for painting;
+   * [posX]: the first left position for painting;
+   * [posY]: the position of the baseline.
    */
   void debug(final h.CanvasRenderingContext2D context, final double posX, final double posY) {
     context.strokeStyle = 'blue';
@@ -251,9 +223,9 @@ class MathElement {
   /**
    * Paints this element
    *
-   * @param context The graphics context to use for painting
-   * @param posX The first left position for painting
-   * @param posY The position of the baseline
+   * [context]: the graphics context to use for painting;
+   * [posX]: the first left position for painting;
+   * [posY]: the position of the baseline.
    */
   void paint(final h.CanvasRenderingContext2D context, final double posX, final double posY) {
     if (base.isDebug())
@@ -271,11 +243,7 @@ class MathElement {
   }
 
   /**
-   * Return the current width of this element
-   *
-   * @param dynamicParts
-   *
-   * @return Width of this element
+   * Return the current width of this element.
    */
   double getWidth(final bool dynamicParts) {
     double width = 0.0;
@@ -288,10 +256,8 @@ class MathElement {
   /**
    * Return the current height of this element
    *
-   * @param dynamicParts Should be true, if the calculation consider the elements,
-   *                     which has not fixed sizes
-   *
-   * @return Height of this element
+   * [dynamicParts]: should be true, if the calculation consider the elements,
+   * which has not fixed sizes.
    */
   double getHeight(final bool dynamicParts) {
     return getAscentHeight(dynamicParts) + getDescentHeight(dynamicParts);
@@ -302,12 +268,10 @@ class MathElement {
   }
   
   /**
-   * Return the current height of the upper part of this component from the baseline
+   * Return the current height of the upper part of this component from the baseline.
    *
-   * @param dynamicParts Should be true, if the calculation consider the elements,
-   *                     which has not fixed sizes
-   *
-   * @return Height of the upper part
+   * [dynamicParts]: should be true, if the calculation consider the elements,
+   * which has not fixed sizes.
    */
   double getAscentHeight(final bool dynamicParts) {
     double height = 0.0;
@@ -319,12 +283,10 @@ class MathElement {
   }
 
   /**
-   * Return the current height of the lower part of this component from the baseline
+   * Return the current height of the lower part of this component from the baseline.
    *
-   * @param dynamicParts Should be true, if the calculation consider the elements,
-   *                     which has not fixed sizes
-   *
-   * @return Height of the lower part
+   * [dynamicParts]: should be true, if the calculation consider the elements,
+   * which has not fixed sizes.
    */
   double getDescentHeight(final bool dynamicParts) {
     double height = 0.0;
@@ -337,8 +299,6 @@ class MathElement {
 
   /**
    * Returns the distance of the baseline and the middleline
-   *
-   * @return Distance
    */
   double getMiddleShift() {
     return base.getFontMetrics(getFontSize()).ascent * 0.30;
@@ -346,5 +306,3 @@ class MathElement {
     // (the current 0.30 factor depends on the font...)
   }
 }
-
-

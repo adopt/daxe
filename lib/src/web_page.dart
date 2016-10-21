@@ -19,26 +19,39 @@ part of daxe;
 
 /**
  * Represents a web page (window or tab). A page can only contain a single document.
+ * [newDocument] or [openDocument] should be called first.
  */
 class WebPage {
-  static const int doubleClickTime = 400; // maximum time between the clicks, in milliseconds
+  /// maximum time between the clicks, in milliseconds
+  static const int doubleClickTime = 400;
   Cursor _cursor;
-  Position selectionStart, selectionEnd;
+  // initial selection positions (different from the effective selection 
+  // positions because selections should be well-formed XML)
+  Position _selectionStart, _selectionEnd;
   MenuBar mbar;
-  MenuItem undoMenu, redoMenu;
+  MenuItem _undoMenu, _redoMenu;
   Menu contextualMenu;
   h.Point ctxMenuPos;
   Toolbar toolbar;
   LeftPanel _left;
   Position lastClickPosition;
   DateTime lastClickTime;
-  bool selectionByWords; // double-click+drag
+  bool _selectionByWords; // double-click+drag
   bool application; // Desktop application
   bool hasQuit; // for Desktop application only
   ActionFunction saveFunction; // optional save function, replacing the default
   ActionFunction customizeToolbar;
   bool _inited;
   
+  /**
+   * Creates the web page, using the following optional arguments:
+   * 
+   * * [application] should be true when Daxe is used as a desktop application.
+   * * [left] can be used to extend the [LeftPanel] class.
+   * * [saveFunction] can be used to customize saving documents.
+   * * [customizeToolbar] can be used to customize the toolbar
+   * (it is called after page.toolbar is created but before the HTML is generated).
+   */
   WebPage({this.application:false, LeftPanel left, ActionFunction this.saveFunction,
       ActionFunction this.customizeToolbar}) {
     _cursor = new Cursor();
@@ -48,7 +61,7 @@ class WebPage {
       _left = new LeftPanel();
     lastClickPosition = null;
     lastClickTime = null;
-    selectionByWords = false;
+    _selectionByWords = false;
     hasQuit = false;
     _inited = false;
   }
@@ -57,7 +70,7 @@ class WebPage {
     Completer completer = new Completer();
     doc.newDocument(configPath).then( (_) {
       _buildMenus();
-      init();
+      _init();
       _left.selectInsertPanel();
       h.document.title = Strings.get('page.new_document');
       completer.complete();
@@ -74,7 +87,7 @@ class WebPage {
     Completer completer = new Completer();
     doc.openDocument(filePath, configPath, removeIndents:removeIndents).then( (_) {
       _buildMenus();
-      init();
+      _init();
       _left.selectTreePanel();
       doc.dndoc.callAfterInsert();
       h.document.title = filePath.split('/').last;
@@ -88,7 +101,7 @@ class WebPage {
     return(completer.future);
   }
   
-  void init() {
+  void _init() {
     h.Element divdoc = h.document.getElementById('doc2');
     divdoc.children.clear();
     if (!_inited) {
@@ -109,11 +122,11 @@ class WebPage {
     updateAfterPathChange();
     
     if (!_inited) {
-      divdoc.onMouseDown.listen((h.MouseEvent event) => onMouseDown(event));
-      divdoc.onMouseMove.listen((h.MouseEvent event) => onMouseMove(event));
-      divdoc.onMouseUp.listen((h.MouseEvent event) => onMouseUp(event));
-      divdoc.onContextMenu.listen((h.MouseEvent event) => onContextMenu(event));
-      h.document.getElementById('doc1').onScroll.listen((h.Event event) => onScroll(event));
+      divdoc.onMouseDown.listen((h.MouseEvent event) => _onMouseDown(event));
+      divdoc.onMouseMove.listen((h.MouseEvent event) => _onMouseMove(event));
+      divdoc.onMouseUp.listen((h.MouseEvent event) => _onMouseUp(event));
+      divdoc.onContextMenu.listen((h.MouseEvent event) => _onContextMenu(event));
+      h.document.getElementById('doc1').onScroll.listen((h.Event event) => _onScroll(event));
       h.document.onMouseUp.listen((h.MouseEvent event) {
         if (contextualMenu != null) {
           h.Element div = contextualMenu.getMenuHTMLNode();
@@ -145,6 +158,10 @@ class WebPage {
     }
   }
   
+  /**
+   * This can be called after a window resize, or after the toolbar
+   * has changed.
+   */
   void adjustPositionsUnderToolbar() {
     h.Element headers = h.document.getElementById('headers');
     num y = headers.getBoundingClientRect().bottom;
@@ -175,12 +192,12 @@ class WebPage {
     }
     mbar.insert(fileMenu, 0);
     Menu editMenu = new Menu(Strings.get('menu.edit'));
-    undoMenu = new MenuItem(Strings.get('undo.undo'), () => doc.undo(), shortcut: 'Z');
-    undoMenu.enabled = false;
-    editMenu.add(undoMenu);
-    redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
-    redoMenu.enabled = false;
-    editMenu.add(redoMenu);
+    _undoMenu = new MenuItem(Strings.get('undo.undo'), () => doc.undo(), shortcut: 'Z');
+    _undoMenu.enabled = false;
+    editMenu.add(_undoMenu);
+    _redoMenu = new MenuItem(Strings.get('undo.redo'), () => doc.redo(), shortcut: 'Y');
+    _redoMenu.enabled = false;
+    editMenu.add(_redoMenu);
     editMenu.add(new MenuItem.separator());
     MenuItem cutMenu = new MenuItem(Strings.get('menu.cut'), () => cursor.clipboardCut(), shortcut: 'X');
     editMenu.add(cutMenu);
@@ -206,21 +223,21 @@ class WebPage {
         shortcuts[button.shortcut] = button.action;
     
     for (Menu menu in mbar.menus) {
-      addMenuShortcuts(menu, shortcuts);
+      _addMenuShortcuts(menu, shortcuts);
     }
     _cursor.setShortcuts(shortcuts);
   }
   
-  addMenuShortcuts(Menu menu, HashMap<String, ActionFunction> shortcuts) {
+  _addMenuShortcuts(Menu menu, HashMap<String, ActionFunction> shortcuts) {
     for (MenuItem item in menu.items) {
       if (item.shortcut != null && item.action != null)
         shortcuts[item.shortcut] = item.action;
       if (item is Menu)
-        addMenuShortcuts(item, shortcuts);
+        _addMenuShortcuts(item, shortcuts);
     }
   }
   
-  void onMouseDown(h.MouseEvent event) {
+  void _onMouseDown(h.MouseEvent event) {
     if (contextualMenu != null)
       closeContextualMenu();
     // do not stop event propagation in some cases:
@@ -245,49 +262,49 @@ class WebPage {
       return;
     }
     if (event.shiftKey) {
-      selectionStart = new Position.clone(_cursor.selectionStart);
-      selectionEnd = Cursor.findPosition(event);
-      if (selectionEnd != null)
-        _cursor.setSelection(selectionStart, selectionEnd);
+      _selectionStart = new Position.clone(_cursor.selectionStart);
+      _selectionEnd = Cursor.findPosition(event);
+      if (_selectionEnd != null)
+        _cursor.setSelection(_selectionStart, _selectionEnd);
     } else {
-      selectionStart = Cursor.findPosition(event);
-      if (selectionStart != null && lastClickPosition == selectionStart &&
+      _selectionStart = Cursor.findPosition(event);
+      if (_selectionStart != null && lastClickPosition == _selectionStart &&
           lastClickTime.difference(new DateTime.now()).inMilliseconds.abs() < doubleClickTime &&
-          selectionStart.dn.nodeType != DaxeNode.ELEMENT_NODE) {
+          _selectionStart.dn.nodeType != DaxeNode.ELEMENT_NODE) {
         // double click
-        if (selectionStart.dn.parent is! DNAnchor) {
-          List<Position> positions = _extendPositionOnWord(selectionStart);
-          selectionStart = positions[0];
-          selectionEnd = positions[1];
-          _cursor.setSelection(selectionStart, selectionEnd);
-          selectionByWords = true;
+        if (_selectionStart.dn.parent is! DNAnchor) {
+          List<Position> positions = _extendPositionOnWord(_selectionStart);
+          _selectionStart = positions[0];
+          _selectionEnd = positions[1];
+          _cursor.setSelection(_selectionStart, _selectionEnd);
+          _selectionByWords = true;
         }
       }
     }
   }
   
-  void onMouseMove(h.MouseEvent event) {
-    if (selectionStart == null)
+  void _onMouseMove(h.MouseEvent event) {
+    if (_selectionStart == null)
       return;
     if (contextualMenu != null)
       return;
     Position newpos = Cursor.findPosition(event);
-    if (selectionByWords) {
-      if (selectionEnd > selectionStart && newpos <= selectionStart)
-        selectionStart = selectionEnd;
-      else if (selectionEnd < selectionStart && newpos >= selectionStart)
-        selectionStart = selectionEnd;
+    if (_selectionByWords) {
+      if (_selectionEnd > _selectionStart && newpos <= _selectionStart)
+        _selectionStart = _selectionEnd;
+      else if (_selectionEnd < _selectionStart && newpos >= _selectionStart)
+        _selectionStart = _selectionEnd;
     }
-    selectionEnd = newpos;
-    if (selectionStart != null && selectionEnd != null) {
-      if (selectionByWords && selectionEnd.dn.nodeType != DaxeNode.ELEMENT_NODE) {
-        List<Position> positions = _extendPositionOnWord(selectionEnd);
-        if (selectionEnd > selectionStart)
-          selectionEnd = positions[1];
+    _selectionEnd = newpos;
+    if (_selectionStart != null && _selectionEnd != null) {
+      if (_selectionByWords && _selectionEnd.dn.nodeType != DaxeNode.ELEMENT_NODE) {
+        List<Position> positions = _extendPositionOnWord(_selectionEnd);
+        if (_selectionEnd > _selectionStart)
+          _selectionEnd = positions[1];
         else
-          selectionEnd = positions[0];
+          _selectionEnd = positions[0];
       }
-      _cursor.setSelection(selectionStart, selectionEnd, updateUI:false);
+      _cursor.setSelection(_selectionStart, _selectionEnd, updateUI:false);
     }
     event.preventDefault();
   }
@@ -309,7 +326,7 @@ class WebPage {
     return(positions);
   }
   
-  void onMouseUp(h.MouseEvent event) {
+  void _onMouseUp(h.MouseEvent event) {
     /*
      this interferes with selection, why was it there again ?
      if (event.target is h.ImageElement ||
@@ -318,32 +335,35 @@ class WebPage {
         event.target is h.SelectElement)
       return;
     */
-    if (!selectionByWords)
-      selectionEnd = Cursor.findPosition(event);
+    if (!_selectionByWords)
+      _selectionEnd = Cursor.findPosition(event);
     lastClickPosition = null;
-    if (selectionStart != null && selectionEnd != null) {
-      if (!selectionByWords)
-        _cursor.setSelection(selectionStart, selectionEnd);
-      if (selectionStart == selectionEnd) {
-        lastClickPosition = selectionStart;
+    if (_selectionStart != null && _selectionEnd != null) {
+      if (!_selectionByWords)
+        _cursor.setSelection(_selectionStart, _selectionEnd);
+      if (_selectionStart == _selectionEnd) {
+        lastClickPosition = _selectionStart;
         lastClickTime = new DateTime.now();
       }
     }
-    selectionStart = null;
-    selectionEnd = null;
-    selectionByWords = false;
+    _selectionStart = null;
+    _selectionEnd = null;
+    _selectionByWords = false;
     event.preventDefault();
   }
   
+  /**
+   * Cancels the current mouse selection.
+   * This is called by Cursor when a character is typed.
+   */
   void stopSelection() {
-    // this is called by Cursor when a character is typed
     lastClickPosition = null;
-    selectionStart = null;
-    selectionEnd = null;
-    selectionByWords = false;
+    _selectionStart = null;
+    _selectionEnd = null;
+    _selectionByWords = false;
   }
   
-  void onContextMenu(h.MouseEvent event) {
+  void _onContextMenu(h.MouseEvent event) {
     if (event.shiftKey)
       return;
     Position newpos = Cursor.findPosition(event);
@@ -359,10 +379,11 @@ class WebPage {
     }
   }
   
-  void onScroll(h.Event event) {
+  void _onScroll(h.Event event) {
     _cursor.updateCaretPosition(false);
   }
   
+  @deprecated
   void charInsert(Position pos, String s) {
     doc.insertString(pos, s);
   }
@@ -587,21 +608,21 @@ class WebPage {
   
   void updateUndoMenus() {
     if (doc.isUndoPossible()) {
-      if (!undoMenu.enabled)
-        undoMenu.enable();
+      if (!_undoMenu.enabled)
+        _undoMenu.enable();
     } else {
-      if (undoMenu.enabled)
-        undoMenu.disable();
+      if (_undoMenu.enabled)
+        _undoMenu.disable();
     }
     if (doc.isRedoPossible()) {
-      if (!redoMenu.enabled)
-        redoMenu.enable();
+      if (!_redoMenu.enabled)
+        _redoMenu.enable();
     } else {
-      if (redoMenu.enabled)
-        redoMenu.disable();
+      if (_redoMenu.enabled)
+        _redoMenu.disable();
     }
-    undoMenu.title = doc.getUndoTitle();
-    redoMenu.title = doc.getRedoTitle();
+    _undoMenu.title = doc.getUndoTitle();
+    _redoMenu.title = doc.getRedoTitle();
     if (toolbar != null) {
       for (ToolbarButton button in toolbar.buttons) {
         if (button.data == "undo") {
@@ -621,6 +642,10 @@ class WebPage {
     }
   }
   
+  /**
+   * Used by the Daxe desktop application to display a
+   * dialog to open another file.
+   */
   void open() {
     Uri htmlUri = Uri.parse(h.window.location.toString());
     Uri docUri = Uri.parse(doc.filePath);
@@ -636,6 +661,9 @@ class WebPage {
     dlg.show();
   }
   
+  /**
+   * Calls the custom saveFunction from the constructor if defined or saves the document.
+   */
   void save() {
     if (saveFunction != null)
       saveFunction();

@@ -31,8 +31,6 @@ class MathSup extends MathElement {
   
   /**
    * Add a math element as a child
-   *
-   * @param child Math element
    */
   @override
   void addMathElement(final MathElement child) {
@@ -47,8 +45,6 @@ class MathSup extends MathElement {
 
   /**
    * Sets the font size for this component
-   *
-   * @param fontsize Font size
    */
   @override
   void setFontSize(final int fontsize) {
@@ -93,4 +89,3 @@ class MathSup extends MathElement {
   }
   
 }
-

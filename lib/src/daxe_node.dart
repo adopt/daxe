@@ -18,15 +18,15 @@
 part of daxe;
 
 /**
- * This class represents a GUI for an XML node. The subclasses offer differents GUIs.
+ * This class represents a GUI for an XML node. The subclasses offer differents GUIs
+ * corresponding to different display types.
  */
 abstract class DaxeNode {
+  /// type for an XML element, CDATA section, processing instruction or XML comment
   static const int ELEMENT_NODE = 1;
+  /// type for a text node
   static const int TEXT_NODE = 3;
-  //NOTE: cdata, pi and comments are now DaxeNode elements containing a text node
-  //static const int CDATA_SECTION_NODE = 4;
-  //static const int PROCESSING_INSTRUCTION_NODE = 7;
-  //static const int COMMENT_NODE = 8;
+  /// type for a document node
   static const int DOCUMENT_NODE = 9;
   
   static List<String> BOLD_STYLES = ['GRAS', 'BOLD'];
@@ -42,18 +42,20 @@ abstract class DaxeNode {
   x.Element ref; // schema element
   String _id;
   DaxeNode parent;
+  /// There are only 3 different node types: ELEMENT_NODE, TEXT_NODE and DOCUMENT_NODE.
   int nodeType;
   String _namespaceURI;
   String prefix;
   String localName;
   String nodeValue;
-  DaxeNode firstChild;
-  DaxeNode nextSibling;
+  DaxeNode _firstChild;
+  DaxeNode _nextSibling;
   List<DaxeAttr> attributes;
   bool userCannotRemove = false; // with suppr/del, could be extended to selections...
   bool userCannotEdit = false;
   bool valid;
-  List<String> restrictedInserts; // used in DaxeDocument.elementsAllowedUnder to restrict inserts beyond schema
+  /// used in DaxeDocument.elementsAllowedUnder to restrict inserts beyond schema
+  List<String> restrictedInserts;
   
   
   /**
@@ -105,9 +107,9 @@ abstract class DaxeNode {
         for (x.Node n in node.childNodes) {
           DaxeNode dn = NodeFactory.createFromNode(n, this);
           if (prev == null)
-            firstChild = dn;
+            _firstChild = dn;
           else
-            prev.nextSibling = dn;
+            prev._nextSibling = dn;
           prev = dn;
         }
       } else if ((node.nodeType == x.Node.CDATA_SECTION_NODE ||
@@ -136,8 +138,8 @@ abstract class DaxeNode {
     prefix = doc.cfg.elementPrefix(ref);
     localName = doc.cfg.elementName(ref);
     nodeValue = null;
-    firstChild = null;
-    nextSibling = null;
+    _firstChild = null;
+    _nextSibling = null;
     attributes = new List<DaxeAttr>();
     valid = true;
   }
@@ -156,8 +158,8 @@ abstract class DaxeNode {
     prefix = null;
     localName = null;
     nodeValue = null;
-    firstChild = null;
-    nextSibling = null;
+    _firstChild = null;
+    _nextSibling = null;
     attributes = new List<DaxeAttr>();
     valid = true;
   }
@@ -173,8 +175,8 @@ abstract class DaxeNode {
     this.prefix = null;
     this.localName = null;
     nodeValue = value;
-    firstChild = null;
-    nextSibling = null;
+    _firstChild = null;
+    _nextSibling = null;
     attributes = null;
     valid = true;
   }
@@ -241,7 +243,7 @@ abstract class DaxeNode {
     if (nodeType == TEXT_NODE)
       return(nodeValue.length);
     int n = 0;
-    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling)
+    for (DaxeNode dn=_firstChild; dn != null; dn=dn._nextSibling)
       n++;
     return(n);
   }
@@ -278,10 +280,18 @@ abstract class DaxeNode {
    */
   List<DaxeNode> get childNodes {
     List<DaxeNode> list = new List<DaxeNode>();
-    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+    for (DaxeNode dn=_firstChild; dn != null; dn=dn._nextSibling) {
       list.add(dn);
     }
     return(list);
+  }
+  
+  DaxeNode get firstChild {
+    return _firstChild;
+  }
+  
+  DaxeNode get nextSibling {
+    return _nextSibling;
   }
   
   /**
@@ -290,16 +300,16 @@ abstract class DaxeNode {
   DaxeNode get previousSibling {
     if (parent == null)
       return(null);
-    for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
-      if (dn.nextSibling == this)
+    for (DaxeNode dn = parent._firstChild; dn != null; dn = dn._nextSibling) {
+      if (dn._nextSibling == this)
         return(dn);
     }
     return(null);
   }
   
   DaxeNode get lastChild {
-    for (DaxeNode dn = firstChild; dn != null; dn = dn.nextSibling) {
-      if (dn.nextSibling == null)
+    for (DaxeNode dn = _firstChild; dn != null; dn = dn._nextSibling) {
+      if (dn._nextSibling == null)
         return(dn);
     }
     return(null);
@@ -308,7 +318,7 @@ abstract class DaxeNode {
   DaxeNode childAtOffset(int offset) {
     assert(nodeType != TEXT_NODE);
     int n = 0;
-    for (DaxeNode dn=firstChild; dn != null; dn=dn.nextSibling) {
+    for (DaxeNode dn=_firstChild; dn != null; dn=dn._nextSibling) {
       if (n == offset)
         return(dn);
       n++;
@@ -355,7 +365,7 @@ abstract class DaxeNode {
    */
   int offsetOf(DaxeNode child) {
     int i = 0;
-    for (DaxeNode n=firstChild; n != null; n=n.nextSibling) {
+    for (DaxeNode n=_firstChild; n != null; n=n._nextSibling) {
       if (n == child)
         return(i);
       i++;
@@ -545,9 +555,9 @@ abstract class DaxeNode {
   void appendChild(DaxeNode dn) {
     DaxeNode last = lastChild;
     if (last != null)
-      last.nextSibling = dn;
+      last._nextSibling = dn;
     else
-      firstChild = dn;
+      _firstChild = dn;
     dn.parent = this;
   }
   
@@ -558,52 +568,52 @@ abstract class DaxeNode {
   void insertBefore(DaxeNode newdn, DaxeNode beforedn) {
     assert(beforedn == null || this == beforedn.parent);
     newdn.parent = this;
-    DaxeNode dn = firstChild;
+    DaxeNode dn = _firstChild;
     if (dn == beforedn) {
-      DaxeNode save = firstChild;
-      firstChild = newdn;
-      newdn.nextSibling = save;
+      DaxeNode save = _firstChild;
+      _firstChild = newdn;
+      newdn._nextSibling = save;
     } else {
-      while (dn != null && dn.nextSibling != beforedn) {
-        dn = dn.nextSibling;
+      while (dn != null && dn._nextSibling != beforedn) {
+        dn = dn._nextSibling;
       }
       assert(dn != null);
-      assert(dn.nextSibling == beforedn);
-      DaxeNode save = dn.nextSibling;
-      dn.nextSibling = newdn;
-      newdn.nextSibling = save;
+      assert(dn._nextSibling == beforedn);
+      DaxeNode save = dn._nextSibling;
+      dn._nextSibling = newdn;
+      newdn._nextSibling = save;
     }
   }
   
   void insertAfter(DaxeNode newdn, DaxeNode afterdn) {
     assert(this == afterdn.parent);
-    if (afterdn.nextSibling == null)
+    if (afterdn._nextSibling == null)
       appendChild(newdn);
     else
-      insertBefore(newdn, afterdn.nextSibling);
+      insertBefore(newdn, afterdn._nextSibling);
   }
   
   void removeChild(DaxeNode dn) {
     if (dn.previousSibling != null)
-      dn.previousSibling.nextSibling = dn.nextSibling;
-    if (dn == firstChild)
-      firstChild = dn.nextSibling;
+      dn.previousSibling._nextSibling = dn._nextSibling;
+    if (dn == _firstChild)
+      _firstChild = dn._nextSibling;
     dn.parent = null;
-    dn.nextSibling = null;
+    dn._nextSibling = null;
   }
   
   /**
    * Replaces this node by the given node (in the tree).
    */
   void replaceWith(DaxeNode dn) {
-    if (parent.firstChild == this)
-      parent.firstChild = dn;
+    if (parent._firstChild == this)
+      parent._firstChild = dn;
     else
-      previousSibling.nextSibling = dn;
+      previousSibling._nextSibling = dn;
     dn.parent = parent;
-    dn.nextSibling = nextSibling;
+    dn._nextSibling = _nextSibling;
     parent = null;
-    nextSibling = null;
+    _nextSibling = null;
   }
   
   /**

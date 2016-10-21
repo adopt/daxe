@@ -148,8 +148,6 @@ class StringMathBuilder {
 
   /**
    * Return the root  element of a math tree
-  *
-   * @return Root element
    */
   MathRootElement getMathRootElement()
   {

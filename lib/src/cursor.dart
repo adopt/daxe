@@ -18,7 +18,7 @@
 part of daxe;
 
 /**
- * Cursor and related operations (such as keyboard input)
+ * Cursor and related operations (such as keyboard input and copy/paste)
  */
 class Cursor {
   static final String wordDelimiters = "\n \t`~!@#^&*()-+=[{]}|;:'\",<.>/?";
@@ -42,10 +42,10 @@ class Cursor {
     visible = true;
     shortcuts = new HashMap<int, ActionFunction>();
     // FIXME: IE is always intercepting Ctrl-P
-    ta.onKeyUp.listen((h.KeyboardEvent event) => keyUp(event));
-    ta.onKeyPress.listen((h.KeyboardEvent event) => keyPress(event));
-    ta.onKeyDown.listen((h.KeyboardEvent event) => keyDown(event));
-    ta.onBlur.listen((h.Event event) => blur(event));
+    ta.onKeyUp.listen((h.KeyboardEvent event) => _keyUp(event));
+    ta.onKeyPress.listen((h.KeyboardEvent event) => _keyPress(event));
+    ta.onKeyDown.listen((h.KeyboardEvent event) => _keyDown(event));
+    ta.onBlur.listen((h.Event event) => _blur(event));
     ta.onPaste.listen((h.ClipboardEvent e) {
       // check if current language might understand HTML.
       // If not, onPaste is not useful.
@@ -135,7 +135,7 @@ class Cursor {
     return(pos1);
   }
 
-  void keyDown(h.KeyboardEvent event) {
+  void _keyDown(h.KeyboardEvent event) {
     if (selectionStart == null)
       return;
     page.stopSelection();
@@ -203,7 +203,7 @@ class Cursor {
     newTimer();
   }
 
-  void keyPress(h.KeyboardEvent event) {
+  void _keyPress(h.KeyboardEvent event) {
     // Save the state of shift when a key is pressed,
     // because shift might be released by the time of keyUp,
     // but should still be taken into account.
@@ -211,7 +211,7 @@ class Cursor {
       shiftOnKeyPress = true;
   }
 
-  void keyUp(h.KeyboardEvent event) {
+  void _keyUp(h.KeyboardEvent event) {
     // NOTE: on MacOS, keyUp events are not fired when the command key is down
     // see: http://bitspushedaround.com/on-a-few-things-you-may-not-know-about-the-hellish-command-key-and-javascript-events/
     // 2 possible solutions: using keyPress, or keyUp for the command key
@@ -267,7 +267,7 @@ class Cursor {
     newTimer();
   }
 
-  void blur(h.Event event) {
+  void _blur(h.Event event) {
     hide();
   }
 
@@ -715,6 +715,9 @@ class Cursor {
     return(new Position(dn, offset));
   }
 
+  /**
+   * Returns the first caret position before the given one.
+   */
   Position previousCaretPosition(Position pos) {
     if (pos.dn is DNDocument && pos.dnOffset == 0)
       return(pos);
@@ -950,6 +953,12 @@ class Cursor {
     ta.value = '';
   }
 
+  /**
+   * Changes the effective selection in the document, based
+   * on desired start and end positions derived from mouse positions.
+   * Starting with start and end, the selection is reduced to
+   * avoid cutting elements, so that the selection can be cut.
+   */
   setSelection(Position start, Position end, {updateUI:true}) {
     if (selectionStart == start && selectionEnd == end) {
       if (start == end) {

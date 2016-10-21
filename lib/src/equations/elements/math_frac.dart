@@ -36,8 +36,6 @@ class MathFrac extends MathElement {
   
   /**
    * Sets the thickness of the fraction line
-   *
-   * @param linethickness Thickness
    */
   void setLineThickness(final int linethickness) {
     if (linethickness >= 0)
@@ -91,4 +89,3 @@ class MathFrac extends MathElement {
   }
   
 }
-

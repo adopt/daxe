@@ -17,6 +17,9 @@
 
 part of daxe;
 
+/**
+ * Default dialog to edit attributes.
+ */
 class AttributeDialog {
   DaxeNode el;
   x.Element ref;

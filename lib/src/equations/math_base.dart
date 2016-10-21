@@ -57,10 +57,10 @@ class MathBase {
   /**
    * Creates a MathBase
   *
-   * @param element Root element of a math tree
-   * @param inlinefontsize Size of the preferred font used by inline equations
-   * @param displayfontsize Size of the preferred font used by non inline equations
-   * @param gcalc Graphics object to use to calculate character sizes (nothing will be painted on it)
+   * [element]: root element of a math tree;
+   * [inlinefontsize]: size of the preferred font used by inline equations;
+   * [displayfontsize]: size of the preferred font used by non inline equations;
+   * [gcalc]: graphics object to use to calculate character sizes (nothing will be painted on it).
    */
   MathBase({final MathRootElement element, final int inlinefontsize:15, final int displayfontsize:16,
       final h.CanvasRenderingContext2D context}) {
@@ -97,7 +97,7 @@ class MathBase {
   /**
    * Set the root element of a math tree
   *
-   * @param element Root element of a math tree
+   * [element]: root element of a math tree.
    */
   void setRootElement(final MathRootElement element) {
     if (element == null)
@@ -118,7 +118,7 @@ class MathBase {
   /**
    * Enables, or disables the debug mode
    *
-   * @param debug Debug mode
+   * [debug]: debug mode.
    */
   void setDebug(final bool debug) {
     this._debug = debug;
@@ -128,8 +128,6 @@ class MathBase {
 
   /**
    * Indicates, if the debug mode is enabled
-   *
-   * @return True, if the debug mode is enabled
    */
   bool isDebug() {
     return _debug;
@@ -137,8 +135,6 @@ class MathBase {
 
   /**
    * Sets the default font size, which used for the root element
-   *
-   * @param fontsize Font size
    */
   void setDefaultFontSize(final int fontsize) {
     if (fontsize >= minfontsize || fontsize < maxfontsize)
@@ -147,8 +143,6 @@ class MathBase {
 
   /**
    * Get the default font size
-   *
-   * @return Default font size
    */
   int getDefaultInlineFontSize() {
     return _inlinefontsize;
@@ -156,8 +150,6 @@ class MathBase {
 
   /**
    * Sets the default font size for non inline equations
-   *
-   * @param fontsize Default font size
    */
   void setDefaultDisplayFontSize(final int fontsize) {
     if (fontsize >= minfontsize || fontsize < maxfontsize)
@@ -166,8 +158,6 @@ class MathBase {
 
   /**
    * Get the default font size for non inline equations
-   *
-   * @return Default display font size
    */
   int getDefaultDisplayFontSize() {
     return _displayfontsize;
@@ -175,10 +165,6 @@ class MathBase {
 
   /**
    * Get a font specified by the font size
-   *
-   * @param fontsize Font size
-   *
-   * @return Font
    */
   String getFont(final int fontsize, [int style=MathBase.STYLE_PLAIN]) {
     int size;
@@ -206,11 +192,7 @@ class MathBase {
   }
 
   /**
-   * Get the font metrics specified by the font size
-   *
-   * @param fontsize Font size
-   *
-   * @return Font metrics
+   * Get the font metrics specified by the font size.
    */
   TextMetrics getFontMetrics(final int fontsize) {
     int size;
@@ -239,9 +221,9 @@ class MathBase {
   }
   
   /**
-   * Paints this component and all of its elements
+   * Paints this component and all of its elements.
    *
-   * @param context The graphics context to use for painting
+   * [context]: the graphics context to use for painting.
    */
   void paint(final h.CanvasRenderingContext2D context) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -251,8 +233,6 @@ class MathBase {
 
   /**
    * Return the current width of this component
-   *
-   * @return Width
    */
   int getWidth() {
     if (_rootElement != null && _fontmetrics != null)
@@ -262,8 +242,6 @@ class MathBase {
 
   /**
    * Return the current height of this component
-   *
-   * @return Height
    */
   int getHeight() {
     if (_rootElement != null && _fontmetrics != null)
@@ -272,4 +250,3 @@ class MathBase {
   }
   
 }
-

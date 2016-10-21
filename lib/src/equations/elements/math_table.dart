@@ -78,10 +78,6 @@ class MathTable extends MathElement {
 
   /**
    * Returns the maximal ascent height of a row in this table
-   *
-   * @param row Row     
-   *
-   * @return Maximal ascent height
    */
   double getMaxRowAscentHeight(final int row) {
     if (row >= getMathElementCount())
@@ -97,10 +93,6 @@ class MathTable extends MathElement {
 
   /**
    * Returns the maximal descent height of a row in this table
-   *
-   * @param row Row
-   *
-   * @return Maximal descent height
    */
   double getMaxRowDescentHeight(final int row) {
     if (row >= getMathElementCount())
@@ -115,12 +107,7 @@ class MathTable extends MathElement {
   }
 
   /**
-   * Returns the maximal width of a column
-   * in this table
-   *
-   * @param column Column
-   *
-   * @return Maximal width
+   * Returns the maximal width of a column in this table
    */
   double getMaxColumnWidth(final int column) {
     double width = 0.0;
@@ -137,8 +124,6 @@ class MathTable extends MathElement {
 
   /**
    * Returns the maximal count of columns
-   *
-   * @return Maximal count of columns
    */
   int getMaxColumnCount() {
     int count = 0;

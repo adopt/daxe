@@ -16,9 +16,9 @@
 */
 
 /**
- * Daxe - Dart XML Editor
- * The goal of this project is to replace the Jaxe Java applet in WebJaxe, but Daxe
- * could be used to edit XML documents online in any other application.
+ * This class' [main] method is called to initialize Daxe. It is also possible
+ * to create a customized editor derived from Daxe by creating a separate class
+ * and setting custom display types before calling [initDaxe].
  * 
  * The URL must have the file and config parameters with the path to the XML file and Jaxe config file.
  * It can also have a save parameter with the path to a server script to save the document.
@@ -80,12 +80,14 @@ part 'src/validation_dialog.dart';
 part 'src/web_page.dart';
 
 
+/// A function with no argument
 typedef void ActionFunction();
 
 /// The current web page
 WebPage page;
 /// The current XML document
 DaxeDocument doc;
+/// Map name->function of functions callable from menus defined in the config
 Map<String,ActionFunction> customFunctions = new Map<String,ActionFunction>();
 
 void main() {
@@ -100,7 +102,8 @@ void main() {
 
 /**
  * This Future can be used to initialize Daxe and customize the user interface afterwards.
- * The display types and the strings have to be loaded before this method is called.
+ * The display types and the strings have to be loaded before this method is called
+ * (with [NodeFactory.addCoreDisplayTypes] and [Strings.load]).
  * In the Daxe application, the results of the Future are not used.
  * The optional [left] parameter can be used to extend the LeftPanel class.
  * An optional [saveFunction] parameter can be passed to customize saving documents.

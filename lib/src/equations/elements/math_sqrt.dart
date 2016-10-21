@@ -70,8 +70,6 @@ class MathSqrt extends MathElement {
 
   /**
    * Returns the width of the children
-   *
-   * @return Width of childs
    */
   double getMathElementsWidth() {
     double width = 0.0;
@@ -88,12 +86,10 @@ class MathSqrt extends MathElement {
   }
 
   /**
-   * Returns the maximal height of the children
+   * Returns the maximal height of the children.
    *
-   * @param dynamicParts Should be true, if the calculation consider the elements,
-   *                     which has not fixed sizes
-   *
-   * @return Maximal height of children
+   * [dynamicParts]: should be true, if the calculation consider the elements,
+   * which has not fixed sizes.
    */
   double getMathElementsHeight(final bool dynamicParts) {
     double height = 0.0;
@@ -112,10 +108,8 @@ class MathSqrt extends MathElement {
   /**
    * Return the maximal height of the upper part from the children 
    *
-   * @param dynamicParts Should be true, if the calculation consider the elements,
-   *                     which has not fixed sizes
-   *
-   * @return Maximal height of the upper parts from the children
+   * [dynamicParts]: should be true, if the calculation consider the elements,
+   * which has not fixed sizes.
    */
   double getMathElementsAscentHeight(final bool dynamicParts) {
     double height = 0.0;
@@ -132,12 +126,10 @@ class MathSqrt extends MathElement {
   }
 
 /**
- * Return the maximal height of the lower part from the children 
+ * Return the maximal height of the lower part from the children.
  *
- * @param dynamicParts Should be true, if the calculation consider the elements,
- *                     which has not fixed sizes
- *
- * @return Maximal height of the lower parts from the children
+ * [dynamicParts]: should be true, if the calculation consider the elements,
+ * which has not fixed sizes.
  */
   double getMathElementsDescentHeight(final bool dynamicParts) {
     double height = 0.0;
@@ -153,4 +145,3 @@ class MathSqrt extends MathElement {
   }
   
 }
-

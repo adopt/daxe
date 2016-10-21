@@ -45,8 +45,6 @@ class MathTableRow extends MathElement {
 
   /**
    * Returns the maximal width of a column for all columns in this row
-   *
-   * @return width
    */
   double _getMaxColumnWidth() {
     double width = 0.0;
@@ -89,4 +87,3 @@ class MathTableRow extends MathElement {
   }
   
 }
-

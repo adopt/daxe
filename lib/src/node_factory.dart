@@ -35,12 +35,14 @@ class NodeFactory {
   
   // TODO: add factory constructors in DaxeNode ?
   
-  HashMap<String,ConstructorFromRef> constructorsFromRef = new HashMap<String,ConstructorFromRef>();
+  HashMap<String,ConstructorFromRef> _constructorsFromRef = new HashMap<String,ConstructorFromRef>();
   
-  HashMap<String,ConstructorFromNode> constructorsFromNode = new HashMap<String,ConstructorFromNode>();
+  HashMap<String,ConstructorFromNode> _constructorsFromNode = new HashMap<String,ConstructorFromNode>();
   
+  /**
+   * Add the core display types to the node library.
+   */
   static void addCoreDisplayTypes() {
-    // add core types in the nodes library
     addDisplayType('anchor',
         (x.Element ref) => new DNAnchor.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNAnchor.fromNode(node, parent)
@@ -195,13 +197,22 @@ class NodeFactory {
     );
   }
   
+  /**
+   * Add a custom display type to create a [DaxeNode] with an
+   * element reference or a DOM node.
+   */
   static void addDisplayType(String displayType, ConstructorFromRef cref, ConstructorFromNode cnode) {
     if (cref != null)
-      nodeFactory.constructorsFromRef[displayType] = cref;
+      nodeFactory._constructorsFromRef[displayType] = cref;
     if (cnode != null)
-      nodeFactory.constructorsFromNode[displayType] = cnode;
+      nodeFactory._constructorsFromNode[displayType] = cnode;
   }
   
+  /**
+   * Create a new [DaxeNode] with the DOM node and the future parent
+   * for the new node (the parent helps to choose an element
+   * reference in the schema for the new node).
+   */
   static DaxeNode createFromNode(x.Node n, DaxeNode parent) {
     x.Element ref;
     if (n is x.Document) {
@@ -219,7 +230,7 @@ class NodeFactory {
       ref = null;
     }
     String dt = doc.cfg.nodeDisplayType(ref, n.nodeName, n.nodeType);
-    ConstructorFromNode cnode = nodeFactory.constructorsFromNode[dt];
+    ConstructorFromNode cnode = nodeFactory._constructorsFromNode[dt];
     DaxeNode dn;
     if (cnode != null)
       dn = cnode(n, parent);
@@ -236,6 +247,13 @@ class NodeFactory {
     return(dn);
   }
   
+  /**
+   * Create a new [DaxeNode] with a given element reference.
+   * The [nodeType] parameter can be used for XML comments,
+   * processing instructions and CDATA sections (they do not
+   * have an element reference, so a null [elementRef] can be passed
+   * for these nodes).
+   */
   static DaxeNode create(x.Element elementRef, [String nodeType = 'element']) {
     if (nodeType == 'commentaire') {
       return(new DNComment());
@@ -245,7 +263,7 @@ class NodeFactory {
       return(new DNCData());
     }
     String dt = doc.cfg.nodeDisplayType(elementRef, doc.cfg.elementName(elementRef), x.Node.ELEMENT_NODE);
-    ConstructorFromRef cref = nodeFactory.constructorsFromRef[dt];
+    ConstructorFromRef cref = nodeFactory._constructorsFromRef[dt];
     DaxeNode dn;
     if (cref != null)
       dn = cref(elementRef);

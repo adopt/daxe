@@ -43,9 +43,9 @@ class MathRootElement extends MathElement {
   
   
   /**
-   * Set the type of equation
+   * Set the type of equation.
    *
-   * @param mode INLINE|DISPLAY
+   * [mode]: INLINE|DISPLAY.
    */
   void setMode(final int mode) {
     if ((mode==INLINE) || (mode==DISPLAY))
@@ -53,36 +53,30 @@ class MathRootElement extends MathElement {
   }
 
   /**
-   * Returns the mode
-   *
-   * @return Display mode
+   * Returns the display mode.
    */
   int getMode() { 
     return _mode;
   }
   
   /**
-   * Enables, or disables the debug mode
-   *
-   * @param debug Debug mode
+   * Enables or disables the debug mode.
    */
   void setDebug(final bool debug) {
     this._debug = debug;
   }
   
   /**
-   * Indicates, if the debug mode is enabled
-   *
-   * @return True, if the debug mode is enabled
+   * Returns true if the debug mode is enabled.
    */
   bool isDebug() {
     return _debug;
   }
   
   /**
-   * Paints this component and all of its elements
+   * Paints this component and all of its elements.
    *
-   * @param g The graphics context to use for painting
+   * [g]: the graphics context to use for painting.
    */
   void paintComponent(final h.CanvasRenderingContext2D context) {
     if (_debug) {
@@ -124,8 +118,6 @@ class MathRootElement extends MathElement {
   
   /**
    * Return the current width of this component
-   *
-   * @return Width
    */
   int getComponentWidth() {
     return getWidth(true).ceil();
@@ -133,8 +125,6 @@ class MathRootElement extends MathElement {
   
   /**
    * Return the current height of this component
-   *
-   * @return Height
    */
   int getComponentHeight() {
     return getHeight(true).ceil();
@@ -194,4 +184,3 @@ class MathRootElement extends MathElement {
   }
   
 }
-

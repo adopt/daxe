@@ -19,16 +19,17 @@ part of nodes;
 
 /**
  * Style node (changes the style without showing tags).
- * Jaxe display type: 'style'.
+ * 
+ * Display type: 'style'.
  *
- * parameter: `style`: `GRAS` (bold) | `ITALIQUE` (italic) | `EXPOSANT` (superscript) |
- * `INDICE` (subscript) | `SOULIGNE` (underlined) | `BARRE` (strikethrough) |
- * `PCOULEUR[###,###,###]` (text color) | `FCOULEUR[###,###,###]` (background color)
+ * Parameters:
+ * 
+ * * `style`: `BOLD` or `GRAS` | `ITALIC` or `ITALIQUE` | `SUPERSCRIPT` or `EXPOSANT` |
+ * `SUBSCRIPT` or `INDICE` | `UNDERLINE` or `SOULIGNE` | `STRIKETHROUGH` or `BARRE` |
+ * `FOREGROUND[###,###,###]` (text color) | `BACKGROUND[###,###,###]` (background color)
  * (several styles can be combined with a ';')
- *
- * parameter: 'police' (font)
- *
- * parameter: 'taille' (size)
+ * * `font` or `police`: CSS font name
+ * * `size` or `taille`: CSS font size
  */
 class DNStyle extends DaxeNode {
 

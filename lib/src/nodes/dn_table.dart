@@ -19,16 +19,19 @@ part of nodes;
 
 /**
  * Table able to contain other elements in its cells.
- * Jaxe display type: 'tabletexte' (text table).
  * 
- * * parameter: `trTag`: the name of row elements
- * * parameter: `tdTag`: the name of cell elements
- * * parameter: `thTag`: the name of header elements
- * * parameter: `tbodyTag`: 'tbody' in HTML (only import is supported)
- * * parameter: `theadTag`: 'thead' in HTML (only import is supported)
- * * parameter: `tfootTag`: 'tfoot' in HTML (only import is supported)
- * * parameter: `colspanAttr`: the name of the colspan attribute
- * * parameter: `rowspanAttr`: the name of the rowspan attribute
+ * Display types: 'texttable', 'tabletexte'.
+ * 
+ * Parameters:
+ * 
+ * * `trTag`: the name of row elements
+ * * `tdTag`: the name of cell elements
+ * * `thTag`: the name of header elements
+ * * `tbodyTag`: 'tbody' in HTML (only import is supported)
+ * * `theadTag`: 'thead' in HTML (only import is supported)
+ * * `tfootTag`: 'tfoot' in HTML (only import is supported)
+ * * `colspanAttr`: the name of the colspan attribute
+ * * `rowspanAttr`: the name of the rowspan attribute
  */
 class DNTable extends DaxeNode {
   String _trtag, _tdtag, _thtag;
@@ -730,5 +733,3 @@ class DNTH extends DNTD {
   }
   
 }
-
-

@@ -19,7 +19,13 @@ part of nodes;
 
 /**
  * HTML anchor, assumed to have name and href attributes.
- * Jaxe display type: 'anchor'.
+ * 
+ * Display type: 'anchor'.
+ * 
+ * Parameters:
+ * 
+ * * `nameAtt`: name of the anchor name attribute
+ * * `hrefAtt`: name of the attribute with the URL
  */
 class DNAnchor extends DaxeNode {
   String _nameAtt;

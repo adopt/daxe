@@ -18,8 +18,9 @@
 part of nodes;
 
 /**
- * Form field.
- * Jaxe display type: 'champ' (field).
+ * Form field. Used within a [DNForm] DaxeNode.
+ * 
+ * Display types: 'field', 'champ'.
  */
 class DNFormField extends DaxeNode {
   bool simpleField;

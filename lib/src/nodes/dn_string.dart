@@ -18,10 +18,14 @@
 part of nodes;
 
 /**
- * A short text area displayed within a start and end tags.
- * Jaxe display type: 'string'.
+ * A short text area displayed within start and end tags, flowing
+ * within a paragraph, without any line break.
  * 
- * * parameter: `style`: as in DNStyle
+ * Display type: 'string'.
+ * 
+ * Parameters:
+ * 
+ * * `style`: as in DNStyle
  */
 class DNString extends DaxeNode {
   Tag _b1, _b2;

@@ -38,8 +38,9 @@ abstract class DaxeNode {
   static List<String> BACKGROUND_STYLES = ['FCOULEUR', 'BACKGROUND'];
   static List<String> FOREGROUND_STYLES = ['PCOULEUR', 'FOREGROUND'];
   static const String COLOR_PATTERN = "^.*\\[(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3})\\]\$";
-
-  x.Element ref; // schema element
+  
+  /// element reference (schema element)
+  x.Element ref;
   String _id;
   DaxeNode parent;
   /// There are only 3 different node types: ELEMENT_NODE, TEXT_NODE and DOCUMENT_NODE.
@@ -51,10 +52,17 @@ abstract class DaxeNode {
   DaxeNode _firstChild;
   DaxeNode _nextSibling;
   List<DaxeAttr> attributes;
+  /// Set to true in a subclass to prevent user from removing the node with the
+  /// suppr or del keys.
   bool userCannotRemove = false; // with suppr/del, could be extended to selections...
+  /// Set to true in a subclass to prevent the user from editing the contents
+  /// of this node even when editing is valid (edition inside children is
+  /// still possible).
   bool userCannotEdit = false;
+  /// node validity set by [Config.elementIsValid] when the node is created or
+  /// when [updateValidity] is called.
   bool valid;
-  /// used in DaxeDocument.elementsAllowedUnder to restrict inserts beyond schema
+  /// used in [DaxeDocument.elementsAllowedUnder] to restrict inserts beyond schema
   List<String> restrictedInserts;
   
   
@@ -219,6 +227,9 @@ abstract class DaxeNode {
     return(hn);
   }
   
+  /**
+   * Node name (including the prefix when there is one).
+   */
   String get nodeName {
     if (nodeType == TEXT_NODE)
       return('#text');
@@ -270,6 +281,11 @@ abstract class DaxeNode {
     return(hnode is h.DivElement || hnode is h.TableElement || hnode is h.UListElement);
   }
   
+  /**
+   * Returns true if this node serializes to an XML element
+   * (i.e. it has the DaxeNode.ELEMENT_NODE type but is not a DNComment,
+   * DNProcessingInstruction or DNCData).
+   */
   bool isXMLElement() {
     return(nodeType == DaxeNode.ELEMENT_NODE && this is! DNComment &&
         this is! DNProcessingInstruction && this is! DNCData);
@@ -451,6 +467,10 @@ abstract class DaxeNode {
     return(null);
   }
   
+  /**
+   * Returns a LinkedHashMap attribute name -> attribute node for all
+   * the attributes specified in the node.
+   */
   LinkedHashMap<String, DaxeAttr> getAttributesMapCopy() {
     LinkedHashMap<String, DaxeAttr> map = new LinkedHashMap<String, DaxeAttr>();
     for (DaxeAttr attr in attributes)
@@ -629,6 +649,11 @@ abstract class DaxeNode {
     }
   }
   
+  /**
+   * For a text node, removes the text starting at `pos.dnOffset` with
+   * the given `length`.
+   * Otherwise, removes `length` children starting at `pos.dnOffset`.
+   */
   void remove(Position pos, int length) {
     if (nodeType == ELEMENT_NODE) {
       for (int i=pos.dnOffset; i<length; i++) {
@@ -772,6 +797,9 @@ abstract class DaxeNode {
     return(s);
   }
   
+  /**
+   * Adds or removes the `invalid` class to the HTML node.
+   */
   void updateValidity() {
     valid = doc.cfg.elementIsValid(this);
     h.Element hel = getHTMLNode();
@@ -794,6 +822,10 @@ abstract class DaxeNode {
       okfct();
   }
   
+  /**
+   * Displays the attribute dialog for this node. Can be overridden
+   * in subclasses for a custom dialog.
+   */
   void attributeDialog([ActionFunction okfct]) {
     if (ref != null) {
       AttributeDialog dlg = new AttributeDialog(this, okfct);
@@ -804,6 +836,9 @@ abstract class DaxeNode {
     }
   }
   
+  /**
+   * Returns the [Position] matching given mouse coordinates.
+   */
   Position findPosition(num x, num y) {
     // we assume the click was in this element
     
@@ -1085,14 +1120,28 @@ abstract class DaxeNode {
     return(new Position(this, offsetLength));
   }
   
+  /**
+   * Returns the first position inside the node. This is used for caret
+   * movements and also to set the cursor inside the node when it is first created.
+   * This can overridden by subclasses when the cursor should be set in a child
+   * (for instance the cursor should be placed inside the first td for an HTML table).
+   */
   Position firstCursorPositionInside() {
     return(new Position(this, 0));
   }
   
+  /**
+   * Similar to [firstCursorPositionInside], this returns the last position
+   * inside the node.
+   */
   Position lastCursorPositionInside() {
     return(new Position(this, offsetLength));
   }
   
+  /**
+   * Sets the CSS style of given HTML element based on the config
+   * `style` parameter for this node.
+   */
   void setStyle(h.Element hn) {
     String styleParam = doc.cfg.elementParameterValue(ref, 'style', null);
     if (styleParam != null) {

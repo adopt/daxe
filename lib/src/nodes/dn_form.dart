@@ -19,7 +19,8 @@ part of nodes;
 
 /**
  * Recursive display of all descendants in a single form.
- * Jaxe display type: 'formulaire' (form).
+ * 
+ * Display types: 'form', 'formulaire'.
  */
 class DNForm extends DaxeNode {
   

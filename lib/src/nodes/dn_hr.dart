@@ -18,8 +18,9 @@
 part of nodes;
 
 /**
- * HTML horizontal rule
- * Jaxe display type: 'hr'.
+ * HTML horizontal rule.
+ * 
+ * Display type: 'hr'.
  */
 class DNHr extends DaxeNode {
   

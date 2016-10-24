@@ -21,11 +21,14 @@ part of nodes;
  * An equation using the TeX syntax. The image is encoded in base64
  * and added as text inside the element.
  * Requires a TeX equation server specified in the config file.
- * Jaxe display type: equatexmem, or a plugin with the class `xpages.JEEquaTeXMemoire`.
+ * 
+ * Display type: 'equatexmem', or a plugin with the class `xpages.JEEquaTeXMemoire`.
  *
- * * parameter: `serveur`: the URL for the tex.php script converting equations into images
- * * parameter: `texteAtt`: the name of the attribute giving the equation text
- * * parameter: `labelAtt`: the name of the attribute giving the image label
+ * Parameters:
+ * 
+ * * `serveur`: the URL for the tex.php script converting equations into images
+ * * `texteAtt`: the name of the attribute giving the equation text
+ * * `labelAtt`: the name of the attribute giving the image label
  */
 class DNEquaTexMem extends DaxeNode {
   h.ImageElement _img;

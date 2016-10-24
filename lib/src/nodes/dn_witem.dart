@@ -18,8 +18,9 @@
 part of nodes;
 
 /**
- * A WYSIWYG list item to use with DNWList.
- * Jaxe display type: 'witem'.
+ * A WYSIWYG list item to use with [DNWList].
+ * 
+ * Display type: 'witem'.
  */
 class DNWItem extends DaxeNode {
   

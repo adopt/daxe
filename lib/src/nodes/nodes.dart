@@ -16,7 +16,8 @@
 */
 
 /**
- * Core Daxe nodes. Other Daxe nodes should be added into other libraries and defined as plugins in the config file.
+ * Core Daxe nodes. Other Daxe nodes can be added by extending Daxe
+ * (see [daxe]) and using [NodeFactory.addDisplayType].
  */
 
 library nodes;
@@ -32,8 +33,9 @@ import 'dart:typed_data';
 import '../xmldom/xmldom.dart' as x;
 import '../equations/equations.dart' show EquationDialog, MathBase, StringMathBuilder;
 import '../strings.dart' show Strings;
-import '../../daxe.dart' show doc, page, ActionFunction, CSSMap, DaxeAttr, DaxeNode, DaxeException, HelpDialog,
-  NodeFactory, Position, Tag, UndoableEdit, Menu, MenuItem, FileChooser;
+import '../../daxe.dart' show doc, page, ActionFunction, CSSMap, DaxeAttr, DaxeNode,
+  DaxeException, HelpDialog, NodeFactory, Position, Tag, UndoableEdit, Menu, MenuItem,
+  FileChooser;
 
 part 'dn_anchor.dart';
 part 'dn_area.dart';

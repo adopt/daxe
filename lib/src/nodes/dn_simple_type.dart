@@ -18,8 +18,10 @@
 part of nodes;
 
 /**
- * An element with a WXS simple type, displayed according to its type (checkbox, select or input field).
- * Jaxe display type: 'typesimple' (simple type).
+ * An element with a WXS simple type, displayed according to its type
+ * (checkbox, select or input field).
+ * 
+ * Display types: 'simpletype', 'typesimple'.
  */
 class DNSimpleType extends DaxeNode {
   SimpleTypeControl control;

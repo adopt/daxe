@@ -18,7 +18,10 @@
 part of nodes;
 
 /**
- * XML comment
+ * XML comment diplayed within start and end tags.
+ * 
+ * This DaxeNode is of type `DaxeNode.ELEMENT_NODE`, but is serialized
+ * with an XML comment.
  */
 class DNComment extends DaxeNode {
   Tag _b1, _b2;

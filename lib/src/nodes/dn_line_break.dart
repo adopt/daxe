@@ -19,7 +19,8 @@ part of nodes;
 
 /**
  * WYSIWYG line break element (like HTML's br).
- * Jaxe display type: 'br' .
+ * 
+ * Display type: 'br' .
  */
 class DNLineBreak extends DaxeNode {
   Tag _b1;

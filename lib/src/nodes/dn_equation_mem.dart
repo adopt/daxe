@@ -20,9 +20,12 @@ part of nodes;
 /**
  * An equation using the Jaxe syntax. The image is encoded in base64
  * and added as text inside the element.
- * Jaxe display type: equationmem, or a plugin with the class `xpages.JEEquationMemoire`.
  * 
- * * parameter: `texteAtt`: the name of the attribute giving the equation text
+ * Display type: 'equationmem', or a plugin with the class `xpages.JEEquationMemoire`.
+ * 
+ * Parameters:
+ * 
+ * * `texteAtt`: the name of the attribute giving the equation text
  */
 class DNEquationMem extends DaxeNode {
   h.ImageElement _img;
@@ -147,5 +150,3 @@ class DNEquationMem extends DaxeNode {
     return(el);
   }
 }
-
-

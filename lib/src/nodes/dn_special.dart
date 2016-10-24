@@ -19,7 +19,8 @@ part of nodes;
 
 /**
  * A symbol using UNICODE characters with a UNICODE font such as STIX.
- * Jaxe display type: 'symbole2'.
+ * 
+ * Display types: 'symbol2', 'symbole2'.
  */
 class DNSpecial extends DaxeNode {
   

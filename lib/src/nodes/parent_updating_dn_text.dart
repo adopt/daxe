@@ -19,7 +19,7 @@ part of nodes;
 
 /**
  * A DNText which triggers a parent node update for each update.
- * (used by DNForm and DNSimpleType)
+ * (used by [DNForm] and [DNSimpleType])
  * *Warning*: the parent's updateHTML must not call this updateHTML !
  */
 class ParentUpdatingDNText extends DNText {

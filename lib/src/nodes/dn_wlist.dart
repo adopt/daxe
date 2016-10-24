@@ -18,10 +18,13 @@
 part of nodes;
 
 /**
- * A WYSIWYG bulleted list, to use with DNWItem.
- * Jaxe display type: 'wlist' (use with item 'witem').
+ * A WYSIWYG bulleted list, to use with [DNWItem].
  * 
- * parameter: 'type': ul/ol (unordered, ordered)
+ * Display type: 'wlist' (use with item 'witem').
+ * 
+ * Parameters:
+ * 
+ * `type`: `ul`|`ol` (unordered, ordered)
  */
 class DNWList extends DaxeNode {
   x.Element _itemref;

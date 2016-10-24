@@ -20,7 +20,8 @@ part of nodes;
 /**
  * Invisible block with CSS style, using only the style attribute.
  * Tags are displayed if the style attribute is empty.
- * Jaxe display type: 'hiddendiv'.
+ * 
+ * Display type: 'hiddendiv'.
  */
 class DNHiddenDiv extends DaxeNode {
   String _styleAtt;

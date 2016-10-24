@@ -18,7 +18,8 @@
 part of nodes;
 
 /**
- * Control for an element or attribute with a WXS simple type, used by [DNSimpleType] and [DNForm].
+ * Control for an element or attribute with a WXS simple type, used by [DNSimpleType]
+ * and [DNForm].
  */
 class SimpleTypeControl {
   

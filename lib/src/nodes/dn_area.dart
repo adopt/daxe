@@ -18,11 +18,14 @@
 part of nodes;
 
 /**
- * Text area. Nodes inside are indented.
- * Jaxe display type: 'zone' (area).
+ * Text area with start and end tags. Nodes inside are indented.
  * 
- * * parameter: `titreAtt`: an attribute that can be used as a title
- * * parameter: `style`: as in DNStyle
+ * Display types: 'area', 'zone'.
+ * 
+ * Parameters:
+ * 
+ * * `titreAtt`: an attribute that can be used as a title
+ * * `style`: as in DNStyle
  */
 class DNArea extends DaxeNode {
   Tag _b1, _b2;

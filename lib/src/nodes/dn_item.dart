@@ -19,7 +19,8 @@ part of nodes;
 
 /**
  * A list element displayed inside a start and end bullets.
- * Jaxe display type: 'item'.
+ * 
+ * Display type: 'item'.
  */
 class DNItem extends DaxeNode {
   

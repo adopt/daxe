@@ -21,7 +21,12 @@ part of nodes;
  * Invisible style node using a style attribute with CSS.
  * Tags are displayed if the span is empty or if the style attribute is empty.
  * The style can be changed with the toolbar.
- * Jaxe display type: 'stylespan'.
+ * 
+ * Display type: 'stylespan'.
+ * 
+ * Parameters:
+ * 
+ * * `styleAtt`: name of the attribute with the CSS
  */
 class DNStyleSpan extends DNStyle {
   String _styleAtt;

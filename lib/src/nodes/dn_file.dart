@@ -20,14 +20,16 @@ part of nodes;
 /**
  * Image file. The image is displayed in the text if it is found,
  * otherwise an error message is displayed instead of the image.
- * Jaxe display type: 'fichier' (file).
+ * 
+ * Display types: 'file', 'fichier'.
  * 
  * Parameters:
- * - srcAtt: the name of the attribute giving the file path
- * - chooser: it set to true, use the file chooser to select the file
- *                         (see OpenDialog)
- * - widthAtt: the name of the attribute with the width (in pixels)
- * - heightAtt: the name of the attribute with the width (in pixels)
+ * 
+ * * srcAtt: the name of the attribute giving the file path
+ * * chooser: it set to true, use the file chooser to select the file
+ * (see OpenDialog)
+ * * widthAtt: the name of the attribute with the width (in pixels)
+ * * heightAtt: the name of the attribute with the width (in pixels)
  */
 class DNFile extends DaxeNode {
   h.ImageElement _img;

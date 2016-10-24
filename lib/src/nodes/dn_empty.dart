@@ -19,7 +19,8 @@ part of nodes;
 
 /**
  * A representation for an empty XML element, using a single tag.
- * Jaxe display type: 'vide' (empty).
+ * 
+ * Display types: 'empty', 'vide'.
  */
 class DNEmpty extends DaxeNode {
   Tag _b1;

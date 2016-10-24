@@ -19,6 +19,8 @@ part of nodes;
 
 /**
  * The document node.
+ * DaxeNode with the type `DaxeNode.DOCUMENT_NODE`,
+ * serialized as a DOM Document.
  */
 class DNDocument extends DaxeNode {
   

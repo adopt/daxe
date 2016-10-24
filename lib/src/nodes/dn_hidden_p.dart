@@ -21,7 +21,8 @@ part of nodes;
  * Invisible paragraph, inserted automatically when a newline is added
  * at a place where the element is allowed.
  * It must be able to contain text.
- * Jaxe display type: 'hiddenp'.
+ * 
+ * Display type: 'hiddenp'.
  */
 class DNHiddenP extends DaxeNode {
   String _styleAtt;

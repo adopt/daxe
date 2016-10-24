@@ -20,7 +20,8 @@ part of nodes;
 // TODO: add parameter typeListe
 /**
  * A bulleted list containing item nodes.
- * Jaxe display type: 'liste' (list)
+ * 
+ * Display types: 'list', 'liste'
  */
 class DNList extends DaxeNode {
   Tag _b1, _b2;

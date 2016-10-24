@@ -19,6 +19,9 @@ part of nodes;
 
 /**
  * XML Processing instruction.
+ * 
+ * This DaxeNode is of type `DaxeNode.ELEMENT_NODE`, but is serialized
+ * with a processing instruction.
  */
 class DNProcessingInstruction extends DaxeNode {
   Tag _b1, _b2;
@@ -65,5 +68,3 @@ class DNProcessingInstruction extends DaxeNode {
     return(domDocument.createProcessingInstruction(nodeName, data));
   }
 }
-
-

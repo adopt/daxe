@@ -231,6 +231,12 @@ class DNTable extends DaxeNode {
   }
   
   @override
+  void updateHTMLAfterChildrenChange(List<DaxeNode> changed) {
+    super.updateHTMLAfterChildrenChange(changed);
+    updateHeaderState();
+  }
+  
+  @override
   Position firstCursorPositionInside() {
     if (firstChild == null || firstChild.firstChild == null) {
       return(null);
@@ -435,42 +441,35 @@ class DNTable extends DaxeNode {
     return(dy);
   }
   
+  void updateHeaderState() {
+    header = (firstChild != null && firstChild.firstChild is DNTH);
+    h.CheckboxInputElement bheader = h.document.getElementById("header$id");
+    if (bheader.checked != header)
+      bheader.checked = header;
+  }
+  
   void toggleHeader() {
     DNTR firstTR = firstChild;
     if (firstTR == null)
       return;
-    DaxeNode cell = firstTR.firstChild;
-    while (cell != null) {
-      DaxeNode nextCell = cell.nextSibling;
-      if (header && cell is DNTH) {
-        DNTD td = new DNTD.fromRef(_tdref);
-        DaxeNode child = cell.firstChild;
-        while (child != null) {
-          DaxeNode nextChild = child.nextSibling;
-          cell.removeChild(child);
-          td.appendChild(child);
-          child = nextChild;
-        }
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('table.header'));
+    for (DaxeNode cell in firstTR.childNodes) {
+      DaxeNode newCell = null;
+      if (header && cell is DNTH)
+        newCell = new DNTD.fromRef(_tdref);
+      else if (!header && cell is DNTD)
+        newCell = new DNTH.fromRef(_thref);
+      if (newCell != null) {
+        for (DaxeNode child in cell.childNodes)
+          newCell.appendChild(new DaxeNode.clone(child));
         for (DaxeAttr attr in cell.attributes)
-          td.setAttribute(attr.name, attr.value);
-        cell.replaceWith(td);
-      } else if (!header && cell is DNTD && cell is! DNTH) {
-        DNTH th = new DNTH.fromRef(_thref);
-        DaxeNode child = cell.firstChild;
-        while (child != null) {
-          DaxeNode nextChild = child.nextSibling;
-          cell.removeChild(child);
-          th.appendChild(child);
-          child = nextChild;
-        }
-        for (DaxeAttr attr in cell.attributes)
-          th.setAttribute(attr.name, attr.value);
-        cell.replaceWith(th);
+          newCell.setAttribute(attr.name, attr.value);
+        edit.addSubEdit(new UndoableEdit.removeNode(cell));
+        Position pos = new Position(cell.parent, cell.parent.offsetOf(cell));
+        edit.addSubEdit(new UndoableEdit.insertNode(pos, newCell));
       }
-      cell = nextCell;
     }
-    header = !header;
-    firstTR.updateHTML();
+    doc.doNewEdit(edit);
   }
   
   void mergeRight([DNTD td]) {
@@ -619,6 +618,12 @@ class DNTR extends DaxeNode {
       dn = dn.nextSibling;
     }
     return(tr);
+  }
+  
+  @override
+  void updateHTMLAfterChildrenChange(List<DaxeNode> changed) {
+    super.updateHTMLAfterChildrenChange(changed);
+    (parent as DNTable).updateHeaderState();
   }
   
   @override

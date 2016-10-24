@@ -30,7 +30,7 @@ class WebPage {
   Position _selectionStart, _selectionEnd;
   MenuBar mbar;
   MenuItem _undoMenu, _redoMenu;
-  Menu contextualMenu;
+  Menu _contextualMenu;
   h.Point _ctxMenuPos;
   Toolbar toolbar;
   LeftPanel _left;
@@ -132,8 +132,8 @@ class WebPage {
       divdoc.onContextMenu.listen((h.MouseEvent event) => _onContextMenu(event));
       h.document.getElementById('doc1').onScroll.listen((h.Event event) => _onScroll(event));
       h.document.onMouseUp.listen((h.MouseEvent event) {
-        if (contextualMenu != null) {
-          h.Element div = contextualMenu.getMenuHTMLNode();
+        if (_contextualMenu != null) {
+          h.Element div = _contextualMenu.getMenuHTMLNode();
           if (div.scrollHeight > div.clientHeight && event.target == div &&
               event.client.x > div.offsetLeft + div.clientWidth)
             return; // in the scrollbar
@@ -242,7 +242,7 @@ class WebPage {
   }
   
   void _onMouseDown(h.MouseEvent event) {
-    if (contextualMenu != null)
+    if (_contextualMenu != null)
       closeContextualMenu();
     // do not stop event propagation in some cases:
     if (event.target is h.ImageElement ||
@@ -290,7 +290,7 @@ class WebPage {
   void _onMouseMove(h.MouseEvent event) {
     if (_selectionStart == null)
       return;
-    if (contextualMenu != null)
+    if (_contextualMenu != null)
       return;
     Position newpos = Cursor.findPosition(event);
     if (_selectionByWords) {
@@ -403,23 +403,23 @@ class WebPage {
       parent = _cursor.selectionStart.dn;
     List<x.Element> refs = doc.elementsAllowedUnder(parent);
     List<x.Element> validRefs = doc.validElementsInSelection(refs);
-    contextualMenu = new Menu(null);
+    _contextualMenu = new Menu(null);
     bool addSeparator = false;
     if (parent.ref != null) {
       String elementTitle = doc.cfg.menuTitle(parent.nodeName);
       String title = "${Strings.get('contextual.select_element')} $elementTitle";
-      contextualMenu.add(new MenuItem(title, () => selectNode(parent)));
+      _contextualMenu.add(new MenuItem(title, () => selectNode(parent)));
       List<x.Element> attRefs = doc.cfg.elementAttributes(parent.ref);
       if (attRefs != null && attRefs.length > 0) {
         title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
-        contextualMenu.add(new MenuItem(title, () =>
+        _contextualMenu.add(new MenuItem(title, () =>
             parent.attributeDialog()));
       }
       title = "${Strings.get('contextual.help_about_element')} $elementTitle";
-      contextualMenu.add(new MenuItem(title, () =>
+      _contextualMenu.add(new MenuItem(title, () =>
           (new HelpDialog.Element(parent.ref)).show()));
       title = "${Strings.get('contextual.remove')} $elementTitle";
-      contextualMenu.add(new MenuItem(title, () {
+      _contextualMenu.add(new MenuItem(title, () {
         doc.removeNode(parent);
         page.updateAfterPathChange();
       }));
@@ -431,15 +431,15 @@ class WebPage {
         dndiv = dndiv.parent;
       if (dndiv != null) {
         if (addSeparator)
-          contextualMenu.addSeparator();
+          _contextualMenu.addSeparator();
         String elementTitle = doc.cfg.menuTitle(dndiv.nodeName);
         List<x.Element> attRefs = doc.cfg.elementAttributes(dndiv.ref);
         if (attRefs != null && attRefs.length > 0) {
           String title = "${Strings.get('contextual.edit_attributes')} $elementTitle";
-          contextualMenu.add(new MenuItem(title, () =>
+          _contextualMenu.add(new MenuItem(title, () =>
               dndiv.attributeDialog()));
         }
-        contextualMenu.add(new MenuItem(Strings.get('div.remove'), () =>
+        _contextualMenu.add(new MenuItem(Strings.get('div.remove'), () =>
             (dndiv as DNHiddenDiv).removeDiv()));
         addSeparator = true;
       }
@@ -456,14 +456,14 @@ class WebPage {
       if (doc.hiddenParaRefs != null && doc.hiddenParaRefs.contains(ref))
         continue;
       if (first && addSeparator)
-        contextualMenu.addSeparator();
+        _contextualMenu.addSeparator();
       first = false;
       String name = doc.cfg.elementName(ref);
       String title = doc.cfg.menuTitle(name);
       MenuItem item = new MenuItem(title, () => doc.insertNewNode(ref, 'element'));
-      contextualMenu.add(item);
+      _contextualMenu.add(item);
     }
-    h.DivElement div = contextualMenu.htmlMenu();
+    h.DivElement div = _contextualMenu.htmlMenu();
     div.style.position = 'fixed';
     div.style.display = 'block';
     int xpos = event.client.x;
@@ -482,9 +482,9 @@ class WebPage {
   }
   
   void closeContextualMenu() {
-    h.DivElement div = contextualMenu.getMenuHTMLNode();
+    h.DivElement div = _contextualMenu.getMenuHTMLNode();
     div.remove();
-    contextualMenu = null;
+    _contextualMenu = null;
     _ctxMenuPos = null;
   }
   

@@ -31,15 +31,19 @@ class WebPage {
   MenuBar mbar;
   MenuItem _undoMenu, _redoMenu;
   Menu contextualMenu;
-  h.Point ctxMenuPos;
+  h.Point _ctxMenuPos;
   Toolbar toolbar;
   LeftPanel _left;
-  Position lastClickPosition;
-  DateTime lastClickTime;
+  // for double-click impl
+  Position _lastClickPosition;
+  DateTime _lastClickTime;
   bool _selectionByWords; // double-click+drag
-  bool application; // Desktop application
-  bool hasQuit; // for Desktop application only
-  ActionFunction saveFunction; // optional save function, replacing the default
+  /// true for a Desktop application
+  bool application;
+  /// true if [quit] has been called (used by Desktop application only)
+  bool _hasQuit;
+  /// optional save function, replacing the default
+  ActionFunction saveFunction;
   ActionFunction customizeToolbar;
   bool _inited;
   
@@ -59,10 +63,10 @@ class WebPage {
       _left = left;
     else
       _left = new LeftPanel();
-    lastClickPosition = null;
-    lastClickTime = null;
+    _lastClickPosition = null;
+    _lastClickTime = null;
     _selectionByWords = false;
-    hasQuit = false;
+    _hasQuit = false;
     _inited = false;
   }
   
@@ -133,14 +137,14 @@ class WebPage {
           if (div.scrollHeight > div.clientHeight && event.target == div &&
               event.client.x > div.offsetLeft + div.clientWidth)
             return; // in the scrollbar
-          if (event.client != ctxMenuPos)
+          if (event.client != _ctxMenuPos)
             closeContextualMenu();
           event.preventDefault();
         }
       });
       if (doc.saveURL != null) {
         h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
-          if (doc.changed() && !hasQuit) {
+          if (doc.changed() && !_hasQuit) {
             String message = Strings.get('save.document_not_saved');
             e.returnValue = message;
             return message;
@@ -148,7 +152,7 @@ class WebPage {
         });
         if (application) {
           h.window.onUnload.listen((h.Event e) {
-            if (hasQuit)
+            if (_hasQuit)
               return null;
             quit(false);
           });
@@ -268,8 +272,8 @@ class WebPage {
         _cursor.setSelection(_selectionStart, _selectionEnd);
     } else {
       _selectionStart = Cursor.findPosition(event);
-      if (_selectionStart != null && lastClickPosition == _selectionStart &&
-          lastClickTime.difference(new DateTime.now()).inMilliseconds.abs() < doubleClickTime &&
+      if (_selectionStart != null && _lastClickPosition == _selectionStart &&
+          _lastClickTime.difference(new DateTime.now()).inMilliseconds.abs() < doubleClickTime &&
           _selectionStart.dn.nodeType != DaxeNode.ELEMENT_NODE) {
         // double click
         if (_selectionStart.dn.parent is! DNAnchor) {
@@ -337,13 +341,13 @@ class WebPage {
     */
     if (!_selectionByWords)
       _selectionEnd = Cursor.findPosition(event);
-    lastClickPosition = null;
+    _lastClickPosition = null;
     if (_selectionStart != null && _selectionEnd != null) {
       if (!_selectionByWords)
         _cursor.setSelection(_selectionStart, _selectionEnd);
       if (_selectionStart == _selectionEnd) {
-        lastClickPosition = _selectionStart;
-        lastClickTime = new DateTime.now();
+        _lastClickPosition = _selectionStart;
+        _lastClickTime = new DateTime.now();
       }
     }
     _selectionStart = null;
@@ -357,7 +361,7 @@ class WebPage {
    * This is called by Cursor when a character is typed.
    */
   void stopSelection() {
-    lastClickPosition = null;
+    _lastClickPosition = null;
     _selectionStart = null;
     _selectionEnd = null;
     _selectionByWords = false;
@@ -391,7 +395,7 @@ class WebPage {
   void showContextualMenu(h.MouseEvent event) {
     if (doc.cfg == null || _cursor.selectionStart.dn == null)
       return;
-    ctxMenuPos = event.client;
+    _ctxMenuPos = event.client;
     DaxeNode parent;
     if (_cursor.selectionStart.dn is DNText)
       parent = _cursor.selectionStart.dn.parent;
@@ -481,7 +485,7 @@ class WebPage {
     h.DivElement div = contextualMenu.getMenuHTMLNode();
     div.remove();
     contextualMenu = null;
-    ctxMenuPos = null;
+    _ctxMenuPos = null;
   }
   
   
@@ -708,7 +712,7 @@ class WebPage {
       // A workaround would be to start a new browser process when opening a file,
       // and kill it (nicely) with the server when the user quits.
       h.window.alert(Strings.get('quit.byhand'));
-      hasQuit = true;
+      _hasQuit = true;
     });
     request.onError.listen((h.ProgressEvent event) {
       h.window.alert(Strings.get('quit.error'));

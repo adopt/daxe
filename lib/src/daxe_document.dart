@@ -571,7 +571,8 @@ class DaxeDocument {
               if (dn.ref == null || !cfg.isSubElement(parent.ref, dn.ref)) {
                 String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
                 String parentTitle = cfg.elementTitle(parent.ref);
-                throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_inside') + ' ' + parentTitle);
+                throw new DaxeException(title + ' ' + Strings.get('insert.not_authorized_inside') +
+                  ' ' + parentTitle);
               }
               if (!cfg.insertIsPossible(parent, offset, offset, dn.ref)) {
                 String title = dn.ref == null ? dn.nodeName : cfg.elementTitle(dn.ref);
@@ -742,8 +743,10 @@ class DaxeDocument {
         return;
       } else {
         DaxeNode ancestor = selectionStart.dn;
-        while (ancestor is DNText || ancestor is DNHiddenP || ancestor is DNStyle || ancestor is DNStyleSpan)
+        while (ancestor is DNText || ancestor is DNHiddenP || ancestor is DNStyle ||
+            ancestor is DNStyleSpan) {
           ancestor = ancestor.parent;
+        }
         if (ancestor is DNWItem) {
           // \n in a DNWList item: adding a new list item
           DNWList.newlineInItem(selectionStart);
@@ -878,7 +881,8 @@ class DaxeDocument {
         doNewEdit(edit);
         inserted = true;
       }
-    } else if (hiddenParaRefs != null && parent.ref != null && !cfg.isSubElement(parent.ref, dn.ref)) {
+    } else if (hiddenParaRefs != null && parent.ref != null &&
+        !cfg.isSubElement(parent.ref, dn.ref)) {
       x.Element hiddenp = cfg.findSubElement(parent.ref, hiddenParaRefs);
       if (hiddenp != null && cfg.isSubElement(hiddenp, dn.ref)) {
         // a new paragraph must be created
@@ -1042,8 +1046,8 @@ class DaxeDocument {
     _removeWhitespace(el, null, false, true);
   }
   
-  void _removeWhitespace(final x.Element el, final x.Element refParent, final bool spacePreserveParent,
-                      final bool fteParent) {
+  void _removeWhitespace(final x.Element el, final x.Element refParent,
+      final bool spacePreserveParent, final bool fteParent) {
     x.Element refElement;
     if (cfg != null)
       refElement = cfg.getElementRef(el, refParent);
@@ -1197,10 +1201,12 @@ class DaxeDocument {
           if (paraInside) {
             // also trim left if there is a block before, and right if there is a block after
             // ("blocks" here are elements that are not allowed inside a paragraph)
-            if (dn.previousSibling != null && dn.previousSibling.ref != null && !cfg.isSubElement(paraRef, dn.previousSibling.ref)) {
+            if (dn.previousSibling != null && dn.previousSibling.ref != null &&
+                !cfg.isSubElement(paraRef, dn.previousSibling.ref)) {
               s = s.trimLeft();
             }
-            if (dn.nextSibling != null && dn.nextSibling.ref != null && !cfg.isSubElement(paraRef, dn.nextSibling.ref)) {
+            if (dn.nextSibling != null && dn.nextSibling.ref != null &&
+                !cfg.isSubElement(paraRef, dn.nextSibling.ref)) {
               s = s.trimRight();
             }
           } else if (para) {
@@ -1231,7 +1237,8 @@ class DaxeDocument {
   /**
    * Indents a DOM node recursively.
    */
-  void _indentDOMNode(final x.Element el, final x.Element refParent, final bool spacePreserveParent, final int level) {
+  void _indentDOMNode(final x.Element el, final x.Element refParent,
+      final bool spacePreserveParent, final int level) {
     x.Element refElement;
     if (cfg != null)
       refElement = cfg.getElementRef(el, refParent);

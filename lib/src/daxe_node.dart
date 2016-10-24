@@ -29,15 +29,16 @@ abstract class DaxeNode {
   /// type for a document node
   static const int DOCUMENT_NODE = 9;
   
-  static List<String> BOLD_STYLES = ['GRAS', 'BOLD'];
-  static List<String> ITALIC_STYLES = ['ITALIQUE', 'ITALIC'];
-  static List<String> SUPERSCRIPT_STYLES = ['EXPOSANT', 'SUPERSCRIPT'];
-  static List<String> SUBSCRIPT_STYLES = ['INDICE', 'SUBSCRIPT'];
-  static List<String> UNDERLINE_STYLES = ['SOULIGNE', 'UNDERLINE'];
-  static List<String> STRIKETHROUGH_STYLES = ['BARRE', 'STRIKETHROUGH'];
-  static List<String> BACKGROUND_STYLES = ['FCOULEUR', 'BACKGROUND'];
-  static List<String> FOREGROUND_STYLES = ['PCOULEUR', 'FOREGROUND'];
-  static const String COLOR_PATTERN = "^.*\\[(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3})\\]\$";
+  static List<String> _BOLD_STYLES = ['GRAS', 'BOLD'];
+  static List<String> _ITALIC_STYLES = ['ITALIQUE', 'ITALIC'];
+  static List<String> _SUPERSCRIPT_STYLES = ['EXPOSANT', 'SUPERSCRIPT'];
+  static List<String> _SUBSCRIPT_STYLES = ['INDICE', 'SUBSCRIPT'];
+  static List<String> _UNDERLINE_STYLES = ['SOULIGNE', 'UNDERLINE'];
+  static List<String> _STRIKETHROUGH_STYLES = ['BARRE', 'STRIKETHROUGH'];
+  static List<String> _BACKGROUND_STYLES = ['FCOULEUR', 'BACKGROUND'];
+  static List<String> _FOREGROUND_STYLES = ['PCOULEUR', 'FOREGROUND'];
+  static const String _COLOR_PATTERN =
+    "^.*\\[(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3})\\]\$";
   
   /// element reference (schema element)
   x.Element ref;
@@ -730,7 +731,8 @@ abstract class DaxeNode {
     DaxeNode lastNotText = lastChild;
     while (lastNotText != null && lastNotText is DNText)
       lastNotText = lastNotText.previousSibling;
-    if (newlineInside() && lastChild is DNText && (lastNotText == null || !lastNotText.newlineAfter())) {
+    if (newlineInside() && lastChild is DNText &&
+        (lastNotText == null || !lastNotText.newlineAfter())) {
       String s = lastChild.nodeValue;
       if (s.endsWith('\n')) {
         if (s.length == 1)
@@ -771,7 +773,8 @@ abstract class DaxeNode {
       DaxeNode lastNotText = lastChild;
       while (lastNotText != null && lastNotText is DNText)
         lastNotText = lastNotText.previousSibling;
-      if (newlineInside() && lastChild != null && (lastNotText == null || !lastNotText.newlineAfter()))
+      if (newlineInside() && lastChild != null && (lastNotText == null ||
+          !lastNotText.newlineAfter()))
         el.appendChild(domDocument.createTextNode('\n'));
     }
     return(el);
@@ -869,8 +872,10 @@ abstract class DaxeNode {
         double topLineHeight, bottomLineHeight;
         // NOTE: the main problem here is to avoid adding spans to find the position
         if (hn is h.DivElement && hn.nodes.length > 0 &&
-            hn.firstChild is h.SpanElement && (hn.firstChild as h.SpanElement).classes.contains('start_tag') &&
-            hn.lastChild is h.SpanElement&& (hn.lastChild as h.SpanElement).classes.contains('end_tag')) {
+            hn.firstChild is h.SpanElement &&
+            (hn.firstChild as h.SpanElement).classes.contains('start_tag') &&
+            hn.lastChild is h.SpanElement &&
+            (hn.lastChild as h.SpanElement).classes.contains('end_tag')) {
           // the spans are tags
           h.Element span_test = hn.firstChild;
           h.Rectangle box = span_test.getBoundingClientRect();
@@ -1147,23 +1152,25 @@ abstract class DaxeNode {
     if (styleParam != null) {
       List<String> styleList = styleParam.split(';');
       for (String style in styleList) {
-        if (BOLD_STYLES.contains(style)) {
+        if (_BOLD_STYLES.contains(style)) {
           hn.style.fontWeight = 'bold';
-        } else if (ITALIC_STYLES.contains(style)) {
+        } else if (_ITALIC_STYLES.contains(style)) {
           hn.style.fontStyle = 'italic';
-        } else if (SUPERSCRIPT_STYLES.contains(style)) {
+        } else if (_SUPERSCRIPT_STYLES.contains(style)) {
           hn.style.verticalAlign = 'super';
           hn.style.fontSize = '80%';
-        } else if (SUBSCRIPT_STYLES.contains(style)) {
+        } else if (_SUBSCRIPT_STYLES.contains(style)) {
           hn.style.verticalAlign = 'sub';
           hn.style.fontSize = '80%';
-        } else if (UNDERLINE_STYLES.contains(style)) {
+        } else if (_UNDERLINE_STYLES.contains(style)) {
           hn.style.textDecoration = 'underline';
-        } else if (STRIKETHROUGH_STYLES.contains(style)) {
+        } else if (_STRIKETHROUGH_STYLES.contains(style)) {
           hn.style.textDecoration = 'line-through';
-        } else if (style.startsWith(BACKGROUND_STYLES[0]) || style.startsWith(BACKGROUND_STYLES[1])) {
+        } else if (style.startsWith(_BACKGROUND_STYLES[0]) ||
+            style.startsWith(_BACKGROUND_STYLES[1])) {
           hn.style.background = _getColor(style);
-        } else if (style.startsWith(FOREGROUND_STYLES[0]) || style.startsWith(FOREGROUND_STYLES[1])) {
+        } else if (style.startsWith(_FOREGROUND_STYLES[0]) ||
+            style.startsWith(_FOREGROUND_STYLES[1])) {
           hn.style.color = _getColor(style);
         }
       }
@@ -1185,7 +1192,7 @@ abstract class DaxeNode {
   }
   
   String _getColor(String style) {
-    Iterable<Match> matches = COLOR_PATTERN.allMatches(style);
+    Iterable<Match> matches = _COLOR_PATTERN.allMatches(style);
     for (Match m in matches) {
       final List<int> color = new List<int>(3);
       for (int j = 0; j < 3; j++) {

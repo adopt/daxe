@@ -286,13 +286,42 @@ class DNTable extends DaxeNode {
   }
   
   void removeRow() {
-    DNTR tr = getSelectedRow();
-    if (tr == null)
+    DNTD td = getSelectedCell();
+    if (td == null)
       return;
+    DNTR tr = td.parent;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove'));
-    for (DNTD td in tr.childNodes) {
-      if (td.rowspan > 1)
-        splitY(td, edit);
+    int y = getCellY(td);
+    for (int x=0; x<xLength(); x++) {
+      td = getCell(x, y);
+      if (td.rowspan > 1) {
+        if (td.parent == tr) {
+          // cell with rowspan on this row: move it to the next with one less rowspan
+          // NOTE: splitY would not work because it splits the cell at the last row
+          DNTR tr2 = tr.nextSibling;
+          int offset = 0;
+          for (DNTD td = tr2.firstChild; td != null && x > getCellX(td); td = td.nextSibling) {
+            offset++;
+          }
+          //DNTD newtd = new DaxeNode.clone(td);
+          // clone will not return a DNTD (DNTD has no display type)
+          DNTD newtd = new DNTD.fromRef(_tdref);
+          for (DaxeNode child in td.childNodes)
+            newtd.appendChild(new DaxeNode.clone(child));
+          for (DaxeAttr attr in td.attributes)
+            newtd.setAttribute(attr.name, attr.value);
+          if (td.rowspan > 2)
+            newtd.setAttribute(_rowspanAttr, (td.rowspan - 1).toString());
+          edit.addSubEdit(
+              new UndoableEdit.insertNode(new Position(tr2, offset), newtd));
+        } else {
+          // cell with rowspan on another row: reduce rowspan
+          edit.addSubEdit(new UndoableEdit.changeAttribute(td,
+            new DaxeAttr(_rowspanAttr, (td.rowspan - 1).toString())));
+        }
+      }
+      for (int i=0; i<td.colspan-1; i++)
+        x++;
     }
     edit.addSubEdit(new UndoableEdit.removeNode(tr));
     doc.doNewEdit(edit);
@@ -333,15 +362,16 @@ class DNTable extends DaxeNode {
       futurePos = null;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove'));
     int x = getCellX(td);
-    int y = 0;
-    for (DaxeNode tr in childNodes) {
+    for (int y=0; y<yLength(); y++) {
       DNTD td = getCell(x, y);
-      while (td.colspan > 1) {
-        splitX(td); // FIXME: should be undoable, but how do we get the reference to the created td ?
-        td = getCell(x, y);
+      if (td.colspan > 1) {
+        edit.addSubEdit(new UndoableEdit.changeAttribute(td,
+          new DaxeAttr(_colspanAttr, (td.colspan - 1).toString())));
+      } else {
+        edit.addSubEdit(new UndoableEdit.removeNode(td));
       }
-      edit.addSubEdit(new UndoableEdit.removeNode(td));
-      y++;
+      for (int i=0; i<td.rowspan-1; i++)
+        y++;
     }
     doc.doNewEdit(edit);
     if (futurePos != null)
@@ -525,9 +555,8 @@ class DNTable extends DaxeNode {
     page.updateAfterPathChange();
   }
   
-  void splitX([DNTD td, UndoableEdit parentEdit]) {
-    if (td == null)
-      td = getSelectedCell();
+  void splitX() {
+    DNTD td = getSelectedCell();
     if (td == null)
       return;
     if (td.colspan < 2)
@@ -538,17 +567,12 @@ class DNTable extends DaxeNode {
     else
       newtd = new DNTD.fromRef(_tdref);
     DNTR tr = td.parent;
-    UndoableEdit edit;
-    if (parentEdit != null)
-      edit = parentEdit;
-    else
-      edit = new UndoableEdit.compound(Strings.get('table.split'));
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('table.split'));
     edit.addSubEdit(
         new UndoableEdit.insertNode(new Position(tr, tr.offsetOf(td) + 1), newtd));
     edit.addSubEdit(
         new UndoableEdit.changeAttribute(td, new DaxeAttr(_colspanAttr, (td.colspan - 1).toString())));
-    if (parentEdit == null)
-      doc.doNewEdit(edit);
+    doc.doNewEdit(edit);
   }
   
   void splitY([DNTD td, UndoableEdit parentEdit]) {

@@ -272,19 +272,46 @@ class DNTable extends DaxeNode {
     tr.attributeDialog();
   }
   
+  /**
+   * Inserts a new row below the one with the cursor,
+   * or a new row at the end if the cursor is outside the table.
+   */
   void insertRow() {
     DNTR selectedRow = getSelectedRow();
-    if (selectedRow == null)
-      return;
     DaxeNode newRow = new DNTR.fromRef(_trref);
-    for (int i=0; i<xLength(); i++) {
-      DNTD td = new DNTD.fromRef(_tdref);
-      newRow.appendChild(td);
+    if (selectedRow == null) {
+      int nb;
+      if (firstChild == null)
+        nb = 1; // no row: also add one column
+      else
+        nb = xLength();
+      for (int x=0; x<nb; x++)
+        newRow.appendChild(new DNTD.fromRef(_tdref));
+      doc.insertNode(newRow, new Position(this, offsetLength));
+    } else {
+      int y = offsetOf(selectedRow);
+      UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_element'));
+      for (int x=0; x<xLength(); x++) {
+        DNTD td = getCell(x, y);
+        if (td.rowspan > 1 && getCellY(td) + td.rowspan - 1 > y) {
+          edit.addSubEdit(new UndoableEdit.changeAttribute(td,
+            new DaxeAttr(_rowspanAttr, (td.rowspan + 1).toString())));
+          for (int i=0; i<td.colspan-1; i++)
+            x++;
+        } else {
+          newRow.appendChild(new DNTD.fromRef(_tdref));
+        }
+      }
+      edit.addSubEdit(new UndoableEdit.insertNode(new Position(this, y + 1), newRow));
+      doc.doNewEdit(edit);
     }
-    doc.insertNode(newRow, new Position(this, offsetOf(selectedRow) + 1));
     page.moveCursorTo(newRow.firstCursorPositionInside());
   }
   
+  /**
+   * Removes the row containing the selected cell.
+   * Does nothing if the cursor is outside the table.
+   */
   void removeRow() {
     DNTD td = getSelectedCell();
     if (td == null)
@@ -312,6 +339,8 @@ class DNTable extends DaxeNode {
             newtd.setAttribute(attr.name, attr.value);
           if (td.rowspan > 2)
             newtd.setAttribute(_rowspanAttr, (td.rowspan - 1).toString());
+          else
+            newtd.removeAttribute(_rowspanAttr);
           edit.addSubEdit(
               new UndoableEdit.insertNode(new Position(tr2, offset), newtd));
         } else {
@@ -327,32 +356,73 @@ class DNTable extends DaxeNode {
     doc.doNewEdit(edit);
   }
   
+  /**
+   * Inserts a new column to the right of the one with the cursor,
+   * or a new column at the end if the cursor is outside the table.
+   */
   void insertColumn() {
-    DNTD td = getSelectedCell();
-    if (td == null)
+    if (firstChild == null)
       return;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert'));
-    int x = getCellX(td);
-    for (DaxeNode tr in childNodes) {
-      DNTD newtd;
-      if (firstChild == tr && header)
-        newtd = new DNTH.fromRef(_thref);
-      else
-        newtd = new DNTD.fromRef(_tdref);
-      int offset = 0;
-      for (DNTD td = tr.firstChild; td != null && x >= getCellX(td); td = td.nextSibling) {
-        offset++;
+    DNTD firstNewCell;
+    DNTD selectedCell = getSelectedCell();
+    if (selectedCell == null) {
+      for (DaxeNode tr in childNodes) {
+        DNTD newCell;
+        if (firstChild == tr && header)
+          newCell = new DNTH.fromRef(_thref);
+        else
+          newCell = new DNTD.fromRef(_tdref);
+        if (firstNewCell == null)
+          firstNewCell = newCell;
+        edit.addSubEdit(new UndoableEdit.insertNode(
+          new Position(tr, tr.offsetLength), newCell));
       }
-      edit.addSubEdit(new UndoableEdit.insertNode(new Position(tr, offset), newtd));
+    } else {
+      int x = getCellX(selectedCell);
+      for (int y=0; y<yLength(); y++) {
+        DNTD td = getCell(x, y);
+        if (td.colspan > 1 && getCellX(td) + td.colspan - 1 > x) {
+          edit.addSubEdit(new UndoableEdit.changeAttribute(td,
+            new DaxeAttr(_colspanAttr, (td.colspan + 1).toString())));
+          for (int i=0; i<td.rowspan-1; i++)
+            y++;
+          if (firstNewCell == null)
+            firstNewCell = td;
+        } else {
+          DNTR tr = childAtOffset(y);
+          DNTD newCell;
+          if (firstChild == tr && header)
+            newCell = new DNTH.fromRef(_thref);
+          else
+            newCell = new DNTD.fromRef(_tdref);
+          if (firstNewCell == null)
+            firstNewCell = newCell;
+          int offset = td.parent.offsetOf(td) + 1;
+          edit.addSubEdit(new UndoableEdit.insertNode(new Position(tr, offset), newCell));
+        }
+      }
     }
     doc.doNewEdit(edit);
-    page.moveCursorTo(new Position(td.nextSibling, 0));
+    page.moveCursorTo(new Position(firstNewCell, 0));
   }
   
+  /**
+   * Removes the column containing the selected cell.
+   * Does nothing if the cursor is outside the table.
+   */
   void removeColumn() {
     DNTD td = getSelectedCell();
     if (td == null)
       return;
+    if (xLength() == 1) {
+      // only one column left: remove all rows
+      UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove'));
+      for (DNTR tr in childNodes)
+        edit.addSubEdit(new UndoableEdit.removeNode(tr));
+      doc.doNewEdit(edit);
+      return;
+    }
     Position futurePos;
     if (td.nextSibling != null)
       futurePos = new Position(td.nextSibling, 0);
@@ -365,8 +435,12 @@ class DNTable extends DaxeNode {
     for (int y=0; y<yLength(); y++) {
       DNTD td = getCell(x, y);
       if (td.colspan > 1) {
-        edit.addSubEdit(new UndoableEdit.changeAttribute(td,
-          new DaxeAttr(_colspanAttr, (td.colspan - 1).toString())));
+        DaxeAttr attr;
+        if (td.colspan > 2)
+          attr = new DaxeAttr(_colspanAttr, (td.colspan - 1).toString());
+        else
+          attr = new DaxeAttr(_colspanAttr, null);
+        edit.addSubEdit(new UndoableEdit.changeAttribute(td, attr));
       } else {
         edit.addSubEdit(new UndoableEdit.removeNode(td));
       }
@@ -502,9 +576,8 @@ class DNTable extends DaxeNode {
     doc.doNewEdit(edit);
   }
   
-  void mergeRight([DNTD td]) {
-    if (td == null)
-      td = getSelectedCell();
+  void mergeRight() {
+    DNTD td = getSelectedCell();
     if (td == null)
       return;
     int x = getCellX(td);
@@ -514,7 +587,7 @@ class DNTable extends DaxeNode {
       return;
     DNTD td2 = getCell(x2, y);
     if (td2.parent != td.parent)
-      splitY(td2); // TODO: check again, FIXME: make it undoable (pb: get ref to next when it does not exist yet)
+      return;
     DNTD next = td.nextSibling;
     if (next == null)
       return;
@@ -531,9 +604,8 @@ class DNTable extends DaxeNode {
     page.updateAfterPathChange();
   }
   
-  void mergeBottom([DNTD td]) {
-    if (td == null)
-      td = getSelectedCell();
+  void mergeBottom() {
+    DNTD td = getSelectedCell();
     if (td == null)
       return;
     int x = getCellX(td);
@@ -555,6 +627,9 @@ class DNTable extends DaxeNode {
     page.updateAfterPathChange();
   }
   
+  /**
+   * Splits the selected cell horizontally.
+   */
   void splitX() {
     DNTD td = getSelectedCell();
     if (td == null)
@@ -566,25 +641,34 @@ class DNTable extends DaxeNode {
       newtd = new DNTH.fromRef(_thref);
     else
       newtd = new DNTD.fromRef(_tdref);
+    if (td.rowspan > 1)
+      newtd.setAttribute(_rowspanAttr, td.rowspan.toString());
     DNTR tr = td.parent;
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('table.split'));
     edit.addSubEdit(
         new UndoableEdit.insertNode(new Position(tr, tr.offsetOf(td) + 1), newtd));
-    edit.addSubEdit(
-        new UndoableEdit.changeAttribute(td, new DaxeAttr(_colspanAttr, (td.colspan - 1).toString())));
+    DaxeAttr attr;
+    if (td.colspan > 2)
+      attr = new DaxeAttr(_colspanAttr, (td.colspan - 1).toString());
+    else
+      attr = new DaxeAttr(_colspanAttr, null);
+    edit.addSubEdit(new UndoableEdit.changeAttribute(td, attr));
     doc.doNewEdit(edit);
+    page.moveCursorTo(newtd.firstCursorPositionInside());
   }
   
-  void splitY([DNTD td, UndoableEdit parentEdit]) {
-    if (td == null)
-      td = getSelectedCell();
-    if (td == null)
+  /**
+   * Splits the selected cell vertically.
+   */
+  void splitY() {
+    DNTD selectedCell = getSelectedCell();
+    if (selectedCell == null)
       return;
-    if (td.rowspan < 2)
+    if (selectedCell.rowspan < 2)
       return;
-    int x = getCellX(td);
-    int y = getCellY(td);
-    int y2 = y + td.rowspan - 1;
+    int x = getCellX(selectedCell);
+    int y = getCellY(selectedCell);
+    int y2 = y + selectedCell.rowspan - 1;
     DNTR tr = childAtOffset(y2);
     if (tr == null)
       return;
@@ -593,17 +677,19 @@ class DNTable extends DaxeNode {
       offset++;
     }
     DNTD newtd = new DNTD.fromRef(_tdref);
-    UndoableEdit edit;
-    if (parentEdit != null)
-      edit = parentEdit;
-    else
-      edit = new UndoableEdit.compound(Strings.get('table.split'));
+    if (selectedCell.colspan > 1)
+      newtd.setAttribute(_colspanAttr, selectedCell.colspan.toString());
+    UndoableEdit edit = new UndoableEdit.compound(Strings.get('table.split'));
     edit.addSubEdit(
         new UndoableEdit.insertNode(new Position(tr, offset), newtd));
-    edit.addSubEdit(
-        new UndoableEdit.changeAttribute(td, new DaxeAttr(_rowspanAttr, (td.rowspan - 1).toString())));
-    if (parentEdit == null)
-      doc.doNewEdit(edit);
+    DaxeAttr attr;
+    if (selectedCell.rowspan > 2)
+      attr = new DaxeAttr(_rowspanAttr, (selectedCell.rowspan - 1).toString());
+    else
+      attr = new DaxeAttr(_rowspanAttr, null);
+    edit.addSubEdit(new UndoableEdit.changeAttribute(selectedCell, attr));
+    doc.doNewEdit(edit);
+    page.moveCursorTo(newtd.firstCursorPositionInside());
   }
   
   @override

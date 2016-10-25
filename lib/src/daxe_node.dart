@@ -892,7 +892,6 @@ abstract class DaxeNode {
           // block
           // for DivElement: no span to tag the div: we take the entire div into account
           h.Rectangle box = hn.getBoundingClientRect();
-          // FIXME: box is not good for a tr containing a td using rowspan
           hnx1 = box.left;
           hny1 = box.top;
           if (hn.classes.contains('form')) // FIXME: this is a hack !
@@ -900,6 +899,20 @@ abstract class DaxeNode {
           else
             hnx2 = box.right;
           hny2 = box.bottom;
+          if (hn is h.TableRowElement) {
+            // getBoundingClientRect is wrong for tr containing a td with 
+            // rowspan, so we have to check all td
+            for (h.Element td in hn.children) {
+              if (td.getAttribute('rowspan') != null) {
+                h.Rectangle tdBox = td.getBoundingClientRect();
+                if (tdBox.containsPoint(new h.Point(x, y))) {
+                  if (tdBox.bottom > hny2)
+                    hny2 = tdBox.bottom;
+                  break;
+                }
+              }
+            }
+          }
           topLineHeight = bottomLineHeight = box.height;
         } else if (hn is h.SpanElement && hn.nodes.length == 1 && hn.firstChild is h.Text &&
             !hn.firstChild.nodeValue.endsWith('\n')) {

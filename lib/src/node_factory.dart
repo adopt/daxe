@@ -255,7 +255,7 @@ class NodeFactory {
    * for these nodes).
    */
   static DaxeNode create(x.Element elementRef, [String nodeType = 'element']) {
-    if (nodeType == 'commentaire') {
+    if (nodeType == 'commentaire' || nodeType == 'comment') {
       return(new DNComment());
     } else if (nodeType == 'instruction') {
       return(new DNProcessingInstruction());

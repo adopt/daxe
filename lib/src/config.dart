@@ -19,7 +19,7 @@ part of daxe;
 
 
 /**
- * A Jaxe configuration file. Includes many useful methods to use XML schemas.
+ * A Daxe configuration file. Includes many useful methods to use XML schemas.
  */
 class Config {
   static final String _defaultDisplayType = "string";
@@ -87,14 +87,14 @@ class Config {
       
       _elementsTitlesCache = new HashMap<x.Element, String>();
       
-      final String noms = schemaName();
-      if (noms == null) {
-        final x.Element schema_simple = _findElement(_getLanguage(), "SCHEMA_SIMPLE");
-        if (schema_simple == null) {
+      final String names = schemaName();
+      if (names == null) {
+        final x.Element simple_schema = _findElement(_getLanguage(), "SCHEMA_SIMPLE");
+        if (simple_schema == null) {
           completer.completeError(new DaxeException("Error: no XML schema is defined in the config file $cfgFilePath"));
           return;
         }
-        _schema = new SimpleSchema(schema_simple, _titlesHash());
+        _schema = new SimpleSchema(simple_schema, _titlesHash());
         schemaURL = null;
         _buildElementsToNamesCache();
         completer.complete();
@@ -102,9 +102,9 @@ class Config {
       }
       
       if (_cfgdir != null)
-        schemaURL = "${_cfgdir}/$noms";
+        schemaURL = "${_cfgdir}/$names";
         else
-          schemaURL = noms;
+          schemaURL = names;
       _schema = new DaxeWXS(_titlesHash());
       (_schema as DaxeWXS).load(schemaURL).then((_) {
         _buildElementsToNamesCache();
@@ -137,68 +137,68 @@ class Config {
    * Returns the name of the first possible root element, or null if none are defined.
    */
   String nameOfFirstRootElement() {
-    final x.Element racine = _findElement(_getLanguage(), "RACINE");
-    if (racine == null)
+    final x.Element root = _findElement(_getLanguage(), "RACINE");
+    if (root == null)
       return(null);
-    return(racine.getAttribute("element"));
+    return(root.getAttribute("element"));
   }
   
   /**
    * Returns the reference to the first possible root element, or null if none are defined.
    */
   x.Element firstRootElement() {
-    final String nom = nameOfFirstRootElement();
-    return(_schema.elementReferenceByName(nom));
+    final String name = nameOfFirstRootElement();
+    return(_schema.elementReferenceByName(name));
   }
   
   /**
    * Returns the list of names of the possible root elements
    */
   List<String> listOfRoots() {
-    final List<String> liste = new List<String>();
-    x.Element racine = _findElement(_getLanguage(), "RACINE");
-    while (racine != null) {
-      liste.add(racine.getAttribute("element"));
-      racine = _nextElement(racine, "RACINE");
+    final List<String> list = new List<String>();
+    x.Element root = _findElement(_getLanguage(), "RACINE");
+    while (root != null) {
+      list.add(root.getAttribute("element"));
+      root = _nextElement(root, "RACINE");
     }
-    return(liste);
+    return(list);
   }
   
   /**
    * Returns the list of references to the possible root elements
    */
   List<x.Element> rootElements() {
-    // pour éviter une erreur dans le cas d'un schéma définissant un élément global et un élément local
-    // sous le même nom mais avec des types différents, on est obligé d'aller d'abord chercher les références
-    // des éléments racines en fonction de l'implémentation du schéma, puis de chercher dedans les éléments
-    // avec les noms donnés dans la config.
-    final List<x.Element> liste = new List<x.Element>();
-    final List<x.Element> racinesPossibles = _schema.rootElements();
-    x.Element racine = _findElement(_getLanguage(), "RACINE");
-    while (racine != null) {
-      final String nom = racine.getAttribute("element");
-      for (final x.Element ref in racinesPossibles)
+    // To avoid an error when a schema defines a local element with the same
+    // name as a root element but with a different type, we have to first get
+    // the references of the possible root elements, and then look among them
+    // for the ones with the names given in the config.
+    final List<x.Element> list = new List<x.Element>();
+    final List<x.Element> possibleRoots = _schema.rootElements();
+    x.Element root = _findElement(_getLanguage(), "RACINE");
+    while (root != null) {
+      final String nom = root.getAttribute("element");
+      for (final x.Element ref in possibleRoots)
         if (nom == _schema.elementName(ref))
-          liste.add(ref);
-          racine = _nextElement(racine, "RACINE");
+          list.add(ref);
+          root = _nextElement(root, "RACINE");
     }
-    return(liste);
+    return(list);
   }
   
   /**
    * Adds the attributes for the namespaces to the root node
    */
   void addNamespaceAttributes(final DaxeNode root) {
-    final List<String> espaces = namespaceList();
-    for (final String espace in espaces) {
-      if (espace != "") {
-        final String prefixe = namespacePrefix(espace);
-        String nomatt;
-        if (prefixe != null && prefixe != "")
-          nomatt = "xmlns:$prefixe";
+    final List<String> namespaces = namespaceList();
+    for (final String namespace in namespaces) {
+      if (namespace != "") {
+        final String prefix = namespacePrefix(namespace);
+        String attname;
+        if (prefix != null && prefix != "")
+          attname = "xmlns:$prefix";
         else
-          nomatt = "xmlns";
-        root.setAttributeNS("http://www.w3.org/2000/xmlns/", nomatt, espace);
+          attname = "xmlns";
+        root.setAttributeNS("http://www.w3.org/2000/xmlns/", attname, namespace);
       }
     }
     final String schemaLocation = getSchemaLocation();
@@ -220,13 +220,13 @@ class Config {
    * Returns null if none is defined
    */
   String schemaName() {
-    final x.Element fichierschema = _findElement(_getLanguage(), "FICHIER_SCHEMA");
-    if (fichierschema == null)
+    final x.Element schemaFile = _findElement(_getLanguage(), "FICHIER_SCHEMA");
+    if (schemaFile == null)
       return(null);
-    String nom = fichierschema.getAttribute("nom");
-    if (nom == "")
-      nom = null;
-    return(nom);
+    String name = schemaFile.getAttribute("nom");
+    if (name == "")
+      name = null;
+    return(name);
   }
   
   /**
@@ -237,11 +237,11 @@ class Config {
     _elementDisplayCache = new HashMap<String, x.Element>();
     if (_cfgroot == null)
       return(_elementDisplayCache);
-    x.Element affel = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
-    while (affel != null) {
-      final String nom = affel.getAttribute("element");
-      _elementDisplayCache[nom] = affel;
-      affel = _nextElement(affel, "AFFICHAGE_ELEMENT");
+    x.Element elDisplay = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    while (elDisplay != null) {
+      final String name = elDisplay.getAttribute("element");
+      _elementDisplayCache[name] = elDisplay;
+      elDisplay = _nextElement(elDisplay, "AFFICHAGE_ELEMENT");
     }
     return(_elementDisplayCache);
   }
@@ -259,9 +259,9 @@ class Config {
       return;
     final List<x.Element> elements = _schema.allElements();
     for (final x.Element ref in elements) {
-      final String nom = _schema.elementName(ref);
-      if (nom != null)
-        _elementsToNamesCache[ref] = nom;
+      final String name = _schema.elementName(ref);
+      if (name != null)
+        _elementsToNamesCache[ref] = name;
     }
   }
   
@@ -294,14 +294,14 @@ class Config {
   List<x.Element> exportsList(final String output) {
     if (_cfgroot == null)
       return(null);
-    final List<x.Element> liste = new List<x.Element>();
+    final List<x.Element> list = new List<x.Element>();
     x.Element export = _findElement(_getExports(), "EXPORT");
     while (export != null) {
       if (output == export.getAttribute("sortie"))
-        liste.add(export);
+        list.add(export);
       export = _nextElement(export, "EXPORT");
     }
-    return(liste);
+    return(list);
   }
   
   /**
@@ -322,10 +322,10 @@ class Config {
    * Returns the character encoding to use for new XML documents
    */
   String getEncoding() {
-    final x.Element encodage = _findElement(_getSaving(), "ENCODAGE");
-    if (encodage == null)
+    final x.Element encoding = _findElement(_getSaving(), "ENCODAGE");
+    if (encoding == null)
       return(null);
-    return(_dom_elementValue(encodage));
+    return(_dom_elementValue(encoding));
   }
   
   String getPublicId() {
@@ -388,40 +388,40 @@ class Config {
    * [menudef]: the MENU element in the config file.
    */
   Menu _creationMenu(final DaxeDocument doc, final x.Element menudef) {
-    final String nomMenu = menudef.getAttribute("nom");
-    String titreM = menuTitle(nomMenu);
-    final Menu menu = new Menu(titreM);
-    String docMenu = menuDocumentation(nomMenu);
+    final String menuName = menudef.getAttribute("nom");
+    final Menu menu = new Menu(menuTitle(menuName));
+    String docMenu = menuDocumentation(menuName);
     if (docMenu != null) {
       //docMenu = "<html><body>{docMenu.replaceAll('\n', '<br>')}</body></html>";
       menu.toolTipText = docMenu;
     }
-    x.Node menunode = menudef.firstChild;
-    while (menunode != null) {
+    x.Node menuNode = menudef.firstChild;
+    while (menuNode != null) {
       MenuItem item = null;
-      final String nodename = menunode.nodeName;
+      final String nodename = menuNode.nodeName;
       String shortcut = null;
-      if (menunode is x.Element) {
-        final String commande = menunode.getAttribute("raccourci");
+      if (menuNode is x.Element) {
+        final String commande = menuNode.getAttribute("raccourci");
         if (commande != null && commande != "") {
           shortcut = commande.toUpperCase()[0];
         }
       }
       if (nodename == "MENU_INSERTION") {
-        final x.Element insnoeud = menunode as x.Element;
-        final String nom = insnoeud.getAttribute("nom");
-        final String titre = menuTitle(nom);
-        String typeNoeud = insnoeud.getAttribute("type_noeud");
-        if (typeNoeud == "")
-          typeNoeud = "element";
+        final x.Element insNode = menuNode as x.Element;
+        final String name = insNode.getAttribute("nom");
+        final String title = menuTitle(name);
+        String nodeType = insNode.getAttribute("type_noeud");
+        if (nodeType == "")
+          nodeType = "element";
         x.Element refElement;
-        if (typeNoeud == "element") {
-          refElement = elementReference(nom);
+        if (nodeType == "element") {
+          refElement = elementReference(name);
           if (refElement == null)
-            logError("Erreur: MENU_INSERTION: pas de référence pour '$nom' dans le schéma");
+            logError("Error: MENU_INSERTION: '$name' is not defined in the schema");
         } else
           refElement = null;
-        item = new MenuItem(titre, () => doc.insertNewNode(refElement, typeNoeud), shortcut: shortcut, data: refElement);
+        item = new MenuItem(title, () => doc.insertNewNode(refElement, nodeType),
+          shortcut: shortcut, data: refElement);
         menu.add(item);
         String itemdoc = documentation(refElement);
         if (itemdoc != null) {
@@ -429,24 +429,25 @@ class Config {
           item.toolTipText = itemdoc;
         }
       } else if (nodename == "MENU_FONCTION") {
-        final x.Element fonction = menunode as x.Element;
-        final String classe = fonction.getAttribute("classe");
-        final String nom = fonction.getAttribute("nom");
-        final String titre = menuTitle(nom);
-        item = new MenuItem(titre, () => doc.executeFunction(classe, fonction), shortcut: shortcut);
+        final x.Element function = menuNode as x.Element;
+        final String className = function.getAttribute("classe");
+        final String name = function.getAttribute("nom");
+        final String title = menuTitle(name);
+        item = new MenuItem(title, () => doc.executeFunction(className, function),
+          shortcut: shortcut);
         menu.add(item);
-        String itemdoc = menuDocumentation(nom);
+        String itemdoc = menuDocumentation(name);
         if (itemdoc != null) {
           //itemdoc = formatDoc(itemdoc);
           item.toolTipText = itemdoc;
         }
       } else if (nodename == "MENU") {
-        item = _creationMenu(doc, menunode as x.Element);
+        item = _creationMenu(doc, menuNode as x.Element);
         menu.add(item);
       } else if (nodename == "SEPARATEUR")
         menu.addSeparator();
       
-      menunode = menunode.nextSibling;
+      menuNode = menuNode.nextSibling;
     }
     return(menu);
   }
@@ -480,8 +481,8 @@ class Config {
    * Returns the references for all the elements in the schema
    */
   List<x.Element> allElementsList() {
-    final List<x.Element> liste = _schema.allElements();
-    return(liste);
+    final List<x.Element> list = _schema.allElements();
+    return(list);
   }
   
   /**
@@ -527,10 +528,10 @@ class Config {
    * or null if no prefix should be used.
    */
   String elementPrefix(final x.Element elementRef) {
-    final String espace = elementNamespace(elementRef);
-    if (espace == null)
+    final String namespace = elementNamespace(elementRef);
+    if (namespace == null)
       return(null);
-    return(namespacePrefix(espace));
+    return(namespacePrefix(namespace));
   }
   
   /**
@@ -538,8 +539,8 @@ class Config {
    * Returns null if there are an infinity of possible values.
    */
   List<String> elementValues(final x.Element elementRef) {
-    final List<String> liste = _schema.elementValues(elementRef);
-    return(liste);
+    final List<String> list = _schema.elementValues(elementRef);
+    return(list);
   }
   
   /**
@@ -555,12 +556,12 @@ class Config {
   List<String> namespaceList() {
     if (_namespaceCache != null)
       return(_namespaceCache);
-    final List<String> liste = new List<String>();
-    final List<String> espacesSchema = _schema.namespaceList();
-    if (espacesSchema != null)
-      liste.addAll(espacesSchema);
-    _namespaceCache = liste;
-    return(liste);
+    final List<String> list = new List<String>();
+    final List<String> schemaNamespaces = _schema.namespaceList();
+    if (schemaNamespaces != null)
+      list.addAll(schemaNamespaces);
+    _namespaceCache = list;
+    return(list);
   }
   
   /**
@@ -569,8 +570,8 @@ class Config {
    * Returns -1 if the namespace is not found in the config.
    */
   int namespaceNumber(final String namespace) {
-    final List<String> liste = namespaceList();
-    return(liste.indexOf(namespace));
+    final List<String> list = namespaceList();
+    return(list.indexOf(namespace));
   }
   
   /**
@@ -638,8 +639,8 @@ class Config {
     final int inds = childName.indexOf(':');
     if (inds != -1)
       childName = childName.substring(inds+1);
-    final List<String> noms = subElementsNames(parentRef);
-    return(noms.contains(childName));
+    final List<String> names = subElementsNames(parentRef);
+    return(names.contains(childName));
   }
   
   /**
@@ -653,24 +654,25 @@ class Config {
    * Returns the names of the given element's children
    */
   List<String> subElementsNames(final x.Element parentRef) {
-    final List<x.Element> listeReferences = subElements(parentRef);
-    final List<String> listeNoms = new List<String>();
-    for (final x.Element ref in listeReferences) {
+    final List<x.Element> refList = subElements(parentRef);
+    final List<String> nameList = new List<String>();
+    for (final x.Element ref in refList) {
       final String nom = _elementsToNamesCache[ref];
-      if (!listeNoms.contains(nom))
-        listeNoms.add(nom);
+      if (!nameList.contains(nom))
+        nameList.add(nom);
     }
-    return(listeNoms);
+    return(nameList);
   }
   
   /**
    * Regular expression for a given element.
    * 
-   * [modevisu]: true to get a regular expression to display to the user;
-   * [modevalid]: for strict validation instead of checking if an insert is possible.
+   * [displayMode]: true to get a regular expression to display to the user;
+   * [validationMode]: for strict validation instead of checking if an insert is possible.
    */
-  String _regularExpression(final x.Element parentRef, final bool modevisu, final bool modevalid) {
-    return(_schema.regularExpression(parentRef, modevisu, modevalid));
+  String _regularExpression(final x.Element parentRef, final bool displayMode,
+      final bool validationMode) {
+    return(_schema.regularExpression(parentRef, displayMode, validationMode));
   }
   
   /**
@@ -694,34 +696,34 @@ class Config {
     }
     assert(parent.isXMLElement());
     if (_schema is SimpleSchema)
-      return(true); // on suppose que le test de sous-élément a déjà été fait
+      return(true); // for SimpleSchema we assume the test has already been done
     if (startOffset < 0) {
       logError("Config.insertionPossible: debutSelection < parent.debut");
       return(false);
     }
     if (_schema is DaxeWXS) {
-      final List<x.Element> sousElements = new List<x.Element>();
-      bool ajoute = false;
+      final List<x.Element> childrenRefs = new List<x.Element>();
+      bool add = false;
       for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
         if (dn.isXMLElement()) {
           int offset = parent.offsetOf(dn);
           if (offset < startOffset || offset >= endOffset) {
-            if (!ajoute && offset >= endOffset) {
-              sousElements.add(toInsert);
-              ajoute = true;
+            if (!add && offset >= endOffset) {
+              childrenRefs.add(toInsert);
+              add = true;
             }
-            sousElements.add(dn.ref);
+            childrenRefs.add(dn.ref);
           }
         }
       }
-      if (!ajoute)
-        sousElements.add(toInsert);
-      final bool insertionOK = (_schema as DaxeWXS).validElement(parent.ref, sousElements, true);
+      if (!add)
+        childrenRefs.add(toInsert);
+      final bool insertionOK = (_schema as DaxeWXS).validElement(parent.ref, childrenRefs, true);
       return(insertionOK);
     }
     return(false);
 /*
-    pb: on ne peut pas tester l'ordre des éléments dans certains cas, par exemple:
+    NOTE: it is not possible to test the order in some cases, for instance:
     <html>
         <head>
             <xsl:if test='truc'>
@@ -732,8 +734,9 @@ class Config {
             </xsl:if>
         </head>
     </html>
-    Ici on autorise deux éléments title sous head alors qu'un seul est normalement autorisé.
-    Par contre on peut tester les imbrications (title est autorisé sous head).
+    In this case two title elements are allowed under head even though only
+    one is normally allowed. On the other hand, we can test parent/child
+    relationships, for instance here we check that title is allowed under head.
 */
   }
   
@@ -767,17 +770,17 @@ class Config {
     if (parent.parent != null && parent.parent.ref != null && !isSubElement(parent.parent.ref, parent.ref))
       throw new DaxeException(Strings.get('config.not_allowed_inside_parent'));
     
-    bool avectexte = false;
+    bool withText = false;
     for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
       if (dn.nodeType == DaxeNode.TEXT_NODE) {
         if (dn.nodeValue.trim() != '')
-          avectexte = true;
+          withText = true;
       } else if (dn is DNCData) {
         if (dn.firstChild != null && dn.firstChild.nodeValue.trim() != '')
-          avectexte = true;
+          withText = true;
       }
     }
-    if (avectexte && !_schema.canContainText(parent.ref))
+    if (withText && !_schema.canContainText(parent.ref))
       throw new DaxeException(Strings.get('config.text_not_allowed'));
     
     if (parent.firstChild == null && !isElementValueValid(parent.ref, ''))
@@ -790,44 +793,44 @@ class Config {
       return; // sub-element test should have been done already
     
     if (_schema is DaxeWXS) {
-      final List<x.Element> sousElements = new List<x.Element>();
+      final List<x.Element> childrenRefs = new List<x.Element>();
       for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
         if (dn.isXMLElement() && dn.ref != null) {
-          sousElements.add(dn.ref);
+          childrenRefs.add(dn.ref);
         }
       }
       final DaxeWXS sch = _schema as DaxeWXS;
-      if (!sch.validElement(parent.ref, sousElements, false))
+      if (!sch.validElement(parent.ref, childrenRefs, false))
         throw new DaxeException(Strings.get('config.invalid_children'));
       return;
     }
     
     // not a simple or WXS schema: test with a regular expression
     final x.Element refParent = parent.ref;
-    final StringBuffer cettexp = new StringBuffer();
+    final StringBuffer thisregexp = new StringBuffer();
     if (_validPatternCache == null)
       _validPatternCache = new HashMap<x.Element, Pattern>();
     for (DaxeNode dn = parent.firstChild; dn != null; dn = dn.nextSibling) {
       if (dn.isXMLElement())  {
-        cettexp.write(dn.localName);
-        cettexp.write(",");
+        thisregexp.write(dn.localName);
+        thisregexp.write(",");
       }
     }
     RegExp r = _validPatternCache[refParent];
     if (r == null) {
-      final String expr = _regularExpression(refParent, false, true);
-      if (expr == null || expr == "")
+      final String regexp = _regularExpression(refParent, false, true);
+      if (regexp == null || regexp == "")
         return;
       try {
-        r = new RegExp(r"^$expr$");
+        r = new RegExp(r"^$regexp$");
       } on Exception catch(ex) {
-        logError("elementValide(JaxeElement, bool, List<String>) - Malformed Pattern: ^${expr}\$:", ex);
+        logError("Config.testValidity() - Malformed Pattern: ^${regexp}\$:", ex);
         return;
       }
       _validPatternCache[refParent] = r;
     }
 
-    final bool matched = r.hasMatch(cettexp.toString());
+    final bool matched = r.hasMatch(thisregexp.toString());
     if (!matched)
       throw new DaxeException(Strings.get('config.invalid_children'));
     return;
@@ -851,45 +854,45 @@ class Config {
    */
   bool attributesAreValid(final DaxeNode dn) {
     if (dn.nodeType != DaxeNode.ELEMENT_NODE) {
-      logError("Config.attributsValides : ce n'est pas un élément: $dn");
+      logError("Config.attributesAreValid : this is not an element: $dn");
       return(false);
     }
-    // vérif des attributs qui sont dans le schéma
-    final List<x.Element> lattref = elementAttributes(dn.ref);
-    List<String> noms = new List<String>(lattref.length);
-    List<String> espaces = new List<String>(noms.length);
-    for (int i=0; i<lattref.length; i++) {
-      final x.Element attref = lattref[i];
-      noms[i] = attributeName(attref);
-      espaces[i] = attributeNamespace(attref);
-      final String valeur = dn.getAttribute(noms[i]);
-      if (valeur == null || valeur == '') {
+    // checking attributes defined in the schema
+    final List<x.Element> attrefList = elementAttributes(dn.ref);
+    List<String> names = new List<String>(attrefList.length);
+    List<String> namespaces = new List<String>(names.length);
+    for (int i=0; i<attrefList.length; i++) {
+      final x.Element attref = attrefList[i];
+      names[i] = attributeName(attref);
+      namespaces[i] = attributeNamespace(attref);
+      final String value = dn.getAttribute(names[i]);
+      if (value == null || value == '') {
         if (requiredAttribute(dn.ref, attref))
           return(false);
-      } else if (!validAttributeValue(attref, valeur))
+      } else if (!validAttributeValue(attref, value))
         return(false);
     }
-    // vérif s'il y a des attributs en plus qui ne sont pas dans le schéma
-    final List<DaxeAttr> latt = dn.attributes;
-    for (int i=0; i<latt.length; i++) {
-      DaxeAttr att = latt[i];
-      final String prefixe = att.prefix;
-      if (prefixe == "xml" || prefixe == "xmlns")
+    // checking attributes that are not in the schema
+    final List<DaxeAttr> attList = dn.attributes;
+    for (int i=0; i<attList.length; i++) {
+      DaxeAttr att = attList[i];
+      final String prefix = att.prefix;
+      if (prefix == "xml" || prefix == "xmlns")
         continue;
-      final String nom = att.localName;
-      if (prefixe == null && nom == "xmlns")
+      final String name = att.localName;
+      if (prefix == null && name == "xmlns")
         continue;
-      final String espace = att.namespaceURI;
-      if (espace == "http://www.w3.org/2001/XMLSchema-instance")
+      final String namespace = att.namespaceURI;
+      if (namespace == "http://www.w3.org/2001/XMLSchema-instance")
         continue;
-      bool trouve = false;
-      for (int j=0; j<noms.length; j++) {
-        if (noms[j] == nom && espaces[j] == espace) {
-          trouve = true;
+      bool found = false;
+      for (int j=0; j<names.length; j++) {
+        if (names[j] == name && namespaces[j] == namespace) {
+          found = true;
           break;
         }
       }
-      if (!trouve)
+      if (!found)
         return(false);
     }
     return(true);
@@ -906,14 +909,14 @@ class Config {
    * Returns the list of names for possible parent elements for a given element
    */
   List<String> parentNames(final x.Element elementRef) {
-    final List<x.Element> listeReferences = parentElements(elementRef);
-    final List<String> listeNoms = new List<String>();
-    for (final x.Element ref in listeReferences) {
-      final String nom = _elementsToNamesCache[ref];
-      if (!listeNoms.contains(nom))
-        listeNoms.add(nom);
+    final List<x.Element> refList = parentElements(elementRef);
+    final List<String> nameList = new List<String>();
+    for (final x.Element ref in refList) {
+      final String name = _elementsToNamesCache[ref];
+      if (!nameList.contains(name))
+        nameList.add(name);
     }
-    return(listeNoms);
+    return(nameList);
   }
   
   /**
@@ -965,23 +968,26 @@ class Config {
    * or null if no prefix should be used.
    */
   String attributePrefix(final x.Element parent, final x.Element attributeRef) {
-    final String espace = attributeNamespace(attributeRef);
-    if (espace == null)
+    final String namespace = attributeNamespace(attributeRef);
+    if (namespace == null)
       return(null);
-    if (espace == "http://www.w3.org/XML/1998/namespace")
+    if (namespace == "http://www.w3.org/XML/1998/namespace")
       return("xml");
-    if (espace == "http://www.w3.org/2000/xmlns/" && attributeName(attributeRef) != "xmlns")
+    if (namespace == "http://www.w3.org/2000/xmlns/" && attributeName(attributeRef) != "xmlns")
       return("xmlns");
-    // on essaye lookupPrefix avec le parent et avec son document
-    // (cas d'un élément en cours de création, pas encore inséré dans le document)
-    String prefixe = parent.lookupPrefix(espace);
-    if (prefixe == null) {
-      if (parent.ownerDocument.documentElement != null) // si l'élément racine existe
-        prefixe = parent.ownerDocument.lookupPrefix(espace);
-      else
-        prefixe = namespacePrefix(espace); // on suppose que la racine sera créée avec ajouterAttributsEspaces
+    // we try lookupPrefix with the parent and with its document
+    // (case of an element being created and not yet inserted in the document)
+    String prefix = parent.lookupPrefix(namespace);
+    if (prefix == null) {
+      if (parent.ownerDocument.documentElement != null) {
+        // the root element exists
+        prefix = parent.ownerDocument.lookupPrefix(namespace);
+      } else {
+        // we assume the root will be created with addNamespaceAttributes
+        prefix = namespacePrefix(namespace);
+      }
     }
-    return(prefixe);
+    return(prefix);
   }
   
   /**
@@ -1003,8 +1009,8 @@ class Config {
    * Returns null if there are an infinity of possible values.
    */
   List<String> attributeValues(final x.Element attributeRef) {
-    final List<String> liste = _schema.attributeValues(attributeRef);
-    return(liste);
+    final List<String> list = _schema.attributeValues(attributeRef);
+    return(list);
   }
   
   /**
@@ -1041,30 +1047,30 @@ class Config {
    */
   String nodeDisplayType(final x.Element elementRef, final String name, final int nodeType) {
     if (nodeType == x.Node.ELEMENT_NODE) {
-      final x.Element affel = getElementDisplay(localValue(name));
-      if (affel == null)
+      final x.Element elDisplay = getElementDisplay(localValue(name));
+      if (elDisplay == null)
         return(_defaultDisplayType);
-      return(affel.getAttribute("type"));
+      return(elDisplay.getAttribute("type"));
     } else if (nodeType == x.Node.PROCESSING_INSTRUCTION_NODE) {
-      x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_INSTRUCTION");
-      while (elplug != null) {
-        if (name != null && name == elplug.getAttribute("cible"))
+      x.Element pluginEl = _findElement(_getNodeDisplay(), "PLUGIN_INSTRUCTION");
+      while (pluginEl != null) {
+        if (name != null && name == pluginEl.getAttribute("cible"))
           return("plugin");
-        elplug = _nextElement(elplug, "PLUGIN_INSTRUCTION");
+        pluginEl = _nextElement(pluginEl, "PLUGIN_INSTRUCTION");
       }
       return("instruction");
     } else if (nodeType == x.Node.COMMENT_NODE) {
-      final x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_COMMENTAIRE");
-      if (elplug != null)
+      final x.Element pluginEl = _findElement(_getNodeDisplay(), "PLUGIN_COMMENTAIRE");
+      if (pluginEl != null)
         return("plugin");
-      return("commentaire");
+      return("comment");
     } else if (nodeType == x.Node.CDATA_SECTION_NODE) {
-      final x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_CDATA");
-      if (elplug != null)
+      final x.Element pluginEl = _findElement(_getNodeDisplay(), "PLUGIN_CDATA");
+      if (pluginEl != null)
         return("plugin");
       return("cdata");
     } else if (nodeType == x.Node.TEXT_NODE) {
-      return("texte");
+      return("text");
     }
     return(null);
   }
@@ -1073,10 +1079,10 @@ class Config {
    * Returns an element display type based on its reference.
    */
   String elementDisplayType(final x.Element elementRef) {
-    final x.Element affel = getElementDisplay(elementName(elementRef));
-    if (affel == null)
+    final x.Element elDisplay = getElementDisplay(elementName(elementRef));
+    if (elDisplay == null)
       return(_defaultDisplayType);
-    return(affel.getAttribute("type"));
+    return(elDisplay.getAttribute("type"));
   }
   
   /**
@@ -1085,11 +1091,11 @@ class Config {
   x.Element firstElementWithType(final String displayType) {
     if (_cfgroot == null)
       return(null);
-    x.Element affel = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
-    while (affel != null) {
-      if (displayType == affel.getAttribute("type"))
-        return(elementReference(affel.getAttribute("element")));
-      affel = _nextElement(affel, "AFFICHAGE_ELEMENT");
+    x.Element elDisplay = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    while (elDisplay != null) {
+      if (displayType == elDisplay.getAttribute("type"))
+        return(elementReference(elDisplay.getAttribute("element")));
+      elDisplay = _nextElement(elDisplay, "AFFICHAGE_ELEMENT");
     }
     return(null);
   }
@@ -1101,11 +1107,11 @@ class Config {
     if (_cfgroot == null)
       return(null);
     List<x.Element> list = new List<x.Element>();
-    x.Element affel = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
-    while (affel != null) {
-      if (displayType == affel.getAttribute("type"))
-        list.addAll(elementReferences(affel.getAttribute("element")));
-      affel = _nextElement(affel, "AFFICHAGE_ELEMENT");
+    x.Element elDisplay = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    while (elDisplay != null) {
+      if (displayType == elDisplay.getAttribute("type"))
+        list.addAll(elementReferences(elDisplay.getAttribute("element")));
+      elDisplay = _nextElement(elDisplay, "AFFICHAGE_ELEMENT");
     }
     return(list);
   }
@@ -1127,13 +1133,13 @@ class Config {
   String nodeParameterValue(final x.Element elementRef, final String nodeType,
                             final String name, final String parameterName, final String defaultValue) {
     final HashMap<String, List<String>> table = getNodeParameters(elementRef, nodeType, name);
-    final List<String> lval = table[parameterName];
-    String valeur;
-    if (lval != null && lval.length > 0)
-      valeur = lval[0];
+    final List<String> valueList = table[parameterName];
+    String value;
+    if (valueList != null && valueList.length > 0)
+      value = valueList[0];
     else
-      valeur = defaultValue;
-    return valeur;
+      value = defaultValue;
+    return value;
   }
 
   /**
@@ -1144,8 +1150,8 @@ class Config {
   String functionParameterValue(final x.Element fctdef, final String parameterName, final String defaultValue) {
     x.Element parel = _findElement(fctdef, "PARAMETRE");
     while (parel != null) {
-      final String nom = parel.getAttribute("nom");
-      if (nom == parameterName)
+      final String name = parel.getAttribute("nom");
+      if (name == parameterName)
         return(parel.getAttribute("valeur"));
       parel = _nextElement(parel, "PARAMETRE");
     }
@@ -1156,15 +1162,15 @@ class Config {
     final HashMap<String, List<String>> hashparams = new HashMap<String, List<String>>();
     x.Element parel = _findElement(base, "PARAMETRE");
     while (parel != null) {
-      final String nom = parel.getAttribute("nom");
-      final String valeur = parel.getAttribute("valeur");
-      List<String> lval = hashparams[nom];
+      final String name = parel.getAttribute("nom");
+      final String value = parel.getAttribute("valeur");
+      List<String> lval = hashparams[name];
       if (lval == null) {
         lval = new List<String>();
-        lval.add(valeur);
-        hashparams[nom] = lval;
+        lval.add(value);
+        hashparams[name] = lval;
       } else
-        lval.add(valeur);
+        lval.add(value);
       parel = _nextElement(parel, "PARAMETRE");
     }
     _parametersCache[base] = hashparams;
@@ -1224,14 +1230,14 @@ class Config {
     List<String> schemaSuggestions = _schema.suggestedElementValues(elementRef);
     if (schemaSuggestions != null)
       set.addAll(_schema.suggestedElementValues(elementRef));
-    final x.Element affel = getElementDisplay(elementName(elementRef));
-    if (affel != null) {
-      x.Element vs = _findElement(affel, "VALEUR_SUGGEREE");
-      while (vs != null) {
-        final String v = _dom_elementValue(vs);
+    final x.Element elDisplay = getElementDisplay(elementName(elementRef));
+    if (elDisplay != null) {
+      x.Element sv = _findElement(elDisplay, "VALEUR_SUGGEREE");
+      while (sv != null) {
+        final String v = _dom_elementValue(sv);
         if (v != null)
           set.add(v);
-        vs = _nextElement(vs, "VALEUR_SUGGEREE");
+        sv = _nextElement(sv, "VALEUR_SUGGEREE");
       }
     }
     if (set.length == 0)
@@ -1250,21 +1256,21 @@ class Config {
     List<String> schemaSuggestions = _schema.suggestedAttributeValues(attributeRef);
     if (schemaSuggestions != null)
       set.addAll(schemaSuggestions);
-    final x.Element affel = getElementDisplay(elementName(parentRef));
-    if (affel != null) {
-      final String nomAtt = attributeName(attributeRef);
-      x.Element aa = _findElement(affel, "AFFICHAGE_ATTRIBUT");
-      while (aa != null) {
-        if (aa.getAttribute("attribut") == nomAtt) {
-          x.Element vs = _findElement(aa, "VALEUR_SUGGEREE");
-          while (vs != null) {
-            final String v = _dom_elementValue(vs);
+    final x.Element elDisplay = getElementDisplay(elementName(parentRef));
+    if (elDisplay != null) {
+      final String attName = attributeName(attributeRef);
+      x.Element attDisplay = _findElement(elDisplay, "AFFICHAGE_ATTRIBUT");
+      while (attDisplay != null) {
+        if (attDisplay.getAttribute("attribut") == attName) {
+          x.Element sv = _findElement(attDisplay, "VALEUR_SUGGEREE");
+          while (sv != null) {
+            final String v = _dom_elementValue(sv);
             if (v != null)
               set.add(v);
-            vs = _nextElement(vs, "VALEUR_SUGGEREE");
+            sv = _nextElement(sv, "VALEUR_SUGGEREE");
           }
         }
-        aa = _nextElement(aa, "AFFICHAGE_ATTRIBUT");
+        attDisplay = _nextElement(attDisplay, "AFFICHAGE_ATTRIBUT");
       }
     }
     if (set.length == 0)
@@ -1281,48 +1287,48 @@ class Config {
    * ordered by preference based on the user language and country.
    */
   List<x.Element> _stringsElements() {
-    final Locale defaut = new Locale();
-    final List<x.Element> liste = new List<x.Element>();
+    final Locale defaultLocale = new Locale();
+    final List<x.Element> list = new List<x.Element>();
     
     final List<x.Element> lstrings = _getStrings();
     for (final x.Element strings in lstrings) {
-      final String langue = strings.getAttribute("langue");
-      if (langue != "") {
+      final String language = strings.getAttribute("langue");
+      if (language != "") {
         Locale strloc;
         if (strings.getAttribute("pays") == "")
-          strloc = new Locale.l(langue);
+          strloc = new Locale.l(language);
         else
-          strloc = new Locale.lc(langue, strings.getAttribute("pays"));
-        if (defaut == strloc && !liste.contains(strings))
-          liste.add(strings);
+          strloc = new Locale.lc(language, strings.getAttribute("pays"));
+        if (defaultLocale == strloc && !list.contains(strings))
+          list.add(strings);
       }
     }
     for (final x.Element strings in lstrings) {
-      final String langue = strings.getAttribute("langue");
-      if (langue != "") {
-        final Locale test = new Locale.lc(defaut.language, defaut.country);
+      final String language = strings.getAttribute("langue");
+      if (language != "") {
+        final Locale test = new Locale.lc(defaultLocale.language, defaultLocale.country);
         Locale strloc;
         if (strings.getAttribute("pays") == "")
-          strloc = new Locale.l(langue);
+          strloc = new Locale.l(language);
         else
-          strloc = new Locale.lc(langue, strings.getAttribute("pays"));
-        if (test == strloc && !liste.contains(strings))
-          liste.add(strings);
+          strloc = new Locale.lc(language, strings.getAttribute("pays"));
+        if (test == strloc && !list.contains(strings))
+          list.add(strings);
       }
     }
     for (final x.Element strings in lstrings) {
-      final String langue = strings.getAttribute("langue");
-      if (langue != "") {
-        final Locale test = new Locale.l(defaut.language);
-        if (test == new Locale.l(langue) && !liste.contains(strings))
-          liste.add(strings);
+      final String language = strings.getAttribute("langue");
+      if (language != "") {
+        final Locale test = new Locale.l(defaultLocale.language);
+        if (test == new Locale.l(language) && !list.contains(strings))
+          list.add(strings);
       }
     }
     for (final x.Element strings in lstrings) {
-      if (!liste.contains(strings))
-        liste.add(strings);
+      if (!list.contains(strings))
+        list.add(strings);
     }
-    return(liste);
+    return(list);
   }
   
   /**
@@ -1379,13 +1385,13 @@ class Config {
     for (final x.Element strings in lstrings) {
       x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
       while (sel != null) {
-        String nom = sel.getAttribute("element");
-        if (h[nom] == null) {
-          String titre = nom;
+        String name = sel.getAttribute("element");
+        if (h[name] == null) {
+          String titre = name;
           final x.Element eltitre = _findElement(sel, "TITRE");
           if (eltitre != null && eltitre.firstChild != null)
             titre = _dom_elementValue(eltitre);
-          h[nom] = titre;
+          h[name] = titre;
         }
         sel = _nextElement(sel, "STRINGS_ELEMENT");
       }
@@ -1397,24 +1403,24 @@ class Config {
    * Returns an element title based on its reference.
    */
   String elementTitle(final x.Element elementRef) {
-    String titre = null;
-    titre = _elementsTitlesCache[elementRef];
-    if (titre != null)
-      return(titre);
-    final String nom = elementName(elementRef);
-    if (nom == null) {
+    String title = null;
+    title = _elementsTitlesCache[elementRef];
+    if (title != null)
+      return(title);
+    final String name = elementName(elementRef);
+    if (name == null) {
       logError("Config.elementTitle : no name for $elementRef");
       return(null);
     }
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      if (titre == null) {
+      if (title == null) {
         x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
         while (sel != null) {
-          if (sel.getAttribute("element") == nom) {
-            final x.Element eltitre = _findElement(sel, "TITRE");
-            if (eltitre != null && eltitre.firstChild != null) {
-              titre = _dom_elementValue(eltitre);
+          if (sel.getAttribute("element") == name) {
+            final x.Element titleel = _findElement(sel, "TITRE");
+            if (titleel != null && titleel.firstChild != null) {
+              title = _dom_elementValue(titleel);
               break;
             }
             break;
@@ -1423,10 +1429,10 @@ class Config {
         }
       }
     }
-    if (titre == null || titre == "")
-      titre = nom;
-    _elementsTitlesCache[elementRef] = titre;
-    return(titre);
+    if (title == null || title == "")
+      title = name;
+    _elementsTitlesCache[elementRef] = title;
+    return(title);
   }
   
   /**
@@ -1435,12 +1441,12 @@ class Config {
   String documentation(final x.Element elementRef) {
     if (elementRef == null)
       return(null);
-    final String nom = elementName(elementRef);
+    final String name = elementName(elementRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
       x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
       while (sel != null) {
-        if (nom == sel.getAttribute("element")) {
+        if (name == sel.getAttribute("element")) {
           final x.Element eldoc = _findElement(sel, "DOCUMENTATION");
           if (eldoc != null && eldoc.firstChild != null)
             return(_dom_elementValue(eldoc));
@@ -1460,7 +1466,7 @@ class Config {
     doc = doc.replaceAll("&", "&amp;");
     doc = doc.replaceAll("<", "&lt;");
     doc = doc.replaceAll(">", "&gt;");
-    /*
+    /* NOTE: adding newlines could be useful if we used <pre>
     if (doc.length > 100) {
       int p = 0;
       for (int i=0; i<doc.length; i++) {
@@ -1480,29 +1486,29 @@ class Config {
    * Returns the title for an element value, based on the element reference and the value.
    */
   String elementValueTitle(final x.Element elementRef, final String value) {
-    final String nom = elementName(elementRef);
+    final String name = elementName(elementRef);
     final List<x.Element> lstrings = _stringsElements();
-    final String langueSyst = (new Locale()).language;
+    final String osLanguage = (new Locale()).language;
     for (final x.Element strings in lstrings) {
       x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
       while (sel != null) {
-        if (sel.getAttribute("element") == nom) {
-          x.Element eltitrev = _findElement(sel, "TITRE_VALEUR");
-          while (eltitrev != null) {
-            if (eltitrev.getAttribute("valeur") == value &&
-                eltitrev.firstChild != null)
-              return(_dom_elementValue(eltitrev));
-            eltitrev = _nextElement(eltitrev, "TITRE_VALEUR");
+        if (sel.getAttribute("element") == name) {
+          x.Element tvel = _findElement(sel, "TITRE_VALEUR");
+          while (tvel != null) {
+            if (tvel.getAttribute("valeur") == value &&
+                tvel.firstChild != null)
+              return(_dom_elementValue(tvel));
+            tvel = _nextElement(tvel, "TITRE_VALEUR");
           }
           break;
         }
         sel = _nextElement(sel, "STRINGS_ELEMENT");
       }
-      // la langue est trouvée mais il n'y a pas de TITRE_VALEUR correspondant
-      // -> on renvoie la vraie valeur plutôt que de chercher un titre
-      // dans d'autres langues.
-      final String langue = strings.getAttribute("langue");
-      if (langue == langueSyst)
+      // the language was found but there is no matching TITRE_VALEUR
+      // -> we return the real value rather than looking
+      // for a title in other languages.
+      final String language = strings.getAttribute("langue");
+      if (language == osLanguage)
         return(value);
     }
     return(value);
@@ -1512,16 +1518,16 @@ class Config {
    * Returns an attribute title based on the parent element reference and the attribute reference.
    */
   String attributeTitle(final x.Element parentRef, final x.Element attributeRef) {
-    final String nomEl = elementName(parentRef);
-    final String nomAtt = attributeName(attributeRef);
+    final String elName = elementName(parentRef);
+    final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
       x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
       while (sel != null) {
-        if (sel.getAttribute("element") == nomEl) {
+        if (sel.getAttribute("element") == elName) {
           x.Element sat = _findElement(sel, "STRINGS_ATTRIBUT");
           while (sat != null) {
-            if (sat.getAttribute("attribut") == nomAtt) {
+            if (sat.getAttribute("attribut") == attName) {
               final x.Element eltitre = _findElement(sat, "TITRE");
               if (eltitre != null && eltitre.firstChild != null)
                 return(_dom_elementValue(eltitre));
@@ -1533,10 +1539,10 @@ class Config {
         sel = _nextElement(sel, "STRINGS_ELEMENT");
       }
     }
-    final String prefixe = attributePrefix(parentRef, attributeRef);
-    if (prefixe != null)
-      return("$prefixe:$nomAtt");
-    return(nomAtt);
+    final String prefix = attributePrefix(parentRef, attributeRef);
+    if (prefix != null)
+      return("$prefix:$attName");
+    return(attName);
   }
   
   /**
@@ -1544,17 +1550,17 @@ class Config {
    * the attribute reference and the value.
    */
   String attributeValueTitle(final x.Element parentRef, final x.Element attributeRef, final String value) {
-    final String nomEl = elementName(parentRef);
-    final String nomAtt = attributeName(attributeRef);
+    final String elName = elementName(parentRef);
+    final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
-    final String langueSyst = (new Locale()).language;
+    final String osLanguage = (new Locale()).language;
     for (final x.Element strings in lstrings) {
       x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
       while (sel != null) {
-        if (sel.getAttribute("element") == nomEl) {
+        if (sel.getAttribute("element") == elName) {
           x.Element sat = _findElement(sel, "STRINGS_ATTRIBUT");
           while (sat != null) {
-            if (sat.getAttribute("attribut") == nomAtt) {
+            if (sat.getAttribute("attribut") == attName) {
               x.Element eltitrev = _findElement(sat, "TITRE_VALEUR");
               while (eltitrev != null) {
                 if (eltitrev.getAttribute("valeur") == value &&
@@ -1569,11 +1575,11 @@ class Config {
         }
         sel = _nextElement(sel, "STRINGS_ELEMENT");
       }
-      // la langue est trouvée mais il n'y a pas de TITRE_VALEUR correspondant
-      // -> on renvoie la vraie valeur d'attribut plutôt que de chercher un titre
-      // dans d'autres langues.
-      final String langue = strings.getAttribute("langue");
-      if (langue == langueSyst)
+      // The language was found but there is no matching TITRE_VALEUR
+      // -> we return the real attribute value rather than looking
+      // for a title in other languages.
+      final String language = strings.getAttribute("langue");
+      if (language == osLanguage)
         return(value);
     }
     return(value);
@@ -1584,16 +1590,16 @@ class Config {
    * the attribute reference.
    */
   String attributeDocumentation(final x.Element parentRef, final x.Element attributeRef) {
-    final String nomEl = elementName(parentRef);
-    final String nomAtt = attributeName(attributeRef);
+    final String elName = elementName(parentRef);
+    final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
       x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
       while (sel != null) {
-        if (sel.getAttribute("element") == nomEl) {
+        if (sel.getAttribute("element") == elName) {
           x.Element sat = _findElement(sel, "STRINGS_ATTRIBUT");
           while (sat != null) {
-            if (sat.getAttribute("attribut") == nomAtt) {
+            if (sat.getAttribute("attribut") == attName) {
               final x.Element eldoc = _findElement(sat, "DOCUMENTATION");
               if (eldoc != null &&eldoc.firstChild != null)
                 return(_dom_elementValue(eldoc));
@@ -1612,33 +1618,33 @@ class Config {
    * Returns an export's title based on its reference.
    */
   String exportTitle(final x.Element exportRef) {
-    final String nom = exportName(exportRef);
+    final String name = exportName(exportRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
       x.Element export = _findElement(strings, "STRINGS_EXPORT");
       while (export != null) {
-        if (nom == export.getAttribute("export")) {
-          final x.Element eltitre = _findElement(export, "TITRE");
-          if (eltitre != null && eltitre.firstChild != null)
-            return(_dom_elementValue(eltitre));
+        if (name == export.getAttribute("export")) {
+          final x.Element titleel = _findElement(export, "TITRE");
+          if (titleel != null && titleel.firstChild != null)
+            return(_dom_elementValue(titleel));
           break;
         }
         export = _nextElement(export, "STRINGS_EXPORT");
       }
     }
-    return(nom);
+    return(name);
   }
   
   /**
    * Returns an export's documentation based on its reference.
    */
   String exportDocumentation(final x.Element exportRef) {
-    final String nom = exportName(exportRef);
+    final String name = exportName(exportRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
       x.Element export = _findElement(strings, "STRINGS_EXPORT");
       while (export != null) {
-        if (nom == export.getAttribute("export")) {
+        if (name == export.getAttribute("export")) {
           final x.Element eldoc = _findElement(export, "DOCUMENTATION");
           if (eldoc != null && eldoc.firstChild != null)
             return(_dom_elementValue(eldoc));

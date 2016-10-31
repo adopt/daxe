@@ -1,0 +1,1584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DAXE_CONFIG>
+  
+  <LANGUAGE>
+    <SCHEMA_FILE name="DAXE_CONFIG.xsd"/>
+    <ROOT element="DAXE_CONFIG"/>
+  </LANGUAGE>
+  
+  <MENUS>
+    <MENU name="Language">
+      <INSERT_MENU name="LANGUAGE" node_type="element"/>
+      <INSERT_MENU name="SCHEMA_FILE"/>
+      <INSERT_MENU name="SIMPLE_SCHEMA"/>
+      <INSERT_MENU name="ROOT"/>
+    </MENU>
+    <MENU name="Simple schema">
+      <INSERT_MENU name="ELEMENT"/>
+      <INSERT_MENU name="SET"/>
+      <INSERT_MENU name="CHILD-ELEMENT"/>
+      <INSERT_MENU name="CHILD-SET"/>
+      <INSERT_MENU name="ATTRIBUTE"/>
+      <INSERT_MENU name="VALUE"/>
+    </MENU>
+    <MENU name="Saving">
+      <INSERT_MENU name="SAVING"/>
+      <INSERT_MENU name="ENCODING"/>
+      <INSERT_MENU name="DOCTYPE"/>
+      <INSERT_MENU name="SCHEMALOCATION"/>
+      <INSERT_MENU name="NAMESPACE_PREFIX"/>
+    </MENU>
+    <MENU name="Menus">
+      <INSERT_MENU name="MENUS"/>
+      <INSERT_MENU name="INSERT_MENU"/>
+      <INSERT_MENU name="FUNCTION_MENU"/>
+      <INSERT_MENU name="SEPARATOR"/>
+      <INSERT_MENU name="MENU"/>
+      <INSERT_MENU name="PARAMETER"/>
+    </MENU>
+    <MENU name="Display">
+      <INSERT_MENU name="ELEMENTS_DISPLAY"/>
+      <INSERT_MENU name="ELEMENT_DISPLAY"/>
+      <INSERT_MENU name="ATTRIBUTE_DISPLAY"/>
+      <INSERT_MENU name="SUGGESTED_VALUE"/>
+      <INSERT_MENU name="PARAMETER"/>
+    </MENU>
+    <MENU name="Strings">
+      <INSERT_MENU name="STRINGS"/>
+      <INSERT_MENU name="CONFIG_DESCRIPTION"/>
+      <INSERT_MENU name="MENU_STRINGS"/>
+      <INSERT_MENU name="ELEMENT_STRINGS"/>
+      <INSERT_MENU name="ATTRIBUTE_STRINGS"/>
+      <INSERT_MENU name="TITLE"/>
+      <INSERT_MENU name="DOCUMENTATION"/>
+      <INSERT_MENU name="VALUE_TITLE"/>
+    </MENU>
+  </MENUS>
+  
+  <ELEMENTS_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="DAXE_CONFIG" type="division"/>
+    
+    <ELEMENT_DISPLAY element="LANGUAGE" type="division"/>
+    <ELEMENT_DISPLAY element="SCHEMA_FILE" type="empty">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="SIMPLE_SCHEMA" type="area"/>
+    <ELEMENT_DISPLAY element="ELEMENT" type="area">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="CHILD-ELEMENT" type="empty">
+      <PARAMETER name="titleAtt" value="element"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="CHILD-SET" type="empty">
+      <PARAMETER name="titleAtt" value="set"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="ATTRIBUTE" type="area">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="VALUE" type="string"/>
+    <ELEMENT_DISPLAY element="SET" type="area">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="ROOT" type="empty">
+      <PARAMETER name="titleAtt" value="element"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="SAVING" type="division"/>
+    <ELEMENT_DISPLAY element="ENCODING" type="string"/>
+    <ELEMENT_DISPLAY element="DOCTYPE" type="empty"/>
+    <ELEMENT_DISPLAY element="SCHEMALOCATION" type="empty"/>
+    <ELEMENT_DISPLAY element="NAMESPACE_PREFIX" type="empty">
+      <PARAMETER name="titleAtt" value="uri"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="MENUS" type="division"/>
+    <ELEMENT_DISPLAY element="MENU" type="area">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="INSERT_MENU" type="empty">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="FUNCTION_MENU" type="area">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="PARAMETER" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="SEPARATOR" type="empty"/>
+    
+    <ELEMENT_DISPLAY element="ELEMENTS_DISPLAY" type="division"/>
+    <ELEMENT_DISPLAY element="ELEMENT_DISPLAY" type="area">
+      <PARAMETER name="titleAtt" value="element"/>
+      <ATTRIBUTE_DISPLAY attribute="type">
+        <SUGGESTED_VALUE>division</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>area</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>string</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>empty</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>table</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>texttable</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>simpletype</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>style</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>file</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>symbol</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>form</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>field</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>anchor</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>equationmem</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>equatexmem</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>hiddenp</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>hiddendiv</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>list</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>item</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>wlist</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>witem</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>stylespan</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>hr</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>br</SUGGESTED_VALUE>
+      </ATTRIBUTE_DISPLAY>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="SUGGESTED_VALUE" type="string"/>
+    <ELEMENT_DISPLAY element="ATTRIBUTE_DISPLAY" type="area">
+      <PARAMETER name="titleAtt" value="attribute"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="STRINGS" type="division">
+      <PARAMETER name="titleAtt" value="language"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="CONFIG_DESCRIPTION" type="string"/>
+    <ELEMENT_DISPLAY element="MENU_STRINGS" type="area">
+      <PARAMETER name="titleAtt" value="menu"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="TITLE" type="string"/>
+    <ELEMENT_DISPLAY element="DOCUMENTATION" type="area"/>
+    <ELEMENT_DISPLAY element="ELEMENT_STRINGS" type="area">
+      <PARAMETER name="titleAtt" value="element"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="ATTRIBUTE_STRINGS" type="area">
+      <PARAMETER name="titleAtt" value="attribute"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="VALUE_TITLE" type="string">
+      <PARAMETER name="titleAtt" value="value"/>
+    </ELEMENT_DISPLAY>
+    
+  </ELEMENTS_DISPLAY>
+  
+  
+  <STRINGS language="en">
+    <CONFIG_DESCRIPTION>Daxe configuration</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="Language">
+      <TITLE>Language</TITLE>
+      <DOCUMENTATION>
+        Informations about the XML language
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Simple schema">
+      <TITLE>Simple schema</TITLE>
+      <DOCUMENTATION>
+        Definitions for the elements when a simple schema is used
+        instead of an XML schema file
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Saving">
+      <TITLE>Saving</TITLE>
+      <DOCUMENTATION>
+        Options when saving the documents
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Menus">
+      <TITLE>Menus</TITLE>
+      <DOCUMENTATION>
+        Menus to insert nodes
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Display">
+      <TITLE>Display</TITLE>
+      <DOCUMENTATION>
+        Nodes display
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Strings">
+      <TITLE>Strings</TITLE>
+      <DOCUMENTATION>
+        Strings to use to display menus and elements
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="DAXE_CONFIG">
+      <TITLE>Jaxe configuration</TITLE>
+      <DOCUMENTATION>
+        Root for the configuration
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LANGUAGE">
+      <TITLE>Language</TITLE>
+      <DOCUMENTATION>
+        Information about the XML language
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SCHEMA_FILE">
+      <TITLE>XML schema file</TITLE>
+      <DOCUMENTATION>
+        W3C schema file
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          Path to the XML schema file, relative to this configuration file
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SIMPLE_SCHEMA">
+      <TITLE>Simple schema</TITLE>
+      <DOCUMENTATION>
+        A very simplified XML schema
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT">
+      <TITLE>Element</TITLE>
+      <DOCUMENTATION>
+        Definition for an XML element
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          Element name
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="text">
+        <TITLE>text</TITLE>
+        <DOCUMENTATION>
+          Specifies if the element can contain text or not
+        </DOCUMENTATION>
+        <VALUE_TITLE value="prohibited">prohibited</VALUE_TITLE>
+        <VALUE_TITLE value="allowed">allowed</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CHILD-ELEMENT">
+      <TITLE>Sub-element</TITLE>
+      <DOCUMENTATION>
+        Specifies a possible sub-element
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Name of the sub-element (it must be defined elsewhere)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CHILD-SET">
+      <TITLE>Sub-set</TITLE>
+      <DOCUMENTATION>
+        Specifies a set of possible sub-elements
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="set">
+        <TITLE>set</TITLE>
+        <DOCUMENTATION>
+          Name of the set of sub-elements (the set must be defined elsewhere)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE">
+      <TITLE>Attribute</TITLE>
+      <DOCUMENTATION>
+        Definition for an attribute of the element
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          The name of the attribute
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="presence">
+        <TITLE>presence</TITLE>
+        <VALUE_TITLE value="required">required</VALUE_TITLE>
+        <VALUE_TITLE value="optional">optional</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="VALUE">
+      <TITLE>Value</TITLE>
+      <DOCUMENTATION>
+        A possible value
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SET">
+      <TITLE>Set</TITLE>
+      <DOCUMENTATION>
+        A set of elements
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          Name of the set
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ROOT">
+      <TITLE>Root</TITLE>
+      <DOCUMENTATION>
+        Specifies a possible root element for the XML language
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          The name of the root element
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SAVING">
+      <TITLE>Saving</TITLE>
+      <DOCUMENTATION>
+        Informations about the way XML documents are saved
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENCODING">
+      <TITLE>Encoding</TITLE>
+      <DOCUMENTATION>
+        Character encoding for new documents. UTF-8 is used by default.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DOCTYPE">
+      <TITLE>Doctype</TITLE>
+      <DOCUMENTATION>
+        Document type definition
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="publicId">
+        <TITLE>publicId</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="systemId">
+        <TITLE>systemId</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SCHEMALOCATION">
+      <TITLE>SchemaLocation</TITLE>
+      <DOCUMENTATION>
+        To save the location of the XML schema in XML documents.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="schemaLocation">
+        <TITLE>schemaLocation</TITLE>
+        <DOCUMENTATION>
+          The schemaLocation attribute value consists of one or more pairs of URI references, separated by white space. The first member of each pair is a namespace name, and the second member of the pair is a hint describing where to find an appropriate schema document for that namespace.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="noNamespaceSchemaLocation">
+        <TITLE>noNamespaceSchemaLocation</TITLE>
+        <DOCUMENTATION>
+          A schema is not required to have a namespace and so there is a noNamespaceSchemaLocation attribute which is used to provide hints for the locations of schema documents that do not have target namespaces.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="NAMESPACE_PREFIX">
+      <TITLE>Namespace prefix</TITLE>
+      <DOCUMENTATION>
+        Prefix to use for a given namespace
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="prefix">
+        <TITLE>prefix</TITLE>
+        <DOCUMENTATION>
+          Prefix to use
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="uri">
+        <TITLE>uri</TITLE>
+        <DOCUMENTATION>
+          The corresponding namespace
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENUS">
+      <TITLE>Menus</TITLE>
+      <DOCUMENTATION>
+        Definition of a menubar to insert new elements
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENU">
+      <TITLE>Menu</TITLE>
+      <DOCUMENTATION>
+        A menu to insert new elements and other nodes
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          Menu name, used to refer to the menu when a title is defined.
+          The name is used as a title if no title is defined.
+          Beware to avoid using element names, to avoid ambiguities in the menu titles.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="INSERT_MENU">
+      <TITLE>Insertion menu</TITLE>
+      <DOCUMENTATION>
+        Menu to insert a node into the document (XML elements,
+        processing instructions, or XML comments)
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          The name of the node. Is also used as a reference to define a title.
+          The name is used as a title if no title is defined.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="node_type">
+        <TITLE>node type</TITLE>
+        <DOCUMENTATION>
+          Type of XML node
+        </DOCUMENTATION>
+        <VALUE_TITLE value="element">element</VALUE_TITLE>
+        <VALUE_TITLE value="pi">processing instruction</VALUE_TITLE>
+        <VALUE_TITLE value="comment">comment</VALUE_TITLE>
+        <VALUE_TITLE value="cdata">CDATA section</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="shortcut">
+        <TITLE>shortcut</TITLE>
+        <DOCUMENTATION>
+          Keyboard shortcut for the menu
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FUNCTION_MENU">
+      <TITLE>Function menu</TITLE>
+      <DOCUMENTATION>
+        Menu to use a predefined function, or a function defined in a Daxe extension
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          The function name. Used as a reference to define a title.
+          The name is used as a title if no title is defined.
+          Beware to avoid using element names, to avoid ambiguities in the menu titles.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="function_name">
+        <TITLE>class</TITLE>
+        <DOCUMENTATION>
+          The name of the function
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="shortcut">
+        <TITLE>shortcut</TITLE>
+        <DOCUMENTATION>
+          Keyboard shortcut for the menu
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAMETER">
+      <TITLE>Parameter</TITLE>
+      <DOCUMENTATION>
+        Parameter (pair name/value)
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>name</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="value">
+        <TITLE>value</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SEPARATOR">
+      <TITLE>Separator</TITLE>
+      <DOCUMENTATION>
+        Menu separator
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENTS_DISPLAY">
+      <TITLE>Display</TITLE>
+      <DOCUMENTATION>
+        Specifies the types to use to display XML document nodes
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT_DISPLAY">
+      <TITLE>Element display</TITLE>
+      <DOCUMENTATION>
+        Specifies how an XML element is displayed.
+        Please refer to the documentation to see what the type values refer to,
+        and what parameters can be used depending on the type.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Element name (must be defined in the schema)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <DOCUMENTATION>
+          Display type for the element.
+          Parameters are required for certain display types.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="division">division</VALUE_TITLE>
+        <VALUE_TITLE value="area">area</VALUE_TITLE>
+        <VALUE_TITLE value="string">string</VALUE_TITLE>
+        <VALUE_TITLE value="table">table</VALUE_TITLE>
+        <VALUE_TITLE value="texttable">text table</VALUE_TITLE>
+        <VALUE_TITLE value="simpletype">simple type</VALUE_TITLE>
+        <VALUE_TITLE value="style">style</VALUE_TITLE>
+        <VALUE_TITLE value="file">file</VALUE_TITLE>
+        <VALUE_TITLE value="symbol">symbol</VALUE_TITLE>
+        <VALUE_TITLE value="equation">equation</VALUE_TITLE>
+        <VALUE_TITLE value="form">form</VALUE_TITLE>
+        <VALUE_TITLE value="field">field</VALUE_TITLE>
+        <VALUE_TITLE value="empty">empty</VALUE_TITLE>
+        <VALUE_TITLE value="anchor">anchor</VALUE_TITLE>
+        <VALUE_TITLE value="equationmem">equation in mem</VALUE_TITLE>
+        <VALUE_TITLE value="equatexmem">tex equation in mem</VALUE_TITLE>
+        <VALUE_TITLE value="hiddenp">hidden p</VALUE_TITLE>
+        <VALUE_TITLE value="hiddendiv">hidden div</VALUE_TITLE>
+        <VALUE_TITLE value="list">list</VALUE_TITLE>
+        <VALUE_TITLE value="item">item</VALUE_TITLE>
+        <VALUE_TITLE value="wlist">WYSIWYG list</VALUE_TITLE>
+        <VALUE_TITLE value="witem">WYSIWYG item</VALUE_TITLE>
+        <VALUE_TITLE value="stylespan">style span</VALUE_TITLE>
+        <VALUE_TITLE value="hr">hr</VALUE_TITLE>
+        <VALUE_TITLE value="br">br</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SUGGESTED_VALUE">
+      <TITLE>Suggested value</TITLE>
+      <DOCUMENTATION>
+        Used to suggest a choice of values to the user,
+        among the values authorized by the schema.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE_DISPLAY">
+      <TITLE>Attribute display</TITLE>
+      <DOCUMENTATION>
+        Specifies how to display an attribute.
+        Currently, only supports attribute values that can be suggested when
+        the values are not fixed by the schema.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="attribute">
+        <TITLE>attribute</TITLE>
+        <DOCUMENTATION>
+          Attribute name (must be defined in the schema)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="STRINGS">
+      <TITLE>Strings</TITLE>
+      <DOCUMENTATION>
+        All the user interface strings, depending on the system's language
+        (menu titles, documentation, ...)
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="language">
+        <TITLE>language</TITLE>
+        <DOCUMENTATION>
+          Language code for the strings,
+          with the format defined by ISO-639 (2 lowercase letters)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="country">
+        <TITLE>country</TITLE>
+        <DOCUMENTATION>
+          Country code for the strings,
+          with the format defined by ISO-3166 (2 uppercase letters)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CONFIG_DESCRIPTION">
+      <TITLE>Configuration description</TITLE>
+      <DOCUMENTATION>
+        Brief one line description of the configuration, used to choose a configuration for new documents
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENU_STRINGS">
+      <TITLE>Menu strings</TITLE>
+      <DOCUMENTATION>
+        Title and documentation for a menu. If none are defined, the title and documentation
+        of the element will be used for this element's insertion menu.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="menu">
+        <TITLE>menu</TITLE>
+        <DOCUMENTATION>
+          Name of the menu
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TITLE">
+      <TITLE>Title</TITLE>
+      <DOCUMENTATION>
+        Title
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DOCUMENTATION">
+      <TITLE>Documentation</TITLE>
+      <DOCUMENTATION>
+        A short documentation text, that will be used for online help
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT_STRINGS">
+      <TITLE>Element strings</TITLE>
+      <DOCUMENTATION>
+        Title and documentation for an element.
+        Used to display the element, and also for the insertion menu if
+        no title is defined for the menu.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Name of the element
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE_STRINGS">
+      <TITLE>Attribute strings</TITLE>
+      <DOCUMENTATION>
+        Title and documentation for an attribute.
+        Titles can also be defined for attribute values.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="attribute">
+        <TITLE>attribute</TITLE>
+        <DOCUMENTATION>
+          Name of the attribute
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="VALUE_TITLE">
+      <TITLE>Title for value</TITLE>
+      <DOCUMENTATION>
+        Title to use for an element or attribute value
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="value">
+        <TITLE>value</TITLE>
+        <DOCUMENTATION>
+          Element or attribute value (must be allowed by the schema)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+  </STRINGS>
+  
+  
+  <STRINGS language="fr">
+    <CONFIG_DESCRIPTION>Configuration Daxe</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="Language">
+      <TITLE>Langage</TITLE>
+      <DOCUMENTATION>
+        Définition du langage XML associé à la configuration
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Simple schema">
+      <TITLE>Schéma simple</TITLE>
+      <DOCUMENTATION>
+        Définition des éléments du langage quand un schéma simple est utilisé
+        au lieu d'un fichier de schéma XML
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Saving">
+      <TITLE>Enregistrement</TITLE>
+      <DOCUMENTATION>
+        Options d'enregistrement
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Menus">
+      <TITLE>Menus</TITLE>
+      <DOCUMENTATION>
+        Définition des menus d'insertion des nœuds
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Display">
+      <TITLE>Affichage</TITLE>
+      <DOCUMENTATION>
+        Affichage des éléments
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Strings">
+      <TITLE>Textes</TITLE>
+      <DOCUMENTATION>
+        Textes à utiliser pour afficher les menus et les éléments
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="DAXE_CONFIG">
+      <TITLE>Configuration Daxe</TITLE>
+      <DOCUMENTATION>
+        Racine de la configuration
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LANGUAGE">
+      <TITLE>Langage</TITLE>
+      <DOCUMENTATION>
+        Informations sur le langage XML
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SCHEMA_FILE">
+      <TITLE>Fichier du schéma XML</TITLE>
+      <DOCUMENTATION>
+        Fichier de schéma W3C
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Chemin vers le fichier du schéma XML, relatif à ce fichier de configuration
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SIMPLE_SCHEMA">
+      <TITLE>Schéma simple</TITLE>
+      <DOCUMENTATION>
+        Un schéma XML très simplifié
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT">
+      <TITLE>Elément</TITLE>
+      <DOCUMENTATION>
+        Définition d'un élément XML
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Nom de l'élément
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="text">
+        <TITLE>texte</TITLE>
+        <DOCUMENTATION>
+          Indique si l'élément peut contenir du texte ou non
+        </DOCUMENTATION>
+        <VALUE_TITLE value="prohibited">interdit</VALUE_TITLE>
+        <VALUE_TITLE value="allowed">autorisé</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CHILD-ELEMENT">
+      <TITLE>Sous-élément</TITLE>
+      <DOCUMENTATION>
+        Indique un sous-élément possible
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Nom de l'élément autorisé ici (l'élément doit être défini ailleurs)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CHILD-SET">
+      <TITLE>Sous-ensemble</TITLE>
+      <DOCUMENTATION>
+        Indique un ensemble de sous-éléments possibles
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="set">
+        <TITLE>ensemble</TITLE>
+        <DOCUMENTATION>
+          Nom de l'ensemble autorisé ici (l'ensemble doit être défini ailleurs)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE">
+      <TITLE>Attribut</TITLE>
+      <DOCUMENTATION>
+        Définition d'un attribut pour l'élément
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Le nom de l'attribut
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="presence">
+        <TITLE>présence</TITLE>
+        <VALUE_TITLE value="required">obligatoire</VALUE_TITLE>
+        <VALUE_TITLE value="optional">optionnelle</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="VALUE">
+      <TITLE>Valeur</TITLE>
+      <DOCUMENTATION>
+        Une valeur possible
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SET">
+      <TITLE>Ensemble</TITLE>
+      <DOCUMENTATION>
+        Un ensemble d'éléments
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Nom de l'ensemble
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ROOT">
+      <TITLE>Racine</TITLE>
+      <DOCUMENTATION>
+        Indique un élément racine possible pour le langage XML
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Le nom de l'élément racine
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SAVING">
+      <TITLE>Enregistrement</TITLE>
+      <DOCUMENTATION>
+        Informations relatives à l'enregistrement des fichiers XML
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENCODING">
+      <TITLE>Encodage</TITLE>
+      <DOCUMENTATION>
+        Encodage des caractères pour les nouveaux documents. Par défaut UTF-8 est utilisé.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DOCTYPE">
+      <TITLE>Doctype</TITLE>
+      <DOCUMENTATION>
+        Définition du type de document.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="publicId">
+        <TITLE>publicId</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="systemId">
+        <TITLE>systemId</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SCHEMALOCATION">
+      <TITLE>SchemaLocation</TITLE>
+      <DOCUMENTATION>
+        Enregistrement de l'emplacement du schéma XML dans les fichiers XML.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="schemaLocation">
+        <TITLE>schemaLocation</TITLE>
+        <DOCUMENTATION>
+          L'attribut schemaLocation contient des paires de valeurs : le premier membre de chaque paire est l'espace de noms et le second membre est l'emplacement recommandé où trouver le schéma approprié.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="noNamespaceSchemaLocation">
+        <TITLE>noNamespaceSchemaLocation</TITLE>
+        <DOCUMENTATION>
+          Un schéma n'est pas obligé d'avoir un espace de noms. L'attribut noNamespaceSchemaLocation sert alors à fournir aux programmes de traitement des informations sur les emplacements des schémas qui n'ont pas d'espace de noms cible.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="NAMESPACE_PREFIX">
+      <TITLE>Préfixe espace</TITLE>
+      <DOCUMENTATION>
+        Préfixe à utiliser pour un espace de noms donné
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="prefix">
+        <TITLE>prefixe</TITLE>
+        <DOCUMENTATION>
+          Le préfixe à utiliser
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="uri">
+        <TITLE>uri</TITLE>
+        <DOCUMENTATION>
+          L'espace de noms correspondant
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENUS">
+      <TITLE>Menus</TITLE>
+      <DOCUMENTATION>
+        Définition d'une barre de menus utilisables pour insérer des éléments
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENU">
+      <TITLE>Menu</TITLE>
+      <DOCUMENTATION>
+        Un menu pour insérer de nouveaux éléments
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Nom du menu, utilisé pour le référencer quand on défini le titre.
+          Le nom est utilisé comme titre si aucun titre n'est défini.
+          Attention à éviter les noms des éléments pour éviter les ambiguïtés dans les titres des menus.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="INSERT_MENU">
+      <TITLE>Menu d'insertion</TITLE>
+      <DOCUMENTATION>
+        Menu permettant d'insérer un noeud dans le document, c'est à dire un élément XML,
+        une instruction de traitement, ou un commentaire XML.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Le nom du noeud. Est aussi utilisé comme référence pour définir un titre.
+          Le nom est utilisé comme titre du menu si aucun titre n'est défini.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="node_type">
+        <TITLE>node type</TITLE>
+        <DOCUMENTATION>
+          Type de noeud XML
+        </DOCUMENTATION>
+        <VALUE_TITLE value="element">élément</VALUE_TITLE>
+        <VALUE_TITLE value="pi">instruction de traitement</VALUE_TITLE>
+        <VALUE_TITLE value="comment">commentaire</VALUE_TITLE>
+        <VALUE_TITLE value="cdata">section CDATA</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="shortcut">
+        <TITLE>raccourci</TITLE>
+        <DOCUMENTATION>
+          Raccourci clavier pour le menu
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FUNCTION_MENU">
+      <TITLE>Menu de fonction</TITLE>
+      <DOCUMENTATION>
+        Menu permettant d'utiliser une fonction prédéfinie ou définie dans une extension de Daxe
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Le nom donné à la fonction. Utilisé comme référence pour définir un titre.
+          Le nom est utilisé comme titre du menu si aucun titre n'est défini.
+          Attention à éviter les noms des éléments pour éviter les ambiguïtés dans les titres des menus.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="function_name">
+        <TITLE>classe</TITLE>
+        <DOCUMENTATION>
+          Le nom de la fonction
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="shortcut">
+        <TITLE>raccourci</TITLE>
+        <DOCUMENTATION>
+          Raccourci clavier pour le menu
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAMETER">
+      <TITLE>Paramètre</TITLE>
+      <DOCUMENTATION>
+        Un paramètre (paire nom/valeur)
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>nom</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="value">
+        <TITLE>valeur</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SEPARATOR">
+      <TITLE>Séparateur</TITLE>
+      <DOCUMENTATION>
+        Un séparateur de menus
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENTS_DISPLAY">
+      <TITLE>Affichage</TITLE>
+      <DOCUMENTATION>
+        Indique les types d'affichage à utiliser pour afficher les noeuds des documents XML
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT_DISPLAY">
+      <TITLE>Affichage d'élément</TITLE>
+      <DOCUMENTATION>
+        Indique la façon d'afficher un élément XML.
+        Se référer à la documentation pour voir à quoi les valeurs de types correspondent,
+        et quels paramètres peuvent être utilisés en fonction du type.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Nom de l'élément XML (il doit être défini dans le schéma)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <DOCUMENTATION>
+          Type d'affichage de l'élément.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="division">division</VALUE_TITLE>
+        <VALUE_TITLE value="area">zone</VALUE_TITLE>
+        <VALUE_TITLE value="string">string</VALUE_TITLE>
+        <VALUE_TITLE value="table">table</VALUE_TITLE>
+        <VALUE_TITLE value="texttable">table texte</VALUE_TITLE>
+        <VALUE_TITLE value="simpletype">typesimple</VALUE_TITLE>
+        <VALUE_TITLE value="style">style</VALUE_TITLE>
+        <VALUE_TITLE value="file">fichier</VALUE_TITLE>
+        <VALUE_TITLE value="symbol">symbole</VALUE_TITLE>
+        <VALUE_TITLE value="equation">equation</VALUE_TITLE>
+        <VALUE_TITLE value="form">formulaire</VALUE_TITLE>
+        <VALUE_TITLE value="field">champ</VALUE_TITLE>
+        <VALUE_TITLE value="empty">vide</VALUE_TITLE>
+        <VALUE_TITLE value="anchor">ancre</VALUE_TITLE>
+        <VALUE_TITLE value="equationmem">equationmem</VALUE_TITLE>
+        <VALUE_TITLE value="equatexmem">equatexmem</VALUE_TITLE>
+        <VALUE_TITLE value="hiddenp">para. caché</VALUE_TITLE>
+        <VALUE_TITLE value="hiddendiv">div cachée</VALUE_TITLE>
+        <VALUE_TITLE value="list">liste</VALUE_TITLE>
+        <VALUE_TITLE value="item">item</VALUE_TITLE>
+        <VALUE_TITLE value="wlist">liste WYSIWYG</VALUE_TITLE>
+        <VALUE_TITLE value="witem">item WYSIWYG</VALUE_TITLE>
+        <VALUE_TITLE value="stylespan">span de style</VALUE_TITLE>
+        <VALUE_TITLE value="hr">hr</VALUE_TITLE>
+        <VALUE_TITLE value="br">br</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SUGGESTED_VALUE">
+      <TITLE>Valeur suggérée</TITLE>
+      <DOCUMENTATION>
+        Permet de proposer un choix de valeur à l'utilisateur, parmi les
+        valeurs autorisées par le schéma.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE_DISPLAY">
+      <TITLE>Affichage d'attribut</TITLE>
+      <DOCUMENTATION>
+        Indique la façon d'afficher un attribut de l'élément.
+        Actuellement, permet juste de proposer des valeurs d'attributs quand les valeurs
+        ne sont pas fixées par le schéma.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="attribute">
+        <TITLE>attribut</TITLE>
+        <DOCUMENTATION>
+          Le nom de l'attribut (il doit être défini dans le schéma)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="STRINGS">
+      <TITLE>Textes</TITLE>
+      <DOCUMENTATION>
+        Toutes les chaînes de caractères de l'interface,
+        en fonction de la langue du système de l'utilisateur
+        (titre des menus, documentation, ...)
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="language">
+        <TITLE>langue</TITLE>
+        <DOCUMENTATION>
+          Le code de la langue avec laquelle les chaînes de caractères seront utilisées,
+          suivant le format défini par la norme ISO-639 (2 lettres minuscules)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="country">
+        <TITLE>pays</TITLE>
+        <DOCUMENTATION>
+          Le code du pays avec lequel les chaînes de caractères seront utilisées,
+          suivant le format défini par la norme ISO-3166 (2 lettres majuscules)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CONFIG_DESCRIPTION">
+      <TITLE>Description de la config</TITLE>
+      <DOCUMENTATION>
+        Brève description en une ligne de la configuration, utilisé pour le choix d'une configuration
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENU_STRINGS">
+      <TITLE>Textes pour menu</TITLE>
+      <DOCUMENTATION>
+        Titre et documentation pour un menu. Si aucun n'est défini, le titre et la documentation
+        de l'élément seront utilisés pour le menu d'insertion de cet élément.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="menu">
+        <TITLE>menu</TITLE>
+        <DOCUMENTATION>
+          Le nom du menu, de l'élément à insérer, ou de la fonction à exécuter avec le menu.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TITLE">
+      <TITLE>Titre</TITLE>
+      <DOCUMENTATION>
+        Un titre
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DOCUMENTATION">
+      <TITLE>Documentation</TITLE>
+      <DOCUMENTATION>
+        Un petit texte de documentation, qui servira comme aide en ligne
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT_STRINGS">
+      <TITLE>Textes pour élément</TITLE>
+      <DOCUMENTATION>
+        Titre et documentation pour un élément.
+        Utilisé pour le menu d'insertion, mais aussi pour l'affichage de l'élément si
+        l'option correspondante est activée dans AFFICHAGE_NOEUDS.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>element</TITLE>
+        <DOCUMENTATION>
+          Le nom de l'élément XML
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE_STRINGS">
+      <TITLE>Textes pour attribut</TITLE>
+      <DOCUMENTATION>
+        Titre et documentation pour un attribut.
+        Des titres peuvent aussi être définis pour les valeurs d'attribut.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="attribute">
+        <TITLE>attribut</TITLE>
+        <DOCUMENTATION>
+          Le nom de l'attribut
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="VALUE_TITLE">
+      <TITLE>Titre pour valeur</TITLE>
+      <DOCUMENTATION>
+        Titre à utiliser pour une valeur d'élément ou d'attribut
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="value">
+        <TITLE>value</TITLE>
+        <DOCUMENTATION>
+          La valeur d'élément ou d'attribut (doit être permise par le schéma)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+  </STRINGS>
+  
+  
+  
+  <STRINGS language="ru">
+    <CONFIG_DESCRIPTION>Конфигурация Daxe</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="Language">
+      <TITLE>Язык</TITLE>
+      <DOCUMENTATION>
+        Информация о языке XML, который определяется в данном конфигурационном файле.
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Simple schema">
+      <TITLE>Простая schema</TITLE>
+      <DOCUMENTATION>
+        Определение элементов, когда вместо внешнего файла XML schema
+        используется встроенная упрощенная версия (для серьезных задач 
+        лучше использовать W3C стандарт)
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Saving">
+      <TITLE>Сохранение</TITLE>
+      <DOCUMENTATION>
+        Опции, определяющие, как будет сохраняться документ.
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Menus">
+      <TITLE>Меню</TITLE>
+      <DOCUMENTATION>
+        Во время редактирования файла меню элементов стрится динамически
+        на основании настроек в файле конфигурации. 
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Display">
+      <TITLE>Вид элементов</TITLE>
+      <DOCUMENTATION>
+        Здесь возможно настроить внешний вид элементов в самом окне текста.
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Strings">
+      <TITLE>Описания</TITLE>
+      <DOCUMENTATION>
+        Описания используются, чтобы показывать пользователю документацию, 
+        называния меню и элементов в локализованном виде.
+      </DOCUMENTATION>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="DAXE_CONFIG">
+      <TITLE>Конфигурация Daxe</TITLE>
+      <DOCUMENTATION>
+        Корень конфигурации
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LANGUAGE">
+      <TITLE>Язык</TITLE>
+      <DOCUMENTATION>
+        Информация о языке XML
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SCHEMA_FILE">
+      <TITLE>Файл W3C schema</TITLE>
+      <DOCUMENTATION>
+        Внешний файл W3C schema, определяющий структуру языка XML.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя/путь</TITLE>
+        <DOCUMENTATION>
+          Путь до файла схемы относительного файла конфигурации.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SIMPLE_SCHEMA">
+      <TITLE>Простая schema</TITLE>
+      <DOCUMENTATION>
+        Очень упрощенная XML schema. Является альтернативой, когда нет 
+        необходимости в сложности W3C schema.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT">
+      <TITLE>Элемент</TITLE>
+      <DOCUMENTATION>
+        Определение элемента XML
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          Имя элемента
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="text">
+        <TITLE>Текст</TITLE>
+        <DOCUMENTATION>
+          Определяет может элемент содержать текст или нет
+        </DOCUMENTATION>
+        <VALUE_TITLE value="prohibited">Запрещено</VALUE_TITLE>
+        <VALUE_TITLE value="allowed">Разрешено</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CHILD-ELEMENT">
+      <TITLE>Подэлемент</TITLE>
+      <DOCUMENTATION>
+        Определяет возможные подэлементы
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>Элемент</TITLE>
+        <DOCUMENTATION>
+          Имя подэлемента. Сам элемент должен быть определен отдельно.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CHILD-SET">
+      <TITLE>Поднабор</TITLE>
+      <DOCUMENTATION>
+        Определяет множество возможных подэлементов.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="set">
+        <TITLE>Набор</TITLE>
+        <DOCUMENTATION>
+          Имя набора подэлементов. Сам набор должен быть определен отдельно.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE">
+      <TITLE>Атрибут</TITLE>
+      <DOCUMENTATION>
+        Определение атрибута элемента
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          Имя атрибута
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="presence">
+        <TITLE>Обязательность</TITLE>
+        <VALUE_TITLE value="required">Требуется</VALUE_TITLE>
+        <VALUE_TITLE value="optional">Опционально</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="VALUE">
+      <TITLE>Значение</TITLE>
+      <DOCUMENTATION>
+        Возможное значение
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SET">
+      <TITLE>Набор</TITLE>
+      <DOCUMENTATION>
+        Набор элементов
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          Имя набора
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ROOT">
+      <TITLE>Кореневой элемент</TITLE>
+      <DOCUMENTATION>
+        Корневой элемент для настраиваемого языка XML.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>Элемент</TITLE>
+        <DOCUMENTATION>
+          Имя корневого элемента
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SAVING">
+      <TITLE>Опции сохранения</TITLE>
+      <DOCUMENTATION>
+        Опции, определяющие, как будет сохраняться XML документ в соответствии с 
+        этим файлом конфигурации.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENCODING">
+      <TITLE>Кодировка</TITLE>
+      <DOCUMENTATION>
+        Кодировка для новых документов. По умолчанию используется UTF-8.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DOCTYPE">
+      <TITLE>DOCTYPE документа</TITLE>
+      <DOCUMENTATION>
+        Определение DOCTYPE для документов, сформированных с помощью данного
+        файла конфигурации.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="publicId">
+        <TITLE>publicId</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="systemId">
+        <TITLE>systemId</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SCHEMALOCATION">
+      <TITLE>SchemaLocation</TITLE>
+      <ATTRIBUTE_STRINGS attribute="schemaLocation">
+        <TITLE>schemaLocation</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="noNamespaceSchemaLocation">
+        <TITLE>noNamespaceSchemaLocation</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="NAMESPACE_PREFIX">
+      <TITLE>Префикс пространства имен</TITLE>
+      <DOCUMENTATION>
+        Определить префикс пространства имен, который будет присвоен ко всем файлам, 
+        сформированным с помощью данного файла конфигурации.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="prefix">
+        <TITLE>Префикс</TITLE>
+        <DOCUMENTATION>
+          Prefix to use
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="uri">
+        <TITLE>uri</TITLE>
+        <DOCUMENTATION>
+          The corresponding namespace
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENUS">
+      <TITLE>Опции меню</TITLE>
+      <DOCUMENTATION>
+        Определение опций для меню, с помощью которого пользователь сможет вставлять 
+        элементы в формируемый документ и вызывать кастомизированные функции.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENU">
+      <TITLE>Доб. элемент</TITLE>
+      <DOCUMENTATION>
+        Добавление нового элемента и других узлов.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          Menu name, used to refer to the menu when a title is defined.
+          The name is used as a title if no title is defined.
+          Beware to avoid using element names, to avoid ambiguities in the menu titles.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="INSERT_MENU">
+      <TITLE>Insertion menu</TITLE>
+      <DOCUMENTATION>
+        Menu to insert a node into the document (XML elements,
+        processing instructions, or XML comments)
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          The name of the node. Is also used as a reference to define a title.
+          The name is used as a title if no title is defined.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="node_type">
+        <TITLE>Тип узла</TITLE>
+        <DOCUMENTATION>
+          Тип узла XML
+        </DOCUMENTATION>
+        <VALUE_TITLE value="element">Элемент</VALUE_TITLE>
+        <VALUE_TITLE value="pi">Инструкция</VALUE_TITLE>
+        <VALUE_TITLE value="comment">Комментарий</VALUE_TITLE>
+        <VALUE_TITLE value="cdata">CDATA section</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="shortcut">
+        <TITLE>Комбинация клавиш</TITLE>
+        <DOCUMENTATION>
+          Клавишная комбинация быстрого вызова, приводящая к вызову этого пункта меню.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FUNCTION_MENU">
+      <TITLE>Доб. вызов функции</TITLE>
+      <DOCUMENTATION>
+        Добавление пункта меню, при выборе которого будет вызываться функция, 
+        определенная как плагин.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          The function name. Used as a reference to define a title.
+          The name is used as a title if no title is defined.
+          Beware to avoid using element names, to avoid ambiguities in the menu titles.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="function_name">
+        <TITLE>Класс</TITLE>
+        <DOCUMENTATION>
+          The name of the function
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="shortcut">
+        <TITLE>Комбинация клавиш</TITLE>
+        <DOCUMENTATION>
+          Клавишная комбинация быстрого вызова, приводящая к вызову этого пункта меню.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAMETER">
+      <TITLE>Параметр</TITLE>
+      <DOCUMENTATION>
+        Параметр в виде пары имя/значение
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="name">
+        <TITLE>Имя</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="value">
+        <TITLE>Значение</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SEPARATOR">
+      <TITLE>Разделитель</TITLE>
+      <DOCUMENTATION>
+        С помощью разделителя можно добавить черту между пунктами меню.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENTS_DISPLAY">
+      <TITLE>Опции вида</TITLE>
+      <DOCUMENTATION>
+        Опции, которые будут определять, как пользователь увидит элементы
+        во время редактирования документа.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT_DISPLAY">
+      <TITLE>Вид элемента</TITLE>
+      <DOCUMENTATION>
+        Определяет, как будет выглядеть XML элемент в Daxe.
+        Пожалуйста обратитесь к документации, чтобы понять, с какими типами 
+        какие параметры могут применяться.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>Имя</TITLE>
+        <DOCUMENTATION>
+          Имя элемента. Сам элемент должен быть определен в схеме.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>Тип</TITLE>
+        <DOCUMENTATION>
+          Определяет тип элемента.
+          Для ряда типов необходимо указать параметры. Обратитесь пожалуйста
+          к документации, чтобы понять, какие параметры, какому типу соответствуют.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SUGGESTED_VALUE">
+      <TITLE>Значения по-умолчанию</TITLE>
+      <DOCUMENTATION>
+        То значение из всех возможных, которое будет первым предложено пользователю.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE_DISPLAY">
+      <TITLE>Вид атрибута</TITLE>
+      <DOCUMENTATION>
+        Определяет, как будет выглядеть атрибут.
+        Currently, only supports attribute values that can be suggested when
+        the values are not fixed by the schema.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="attribute">
+        <TITLE>Атрибут</TITLE>
+        <DOCUMENTATION>
+          Имя атрибута (должно быть определено в схеме).
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="STRINGS">
+      <TITLE>Опции описания</TITLE>
+      <DOCUMENTATION>
+        Все локализованные описания меню, заголовков, подсказок и т.п.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="language">
+        <TITLE>Язык</TITLE>
+        <DOCUMENTATION>
+          Код языка для описаний в формате ISO-639 (2 символа в нижнем регистре)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="country">
+        <TITLE>Страна</TITLE>
+        <DOCUMENTATION>
+          Код страны в формате ISO-3166 (2 символа в вернем регистре)
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CONFIG_DESCRIPTION">
+      <TITLE>Описание файла настроек</TITLE>
+      <DOCUMENTATION>
+        Краткое описание, на которое будет ориентироваться пользователь, при 
+        выборе настроек для нового документа.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="MENU_STRINGS">
+      <TITLE>Описание меню</TITLE>
+      <DOCUMENTATION>
+        Заголовок и документация для меню. Если таковые не определены, то в 
+        качестве заголовка и документации будут использованы соответствующие 
+        из описания элемента.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="menu">
+        <TITLE>Меню</TITLE>
+        <DOCUMENTATION>
+          Имя меню
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TITLE">
+      <TITLE>Заголовок</TITLE>
+      <DOCUMENTATION>
+        Title
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DOCUMENTATION">
+      <TITLE>Документация</TITLE>
+      <DOCUMENTATION>
+        Небольшое текстовое описание, которое будет использоваться 
+        в качестве online подсказки.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ELEMENT_STRINGS">
+      <TITLE>Описание элемента</TITLE>
+      <DOCUMENTATION>
+        Заголовок и документация для элемента. Это описание используется как для 
+        элемента, так и для меню, в случае, если в меню оно не переопределено.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="element">
+        <TITLE>Элемент</TITLE>
+        <DOCUMENTATION>
+          Имя элемента
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ATTRIBUTE_STRINGS">
+      <TITLE>Описание атрибута</TITLE>
+      <DOCUMENTATION>
+        Title and documentation for an attribute.
+        Titles can also be defined for attribute values.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="attribute">
+        <TITLE>Атрибут</TITLE>
+        <DOCUMENTATION>
+          Имя атрибута
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="VALUE_TITLE">
+      <TITLE>Текст значения</TITLE>
+      <DOCUMENTATION>
+        Текст, который будет виден для соответствующего значения атрибута или элемента
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+  </STRINGS>
+</DAXE_CONFIG>

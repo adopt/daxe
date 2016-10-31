@@ -128,36 +128,36 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
 
   // from WithSubElements
   List<WXSElement> subElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_model != null)
-      liste.addAll(_model.subElements());
-    return(liste);
+      list.addAll(_model.subElements());
+    return(list);
   }
 
   // from Parent
   List<WXSElement> parentElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_parent is WXSElement) {
       if (!(_parent as WXSElement).getAbstract())
-        liste.add(_parent as WXSElement);
+        list.add(_parent as WXSElement);
       final List<WXSElement> substitutions = (_parent as WXSElement).getSubstitutions();
       if (substitutions != null)
-        liste.addAll(substitutions);
+        list.addAll(substitutions);
     }
     if (_references != null) {
       for (WXSElement el in _references) {
         if (!el.getAbstract())
-          liste.add(el);
+          list.add(el);
         final List<WXSElement> substitutions = el.getSubstitutions();
         if (substitutions != null)
-          liste.addAll(substitutions);
+          list.addAll(substitutions);
       }
     }
     if (_extensions != null) {
       for (WXSExtension ext in _extensions)
-        liste.addAll(ext.parentElements());
+        list.addAll(ext.parentElements());
     }
-    return(liste);
+    return(list);
   }
 
   // from WithSubElements
@@ -200,14 +200,14 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
       return(_simpleContent.attributes());
     else if (_model is WXSComplexContent)
       return((_model as WXSComplexContent).attributes());
-    final List<WXSAttribute> liste = new List<WXSAttribute>();
+    final List<WXSAttribute> list = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl);
+        list.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll(attrDecl.attributes());
+        list.addAll(attrDecl.attributes());
     }
-    return(liste);
+    return(list);
   }
 
   // from WithSubElements
@@ -237,8 +237,8 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   }
 
   bool containsText() {
-    // on teste le type parent quand un type est dérivé
-    // par un autre qui ne redonne pas la liste des sous-éléments...
+    // the parent type is tested when a type is derived by
+    // another one which does not give the list of children...
     // cf http://lists.w3.org/Archives/Public/xmlschema-dev/2005Sep/0025.html
     if (_model is WXSComplexContent) {
       WXSComplexContent cc = _model as WXSComplexContent;

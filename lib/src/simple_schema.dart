@@ -132,20 +132,20 @@ class SimpleSchema implements InterfaceSchema {
   
   List<Element> subElements(final Element parentRef) {
     final List<Element> liste = new List<Element>();
-    final List<Node> lsousel = parentRef.getElementsByTagName('SOUS-ELEMENT');
+    final List<Node> lsousel = parentRef.getElementsByTagName('CHILD-ELEMENT');
     for (int i=0; i<lsousel.length; i++) {
       final Element sousel = lsousel[i] as Element;
       liste.add(_elementDefCache[sousel.getAttribute('element')]);
     }
-    final List<Node> lsousens = parentRef.getElementsByTagName('SOUS-ENSEMBLE');
+    final List<Node> lsousens = parentRef.getElementsByTagName('CHILD-SET');
     for (int i=0; i<lsousens.length; i++) {
       final Element sousens = lsousens[i] as Element;
-      final String nomens = sousens.getAttribute('ensemble');
-      final List<Node> lens = _schemaRoot.getElementsByTagName('ENSEMBLE');
+      final String setname = sousens.getAttribute('set');
+      final List<Node> lens = _schemaRoot.getElementsByTagName('SET');
       for (int j=0; j<lens.length; j++) {
-        final Element ensemble = lens[j] as Element;
-        if (nomens == ensemble.getAttribute('nom'))
-          liste.addAll(subElements(ensemble));
+        final Element setel = lens[j] as Element;
+        if (setname == setel.getAttribute('name'))
+          liste.addAll(subElements(setel));
       }
     }
     return(liste);
@@ -179,27 +179,27 @@ class SimpleSchema implements InterfaceSchema {
   List<Element> parentElements(final Element elementRef) {
     final List<Element> liste = new List<Element>();
     if (elementRef.nodeName == 'ELEMENT') {
-      final List<Node> lsousel = _schemaRoot.getElementsByTagName('SOUS-ELEMENT');
+      final List<Node> lsousel = _schemaRoot.getElementsByTagName('CHILD-ELEMENT');
       for (int i=0; i<lsousel.length; i++) {
         final Element sousel = lsousel[i] as Element;
-        if (sousel.getAttribute('element') == elementRef.getAttribute('nom')) {
+        if (sousel.getAttribute('element') == elementRef.getAttribute('name')) {
           final Element parent = sousel.parentNode as Element;
           if (parent.nodeName == 'ELEMENT')
             liste.add(parent);
-          else if (parent.nodeName == 'ENSEMBLE')
+          else if (parent.nodeName == 'SET')
             liste.addAll(parentElements(parent));
         }
       }
-    } else if (elementRef.nodeName == 'ENSEMBLE') {
-      final String nomens = elementRef.getAttribute('nom');
-      final List<Node> lsousens = _schemaRoot.getElementsByTagName('SOUS-ENSEMBLE');
+    } else if (elementRef.nodeName == 'SET') {
+      final String setname = elementRef.getAttribute('name');
+      final List<Node> lsousens = _schemaRoot.getElementsByTagName('CHILD-SET');
       for (int i=0; i<lsousens.length; i++) {
         final Element sousens = lsousens[i] as Element;
-        if (sousens.getAttribute('ensemble') == nomens) {
+        if (sousens.getAttribute('set') == setname) {
           final Element parent = sousens.parentNode as Element;
           if (parent.nodeName == 'ELEMENT')
             liste.add(parent);
-          else if (parent.nodeName == 'ENSEMBLE')
+          else if (parent.nodeName == 'SET')
             liste.addAll(parentElements(parent));
         }
       }
@@ -208,7 +208,7 @@ class SimpleSchema implements InterfaceSchema {
   }
   
   List<Element> elementAttributes(final Element elementRef) {
-    final List<Node> latt = elementRef.getElementsByTagName('ATTRIBUT');
+    final List<Node> latt = elementRef.getElementsByTagName('ATTRIBUTE');
     final List<Element> l = new List<Element>();
     for (Node n in latt)
       l.add(n as Element);
@@ -216,7 +216,7 @@ class SimpleSchema implements InterfaceSchema {
   }
   
   String attributeName(final Element attributeRef) {
-    return(attributeRef.getAttribute('nom'));
+    return(attributeRef.getAttribute('name'));
   }
   
   String attributeNamespace(final Element attributeRef) {
@@ -233,11 +233,11 @@ class SimpleSchema implements InterfaceSchema {
   
   bool attributeIsRequired(final Element refParent, final Element attributeRef) {
     final String presence = attributeRef.getAttribute('presence');
-    return(presence == 'obligatoire');
+    return(presence == 'required');
   }
   
   List<String> attributeValues(final Element attributeRef) {
-    final List<Node> lval = attributeRef.getElementsByTagName('VALEUR');
+    final List<Node> lval = attributeRef.getElementsByTagName('VALUE');
     if (lval.length == 0)
       return(null);
     final List<String> liste = new List<String>();
@@ -259,7 +259,7 @@ class SimpleSchema implements InterfaceSchema {
   
   attributeIsValid(final Element attributeRef, final String value) {
     final String presence = attributeRef.getAttribute('presence');
-    bool required = (presence == 'obligatoire');
+    bool required = (presence == 'required');
     if ((value == null || value == '') && required)
       return(false);
     final List<String> valeurs = attributeValues(attributeRef);
@@ -273,8 +273,8 @@ class SimpleSchema implements InterfaceSchema {
   }
   
   bool canContainText(final Element elementRef) {
-    final String texte  = elementRef.getAttribute('texte');
-    return(texte == 'autorise');
+    final String text  = elementRef.getAttribute('text');
+    return(text == 'allowed');
   }
   
   
@@ -287,9 +287,9 @@ class SimpleSchema implements InterfaceSchema {
     final List<Node> lelements = _schemaRoot.getElementsByTagName('ELEMENT');
     for (int i=0; i<lelements.length; i++) {
       final Element el = lelements[i] as Element;
-      final String nom = el.getAttribute('nom');
-      _elementDefCache[nom] = el;
-      _elementNamesCache[el] = nom;
+      final String name = el.getAttribute('name');
+      _elementDefCache[name] = el;
+      _elementNamesCache[el] = name;
     }
   }
   

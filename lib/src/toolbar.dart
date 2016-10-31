@@ -51,10 +51,7 @@ class Toolbar {
     items.add(findBox);
     if (cfg != null) {
       // Buttons to insert new elements
-      List<x.Element> refs = cfg.elementsWithType('fichier');
-      List<x.Element> refs2 = cfg.elementsWithType('file');
-      if (refs2 != null)
-        refs.addAll(refs2);
+      List<x.Element> refs = cfg.elementsWithType('file');
       if (refs != null && refs.length > 0) {
         ToolbarBox fileBox = new ToolbarBox();
         addInsertButton(cfg, fileBox, refs, iconPath + 'insert_image.png');
@@ -65,10 +62,7 @@ class Toolbar {
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, mathBox, refs, iconPath + 'equation.png');
       }
-      refs = cfg.elementsWithType('symbole2');
-      refs2 = cfg.elementsWithType('symbol2');
-      if (refs2 != null)
-        refs.addAll(refs2);
+      refs = cfg.elementsWithType('symbol');
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, mathBox, refs, iconPath + 'insert_symbol.png');
       } else {
@@ -76,17 +70,11 @@ class Toolbar {
       }
       items.add(mathBox);
       ToolbarBox insertBox = new ToolbarBox();
-      refs = cfg.elementsWithType('tabletexte');
-      refs2 = cfg.elementsWithType('texttable');
-      if (refs2 != null)
-        refs.addAll(refs2);
+      refs = cfg.elementsWithType('texttable');
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, insertBox, refs, iconPath + 'insert_table.png');
       }
-      refs = cfg.elementsWithType('liste');
-      refs2 = cfg.elementsWithType('list');
-      if (refs2 != null)
-        refs.addAll(refs2);
+      refs = cfg.elementsWithType('list');
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, insertBox, refs, iconPath + 'ul.png');
       }
@@ -162,17 +150,17 @@ class Toolbar {
         String dtype = cfg.elementDisplayType(ref);
         if (dtype == 'style') {
           String style = cfg.elementParameterValue(ref, 'style', null);
-          if (style == 'GRAS') {
+          if (style == 'BOLD') {
             addStyleButton(cfg, styleBox, ref, iconPath + 'style_bold.png', 'B');
-          } else if (style == 'ITALIQUE') {
+          } else if (style == 'ITALIC') {
             addStyleButton(cfg, styleBox, ref, iconPath + 'style_italic.png', 'I');
-          } else if (style == 'EXPOSANT') {
+          } else if (style == 'SUPERSCRIPT') {
             addStyleButton(cfg, styleBox, ref, iconPath + 'style_superscript.png');
-          } else if (style == 'INDICE') {
+          } else if (style == 'SUBSCRIPT') {
             addStyleButton(cfg, styleBox, ref, iconPath + 'style_subscript.png');
-          } else if (style == 'BARRE') {
+          } else if (style == 'STRIKETHROUGH') {
             addStyleButton(cfg, styleBox, ref, iconPath + 'style_strikethrough.png');
-          } else if (style == 'SOULIGNE') {
+          } else if (style == 'UNDERLINE') {
             addStyleButton(cfg, styleBox, ref, iconPath + 'style_underline.png');
           }
         }

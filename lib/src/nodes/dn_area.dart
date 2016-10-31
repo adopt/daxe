@@ -20,11 +20,11 @@ part of nodes;
 /**
  * Text area with start and end tags. Nodes inside are indented.
  * 
- * Display types: 'area', 'zone'.
+ * Display type: 'area'.
  * 
  * Parameters:
  * 
- * * `titreAtt`: an attribute that can be used as a title
+ * * `titleAtt`: an attribute that can be used as a title
  * * `style`: as in DNStyle
  */
 class DNArea extends DaxeNode {

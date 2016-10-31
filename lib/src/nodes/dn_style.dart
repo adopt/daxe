@@ -24,12 +24,13 @@ part of nodes;
  *
  * Parameters:
  * 
- * * `style`: `BOLD` or `GRAS` | `ITALIC` or `ITALIQUE` | `SUPERSCRIPT` or `EXPOSANT` |
- * `SUBSCRIPT` or `INDICE` | `UNDERLINE` or `SOULIGNE` | `STRIKETHROUGH` or `BARRE` |
- * `FOREGROUND[###,###,###]` (text color) | `BACKGROUND[###,###,###]` (background color)
+ * * `style`: `BOLD` | `ITALIC` | `SUPERSCRIPT` |
+ * `SUBSCRIPT` | `UNDERLINE` | `STRIKETHROUGH` |
+ * `FOREGROUND[###,###,###]` (text color) |
+ * `BACKGROUND[###,###,###]` (background color)
  * (several styles can be combined with a ';')
- * * `font` or `police`: CSS font name
- * * `size` or `taille`: CSS font size
+ * * `font`: CSS font name
+ * * `size`: CSS font size
  */
 class DNStyle extends DaxeNode {
 

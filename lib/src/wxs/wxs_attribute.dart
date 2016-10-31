@@ -67,19 +67,19 @@ class WXSAttribute extends WXSAnnotated {
     if (_simpleType != null)
       _simpleType.resolveReferences(schema, null);
     if (_ref != null) {
-      final String prefixe = DaxeWXS._namePrefix(_ref);
+      final String prefix = DaxeWXS._namePrefix(_ref);
       String tns;
-      if (prefixe == "xml")
+      if (prefix == "xml")
         tns = "http://www.w3.org/XML/1998/namespace";
       else
-        tns = _domElement.lookupNamespaceURI(prefixe);
+        tns = _domElement.lookupNamespaceURI(prefix);
       _wxsRef = schema.resolveAttributeReference(DaxeWXS._localValue(_ref), tns);
       if (_wxsRef == null)
-        print("WXSAttribute: Référence d'attribut introuvable : $_ref");
+        print("WXSAttribute: Attribute reference not found : $_ref");
     }
     if (_simpleType == null && _type != null) {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_type));
-      // pas de résolution pour les types du superschéma, sauf pour le superschéma
+      // not resolved for superschema types, except for the superschema
       if (tns == null || tns != _domElement.namespaceURI ||
           schema.getTargetNamespace() == null || schema.getTargetNamespace() == _domElement.namespaceURI) {
         final WXSType wxsType = schema.resolveTypeReference(DaxeWXS._localValue(_type), tns, null);
@@ -111,12 +111,12 @@ class WXSAttribute extends WXSAnnotated {
 
   String getNamespace() {
     if (_ref != null) {
-      final String prefixe = DaxeWXS._namePrefix(_ref);
-      if (prefixe != null) {
-        final String ns = _domElement.lookupNamespaceURI(prefixe);
+      final String prefix = DaxeWXS._namePrefix(_ref);
+      if (prefix != null) {
+        final String ns = _domElement.lookupNamespaceURI(prefix);
         if (ns != null)
           return(ns);
-        if (prefixe == "xml")
+        if (prefix == "xml")
           return("http://www.w3.org/XML/1998/namespace");
         return(null);
       }
@@ -156,7 +156,7 @@ class WXSAttribute extends WXSAnnotated {
     }
     if (_schema.getTargetNamespace() != null && _schema.getTargetNamespace() == _domElement.namespaceURI &&
         DaxeWXS._localValue(_type) == "bool")
-      return(DaxeWXS._booleanValues(_type, _domElement)); // cas du superschéma
+      return(DaxeWXS._booleanValues(_type, _domElement)); // case of the superschema
     if (_simpleType != null)
       return(_simpleType.possibleValues());
     else if (_type != null)
@@ -172,7 +172,7 @@ class WXSAttribute extends WXSAnnotated {
     }
     if (_schema.getTargetNamespace() != null && _schema.getTargetNamespace() == _domElement.namespaceURI &&
         DaxeWXS._localValue(_type) == "bool")
-      return(DaxeWXS._booleanValues(_type, _domElement)); // cas du superschéma
+      return(DaxeWXS._booleanValues(_type, _domElement)); // case of the superschema
     if (_simpleType != null)
       return(_simpleType.suggestedValues());
     else if (_type != null)

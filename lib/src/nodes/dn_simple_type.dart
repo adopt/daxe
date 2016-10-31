@@ -21,7 +21,7 @@ part of nodes;
  * An element with a WXS simple type, displayed according to its type
  * (checkbox, select or input field).
  * 
- * Display types: 'simpletype', 'typesimple'.
+ * Display type: 'simpletype'.
  */
 class DNSimpleType extends DaxeNode {
   SimpleTypeControl control;

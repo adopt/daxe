@@ -20,7 +20,7 @@ part of nodes;
 /**
  * A representation for an empty XML element, using a single tag.
  * 
- * Display types: 'empty', 'vide'.
+ * Display type: 'empty'.
  */
 class DNEmpty extends DaxeNode {
   Tag _b1;

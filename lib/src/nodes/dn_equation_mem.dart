@@ -21,11 +21,11 @@ part of nodes;
  * An equation using the Jaxe syntax. The image is encoded in base64
  * and added as text inside the element.
  * 
- * Display type: 'equationmem', or a plugin with the class `xpages.JEEquationMemoire`.
+ * Display type: 'equationmem'.
  * 
  * Parameters:
  * 
- * * `texteAtt`: the name of the attribute giving the equation text
+ * * `textAtt`: the name of the attribute giving the equation text
  */
 class DNEquationMem extends DaxeNode {
   h.ImageElement _img;
@@ -35,12 +35,12 @@ class DNEquationMem extends DaxeNode {
   
   
   DNEquationMem.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
-    _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', 'src');
+    _textAtt = doc.cfg.elementParameterValue(ref, 'textAtt', 'src');
     MathBase.loadFonts();
   }
   
   DNEquationMem.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
-    _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', 'src');
+    _textAtt = doc.cfg.elementParameterValue(ref, 'textAtt', 'src');
     if (node.firstChild != null)
       _data = node.firstChild.nodeValue.replaceAll('\n', '');
     else

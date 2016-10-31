@@ -194,11 +194,11 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   List<WXSElement> allElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
-    liste.add(this);
+    final List<WXSElement> list = new List<WXSElement>();
+    list.add(this);
     if (_complexType != null)
-      liste.addAll(_complexType.allElements());
-    return(liste);
+      list.addAll(_complexType.allElements());
+    return(list);
   }
 
   /**
@@ -270,19 +270,19 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
    */
   // from WithSubElements
   String regularExpression() {
-    final List<WXSElement> liste = matchingElements();
-    if (liste.length == 0)
+    final List<WXSElement> list = matchingElements();
+    if (list.length == 0)
       return(null);
     final StringBuffer sb = new StringBuffer();
-    if (liste.length > 1)
+    if (list.length > 1)
       sb.write('(');
-      for (int i=0; i<liste.length; i++) {
-        final WXSElement el = liste[i];
+      for (int i=0; i<list.length; i++) {
+        final WXSElement el = list[i];
         sb.write(_schema.elementTitle(el));
-        if (i != liste.length - 1)
+        if (i != list.length - 1)
           sb.write('|');
       }
-      if (liste.length > 1)
+      if (list.length > 1)
         sb.write(')');
       if (_minOccurs == 0 && _maxOccurs == 1)
         sb.write('?');

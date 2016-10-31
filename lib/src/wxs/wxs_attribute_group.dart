@@ -93,13 +93,13 @@ class WXSAttributeGroup extends WXSAnnotated implements Parent {
   List<WXSAttribute> attributes() {
     if (_wxsRef != null)
       return(_wxsRef.attributes());
-    final List<WXSAttribute> liste = new List<WXSAttribute>();
+    final List<WXSAttribute> list = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl);
+        list.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll(attrDecl.attributes());
+        list.addAll(attrDecl.attributes());
     }
-    return(liste);
+    return(list);
   }
 }

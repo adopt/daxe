@@ -21,7 +21,7 @@ part of wxs;
 class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
 
   // simpleType?, (minExclusive|minInclusive|maxExclusive|maxInclusive|totalDigits|fractionDigits|length|minLength|maxLength|enumeration|pattern)*
-  // ou: (group|all|choice|sequence)?, (attribute|attributeGroup)*
+  // or: (group|all|choice|sequence)?, (attribute|attributeGroup)*
   WXSSimpleType _simpleType = null;
   List<WXSFacet> _facets;
   WithSubElements _model = null; // WXSGroup | WXSAll | WXSChoice | WXSSequence
@@ -106,18 +106,18 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   List<WXSElement> allElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_model != null)
-      liste.addAll(_model.allElements());
-    return(liste);
+      list.addAll(_model.allElements());
+    return(list);
   }
 
   // from WithSubElements
   List<WXSElement> subElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_model != null)
-      liste.addAll(_model.subElements());
-    return(liste);
+      list.addAll(_model.subElements());
+    return(list);
   }
 
   // from Parent
@@ -137,7 +137,7 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   bool requiredChild(final WXSElement child) {
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     if (_model != null)
       return(_model.requiredChild(child));
     return(null);
@@ -145,22 +145,22 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     if (_model != null)
       return(_model.multipleChildren(child));
     return(null);
   }
 
   List<String> possibleValues() {
-    List<String> liste = null;
+    List<String> list = null;
     for (WXSFacet facet in _facets) {
       if (facet.getFacet() == "enumeration") {
-        if (liste == null)
-          liste = new List<String>();
-        liste.add(facet.getValue());
+        if (list == null)
+          list = new List<String>();
+        list.add(facet.getValue());
       }
     }
-    return(liste);
+    return(list);
   }
 
   List<String> suggestedValues() {
@@ -168,33 +168,33 @@ class WXSRestriction extends WXSAnnotated implements WithSubElements, Parent {
   }
 
   List<WXSAttribute> attributes() {
-    final List<WXSAttribute> liste = new List<WXSAttribute>();
+    final List<WXSAttribute> list = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl);
+        list.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll(attrDecl.attributes());
+        list.addAll(attrDecl.attributes());
     }
     if (_wxsBase is WXSComplexType) {
-      final List<WXSAttribute> listeBase = (_wxsBase as WXSComplexType).attributes();
-      final List<WXSAttribute> aRetirer = new List<WXSAttribute>();
-      for (WXSAttribute attributRest in liste) {
-        final String nomExt = attributRest.getName();
+      final List<WXSAttribute> baseList = (_wxsBase as WXSComplexType).attributes();
+      final List<WXSAttribute> toRemove = new List<WXSAttribute>();
+      for (WXSAttribute attributRest in list) {
+        final String extName = attributRest.getName();
         final bool prohibited = attributRest.getUse() == "prohibited";
-        for (WXSAttribute attributBase in listeBase)
-          if (nomExt == attributBase.getName()) {
+        for (WXSAttribute attributBase in baseList)
+          if (extName == attributBase.getName()) {
             if (prohibited)
-              aRetirer.add(attributBase);
+              toRemove.add(attributBase);
             else
-              listeBase[listeBase.indexOf(attributBase)] = attributRest;
+              baseList[baseList.indexOf(attributBase)] = attributRest;
             break;
           }
       }
-      for (WXSAttribute attribut in aRetirer)
-        listeBase.remove(attribut);
-          return(listeBase);
+      for (WXSAttribute attribut in toRemove)
+        baseList.remove(attribut);
+      return(baseList);
     }
-    return(liste);
+    return(list);
   }
 
   // from WithSubElements

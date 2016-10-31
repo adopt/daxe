@@ -20,7 +20,7 @@ part of nodes;
 /**
  * Form field. Used within a [DNForm] DaxeNode.
  * 
- * Display types: 'field', 'champ'.
+ * Display type: 'field'.
  */
 class DNFormField extends DaxeNode {
   bool simpleField;

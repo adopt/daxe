@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:element name="DAXE_CONFIG">
+    <xs:annotation>
+      <xs:documentation>
+        Root element for the configuration
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="LANGUAGE"/>
+        <xs:element minOccurs="0" ref="SAVING"/>
+        <xs:element minOccurs="0" ref="MENUS"/>
+        <xs:element minOccurs="0" ref="ELEMENTS_DISPLAY"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="STRINGS"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:element name="LANGUAGE">
+    <xs:annotation>
+      <xs:documentation>
+        Information about the XML language
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="SCHEMA_FILE"/>
+          <xs:element ref="SIMPLE_SCHEMA"/>
+        </xs:choice>
+        <xs:element maxOccurs="unbounded" ref="ROOT"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="SCHEMA_FILE">
+    <xs:annotation>
+      <xs:documentation>
+        W3C schema file
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Path to the XML schema file, relative to this configuration file
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="SIMPLE_SCHEMA">
+    <xs:annotation>
+      <xs:documentation>
+        A very simplified XML schema
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="ELEMENT"/>
+        <xs:element ref="SET"/>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="simple_element">
+      <xs:selector xpath="ELEMENT"/>
+      <xs:field xpath="@name"/>
+    </xs:unique>
+  </xs:element>
+  
+  <xs:element name="ELEMENT">
+    <xs:annotation>
+      <xs:documentation>
+        Definition for an XML element
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="CHILD-ELEMENT"/>
+        <xs:element ref="CHILD-SET"/>
+        <xs:element ref="ATTRIBUTE"/>
+      </xs:choice>
+      <xs:attribute name="name" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Element name
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="text" default="prohibited">
+        <xs:annotation>
+          <xs:documentation>
+            Specifies if the element can contain text or not
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="prohibited"/>
+            <xs:enumeration value="allowed"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="CHILD-ELEMENT">
+    <xs:annotation>
+      <xs:documentation>
+        Specifies a possible sub-element
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="element" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the sub-element (it must be defined elsewhere)
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="CHILD-SET">
+    <xs:annotation>
+      <xs:documentation>
+        Specifies a set of possible sub-elements
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="set" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the set of sub-elements (the set must be defined elsewhere)
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="ATTRIBUTE">
+    <xs:annotation>
+      <xs:documentation>
+        Definition for an attribute of the element
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="VALUE"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The name of the attribute
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="presence" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="optional"/>
+            <xs:enumeration value="required"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="VALUE" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        A possible value
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="SET">
+    <xs:annotation>
+      <xs:documentation>
+        A set of elements
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="CHILD-ELEMENT"/>
+        <xs:element ref="CHILD-SET"/>
+      </xs:choice>
+      <xs:attribute name="name" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the set
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="ROOT">
+    <xs:annotation>
+      <xs:documentation>
+        Specifies a possible root element for the XML language
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="element" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The name of the root element
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:element name="SAVING">
+    <xs:annotation>
+      <xs:documentation>
+        Informations about the way XML documents are saved
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ENCODING"/>
+        <xs:element minOccurs="0" ref="DOCTYPE"/>
+        <xs:element minOccurs="0" ref="SCHEMALOCATION"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="NAMESPACE_PREFIX"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="ENCODING" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Character encoding for new documents. UTF-8 is used by default.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="DOCTYPE">
+    <xs:annotation>
+      <xs:documentation>
+        Document type definition
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="publicId" type="xs:string" use="optional"/>
+      <xs:attribute name="systemId" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="SCHEMALOCATION">
+    <xs:annotation>
+      <xs:documentation>
+        To save the location of the XML schema in XML documents.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="schemaLocation" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            The schemaLocation attribute value consists of one or more pairs of URI references,
+            separated by white space. The first member of each pair is a namespace name,
+            and the second member of the pair is a hint describing where to find an appropriate
+            schema document for that namespace.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="noNamespaceSchemaLocation" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            A schema is not required to have a namespace and so there is a noNamespaceSchemaLocation
+            attribute which is used to provide hints for the locations of schema documents that do
+            not have target namespaces.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="NAMESPACE_PREFIX">
+    <xs:annotation>
+      <xs:documentation>
+        Prefix to use for a given namespace
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="prefix" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Prefix to use
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="uri" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The corresponding namespace
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:element name="MENUS">
+    <xs:annotation>
+      <xs:documentation>
+        Definition of a menubar to insert new elements
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="MENU"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="MENU">
+    <xs:annotation>
+      <xs:documentation>
+        A menu to insert new elements and other nodes
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="INSERT_MENU"/>
+        <xs:element ref="FUNCTION_MENU"/>
+        <xs:element ref="SEPARATOR"/>
+        <xs:element ref="MENU"/>
+      </xs:choice>
+      <xs:attribute name="name" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Menu name, used to refer to the menu when a title is defined.
+            The name is used as a title if no title is defined.
+            Beware to avoid using element names, to avoid ambiguities in the menu titles.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="INSERT_MENU">
+    <xs:annotation>
+      <xs:documentation>
+        Menu to insert a node into the document (XML elements,
+        processing instructions, or XML comments)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The name of the node. Is also used as a reference to define a title.
+            The name is used as a title if no title is defined.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="node_type" default="element">
+        <xs:annotation>
+          <xs:documentation>
+            Type of XML node
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="element"/>
+            <xs:enumeration value="pi"/>
+            <xs:enumeration value="comment"/>
+            <xs:enumeration value="cdata"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="shortcut">
+        <xs:annotation>
+          <xs:documentation>
+            Keyboard shortcut for the menu
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="FUNCTION_MENU">
+    <xs:annotation>
+      <xs:documentation>
+        Menu to use a predefined function, or a function defined in a Daxe extension
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="PARAMETER"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The function name. Used as a reference to define a title.
+            The name is used as a title if no title is defined.
+            Beware to avoid using element names, to avoid ambiguities in the menu titles.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="function_name" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            The name of the function
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="shortcut">
+        <xs:annotation>
+          <xs:documentation>
+            Keyboard shortcut for the menu
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="PARAMETER">
+    <xs:annotation>
+      <xs:documentation>
+        Parameter (pair name/value)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+      <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="SEPARATOR">
+    <xs:annotation>
+      <xs:documentation>
+        Menu separator
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  
+  <xs:element name="ELEMENTS_DISPLAY">
+    <xs:annotation>
+      <xs:documentation>
+        Specifies the types to use to display XML document nodes
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="ELEMENT_DISPLAY"/>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="element_display">
+      <xs:selector xpath="ELEMENT_DISPLAY"/>
+      <xs:field xpath="@element"/>
+    </xs:unique>
+  </xs:element>
+  
+  <xs:element name="ELEMENT_DISPLAY">
+    <xs:annotation>
+      <xs:documentation>
+        Specifies how an XML element is displayed in Jaxe.
+        Please refer to the documentation to see what the type values refer to,
+        and what parameters can be used depending on the type.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="PARAMETER"/>
+        <xs:element ref="SUGGESTED_VALUE"/>
+        <xs:element ref="ATTRIBUTE_DISPLAY"/>
+      </xs:choice>
+      <xs:attribute name="element" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Element name (must be defined in the schema)
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Display type for the element.
+            Parameters are required for certain display types.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="SUGGESTED_VALUE" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Used to suggest a choice of values to the user,
+        among the values authorized by the schema.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="ATTRIBUTE_DISPLAY">
+    <xs:annotation>
+      <xs:documentation>
+        Specifies how to display an attribute.
+        Currently, only supports attribute values that can be suggested when
+        the values are not fixed by the schema.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="SUGGESTED_VALUE"/>
+      </xs:sequence>
+      <xs:attribute name="attribute" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Attribute name (must be defined in the schema)
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:element name="STRINGS">
+    <xs:annotation>
+      <xs:documentation>
+        All the user interface strings, depending on the system's language
+        (menu titles, documentation, ...)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="CONFIG_DESCRIPTION"/>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+          <xs:element ref="MENU_STRINGS"/>
+          <xs:element ref="ELEMENT_STRINGS"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="language" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Language code for the strings,
+            with the format defined by ISO-639 (2 lowercase letters)
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[a-z][a-z]"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="country">
+        <xs:annotation>
+          <xs:documentation>
+            Country code for the strings,
+            with the format defined by ISO-3166 (2 uppercase letters)
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z][A-Z]"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="CONFIG_DESCRIPTION" type="xs:normalizedString">
+    <xs:annotation>
+      <xs:documentation>
+        Brief one line description of the configuration, used to choose a configuration for new documents
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="MENU_STRINGS">
+    <xs:annotation>
+      <xs:documentation>
+        Title and documentation for a menu. If none are defined, the title and documentation
+        of the element will be used for this element's insertion menu.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="TITLE"/>
+        <xs:element minOccurs="0" ref="DOCUMENTATION"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="MENU_STRINGS"/>
+      </xs:sequence>
+      <xs:attribute name="menu" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the menu
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="TITLE" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        A title
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="DOCUMENTATION" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        A short documentation text, that will be used for online help
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="ELEMENT_STRINGS">
+    <xs:annotation>
+      <xs:documentation>
+        Title and documentation for an element.
+        Used to display the element, and also for the insertion menu if
+        no title is defined for the menu.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="TITLE"/>
+        <xs:element minOccurs="0" ref="DOCUMENTATION"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="VALUE_TITLE"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ATTRIBUTE_STRINGS"/>
+      </xs:sequence>
+      <xs:attribute name="element" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the element
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="ATTRIBUTE_STRINGS">
+    <xs:annotation>
+      <xs:documentation>
+        Title and documentation for an attribute.
+        Titles can also be defined for attribute values
+        (this feature can be used to provide attribute values when the schema allows any value).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="TITLE"/>
+        <xs:element minOccurs="0" ref="DOCUMENTATION"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="VALUE_TITLE"/>
+      </xs:sequence>
+      <xs:attribute name="attribute" type="xs:NCName" use="required">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the attribute
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="VALUE_TITLE">
+    <xs:annotation>
+      <xs:documentation>
+        Title to use for an element or attribute value
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="value" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Element or attribute value (must be allowed by the schema)
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  
+</xs:schema>

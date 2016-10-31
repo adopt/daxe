@@ -22,6 +22,8 @@ part of nodes;
  * 
  * This DaxeNode is of type `DaxeNode.ELEMENT_NODE`, but is serialized
  * with a CDATA section.
+ * 
+ * Display type: 'xmlcdata'.
  */
 class DNCData extends DaxeNode {
   Tag _b1, _b2;

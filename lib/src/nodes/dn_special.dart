@@ -20,7 +20,7 @@ part of nodes;
 /**
  * A symbol using UNICODE characters with a UNICODE font such as STIX.
  * 
- * Display types: 'symbol2', 'symbole2'.
+ * Display type: 'symbol'.
  */
 class DNSpecial extends DaxeNode {
   

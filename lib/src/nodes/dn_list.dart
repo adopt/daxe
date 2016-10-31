@@ -17,11 +17,11 @@
 
 part of nodes;
 
-// TODO: add parameter typeListe
+// TODO: add parameter listType
 /**
  * A bulleted list containing item nodes.
  * 
- * Display types: 'list', 'liste'
+ * Display type: 'list'
  */
 class DNList extends DaxeNode {
   Tag _b1, _b2;

@@ -71,22 +71,22 @@ abstract class WXSExplicitGroup extends WXSAnnotated implements WithSubElements,
   
   // from WithSubElements
   List<WXSElement> allElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     for (WithSubElements nestedParticle in _nestedParticles)
-      liste.addAll(nestedParticle.allElements());
-    return(liste);
+      list.addAll(nestedParticle.allElements());
+    return(list);
   }
   
   // from WithSubElements
   List<WXSElement> subElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     for (WithSubElements nestedParticle in _nestedParticles) {
       if (nestedParticle is WXSElement)
-        liste.addAll(nestedParticle.matchingElements());
+        list.addAll(nestedParticle.matchingElements());
       else
-        liste.addAll(nestedParticle.subElements());
+        list.addAll(nestedParticle.subElements());
     }
-    return(liste);
+    return(list);
   }
   
   // from Parent
@@ -100,17 +100,17 @@ abstract class WXSExplicitGroup extends WXSAnnotated implements WithSubElements,
   String regularExpression() {
     if (_nestedParticles.length == 0)
       return(null);
-    final String separateur = (this is WXSChoice) ? "|" : ", ";
+    final String separator = (this is WXSChoice) ? "|" : ", ";
     StringBuffer sb = new StringBuffer();
     if (_nestedParticles.length > 1 || _minOccurs != 1 || _maxOccurs != 1)
       sb.write('(');
-    bool premier = true;
+    bool first = true;
     for (WithSubElements nestedParticle in _nestedParticles) {
       final String er = nestedParticle.regularExpression();
       if (er != null) {
-        if (!premier)
-          sb.write(separateur);
-        premier = false;
+        if (!first)
+          sb.write(separator);
+        first = false;
         sb.write(er);
       }
     }

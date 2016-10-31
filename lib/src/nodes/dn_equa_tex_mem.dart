@@ -22,12 +22,12 @@ part of nodes;
  * and added as text inside the element.
  * Requires a TeX equation server specified in the config file.
  * 
- * Display type: 'equatexmem', or a plugin with the class `xpages.JEEquaTeXMemoire`.
+ * Display type: 'equatexmem'.
  *
  * Parameters:
  * 
- * * `serveur`: the URL for the tex.php script converting equations into images
- * * `texteAtt`: the name of the attribute giving the equation text
+ * * `server`: the URL for the tex.php script converting equations into images
+ * * `textAtt`: the name of the attribute giving the equation text
  * * `labelAtt`: the name of the attribute giving the image label
  */
 class DNEquaTexMem extends DaxeNode {
@@ -39,14 +39,14 @@ class DNEquaTexMem extends DaxeNode {
   TeXEquationDialog _dlg;
 
   DNEquaTexMem.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
-    _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', null);
+    _textAtt = doc.cfg.elementParameterValue(ref, 'textAtt', null);
     _labelAtt = doc.cfg.elementParameterValue(ref, 'labelAtt', null);
-    _server = doc.cfg.elementParameterValue(ref, 'serveur', null);
+    _server = doc.cfg.elementParameterValue(ref, 'server', null);
   }
 
   DNEquaTexMem.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
-    _textAtt = doc.cfg.elementParameterValue(ref, 'texteAtt', 'texte');
-    _server = doc.cfg.elementParameterValue(ref, 'serveur', null);
+    _textAtt = doc.cfg.elementParameterValue(ref, 'textAtt', 'texte');
+    _server = doc.cfg.elementParameterValue(ref, 'server', null);
     if (node.firstChild != null)
       _data = node.firstChild.nodeValue;
     else

@@ -35,7 +35,7 @@ class WXSSchema implements WXSThing {
   String _elementFormDefault = null;
 
   String _url;
-  DaxeWXS _jwxs;
+  DaxeWXS _dwxs;
   List<WXSSchema> _includedSchemas;
   WXSSchema _parentSchema;
   HashMap<String, String> _namespaceToPrefix;
@@ -43,7 +43,7 @@ class WXSSchema implements WXSThing {
 
   WXSSchema(final Element el, final String url, final DaxeWXS jwxs, final WXSSchema schemaParent) {
     this._url = url;
-    this._jwxs = jwxs;
+    this._dwxs = jwxs;
     this._parentSchema = schemaParent;
     _includes = new List<WXSInclude>();
     _imports = new List<WXSImport>();
@@ -160,7 +160,7 @@ class WXSSchema implements WXSThing {
   Future<WXSSchema> newIncludedSchema(final String schemaLocation,
       final String importNamespace, final WXSSchema parentSchema) { // can throw a WXSException
     Completer completer = new Completer();
-    _jwxs._newIncludedSchema(_url, schemaLocation, importNamespace, parentSchema).then((WXSSchema schemaInclu) {
+    _dwxs._newIncludedSchema(_url, schemaLocation, importNamespace, parentSchema).then((WXSSchema schemaInclu) {
       if (schemaInclu != null && !_includedSchemas.contains(schemaInclu))
         _includedSchemas.add(schemaInclu);
       completer.complete(schemaInclu);
@@ -200,18 +200,18 @@ class WXSSchema implements WXSThing {
   }
 
   List<WXSElement> allElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     for (WXSComplexType complexType in _complexTypes.values)
-      liste.addAll(complexType.allElements());
+      list.addAll(complexType.allElements());
     for (WXSGroup group in _groups.values)
-      liste.addAll(group.allElements());
+      list.addAll(group.allElements());
     for (WXSElement element in _elements.values)
-      liste.addAll(element.allElements());
-    return(liste);
+      list.addAll(element.allElements());
+    return(list);
   }
 
   List<WXSElement> anies(final String namespace) {
-    return(_jwxs._anies(namespace, _targetNamespace));
+    return(_dwxs._anies(namespace, _targetNamespace));
   }
 
   WXSElement resolveElementReference(final String localName, final String namespace) {
@@ -234,8 +234,8 @@ class WXSSchema implements WXSThing {
     return(_resolveReference(localName, namespace, null, null, 'WXSAttribute') as WXSAttribute);
   }
 
-  WXSThing _resolveReference(final String localName, final String namespace, final HashSet<WXSSchema> exclude,
-                             final WXSThing redefine, final String classe) {
+  WXSThing _resolveReference(final String localName, final String namespace,
+      final HashSet<WXSSchema> exclude, final WXSThing redefine, final String classe) {
     if (localName == null)
       return(null);
     HashSet<WXSSchema> exclude2 = null;
@@ -271,8 +271,8 @@ class WXSSchema implements WXSThing {
       if (thing != null && thing != redefine)
         return(thing);
     }
-    for (WXSSchema schemaInclu in _includedSchemas) {
-      if (exclude == null || !exclude.contains(schemaInclu)) {
+    for (WXSSchema includedSchema in _includedSchemas) {
+      if (exclude == null || !exclude.contains(includedSchema)) {
         if (exclude2 == null) {
           if (exclude == null)
             exclude2 = new HashSet<WXSSchema>();
@@ -280,7 +280,7 @@ class WXSSchema implements WXSThing {
             exclude2 = exclude;
           exclude2.add(this);
         }
-        final WXSThing thing = schemaInclu._resolveReference(localName, namespace, exclude2, redefine, classe);
+        final WXSThing thing = includedSchema._resolveReference(localName, namespace, exclude2, redefine, classe);
         if (thing  != null)
           return(thing);
       }
@@ -289,7 +289,7 @@ class WXSSchema implements WXSThing {
   }
 
   String elementTitle(final WXSElement el) {
-    return(_jwxs._elementTitle(el));
+    return(_dwxs._elementTitle(el));
   }
 
 }

@@ -86,7 +86,7 @@ class Tag {
       title = "?";
     if (_type != END) {
       bool listAllAttributes = (doc.cfg.elementParameterValue(_dn.ref,
-          'attributsVisibles', 'false') == 'true');
+          'visibleAttributes', 'false') == 'true');
       if (listAllAttributes) {
         span.append(new h.Text(title));
         for (DaxeAttr ja in _dn.attributes) {
@@ -102,7 +102,7 @@ class Tag {
           span.append(val_att);
         }
       } else {
-        List<String> titleAttributes = doc.cfg.getElementParameters(_dn.ref)['titreAtt'];
+        List<String> titleAttributes = doc.cfg.getElementParameters(_dn.ref)['titleAtt'];
         if (titleAttributes != null) {
           for (String attr in titleAttributes) {
             String value = _dn.getAttribute(attr);

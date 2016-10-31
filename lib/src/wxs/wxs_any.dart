@@ -54,7 +54,7 @@ class WXSAny extends WXSAnnotated implements WithSubElements {
   
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
-    // la résolution nécessite que le schéma soit déjà construit, on doit donc la faire plus tard
+    // resolving requires the schema to be built, so it has to be done later
     _elements = new List<WXSElement>();
     _elements.addAll(schema.anies(_namespace));
     for (WXSElement element in _elements)
@@ -102,7 +102,7 @@ class WXSAny extends WXSAnnotated implements WithSubElements {
   bool requiredChild(final WXSElement child) {
     if (_elements == null)
       resolveReferences(_schema, null);
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     if (_elements.contains(child))
       return(_minOccurs > 0 && _elements.length == 1);
     else
@@ -113,7 +113,7 @@ class WXSAny extends WXSAnnotated implements WithSubElements {
   bool multipleChildren(final WXSElement child) {
     if (_elements == null)
       resolveReferences(_schema, null);
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     if (_elements.contains(child))
       return(_maxOccurs > 1);
     else

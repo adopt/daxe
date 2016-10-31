@@ -22,6 +22,8 @@ part of nodes;
  * 
  * This DaxeNode is of type `DaxeNode.ELEMENT_NODE`, but is serialized
  * with an XML comment.
+ * 
+ * Display type: 'xmlcomment'.
  */
 class DNComment extends DaxeNode {
   Tag _b1, _b2;

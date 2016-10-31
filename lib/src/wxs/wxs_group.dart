@@ -21,7 +21,7 @@ part of wxs;
 class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
 
   // if not ref: (all|choice|sequence)
-  WithSubElements _modele = null; // (WXSAll | WXSChoice | WXSSequence)
+  WithSubElements _model = null; // (WXSAll | WXSChoice | WXSSequence)
   String _name = null;
   String _ref = null;
   WXSGroup _wxsRef = null;
@@ -39,11 +39,11 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
     for (Node n = el.firstChild; n != null; n=n.nextSibling) {
       if (n is Element) {
         if (n.localName == "all")
-          _modele = new WXSAll(n, this, schema);
+          _model = new WXSAll(n, this, schema);
         else if (n.localName == "choice")
-          _modele = new WXSChoice(n, this, schema);
+          _model = new WXSChoice(n, this, schema);
         else if (n.localName == "sequence")
-          _modele = new WXSSequence(n, this, schema);
+          _model = new WXSSequence(n, this, schema);
       }
     }
     if (el.hasAttribute("name"))
@@ -84,15 +84,15 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   void resolveReferences(final WXSSchema schema, final WXSThing redefine) {
-    if (_modele != null)
-      _modele.resolveReferences(schema, redefine);
+    if (_model != null)
+      _model.resolveReferences(schema, redefine);
     if (_ref != null) {
       final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(_ref));
       _wxsRef = schema.resolveGroupReference(DaxeWXS._localValue(_ref), tns, redefine);
       if (_wxsRef != null)
         _wxsRef.addReference(this);
       else
-        print("Référence de groupe introuvable : $_ref");
+        print("Group reference not found : $_ref");
     }
   }
 
@@ -104,8 +104,8 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   List<WXSElement> allElements() {
-    if (_modele != null)
-      return(_modele.allElements());
+    if (_model != null)
+      return(_model.allElements());
     return(new List<WXSElement>());
   }
 
@@ -113,21 +113,21 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
   List<WXSElement> subElements() {
     if (_wxsRef != null)
       return(_wxsRef.subElements());
-    if (_modele != null)
-      return(_modele.subElements());
+    if (_model != null)
+      return(_model.subElements());
     return(new List<WXSElement>());
   }
 
   // from Parent
   List<WXSElement> parentElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_parent != null)
-      liste.addAll(_parent.parentElements());
+      list.addAll(_parent.parentElements());
     if (_references != null) {
       for (WXSGroup groupe in _references)
-        liste.addAll(groupe.parentElements());
+        list.addAll(groupe.parentElements());
     }
-    return(liste);
+    return(list);
   }
 
   // from WithSubElements
@@ -135,8 +135,8 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
     String er;
     if (_wxsRef != null)
       er = _wxsRef.regularExpression();
-    else if (_modele != null)
-      er = _modele.regularExpression();
+    else if (_model != null)
+      er = _model.regularExpression();
     else
       er = "()";
     if (_minOccurs == 0 && _maxOccurs == 1)
@@ -153,10 +153,10 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
   bool requiredChild(final WXSElement child) {
     if (_wxsRef != null)
       return(_wxsRef.requiredChild(child));
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     bool bb = null;
-    if (_modele != null)
-      bb = _modele.requiredChild(child);
+    if (_model != null)
+      bb = _model.requiredChild(child);
     return(bb);
   }
 
@@ -164,10 +164,10 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
   bool multipleChildren(final WXSElement child) {
     if (_wxsRef != null)
       return(_wxsRef.multipleChildren(child));
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     bool bb = null;
-    if (_modele != null)
-      bb = _modele.multipleChildren(child);
+    if (_model != null)
+      bb = _model.multipleChildren(child);
     return(bb);
   }
 
@@ -182,8 +182,8 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
       int pos = i;
       if (_wxsRef != null)
         pos = _wxsRef.validate(subElements, i, insertion);
-      else if (_modele != null)
-        pos = _modele.validate(subElements, i, insertion);
+      else if (_model != null)
+        pos = _model.validate(subElements, i, insertion);
       if (pos == i)
         return(i);
       i = pos;
@@ -198,8 +198,8 @@ class WXSGroup extends WXSAnnotated implements WithSubElements, Parent {
       return(true);
     if (_wxsRef != null)
       return(_wxsRef.isOptionnal());
-    if (_modele != null)
-      return(_modele.isOptionnal());
+    if (_model != null)
+      return(_model.isOptionnal());
     return(true);
   }
 }

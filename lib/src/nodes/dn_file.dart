@@ -21,7 +21,7 @@ part of nodes;
  * Image file. The image is displayed in the text if it is found,
  * otherwise an error message is displayed instead of the image.
  * 
- * Display types: 'file', 'fichier'.
+ * Display type: 'file'.
  * 
  * Parameters:
  * 

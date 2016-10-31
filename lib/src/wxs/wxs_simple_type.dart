@@ -143,7 +143,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
           return(false);
         return(true);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "unsignedLong") {
@@ -154,7 +154,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int max = int.parse("18446744073709551615");
         return(big.compareTo(max) <= 0);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "int") {
@@ -167,7 +167,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int val = int.parse(v2);
         return(val <= 2147483647 && val >= -2147483648);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "unsignedInt") {
@@ -177,7 +177,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int val = int.parse(value);
         return(val <= 4294967295 && val >= 0);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "short") {
@@ -190,7 +190,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int val = int.parse(v2);
         return(val <= 32767 && val >= -32768);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "unsignedShort") {
@@ -200,7 +200,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int val = int.parse(value);
         return(val <= 65535 && val >= 0);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "byte") {
@@ -213,7 +213,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int val = int.parse(v2);
         return(val <= 127 && val >= -128);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "unsignedByte") {
@@ -223,7 +223,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
         final int val = int.parse(value);
         return(val <= 255 && val >= 0);
       } on FormatException catch(ex) {
-        print("validerValeur(String, String) - FormatException $ex");
+        print("validateTypeValue(String, String) - FormatException $ex");
         return(false);
       }
     } else if (type == "decimal") {
@@ -231,7 +231,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
     } else if (type == "float") {
       if (!_verifExpr(value, "(-?INF)|(NaN)|([+\\-]?\\d+\\.?\\d*([eE][+\\-]?\\d{1,3})?)"))
         return(false);
-      if (value == "INF" || value == "-INF") // "Infinity" en Java
+      if (value == "INF" || value == "-INF")
         return(true);
       try {
         double f = double.parse(value);
@@ -257,7 +257,7 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
     } else if (type == "boolean")
       return(_verifExpr(value, "(true)|(false)|1|0"));
     else if (type == "duration")
-      return(_verifExpr(value, "-?P(\\d{1,4}Y)?(\\d{1,2}M)?(\\d{1,2}D)?(T(\\d{1,2}H)?(\\d{1,2}M)?(\\d{1,2}(\\.\\d+)?S)?)?")); // en fait plus restrictif ("P" invalide par ex.)
+      return(_verifExpr(value, "-?P(\\d{1,4}Y)?(\\d{1,2}M)?(\\d{1,2}D)?(T(\\d{1,2}H)?(\\d{1,2}M)?(\\d{1,2}(\\.\\d+)?S)?)?")); // actually more restrictive ("P" invalide par ex.)
     else if (type == "dateTime")
       return(_verifExpr(value, "-?\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?(([+\\-][01]\\d:\\d{2})|Z)?"));
     else if (type == "date")
@@ -275,35 +275,38 @@ class WXSSimpleType extends WXSAnnotated implements WXSType {
     else if (type == "gDay")
       return(_verifExpr(value, "---[0-3]\\d(([+\\-][01]\\d:\\d{2})|Z)?"));
     else if (type == "Name")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s][^<>&#!/?'\",\\s]*")); // en fait plus restrictif: \i\c*
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s][^<>&#!/?'\",\\s]*"));
+      // actually more restrictive: \i\c*
     else if (type == "QName")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s][^<>&#!/?'\",\\s]*")); // en fait plus restrictif
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s][^<>&#!/?'\",\\s]*"));
+      // actually more restrictive
     else if (type == "NCName")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // en fait plus restrictif: [\i-[:]][\c-[:]]*
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*"));
+      // actually more restrictive: [\i-[:]][\c-[:]]*
     else if (type == "anyURI")
       return(true);
     //return(verifExpr(valeur, "([^:/?#]+:)?(//[^/?#]*)?[^?#]*(\\?[^#]*)?(#.*)?"));
-    // pb: cette expression autorise tout!
-    // (mais les RFC 2396 et 2732 ne restreignent rien)
+    // NOTE: this regexp allows any string !
+    // (but then, the RFC 2396 et 2732 do not have any restriction)
     else if (type == "language")
       return(_verifExpr(value, "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"));
     else if (type == "ID")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // comme NCName
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // like NCName
     else if (type == "IDREF")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // comme NCName
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // like NCName
     else if (type == "IDREFS")
       return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:]*"));
     else if (type == "ENTITY")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // comme NCName
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:\\s]*")); // like NCName
     else if (type == "ENTITIES")
-      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:]*")); // comme IDREFS
+      return(_verifExpr(value, "[^<>&#!/?'\",0-9.\\-\\s:][^<>&#!/?'\",:]*")); // like IDREFS
     else if (type == "NOTATION")
       return(_verifExpr(value, "[^0-9.\\-\\s][^\\s]*(\\s[^0-9.\\-\\s][^\\s]*)*"));
-    // la facette enumeration est obligatoire -> contrainte supplémentaire
+      // the enumeration facet is required -> additional constraint
     else if (type == "NMTOKEN")
-      return(_verifExpr(value, "[^<>&#!/?'\",\\s]+")); // en fait plus restrictif: \c+
+      return(_verifExpr(value, "[^<>&#!/?'\",\\s]+")); // actually more restrictive: \c+
     else if (type == "NMTOKENS")
-      return(_verifExpr(value, "[^<>&#!/?'\",]+")); // en fait plus restrictif
+      return(_verifExpr(value, "[^<>&#!/?'\",]+")); // actually more restrictive
     else
       return(true);
   }

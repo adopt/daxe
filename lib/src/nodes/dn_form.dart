@@ -20,7 +20,7 @@ part of nodes;
 /**
  * Recursive display of all descendants in a single form.
  * 
- * Display types: 'form', 'formulaire'.
+ * Display type: 'form'.
  */
 class DNForm extends DaxeNode {
   

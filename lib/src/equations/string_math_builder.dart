@@ -27,7 +27,7 @@ class StringMathBuilder {
 
   MathRootElement _rootElement;
 
-  // opérateurs remplacés en premier, avant l'analyse de la syntaxe
+  /// operators replaced first, before syntax analysis
   static final List<List<String>> special = [
      ["<==", "\u21D0"], ["==>", "\u21D2"], ["<=>", "\u21D4"],
      ["!=", "\u2260"], ["~=", "\u2248"], ["~", "\u223C"],
@@ -47,14 +47,14 @@ class StringMathBuilder {
      ["...", "\u2026"]
   ];
 
-  // opérateurs
+  /// operators
   static final String sops =
       "_^#*/\u2207±\u2213\u2227-+\u2200\u2203\u2202×=\u2260\u2248\u223C\u2261<>\u2264\u2265\u226A\u226B\u221D" +
       "|\u2229\u222A\u2190\u2192\u2194\u21D0\u21D2\u21D4";
 
-  // symboles qui peuvent être en italique s'ils servent d'identifiant
-  static final List<List<String>> symboles_id = [
-     // grec-minuscule
+  /// symbols that can be displayed in italics if they are identifiers
+  static final List<List<String>> id_symbols = [
+     // lowercase greek
      ["alpha", "\u03B1"], ["beta", "\u03B2"], ["gamma", "\u03B3"],
      ["delta", "\u03B4"], ["epsilon", "\u03B5"], ["zeta", "\u03B6"],
      ["eta", "\u03B7"], ["theta", "\u03B8"], ["iota", "\u03B9"],
@@ -63,7 +63,7 @@ class StringMathBuilder {
      ["rho", "\u03C1"], ["sigma", "\u03C3"],
      ["tau", "\u03C4"], ["upsilon", "\u03C5"], ["phi", "\u03C6"],
      ["chi", "\u03C7"], ["psi", "\u03C8"], ["omega", "\u03C9"],
-     // grec-majuscule
+     // uppercase greek
      ["Alpha", "\u0391"], ["Beta", "\u0392"], ["Gamma", "\u0393"],
      ["Delta", "\u0394"], ["Epsilon", "\u0395"], ["Zeta", "\u0396"],
      ["Eta", "\u0397"], ["Theta", "\u0398"], ["Iota", "\u0399"],
@@ -72,23 +72,23 @@ class StringMathBuilder {
      ["Pi", "\u03A0"], ["Rho", "\u03A1"], ["Sigma", "\u03A3"],
      ["Tau", "\u03A4"], ["Upsilon", "\u03A5"], ["Phi", "\u03A6"],
      ["Chi", "\u03A7"], ["Psi", "\u03A8"], ["Omega", "\u03A9"],
-     // autre grec
+     // other greek
      ["thetasym", "\u03D1"], ["upsih", "\u03D2"], ["piv", "\u03D6"],
      ["phiv", "\u03D5"], ["phi1", "\u03D5"]
   ];
 
-  // symboles qu'il ne faut pas mettre en italique
-  static final List<List<String>> symboles_droits = [
-     // grec-minuscule
+  /// symbols that should not be put in italics
+  static final List<List<String>> roman_symbols = [
+     // lowercase greek
      ["pi", "\u03C0"],
-     // autres caractères
+     // other characters
      ["infin", "\u221E"], ["infty", "\u221E"], ["infini", "\u221E"],
      ["parallel", "\u2225"], ["parallèle", "\u2225"],
      ["sun", "\u2609"], ["soleil", "\u2609"],
      ["star", "\u2605"], ["étoile", "\u2605"],
      ["mercury", "\u263F"], ["mercure", "\u263F"],
      ["venus", "\u2640"], ["vénus", "\u2640"],
-     ["earth", "\u2295"], ["terre", "\u2295"], // 2641 est officiel d'après UNICODE mais 2295 est mieux avec STIX...
+     ["earth", "\u2295"], ["terre", "\u2295"], // 2641 is the official UNICODE code but 2295 is better with STIX...
      ["mars", "\u2642"], ["jupiter", "\u2643"],
      ["saturn", "\u2644"], ["saturne", "\u2644"],
      ["uranus", "\u26E2"], // UNICODE 6.0 draft !
@@ -97,7 +97,7 @@ class StringMathBuilder {
      ["angstrom", "\u212B"], ["angström", "\u212B"],
      ["asterisk", "*"], ["astérisque", "*"], // \uFF0A ?
      ["ell", "\u2113"], ["smalll", "\u2113"], ["petitl", "\u2113"],
-     // les noms en Xscr viennent de http://www.w3.org/TR/xml-entity-names/
+     // names in Xscr come from http://www.w3.org/TR/xml-entity-names/
      ["Ascr", "\u{1D49C}"], ["biga", "\u{1D49C}"], ["granda", "\u{1D49C}"], // \uD835\uDC9C
      ["Bscr", "\u212C"], ["bigb", "\u212C"], ["grandb", "\u212C"],
      ["Cscr", "\u{1D49E}"], ["bigc", "\u{1D49E}"], ["grandc", "\u{1D49E}"], // \uD835\uDC9E
@@ -126,7 +126,7 @@ class StringMathBuilder {
      ["Zscr", "\u{1D4B5}"], ["bigz", "\u{1D4B5}"], ["grandz", "\u{1D4B5}"] // \uD835\uDCB5
   ];
 
-  // fonctions qui peuvent se passer de parenthèses quand il n'y a qu'un argument simple
+  /// functions that can be displayed without parenthesis when there is one simple argument
   static final List<String> fctnopar = ["sin", "cos", "tan", "acos", "asin", "atan"];
 
   static final RegExp _numbersExpr = new RegExp("^\\s?([0-9]+([\\.,][0-9]+)?|[\\.,][0-9]+)([Ee][+-]?[0-9]+)?\\s?\$");
@@ -134,14 +134,14 @@ class StringMathBuilder {
 
   StringMathBuilder(final String s) {
     _rootElement = new MathRootElement();
-    final String s2 = ajParentheses(replaceSpecial(s));
+    final String s2 = addParenthesis(replaceSpecial(s));
     if (s != '') {
       final JEQ jeq = parser(s2);
       MathElement me;
       if (jeq == null)
         me = null;
       else
-        me = jeq.versMathML();
+        me = jeq.toMathML();
       _rootElement.addMathElement(me);
     }
   }
@@ -165,9 +165,11 @@ class StringMathBuilder {
     return s;
   }
 
-  // renvoie true si le caractère avec la position donnée dans le String est bien un opérateur
-  // (en résolvant la difficulté d'expressions comme "1e-1/2+e-1/2")
-  static bool operateurEn(String s, int pos) {
+  /**
+   * Returns true if the character with position [pos] in the string [s] is
+   * really an operator (by interpreting expressions like "1e-1/2+e-1/2").
+   */
+  static bool operatorAt(String s, int pos) {
     String c = s[pos];
     if (sops.indexOf(c) == -1)
       return(false);
@@ -184,42 +186,42 @@ class StringMathBuilder {
     return(true);
   }
 
-  static String ajParentheses(String s) {
-    // d'abord ajouter des parenthèses pour séparer les éléments des fonctions
+  static String addParenthesis(String s) {
+    // first add parenthesis to separate function parameters
     // f(a+1;b;c) -> f((a+1);b;c)
     int indop = s.indexOf(';');
     while (indop != -1) {
-      // vers la gauche du ;
+      // to the left of ';'
       int pp = 0;
-      bool yaop = false;
+      bool withop = false;
       String c;
       for (int i=indop-1; i>=0 && pp>=0; i--) {
         c = s[i];
         if (c == ';' && pp == 0)
-          break; // les parenthèses sont déjà ajoutées
+          break; // parenthesis are already added
         if (c == '(')
           pp--;
         else if (c == ')')
           pp++;
-        else if (operateurEn(s, i))
-          yaop = true;
-        if (pp < 0 && yaop) {
+        else if (operatorAt(s, i))
+          withop = true;
+        if (pp < 0 && withop) {
           s = s.substring(0,i) + '(' + s.substring(i,indop) + ')' + s.substring(indop);
           indop += 2;
         }
       }
-      // vers la droite du ;
+      // to the right of ';'
       pp = 0;
-      yaop = false;
+      withop = false;
       for (int i=indop+1; i<s.length && pp>=0; i++) {
         c = s[i];
         if (c == '(')
           pp++;
         else if (c == ')')
           pp--;
-        else if (operateurEn(s, i))
-          yaop = true;
-        if ((pp < 0 || pp == 0 && c == ';') && yaop)
+        else if (operatorAt(s, i))
+          withop = true;
+        if ((pp < 0 || pp == 0 && c == ';') && withop)
           s = s.substring(0,indop+1) + '(' + s.substring(indop+1,i) + ')' + s.substring(i);
         if (c == ';' && pp == 0)
           break;
@@ -231,25 +233,25 @@ class StringMathBuilder {
         indop += indop2 + 1;
     }
 
-    // les autres parenthèses
+    // other parenthesis
     for (int iops=0; iops<sops.length; iops++) {
       final String cops = sops[iops];
       indop = s.indexOf(cops);
-      while (indop != -1 && !operateurEn(s, indop))
+      while (indop != -1 && !operatorAt(s, indop))
         indop = s.indexOf(cops, indop + 1);
       int nindop = indop;
       int im,ip;
       String cm=' ',cp=' ';
       int pp;
-      bool ajp;
+      bool addp;
       while (nindop != -1) {
-        ajp = false;
+        addp = false;
         im = indop - 1;
         if (im >= 0)
           cm = s[im];
         pp = 0;
         while (im >= 0 && (pp != 0 || cm != '(') &&
-            (pp != 0 || !operateurEn(s, im))) {
+            (pp != 0 || !operatorAt(s, im))) {
           if (cm == ')')
             pp++;
           else if (cm == '(')
@@ -258,14 +260,14 @@ class StringMathBuilder {
           if (im >= 0)
             cm = s[im];
         }
-        if (im < 0 || operateurEn(s, im))
-          ajp = true;
+        if (im < 0 || operatorAt(s, im))
+          addp = true;
         ip = indop + 1;
         if (ip >= 0 && ip <= s.length-1)
           cp = s[ip];
         pp = 0;
         while (ip < s.length && (pp != 0 || cp != ')') &&
-        (pp != 0 || !operateurEn(s, ip))) {
+        (pp != 0 || !operatorAt(s, ip))) {
           if (cp == '(')
             pp++;
           else if (cp == ')')
@@ -274,9 +276,9 @@ class StringMathBuilder {
           if (ip < s.length)
             cp = s[ip];
         }
-        if (ip >= s.length || operateurEn(s, ip))
-          ajp = true;
-        if (ajp) {
+        if (ip >= s.length || operatorAt(s, ip))
+          addp = true;
+        if (addp) {
           s = s.substring(0, im+1) + "(" + s.substring(im+1, ip) + ")" +
               s.substring(ip);
           indop++;
@@ -309,7 +311,7 @@ class StringMathBuilder {
     int indop = -1;
     int pp = 0;
     for (int i=0; i<s.length; i++) {
-      if (pp == 0 && operateurEn(s, i)) {
+      if (pp == 0 && operatorAt(s, i)) {
         indop = i;
         break;
       } else if (s[i] == '(')
@@ -325,12 +327,12 @@ class StringMathBuilder {
         nb = false;
       }
       if (nb)
-        return(new JEQNombre(s));
+        return(new JEQNumber(s));
       final int indf = s.indexOf('(');
       if (indf != -1 && s[s.length-1] == ')') {
-        // nomfct(p1; p2; ...) ou (nomfctcomplexe)(p1; p2; ...) ?
-        // comme (sin^2)(alpha) ou (theta_f)(1)
-        // recherche d'une deuxième parenthèse au même niveau que la première
+        // fctname(p1; p2; ...) or (complexfctname)(p1; p2; ...) ?
+        // like (sin^2)(alpha) or (theta_f)(1)
+        // looking for a second parenthesis at the same level as the first
         int indf2 = -1;
         pp = 0;
         for (int i=0; i<s.length; i++) {
@@ -343,17 +345,17 @@ class StringMathBuilder {
           else if (c == ')')
             pp--;
         }
-        JEQ nom = null;
+        JEQ name = null;
         if (indf2 == -1) {
-          nom = new JEQVariable(s.substring(0,indf));
+          name = new JEQVariable(s.substring(0,indf));
           s = s.substring(indf+1, s.length-1);
         } else {
-          nom = parser(s.substring(0, indf2));
+          name = parser(s.substring(0, indf2));
           s = s.substring(indf2+1, s.length-1);
         }
-        // recherche des paramètres
+        // looking for parameters
         final List<JEQ> vp = new List<JEQ>();
-        //indv = s.indexOf(';'); marche pas avec f(g(a;b);c)
+        //indv = s.indexOf(';'); does not work with f(g(a;b);c)
         int indv = -1;
         pp = 0;
         for (int i=0; i<s.length; i++) {
@@ -387,7 +389,7 @@ class StringMathBuilder {
             if (indv == -1)
               vp.add(parser(s.trim()));
           }
-        return(new JEQFonction(nom, vp));
+        return(new JEQFunction(name, vp));
       } else
         return(new JEQVariable(s));
     }
@@ -411,7 +413,7 @@ class StringMathBuilder {
 
   static MathElement elemOrQuestion(final JEQ jeq) {
     if (jeq != null)
-      return jeq.versMathML();
+      return jeq.toMathML();
     final MathText mtext = new MathText();
     mtext.addText("?");
     return mtext;
@@ -421,36 +423,36 @@ class StringMathBuilder {
 }
 
 abstract class JEQ {
-  MathElement versMathML();
-  void setUnites();
+  MathElement toMathML();
+  void setUnits();
 }
 
-class JEQFonction implements JEQ {
-  JEQ nom;
+class JEQFunction implements JEQ {
+  JEQ name;
   List<JEQ> vp;
   final RegExp namesExpr = new RegExp("^[0-9]+.*\$");
-  JEQFonction(final JEQ nom, final List<JEQ> arguments) {
-    this.nom = nom;
-    if (nom is JEQVariable && namesExpr.hasMatch(nom.nom)) {
-      // un nom de fonction qui commence par des chiffres ?!?
-      nom.nom = "?";
+  JEQFunction(final JEQ name, final List<JEQ> arguments) {
+    this.name = name;
+    if (name is JEQVariable && namesExpr.hasMatch(name.name)) {
+      // a function name starting with digits ?!?
+      name.name = "?";
     }
     vp = arguments;
-    if ((getNomFct() == "unité" || getNomFct() == "unit") && vp.length > 1 && vp[1] != null)
-      vp[1].setUnites();
+    if ((getFctName() == "unité" || getFctName() == "unit") && vp.length > 1 && vp[1] != null)
+      vp[1].setUnits();
   }
-  void setUnites() {
+  void setUnits() {
     for (JEQ param in vp)
       if (param != null)
-        param.setUnites();
+        param.setUnits();
   }
-  String getNomFct() {
-    if (nom is JEQVariable)
-      return((nom as JEQVariable).nom);
+  String getFctName() {
+    if (name is JEQVariable)
+      return((name as JEQVariable).name);
     else
       return(null);
   }
-  MathElement versMathML() {
+  MathElement toMathML() {
     JEQ p1, p2, p3, p4;
     if (vp.length > 0)
       p1 = vp[0];
@@ -468,22 +470,22 @@ class JEQFonction implements JEQ {
       p4 = vp[3];
     else
       p4 = null;
-    String nomfct = getNomFct();
+    String fctname = getFctName();
     MathElement me;
-    if (nomfct == "sqrt" || (nomfct == "racine" && (p1 == null || p2 == null))) {
+    if (fctname == "sqrt" || (fctname == "racine" && (p1 == null || p2 == null))) {
       me = new MathSqrt();
       me.addMathElement(StringMathBuilder.elemOrQuestion(p1));
-    } else if (nomfct == "racine" || nomfct == "root") {
+    } else if (fctname == "racine" || fctname == "root") {
       me = new MathRoot();
       me.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       me.addMathElement(StringMathBuilder.elemOrQuestion(p2));
-    } else if (nomfct == "exp") {
+    } else if (fctname == "exp") {
       me = new MathSup();
       final MathIdentifier mi = new MathIdentifier();
       mi.addText("e");
       me.addMathElement(mi);
       me.addMathElement(StringMathBuilder.elemOrQuestion(p1));
-    } else if (nomfct == "abs") {
+    } else if (fctname == "abs") {
       me = new MathRow();
       MathOperator mo = new MathOperator();
       mo.addText("|");
@@ -492,7 +494,7 @@ class JEQFonction implements JEQ {
       mo = new MathOperator();
       mo.addText("|");
       me.addMathElement(mo);
-    } else if (nomfct == "norm" || nomfct == "norme") {
+    } else if (fctname == "norm" || fctname == "norme") {
       me = new MathRow();
       MathOperator mo = new MathOperator();
       mo.addText("\u2016");
@@ -501,17 +503,17 @@ class JEQFonction implements JEQ {
       mo = new MathOperator();
       mo.addText("\u2016");
       me.addMathElement(mo);
-    } else if (nomfct == "fact" || nomfct == "factorielle"
-        || nomfct == "factorial") {
+    } else if (fctname == "fact" || fctname == "factorielle"
+        || fctname == "factorial") {
       me = new MathRow();
       MathOperator mo;
-      if (!(p1 is JEQVariable || p1 is JEQNombre)) {
+      if (!(p1 is JEQVariable || p1 is JEQNumber)) {
         mo = new MathOperator();
         mo.addText("(");
         me.addMathElement(mo);
       }
-      me.addMathElement(p1.versMathML());
-      if (!(p1 is JEQVariable || p1 is JEQNombre)) {
+      me.addMathElement(p1.toMathML());
+      if (!(p1 is JEQVariable || p1 is JEQNumber)) {
         mo = new MathOperator();
         mo.addText(")");
         me.addMathElement(mo);
@@ -519,7 +521,7 @@ class JEQFonction implements JEQ {
       mo = new MathOperator();
       mo.addText("!");
       me.addMathElement(mo);
-    } else if (nomfct == "int" || nomfct == "intégrale") {
+    } else if (fctname == "int" || fctname == "intégrale") {
       me = new MathRow();
       MathOperator mo = new MathOperator();
       mo.addText("\u222B");
@@ -549,17 +551,17 @@ class JEQFonction implements JEQ {
         mo = new MathOperator();
         mo.addText("d"); // &DifferentialD;
         mrow.addMathElement(mo);
-        mrow.addMathElement(p2.versMathML());
+        mrow.addMathElement(p2.toMathML());
       }
       me.addMathElement(mrow);
-    } else if (nomfct == "prod" || nomfct == "sum" ||
-        nomfct == "produit" || nomfct == "somme") {
+    } else if (fctname == "prod" || fctname == "sum" ||
+        fctname == "produit" || fctname == "somme") {
       me = new MathRow();
       final MathUnderOver munderover = new MathUnderOver();
       final MathOperator mo = new MathOperator();
-      if (nomfct == "prod" || nomfct == "produit")
+      if (fctname == "prod" || fctname == "produit")
         mo.addText("\u220F");
-      else if (nomfct == "sum" || nomfct == "somme")
+      else if (fctname == "sum" || fctname == "somme")
         mo.addText("\u2211");
       mo.setStretchy(true);
       munderover.addMathElement(mo);
@@ -569,18 +571,18 @@ class JEQFonction implements JEQ {
       final MathRow mrow = new MathRow();
       mrow.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       me.addMathElement(mrow);
-    } else if (nomfct == "over" || nomfct == "dessus") {
+    } else if (fctname == "over" || fctname == "dessus") {
       final MathOver mover = new MathOver();
       mover.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       mover.addMathElement(StringMathBuilder.elemOrQuestion(p2));
       me = mover;
-    } else if (nomfct == "subsup") {
+    } else if (fctname == "subsup") {
       final MathSubSup msubsup = new MathSubSup();
       msubsup.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       msubsup.addMathElement(StringMathBuilder.elemOrQuestion(p2));
       msubsup.addMathElement(StringMathBuilder.elemOrQuestion(p3));
       me = msubsup;
-    } else if (nomfct == "accent") {
+    } else if (fctname == "accent") {
       final MathOver mover = new MathOver();
       mover.setAccent(true);
       mover.addMathElement(StringMathBuilder.elemOrQuestion(p1));
@@ -592,7 +594,7 @@ class JEQFonction implements JEQ {
       } else
         mover.addMathElement(StringMathBuilder.elemOrQuestion(p2));
       me = mover;
-    } else if (nomfct == "matrix" || nomfct == "matrice") {
+    } else if (fctname == "matrix" || fctname == "matrice") {
       me = new MathRow();
       MathOperator mo = new MathOperator();
       mo.addText("(");
@@ -600,11 +602,11 @@ class JEQFonction implements JEQ {
       final MathTable mtable = new MathTable();
       for (final JEQ mel in vp)
         mtable.addMathElement(StringMathBuilder.elemOrQuestion(mel));
-          me.addMathElement(mtable);
-          mo = new MathOperator();
-          mo.addText(")");
-          me.addMathElement(mo);
-    } else if (nomfct == "system" || nomfct == "système") {
+      me.addMathElement(mtable);
+      mo = new MathOperator();
+      mo.addText(")");
+      me.addMathElement(mo);
+    } else if (fctname == "system" || fctname == "système") {
       me = new MathRow();
       final MathOperator mo = new MathOperator();
       mo.addText("{");
@@ -619,26 +621,26 @@ class JEQFonction implements JEQ {
         mtable.addMathElement(mrow);
       }
       me.addMathElement(mtable);
-    } else if (nomfct == "line" || nomfct == "ligne") {
+    } else if (fctname == "line" || fctname == "ligne") {
       me = new MathTableRow();
       for (final JEQ mel in vp) {
         final MathTableData mtd = new MathTableData();
         mtd.addMathElement(StringMathBuilder.elemOrQuestion(mel));
         me.addMathElement(mtd);
       }
-    } else if (nomfct == "slash") {
+    } else if (fctname == "slash") {
       me = new MathRow();
       me.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       final MathOperator mo = new MathOperator();
       mo.addText("/"); // could be \u2215
       me.addMathElement(mo);
       me.addMathElement(StringMathBuilder.elemOrQuestion(p2));
-    } else if (nomfct == "frac" || nomfct == "fraction") {
+    } else if (fctname == "frac" || fctname == "fraction") {
       final MathFrac mfrac = new MathFrac();
       mfrac.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       mfrac.addMathElement(StringMathBuilder.elemOrQuestion(p2));
       me = mfrac;
-    } else if (nomfct == "pscalaire" || nomfct == "scalarp") {
+    } else if (fctname == "pscalaire" || fctname == "scalarp") {
       final MathRow mrow = new MathRow();
       mrow.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       final MathOperator mo = new MathOperator();
@@ -646,14 +648,14 @@ class JEQFonction implements JEQ {
       mrow.addMathElement(mo);
       mrow.addMathElement(StringMathBuilder.elemOrQuestion(p2));
       return mrow;
-    } else if (nomfct == "dtemps" || nomfct == "timed") {
+    } else if (fctname == "dtemps" || fctname == "timed") {
       final MathOver mover = new MathOver();
       mover.setAccent(true);
       mover.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       MathOperator mop = new MathOperator();
-      if (p2 is JEQNombre) {
+      if (p2 is JEQNumber) {
         try {
-          final int n = int.parse(p2.valeur);
+          final int n = int.parse(p2.value);
           String spts = "";
           for (int i=0; i<n; i++)
             spts = spts + '.';
@@ -665,7 +667,7 @@ class JEQFonction implements JEQ {
         mop.addText("?");
       mover.addMathElement(mop);
       me = mover;
-    } else if (nomfct == "unité" || nomfct == "unit") {
+    } else if (fctname == "unité" || fctname == "unit") {
       final MathRow mrow = new MathRow();
       mrow.addMathElement(StringMathBuilder.elemOrQuestion(p1));
       final MathOperator mo = new MathOperator();
@@ -673,7 +675,7 @@ class JEQFonction implements JEQ {
       mrow.addMathElement(mo);
       mrow.addMathElement(StringMathBuilder.elemOrQuestion(p2));
       return mrow;
-    } else if (nomfct == "moyenne" || nomfct == "mean") {
+    } else if (fctname == "moyenne" || fctname == "mean") {
       me = new MathRow();
       MathOperator mo = new MathOperator();
       mo.addText("\u2329");
@@ -682,8 +684,8 @@ class JEQFonction implements JEQ {
       mo = new MathOperator();
       mo.addText("\u232A");
       me.addMathElement(mo);
-    } else if (nomfct == "vecteur" || nomfct == "vector") {
-      // les vecteurs sont affichés en gras quand c'est possible
+    } else if (fctname == "vecteur" || fctname == "vector") {
+      // vectors are displayed in bold whenever possible
       final MathElement mp1 = StringMathBuilder.elemOrQuestion(p1);
       if (mp1 is MathIdentifier) {
         mp1.setMathvariant("bold");
@@ -704,35 +706,35 @@ class JEQFonction implements JEQ {
     } else {
       me = new MathRow();
       bool par = true;
-      if (nom is JEQVariable) {
+      if (name is JEQVariable) {
         MathText mt = new MathText();
-        for (final List<String> tsymbole in StringMathBuilder.symboles_id)
-          if (nomfct == tsymbole[0]) {
-            nomfct = tsymbole[1];
+        for (final List<String> tsymbole in StringMathBuilder.id_symbols)
+          if (fctname == tsymbole[0]) {
+            fctname = tsymbole[1];
             break;
           }
-        for (final List<String> tsymbole in StringMathBuilder.symboles_droits)
-          if (nomfct == tsymbole[0]) {
-            nomfct = tsymbole[1];
+        for (final List<String> tsymbole in StringMathBuilder.roman_symbols)
+          if (fctname == tsymbole[0]) {
+            fctname = tsymbole[1];
             break;
           }
-        mt.addText(nomfct);
+        mt.addText(fctname);
         if (p2 == null && p1 is JEQVariable)
           for (final String element in StringMathBuilder.fctnopar)
-            if (nomfct == element) {
+            if (fctname == element) {
               par = false;
               break;
             }
         me.addMathElement(mt);
       } else
-        me.addMathElement(nom.versMathML());
+        me.addMathElement(name.toMathML());
       if (par) {
         final MathOperator mo = new MathOperator();
-        mo.addText("("); // \u2061 = &ApplyFunction; serait mieux mais pas reconnu
+        mo.addText("("); // \u2061 = &ApplyFunction; would be better but not recognized
         me.addMathElement(mo);
       }
       me.addMathElement(StringMathBuilder.elemOrQuestion(p1));
-      for (int i=1; i<vp.length; i++) { // ATTENTION, LA BOUCLE COMMENCE A 1
+      for (int i=1; i<vp.length; i++) { // WARNING the loop starts at 1
         final MathOperator mo = new MathOperator();
       mo.addText(";");
       me.addMathElement(mo);
@@ -744,7 +746,7 @@ class JEQFonction implements JEQ {
         me.addMathElement(mo);
       } else {
         final MathText mtext = new MathText();
-        mtext.addText("\u00A0"); // nbsp, mspace serait mieux
+        mtext.addText("\u00A0"); // nbsp, mspace would be better
         me.addMathElement(mtext);
       }
     }
@@ -755,23 +757,23 @@ class JEQFonction implements JEQ {
 class JEQOperation implements JEQ {
   String op;
   JEQ p1, p2;
-  bool unites;
-  JEQOperation(final String operateur, final JEQ p1, final JEQ p2) {
-    op = operateur;
+  bool units;
+  JEQOperation(final String op, final JEQ p1, final JEQ p2) {
+    this.op = op;
     this.p1 = p1;
     this.p2 = p2;
-    unites = false;
+    units = false;
     if (op == '#' && p2 != null)
-      p2.setUnites();
+      p2.setUnits();
   }
-  void setUnites() {
-    unites = true;
+  void setUnits() {
+    units = true;
     if (p1 != null)
-      p1.setUnites();
+      p1.setUnits();
     if (p2 != null)
-      p2.setUnites();
+      p2.setUnits();
   }
-  MathElement versMathML() {
+  MathElement toMathML() {
     if (op == '/') {
       final MathFrac mfrac = new MathFrac();
       mfrac.addMathElement(StringMathBuilder.elemOrQuestion(p1));
@@ -780,15 +782,15 @@ class JEQOperation implements JEQ {
     } else if (op == '^') {
       final MathSup msup = new MathSup();
       bool par;
-      if (p1 is JEQFonction) {
-        String nomfct = (p1 as JEQFonction).getNomFct();
-        if (nomfct == "sqrt" || nomfct == "racine")
+      if (p1 is JEQFunction) {
+        String fctname = (p1 as JEQFunction).getFctName();
+        if (fctname == "sqrt" || fctname == "racine")
           par = false;
-        else if (nomfct == "abs")
+        else if (fctname == "abs")
           par = false;
-        else if (nomfct == "matrice")
+        else if (fctname == "matrice")
           par = false;
-        else if (nomfct == "dtemps" || nomfct == "timed")
+        else if (fctname == "dtemps" || fctname == "timed")
           par = false;
         else
           par = true;
@@ -803,7 +805,7 @@ class JEQOperation implements JEQ {
         par = false;
       MathElement me1;
       if (par)
-        me1 = ajPar(p1.versMathML());
+        me1 = addPar(p1.toMathML());
       else
         me1 = StringMathBuilder.elemOrQuestion(p1);
       msup.addMathElement(me1);
@@ -823,41 +825,33 @@ class JEQOperation implements JEQ {
       final MathRow mrow = new MathRow();
       MathElement me1 = StringMathBuilder.elemOrQuestion(p1);
       if (p1 is JEQOperation && "+-".indexOf((p1 as JEQOperation).op) != -1)
-        me1 = ajPar(me1);
+        me1 = addPar(me1);
       mrow.addMathElement(me1);
 
-      /*
-      JEQ dernierDansP1 = p1;
-      if (p1 != null)
-      while (dernierDansP1 is JEQOperation && ((JEQOperation)dernierDansP1).p2 != null) {
-      dernierDansP1 = ((JEQOperation)dernierDansP1).p2;
-      }
-      final bool p1nombre = dernierDansP1 is JEQNombre;
-       */
-      JEQ premierDansP2 = p2;
+      JEQ firstInP2 = p2;
       if (p2 != null)
-        while (premierDansP2 is JEQOperation && premierDansP2.p1 != null) {
-          premierDansP2 = (premierDansP2 as JEQOperation).p1;
+        while (firstInP2 is JEQOperation && firstInP2.p1 != null) {
+          firstInP2 = (firstInP2 as JEQOperation).p1;
         }
-      final bool p2nombre = premierDansP2 is JEQNombre;
-      bool pscalaire1 = false;
-      if (p1 is JEQFonction) {
-        final String nomfct = (p1 as JEQFonction).getNomFct();
+      final bool p2number = firstInP2 is JEQNumber;
+      bool scalarp1 = false;
+      if (p1 is JEQFunction) {
+        final String nomfct = (p1 as JEQFunction).getFctName();
         if (nomfct == "pscalaire" || nomfct == "scalarp")
-          pscalaire1 = true;
+          scalarp1 = true;
       }
-      bool pscalaire2 = false;
-      if (p2 is JEQFonction) {
-        final String nomfct = (p2 as JEQFonction).getNomFct();
+      bool scalarp2 = false;
+      if (p2 is JEQFunction) {
+        final String nomfct = (p2 as JEQFunction).getFctName();
         if (nomfct == "pscalaire" || nomfct == "scalarp")
-          pscalaire2 = true;
+          scalarp2 = true;
       }
-      if ((/*p1nombre && */p2nombre) || (pscalaire1 && pscalaire2)) {
+      if (p2number || (scalarp1 && scalarp2)) {
         final MathOperator mo = new MathOperator();
         mo.addText("×");
         mrow.addMathElement(mo);
       } else {
-        if (unites) {
+        if (units) {
           final MathOperator mo = new MathOperator();
           mo.addText(".");
           mrow.addMathElement(mo);
@@ -867,38 +861,38 @@ class JEQOperation implements JEQ {
 
       MathElement me2 = StringMathBuilder.elemOrQuestion(p2);
       if (p2 is JEQOperation && "+-".indexOf((p2 as JEQOperation).op) != -1)
-        me2 = ajPar(me2);
+        me2 = addPar(me2);
       mrow.addMathElement(me2);
       return mrow;
     } else if (op == '-') {
       final MathRow mrow = new MathRow();
       if (p1 != null)
-        mrow.addMathElement(p1.versMathML());
+        mrow.addMathElement(p1.toMathML());
       final MathOperator mo = new MathOperator();
       mo.addText("-");
       mrow.addMathElement(mo);
       if (p2 != null) {
-        MathElement me2 = p2.versMathML();
+        MathElement me2 = p2.toMathML();
         if (p2 is JEQOperation && "+-".indexOf((p2 as JEQOperation).op) != -1)
-          me2 = ajPar(me2);
+          me2 = addPar(me2);
         mrow.addMathElement(me2);
       }
       return mrow;
     } else if (op == '+') {
       final MathRow mrow = new MathRow();
       if (p1 != null)
-        mrow.addMathElement(p1.versMathML());
+        mrow.addMathElement(p1.toMathML());
       final MathOperator mo = new MathOperator();
       mo.addText("+");
       mrow.addMathElement(mo);
       if (p2 != null) {
-        MathElement me2 = p2.versMathML();
+        MathElement me2 = p2.toMathML();
         if (me2 is MathRow && me2.getMathElementCount() > 0) {
           MathElement me2b = me2;
           while (me2b is MathRow && me2b.getMathElementCount() > 0)
             me2b = me2b.getMathElement(0);
           if (me2b.getText() == "-")
-            me2 = ajPar(me2);
+            me2 = addPar(me2);
         }
         mrow.addMathElement(me2);
       }
@@ -906,29 +900,29 @@ class JEQOperation implements JEQ {
     } else {
       final MathRow mrow = new MathRow();
       if (p1 != null) {
-        MathElement me1 = p1.versMathML();
+        MathElement me1 = p1.toMathML();
         if (op == '\u2227' && p1 is JEQOperation && "+-".indexOf((p1 as JEQOperation).op) != -1)
-          me1 = ajPar(me1);
+          me1 = addPar(me1);
         mrow.addMathElement(me1);
       }
       final MathOperator mo = new MathOperator();
       mo.addText(op);
       if ("=\u2260\u2248\u223C\u2261\u2264\u2265\u226A\u226B\u221D".indexOf(op) != -1) {
-        // espace autour des opérateurs d'égalité
+        // space around equality operators
         mo.setLspace(0.5);
         mo.setRspace(0.5);
       }
       mrow.addMathElement(mo);
       if (p2 != null) {
-        MathElement me2 = p2.versMathML();
+        MathElement me2 = p2.toMathML();
         if (op == '\u2227' && p2 is JEQOperation && "+-".indexOf((p2 as JEQOperation).op) != -1)
-          me2 = ajPar(me2);
+          me2 = addPar(me2);
         mrow.addMathElement(me2);
       }
       return mrow;
     }
   }
-  MathElement ajPar(final MathElement me) {
+  MathElement addPar(final MathElement me) {
     final MathRow mrow = new MathRow();
     MathOperator mo = new MathOperator();
     mo.addText("(");
@@ -941,66 +935,66 @@ class JEQOperation implements JEQ {
   }
 }
 
-class JEQNombre implements JEQ {
-  String valeur;
-  JEQNombre(final String valeur) {
-    this.valeur = valeur;
+class JEQNumber implements JEQ {
+  String value;
+  JEQNumber(final String value) {
+    this.value = value;
   }
-  void setUnites() {
+  void setUnits() {
   }
-  MathElement versMathML() {
+  MathElement toMathML() {
     final MathNumber mn = new MathNumber();
-    mn.addText(valeur);
+    mn.addText(value);
     return mn;
   }
 }
 
 class JEQVariable implements JEQ {
-  String nom;
-  bool unites;
+  String name;
+  bool units;
   final RegExp badExpr = new RegExp("^[0-9]+[a-zA-Z]+\$");
-  JEQVariable(final String nom) {
-    this.nom = nom.trim();
-    unites = false;
+  JEQVariable(final String name) {
+    this.name = name.trim();
+    units = false;
   }
-  void setUnites() {
-    unites = true;
+  void setUnits() {
+    units = true;
   }
-  MathElement versMathML() {
-    if (nom == "hat" || nom == "chapeau") {
+  MathElement toMathML() {
+    if (name == "hat" || name == "chapeau") {
       final MathOperator mo = new MathOperator();
       mo.setStretchy(true);
       mo.addText("^");
       return mo;
-    } else if (nom == "bar" || nom == "barre") {
+    } else if (name == "bar" || name == "barre") {
       final MathOperator mo = new MathOperator();
       mo.setStretchy(true);
       mo.addText("\u00AF");
       return mo;
     } else {
-      String s = nom;
-      bool droit = unites;  // les unités ne doivent pas être en italique
-      for (final List<String> tsymbole in StringMathBuilder.symboles_id)
-        if (s == tsymbole[0]) {
-          s = tsymbole[1];
+      String s = name;
+      bool roman = units;  // units must not be in italics
+      for (final List<String> tsymbol in StringMathBuilder.id_symbols)
+        if (s == tsymbol[0]) {
+          s = tsymbol[1];
           break;
         }
-      for (final List<String> tsymbole in StringMathBuilder.symboles_droits)
-        if (s == tsymbole[0]) {
-          s = tsymbole[1];
-          droit = true;
+      for (final List<String> tsymbol in StringMathBuilder.roman_symbols)
+        if (s == tsymbol[0]) {
+          s = tsymbol[1];
+          roman = true;
           break;
         }
       if (s.indexOf(',') != -1 || s.indexOf('.') != -1 || s.indexOf('(') != -1 || s.indexOf(')') != -1)
-        s = "?"; // les ',' les '.' et les parenthèses sont interdits dans les noms de variables
+        s = "?"; // ',', '.' and parenthesis are prohibited in variable names
       if (s.indexOf(' ') != -1)
-        s = s.replaceAll(" ", "?"); // les espaces aussi !
-      if (s.indexOf('\u00A0') != -1) // pour les petits malins
+        s = s.replaceAll(" ", "?"); // spaces too
+      if (s.indexOf('\u00A0') != -1) // nice try
         s = s.replaceAll("\u00A0", "?");
       if (badExpr.hasMatch(s))
-        s = "?"; // il manque l'opérateur *
+        s = "?"; // missing * operator
       MathElement me;
-      if (droit)
+      if (roman)
         me = new MathText();
       else
         me = new MathIdentifier();

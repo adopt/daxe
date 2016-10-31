@@ -50,7 +50,7 @@ class Config {
   x.Element _menusNode;
   x.Element _displayNode;
   x.Element _exportsNode;
-  List<x.Element> _listeStrings;
+  List<x.Element> _stringsList;
 
   
   // CONSTRUCTORS AND INITIALIZATION
@@ -80,8 +80,6 @@ class Config {
       
       _cfgroot = configdoc.documentElement;
       
-      // AUTRE_CONFIG: ignored
-      
       _buildElementDisplayCache();
       _buildMenuTitleCache();
       
@@ -89,7 +87,7 @@ class Config {
       
       final String names = schemaName();
       if (names == null) {
-        final x.Element simple_schema = _findElement(_getLanguage(), "SCHEMA_SIMPLE");
+        final x.Element simple_schema = _findElement(_getLanguage(), "SIMPLE_SCHEMA");
         if (simple_schema == null) {
           completer.completeError(new DaxeException("Error: no XML schema is defined in the config file $cfgFilePath"));
           return;
@@ -137,7 +135,7 @@ class Config {
    * Returns the name of the first possible root element, or null if none are defined.
    */
   String nameOfFirstRootElement() {
-    final x.Element root = _findElement(_getLanguage(), "RACINE");
+    final x.Element root = _findElement(_getLanguage(), "ROOT");
     if (root == null)
       return(null);
     return(root.getAttribute("element"));
@@ -156,10 +154,10 @@ class Config {
    */
   List<String> listOfRoots() {
     final List<String> list = new List<String>();
-    x.Element root = _findElement(_getLanguage(), "RACINE");
+    x.Element root = _findElement(_getLanguage(), "ROOT");
     while (root != null) {
       list.add(root.getAttribute("element"));
-      root = _nextElement(root, "RACINE");
+      root = _nextElement(root, "ROOT");
     }
     return(list);
   }
@@ -174,13 +172,13 @@ class Config {
     // for the ones with the names given in the config.
     final List<x.Element> list = new List<x.Element>();
     final List<x.Element> possibleRoots = _schema.rootElements();
-    x.Element root = _findElement(_getLanguage(), "RACINE");
+    x.Element root = _findElement(_getLanguage(), "ROOT");
     while (root != null) {
       final String nom = root.getAttribute("element");
       for (final x.Element ref in possibleRoots)
         if (nom == _schema.elementName(ref))
           list.add(ref);
-          root = _nextElement(root, "RACINE");
+          root = _nextElement(root, "ROOT");
     }
     return(list);
   }
@@ -216,14 +214,14 @@ class Config {
   
   /**
    * Returns the name of the schema file as given in the config file
-   * (FICHIER_SCHEMA/@nom)
+   * (SCHEMA_FILE/@name)
    * Returns null if none is defined
    */
   String schemaName() {
-    final x.Element schemaFile = _findElement(_getLanguage(), "FICHIER_SCHEMA");
+    final x.Element schemaFile = _findElement(_getLanguage(), "SCHEMA_FILE");
     if (schemaFile == null)
       return(null);
-    String name = schemaFile.getAttribute("nom");
+    String name = schemaFile.getAttribute("name");
     if (name == "")
       name = null;
     return(name);
@@ -237,11 +235,11 @@ class Config {
     _elementDisplayCache = new HashMap<String, x.Element>();
     if (_cfgroot == null)
       return(_elementDisplayCache);
-    x.Element elDisplay = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    x.Element elDisplay = _findElement(_getNodeDisplay(), "ELEMENT_DISPLAY");
     while (elDisplay != null) {
       final String name = elDisplay.getAttribute("element");
       _elementDisplayCache[name] = elDisplay;
-      elDisplay = _nextElement(elDisplay, "AFFICHAGE_ELEMENT");
+      elDisplay = _nextElement(elDisplay, "ELEMENT_DISPLAY");
     }
     return(_elementDisplayCache);
   }
@@ -269,14 +267,14 @@ class Config {
     _menuTitleCache = new HashMap<String, String>();
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      List<x.Node> menuList = strings.getElementsByTagName("STRINGS_MENU");
+      List<x.Node> menuList = strings.getElementsByTagName("MENU_STRINGS");
       for (x.Node smn in menuList) {
         if (smn is! x.Element)
           continue;
         x.Element sm = smn;
         String name = sm.getAttribute("menu");
         if (_menuTitleCache[name] == null) {
-          final x.Element eltitle = _findElement(sm, "TITRE");
+          final x.Element eltitle = _findElement(sm, "TITLE");
           if (eltitle != null) {
             String title = _dom_elementValue(eltitle);
             if (title != null && title != '') {
@@ -297,7 +295,7 @@ class Config {
     final List<x.Element> list = new List<x.Element>();
     x.Element export = _findElement(_getExports(), "EXPORT");
     while (export != null) {
-      if (output == export.getAttribute("sortie"))
+      if (output == export.getAttribute("output"))
         list.add(export);
       export = _nextElement(export, "EXPORT");
     }
@@ -308,21 +306,21 @@ class Config {
    * Returns an export name based on its reference
    */
   String exportName(final x.Element exportRef) {
-    return(exportRef.getAttribute("nom"));
+    return(exportRef.getAttribute("name"));
   }
   
   /**
    * Returns the output of an export based on its reference
    */
   String exportOutput(final x.Element exportRef) {
-    return(exportRef.getAttribute("sortie"));
+    return(exportRef.getAttribute("output"));
   }
   
   /**
    * Returns the character encoding to use for new XML documents
    */
   String getEncoding() {
-    final x.Element encoding = _findElement(_getSaving(), "ENCODAGE");
+    final x.Element encoding = _findElement(_getSaving(), "ENCODING");
     if (encoding == null)
       return(null);
     return(_dom_elementValue(encoding));
@@ -369,11 +367,11 @@ class Config {
   String namespacePrefix(final String namespace) {
     if (namespace == "http://www.w3.org/XML/1998/namespace")
       return("xml");
-    x.Element pe = _findElement(_getSaving(), "PREFIXE_ESPACE");
+    x.Element pe = _findElement(_getSaving(), "NAMESPACE_PREFIX");
     while (pe != null) {
       if (namespace == pe.getAttribute("uri"))
         return(pe.getAttribute("prefixe"));
-      pe = _nextElement(pe, "PREFIXE_ESPACE");
+      pe = _nextElement(pe, "NAMESPACE_PREFIX");
     }
     return(_schema.namespacePrefix(namespace));
   }
@@ -388,7 +386,7 @@ class Config {
    * [menudef]: the MENU element in the config file.
    */
   Menu _creationMenu(final DaxeDocument doc, final x.Element menudef) {
-    final String menuName = menudef.getAttribute("nom");
+    final String menuName = menudef.getAttribute("name");
     final Menu menu = new Menu(menuTitle(menuName));
     String docMenu = menuDocumentation(menuName);
     if (docMenu != null) {
@@ -401,16 +399,16 @@ class Config {
       final String nodename = menuNode.nodeName;
       String shortcut = null;
       if (menuNode is x.Element) {
-        final String commande = menuNode.getAttribute("raccourci");
+        final String commande = menuNode.getAttribute("shortcut");
         if (commande != null && commande != "") {
           shortcut = commande.toUpperCase()[0];
         }
       }
-      if (nodename == "MENU_INSERTION") {
+      if (nodename == "INSERT_MENU") {
         final x.Element insNode = menuNode as x.Element;
-        final String name = insNode.getAttribute("nom");
+        final String name = insNode.getAttribute("name");
         final String title = menuTitle(name);
-        String nodeType = insNode.getAttribute("type_noeud");
+        String nodeType = insNode.getAttribute("node_type");
         if (nodeType == "")
           nodeType = "element";
         x.Element refElement;
@@ -428,10 +426,10 @@ class Config {
           //itemdoc = formatDoc(itemdoc);
           item.toolTipText = itemdoc;
         }
-      } else if (nodename == "MENU_FONCTION") {
+      } else if (nodename == "FUNCTION_MENU") {
         final x.Element function = menuNode as x.Element;
-        final String className = function.getAttribute("classe");
-        final String name = function.getAttribute("nom");
+        final String className = function.getAttribute("function_name");
+        final String name = function.getAttribute("name");
         final String title = menuTitle(name);
         item = new MenuItem(title, () => doc.executeFunction(className, function),
           shortcut: shortcut);
@@ -444,7 +442,7 @@ class Config {
       } else if (nodename == "MENU") {
         item = _creationMenu(doc, menuNode as x.Element);
         menu.add(item);
-      } else if (nodename == "SEPARATEUR")
+      } else if (nodename == "SEPARATOR")
         menu.addSeparator();
       
       menuNode = menuNode.nextSibling;
@@ -1051,24 +1049,14 @@ class Config {
       if (elDisplay == null)
         return(_defaultDisplayType);
       return(elDisplay.getAttribute("type"));
+    } else if (nodeType == x.Node.DOCUMENT_NODE) {
+      return("xmldocument");
     } else if (nodeType == x.Node.PROCESSING_INSTRUCTION_NODE) {
-      x.Element pluginEl = _findElement(_getNodeDisplay(), "PLUGIN_INSTRUCTION");
-      while (pluginEl != null) {
-        if (name != null && name == pluginEl.getAttribute("cible"))
-          return("plugin");
-        pluginEl = _nextElement(pluginEl, "PLUGIN_INSTRUCTION");
-      }
-      return("instruction");
+      return("xmlpi");
     } else if (nodeType == x.Node.COMMENT_NODE) {
-      final x.Element pluginEl = _findElement(_getNodeDisplay(), "PLUGIN_COMMENTAIRE");
-      if (pluginEl != null)
-        return("plugin");
-      return("comment");
+      return("xmlcomment");
     } else if (nodeType == x.Node.CDATA_SECTION_NODE) {
-      final x.Element pluginEl = _findElement(_getNodeDisplay(), "PLUGIN_CDATA");
-      if (pluginEl != null)
-        return("plugin");
-      return("cdata");
+      return("xmlcdata");
     } else if (nodeType == x.Node.TEXT_NODE) {
       return("text");
     }
@@ -1091,11 +1079,11 @@ class Config {
   x.Element firstElementWithType(final String displayType) {
     if (_cfgroot == null)
       return(null);
-    x.Element elDisplay = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    x.Element elDisplay = _findElement(_getNodeDisplay(), "ELEMENT_DISPLAY");
     while (elDisplay != null) {
       if (displayType == elDisplay.getAttribute("type"))
         return(elementReference(elDisplay.getAttribute("element")));
-      elDisplay = _nextElement(elDisplay, "AFFICHAGE_ELEMENT");
+      elDisplay = _nextElement(elDisplay, "ELEMENT_DISPLAY");
     }
     return(null);
   }
@@ -1107,11 +1095,11 @@ class Config {
     if (_cfgroot == null)
       return(null);
     List<x.Element> list = new List<x.Element>();
-    x.Element elDisplay = _findElement(_getNodeDisplay(), "AFFICHAGE_ELEMENT");
+    x.Element elDisplay = _findElement(_getNodeDisplay(), "ELEMENT_DISPLAY");
     while (elDisplay != null) {
       if (displayType == elDisplay.getAttribute("type"))
         list.addAll(elementReferences(elDisplay.getAttribute("element")));
-      elDisplay = _nextElement(elDisplay, "AFFICHAGE_ELEMENT");
+      elDisplay = _nextElement(elDisplay, "ELEMENT_DISPLAY");
     }
     return(list);
   }
@@ -1148,22 +1136,22 @@ class Config {
    * [defaultValue] is returned if the parameter is not found.
    */
   String functionParameterValue(final x.Element fctdef, final String parameterName, final String defaultValue) {
-    x.Element parel = _findElement(fctdef, "PARAMETRE");
+    x.Element parel = _findElement(fctdef, "PARAMETER");
     while (parel != null) {
-      final String name = parel.getAttribute("nom");
+      final String name = parel.getAttribute("name");
       if (name == parameterName)
-        return(parel.getAttribute("valeur"));
-      parel = _nextElement(parel, "PARAMETRE");
+        return(parel.getAttribute("value"));
+      parel = _nextElement(parel, "PARAMETER");
     }
     return(defaultValue);
   }
 
   HashMap<String, List<String>> _buildParameterCache(final x.Element base) {
     final HashMap<String, List<String>> hashparams = new HashMap<String, List<String>>();
-    x.Element parel = _findElement(base, "PARAMETRE");
+    x.Element parel = _findElement(base, "PARAMETER");
     while (parel != null) {
-      final String name = parel.getAttribute("nom");
-      final String value = parel.getAttribute("valeur");
+      final String name = parel.getAttribute("name");
+      final String value = parel.getAttribute("value");
       List<String> lval = hashparams[name];
       if (lval == null) {
         lval = new List<String>();
@@ -1171,7 +1159,7 @@ class Config {
         hashparams[name] = lval;
       } else
         lval.add(value);
-      parel = _nextElement(parel, "PARAMETRE");
+      parel = _nextElement(parel, "PARAMETER");
     }
     _parametersCache[base] = hashparams;
     return(hashparams);
@@ -1192,24 +1180,7 @@ class Config {
     x.Element base;
     if (nodeType == "element")
       base = getElementDisplay(elementName(elementRef));
-    else if (nodeType == "instruction") {
-      base = null;
-      x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_INSTRUCTION");
-      while (elplug != null) {
-        if (name != null && name == elplug.getAttribute("cible")) {
-          base = elplug;
-          break;
-        }
-        elplug = _nextElement(elplug, "PLUGIN_INSTRUCTION");
-      }
-    } else if (nodeType == "commentaire") {
-      final x.Element elplug = _findElement(_getNodeDisplay(), "PLUGIN_COMMENTAIRE");
-      if (elplug == null) {
-        base = null;
-      } else {
-        base = elplug;
-      }
-    } else
+    else
       base = null;
     if (base == null)
       return(new HashMap<String, List<String>>());
@@ -1232,12 +1203,12 @@ class Config {
       set.addAll(_schema.suggestedElementValues(elementRef));
     final x.Element elDisplay = getElementDisplay(elementName(elementRef));
     if (elDisplay != null) {
-      x.Element sv = _findElement(elDisplay, "VALEUR_SUGGEREE");
+      x.Element sv = _findElement(elDisplay, "SUGGESTED_VALUE");
       while (sv != null) {
         final String v = _dom_elementValue(sv);
         if (v != null)
           set.add(v);
-        sv = _nextElement(sv, "VALEUR_SUGGEREE");
+        sv = _nextElement(sv, "SUGGESTED_VALUE");
       }
     }
     if (set.length == 0)
@@ -1259,18 +1230,18 @@ class Config {
     final x.Element elDisplay = getElementDisplay(elementName(parentRef));
     if (elDisplay != null) {
       final String attName = attributeName(attributeRef);
-      x.Element attDisplay = _findElement(elDisplay, "AFFICHAGE_ATTRIBUT");
+      x.Element attDisplay = _findElement(elDisplay, "ATTRIBUTE_DISPLAY");
       while (attDisplay != null) {
-        if (attDisplay.getAttribute("attribut") == attName) {
-          x.Element sv = _findElement(attDisplay, "VALEUR_SUGGEREE");
+        if (attDisplay.getAttribute("attribute") == attName) {
+          x.Element sv = _findElement(attDisplay, "SUGGESTED_VALUE");
           while (sv != null) {
             final String v = _dom_elementValue(sv);
             if (v != null)
               set.add(v);
-            sv = _nextElement(sv, "VALEUR_SUGGEREE");
+            sv = _nextElement(sv, "SUGGESTED_VALUE");
           }
         }
-        attDisplay = _nextElement(attDisplay, "AFFICHAGE_ATTRIBUT");
+        attDisplay = _nextElement(attDisplay, "ATTRIBUTE_DISPLAY");
       }
     }
     if (set.length == 0)
@@ -1292,32 +1263,32 @@ class Config {
     
     final List<x.Element> lstrings = _getStrings();
     for (final x.Element strings in lstrings) {
-      final String language = strings.getAttribute("langue");
+      final String language = strings.getAttribute("language");
       if (language != "") {
         Locale strloc;
-        if (strings.getAttribute("pays") == "")
+        if (strings.getAttribute("country") == "")
           strloc = new Locale.l(language);
         else
-          strloc = new Locale.lc(language, strings.getAttribute("pays"));
+          strloc = new Locale.lc(language, strings.getAttribute("country"));
         if (defaultLocale == strloc && !list.contains(strings))
           list.add(strings);
       }
     }
     for (final x.Element strings in lstrings) {
-      final String language = strings.getAttribute("langue");
+      final String language = strings.getAttribute("language");
       if (language != "") {
         final Locale test = new Locale.lc(defaultLocale.language, defaultLocale.country);
         Locale strloc;
-        if (strings.getAttribute("pays") == "")
+        if (strings.getAttribute("country") == "")
           strloc = new Locale.l(language);
         else
-          strloc = new Locale.lc(language, strings.getAttribute("pays"));
+          strloc = new Locale.lc(language, strings.getAttribute("country"));
         if (test == strloc && !list.contains(strings))
           list.add(strings);
       }
     }
     for (final x.Element strings in lstrings) {
-      final String language = strings.getAttribute("langue");
+      final String language = strings.getAttribute("language");
       if (language != "") {
         final Locale test = new Locale.l(defaultLocale.language);
         if (test == new Locale.l(language) && !list.contains(strings))
@@ -1337,7 +1308,7 @@ class Config {
   String description() {
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      final x.Element descel = _findElement(strings, "DESCRIPTION_CONFIG");
+      final x.Element descel = _findElement(strings, "CONFIG_DESCRIPTION");
       if (descel == null || descel.firstChild == null)
         break;
       String desc = _dom_elementValue(descel);
@@ -1364,7 +1335,7 @@ class Config {
   String menuDocumentation(final String name) {
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      x.Element sm = _findElementDeep(strings, "STRINGS_MENU");
+      x.Element sm = _findElementDeep(strings, "MENU_STRINGS");
       while (sm != null) {
         if (name == sm.getAttribute("menu")) {
           final x.Element eldoc = _findElement(sm, "DOCUMENTATION");
@@ -1373,7 +1344,7 @@ class Config {
           }
           break;
         }
-        sm = _nextElementDeep(strings, sm, "STRINGS_MENU");
+        sm = _nextElementDeep(strings, sm, "MENU_STRINGS");
       }
     }
     return(null);
@@ -1383,17 +1354,17 @@ class Config {
     HashMap<String, String> h = new HashMap<String, String>();
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+      x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
       while (sel != null) {
         String name = sel.getAttribute("element");
         if (h[name] == null) {
           String titre = name;
-          final x.Element eltitre = _findElement(sel, "TITRE");
+          final x.Element eltitre = _findElement(sel, "TITLE");
           if (eltitre != null && eltitre.firstChild != null)
             titre = _dom_elementValue(eltitre);
           h[name] = titre;
         }
-        sel = _nextElement(sel, "STRINGS_ELEMENT");
+        sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
     return(h);
@@ -1415,17 +1386,17 @@ class Config {
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
       if (title == null) {
-        x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+        x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
         while (sel != null) {
           if (sel.getAttribute("element") == name) {
-            final x.Element titleel = _findElement(sel, "TITRE");
+            final x.Element titleel = _findElement(sel, "TITLE");
             if (titleel != null && titleel.firstChild != null) {
               title = _dom_elementValue(titleel);
               break;
             }
             break;
           }
-          sel = _nextElement(sel, "STRINGS_ELEMENT");
+          sel = _nextElement(sel, "ELEMENT_STRINGS");
         }
       }
     }
@@ -1444,7 +1415,7 @@ class Config {
     final String name = elementName(elementRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+      x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
       while (sel != null) {
         if (name == sel.getAttribute("element")) {
           final x.Element eldoc = _findElement(sel, "DOCUMENTATION");
@@ -1452,7 +1423,7 @@ class Config {
             return(_dom_elementValue(eldoc));
           break;
         }
-        sel = _nextElement(sel, "STRINGS_ELEMENT");
+        sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
     return(_schema.elementDocumentation(elementRef));
@@ -1490,24 +1461,24 @@ class Config {
     final List<x.Element> lstrings = _stringsElements();
     final String osLanguage = (new Locale()).language;
     for (final x.Element strings in lstrings) {
-      x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+      x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
       while (sel != null) {
         if (sel.getAttribute("element") == name) {
-          x.Element tvel = _findElement(sel, "TITRE_VALEUR");
+          x.Element tvel = _findElement(sel, "VALUE_TITLE");
           while (tvel != null) {
-            if (tvel.getAttribute("valeur") == value &&
+            if (tvel.getAttribute("value") == value &&
                 tvel.firstChild != null)
               return(_dom_elementValue(tvel));
-            tvel = _nextElement(tvel, "TITRE_VALEUR");
+            tvel = _nextElement(tvel, "VALUE_TITLE");
           }
           break;
         }
-        sel = _nextElement(sel, "STRINGS_ELEMENT");
+        sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
       // the language was found but there is no matching TITRE_VALEUR
       // -> we return the real value rather than looking
       // for a title in other languages.
-      final String language = strings.getAttribute("langue");
+      final String language = strings.getAttribute("language");
       if (language == osLanguage)
         return(value);
     }
@@ -1522,21 +1493,21 @@ class Config {
     final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+      x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
       while (sel != null) {
         if (sel.getAttribute("element") == elName) {
-          x.Element sat = _findElement(sel, "STRINGS_ATTRIBUT");
+          x.Element sat = _findElement(sel, "ATTRIBUTE_STRINGS");
           while (sat != null) {
-            if (sat.getAttribute("attribut") == attName) {
-              final x.Element eltitre = _findElement(sat, "TITRE");
+            if (sat.getAttribute("attribute") == attName) {
+              final x.Element eltitre = _findElement(sat, "TITLE");
               if (eltitre != null && eltitre.firstChild != null)
                 return(_dom_elementValue(eltitre));
               break;
             }
-            sat = _nextElement(sat, "STRINGS_ATTRIBUT");
+            sat = _nextElement(sat, "ATTRIBUTE_STRINGS");
           }
         }
-        sel = _nextElement(sel, "STRINGS_ELEMENT");
+        sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
     final String prefix = attributePrefix(parentRef, attributeRef);
@@ -1555,30 +1526,30 @@ class Config {
     final List<x.Element> lstrings = _stringsElements();
     final String osLanguage = (new Locale()).language;
     for (final x.Element strings in lstrings) {
-      x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+      x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
       while (sel != null) {
         if (sel.getAttribute("element") == elName) {
-          x.Element sat = _findElement(sel, "STRINGS_ATTRIBUT");
+          x.Element sat = _findElement(sel, "ATTRIBUTE_STRINGS");
           while (sat != null) {
-            if (sat.getAttribute("attribut") == attName) {
-              x.Element eltitrev = _findElement(sat, "TITRE_VALEUR");
+            if (sat.getAttribute("attribute") == attName) {
+              x.Element eltitrev = _findElement(sat, "VALUE_TITLE");
               while (eltitrev != null) {
-                if (eltitrev.getAttribute("valeur") == value &&
+                if (eltitrev.getAttribute("value") == value &&
                     eltitrev.firstChild != null)
                   return(_dom_elementValue(eltitrev));
-                eltitrev = _nextElement(eltitrev, "TITRE_VALEUR");
+                eltitrev = _nextElement(eltitrev, "VALUE_TITLE");
               }
               break;
             }
-            sat = _nextElement(sat, "STRINGS_ATTRIBUT");
+            sat = _nextElement(sat, "ATTRIBUTE_STRINGS");
           }
         }
-        sel = _nextElement(sel, "STRINGS_ELEMENT");
+        sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
       // The language was found but there is no matching TITRE_VALEUR
       // -> we return the real attribute value rather than looking
       // for a title in other languages.
-      final String language = strings.getAttribute("langue");
+      final String language = strings.getAttribute("language");
       if (language == osLanguage)
         return(value);
     }
@@ -1594,21 +1565,21 @@ class Config {
     final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
     for (final x.Element strings in lstrings) {
-      x.Element sel = _findElement(strings, "STRINGS_ELEMENT");
+      x.Element sel = _findElement(strings, "ELEMENT_STRINGS");
       while (sel != null) {
         if (sel.getAttribute("element") == elName) {
-          x.Element sat = _findElement(sel, "STRINGS_ATTRIBUT");
+          x.Element sat = _findElement(sel, "ATTRIBUTE_STRINGS");
           while (sat != null) {
-            if (sat.getAttribute("attribut") == attName) {
+            if (sat.getAttribute("attribute") == attName) {
               final x.Element eldoc = _findElement(sat, "DOCUMENTATION");
               if (eldoc != null &&eldoc.firstChild != null)
                 return(_dom_elementValue(eldoc));
               break;
             }
-            sat = _nextElement(sat, "STRINGS_ATTRIBUT");
+            sat = _nextElement(sat, "ATTRIBUTE_STRINGS");
           }
         }
-        sel = _nextElement(sel, "STRINGS_ELEMENT");
+        sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
     return(_schema.attributeDocumentation(attributeRef));
@@ -1624,7 +1595,7 @@ class Config {
       x.Element export = _findElement(strings, "STRINGS_EXPORT");
       while (export != null) {
         if (name == export.getAttribute("export")) {
-          final x.Element titleel = _findElement(export, "TITRE");
+          final x.Element titleel = _findElement(export, "TITLE");
           if (titleel != null && titleel.firstChild != null)
             return(_dom_elementValue(titleel));
           break;
@@ -1675,16 +1646,16 @@ class Config {
   
   x.Element _getLanguage() {
     if (_languageNode == null) {
-      _languageNode = _findElement(_cfgroot, "LANGAGE");
+      _languageNode = _findElement(_cfgroot, "LANGUAGE");
     }
     return _languageNode;
   }
 
   x.Element _getSaving() {
     if (_savingNode == null) {
-      _savingNode = _findElement(_cfgroot, "ENREGISTREMENT");
+      _savingNode = _findElement(_cfgroot, "SAVING");
       if (_savingNode == null) {
-        _savingNode = _cfgroot.ownerDocument.createElement("ENREGISTREMENT");
+        _savingNode = _cfgroot.ownerDocument.createElement("SAVING");
       }
     }
     return _savingNode;
@@ -1702,9 +1673,9 @@ class Config {
 
   x.Element _getNodeDisplay() {
     if (_displayNode == null) {
-      _displayNode = _findElement(_cfgroot, "AFFICHAGE_NOEUDS");
+      _displayNode = _findElement(_cfgroot, "ELEMENTS_DISPLAY");
       if (_displayNode == null) {
-        _displayNode = _cfgroot.ownerDocument.createElement("AFFICHAGE_NOEUDS");
+        _displayNode = _cfgroot.ownerDocument.createElement("ELEMENTS_DISPLAY");
       }
     }
     return _displayNode;
@@ -1721,17 +1692,17 @@ class Config {
   }
 
   List<x.Element> _getStrings() {
-    if (_listeStrings == null) {
-      _listeStrings = new List<x.Element>();
+    if (_stringsList == null) {
+      _stringsList = new List<x.Element>();
       x.Node child = _cfgroot.firstChild;
       while (child != null) {
         if (child.nodeType == x.Node.ELEMENT_NODE && child.nodeName == "STRINGS") {
-          _listeStrings.add(child as x.Element);
+          _stringsList.add(child as x.Element);
         }
         child = child.nextSibling;
       }
     }
-    return _listeStrings;
+    return _stringsList;
   }
 
   

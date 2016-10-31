@@ -76,20 +76,20 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   List<WXSElement> allElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_model != null)
-      liste.addAll(_model.allElements());
-    return(liste);
+      list.addAll(_model.allElements());
+    return(list);
   }
 
   // from WithSubElements
   List<WXSElement> subElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     if (_wxsBase is WXSComplexType)
-      liste.addAll((_wxsBase as WXSComplexType).subElements());
+      list.addAll((_wxsBase as WXSComplexType).subElements());
     if (_model != null)
-      liste.addAll(_model.subElements());
-    return(liste);
+      list.addAll(_model.subElements());
+    return(list);
   }
 
   // from Parent
@@ -167,31 +167,31 @@ class WXSExtension extends WXSAnnotated implements WithSubElements, Parent {
   }
 
   List<WXSAttribute> attributes() {
-    final List<WXSAttribute> liste = new List<WXSAttribute>();
+    final List<WXSAttribute> list = new List<WXSAttribute>();
     for (WXSThing attrDecl in _attrDecls) {
       if (attrDecl is WXSAttribute)
-        liste.add(attrDecl);
+        list.add(attrDecl);
       else if (attrDecl is WXSAttributeGroup)
-        liste.addAll(attrDecl.attributes());
+        list.addAll(attrDecl.attributes());
     }
     if (_wxsBase is WXSComplexType) {
-      final List<WXSAttribute> listeBase = (_wxsBase as WXSComplexType).attributes();
-      final List<WXSAttribute> aAjouter = new List<WXSAttribute>();
-      for (WXSAttribute attributExt in liste) {
-        final String nomExt = attributExt.getName();
-        bool trouve = false;
-        for (WXSAttribute attributBase in listeBase)
-          if (nomExt == attributBase.getName()) {
-            trouve = true;
+      final List<WXSAttribute> baseList = (_wxsBase as WXSComplexType).attributes();
+      final List<WXSAttribute> toAdd = new List<WXSAttribute>();
+      for (WXSAttribute attributExt in list) {
+        final String extName = attributExt.getName();
+        bool found = false;
+        for (WXSAttribute attributBase in baseList)
+          if (extName == attributBase.getName()) {
+            found = true;
             break;
           }
-        if (!trouve)
-          aAjouter.add(attributExt);
+        if (!found)
+          toAdd.add(attributExt);
       }
-      listeBase.addAll(aAjouter);
-      return(listeBase);
+      baseList.addAll(toAdd);
+      return(baseList);
     }
-    return(liste);
+    return(list);
   }
 
   // from WithSubElements

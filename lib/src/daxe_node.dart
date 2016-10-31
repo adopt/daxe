@@ -29,14 +29,6 @@ abstract class DaxeNode {
   /// type for a document node
   static const int DOCUMENT_NODE = 9;
   
-  static List<String> _BOLD_STYLES = ['GRAS', 'BOLD'];
-  static List<String> _ITALIC_STYLES = ['ITALIQUE', 'ITALIC'];
-  static List<String> _SUPERSCRIPT_STYLES = ['EXPOSANT', 'SUPERSCRIPT'];
-  static List<String> _SUBSCRIPT_STYLES = ['INDICE', 'SUBSCRIPT'];
-  static List<String> _UNDERLINE_STYLES = ['SOULIGNE', 'UNDERLINE'];
-  static List<String> _STRIKETHROUGH_STYLES = ['BARRE', 'STRIKETHROUGH'];
-  static List<String> _BACKGROUND_STYLES = ['FCOULEUR', 'BACKGROUND'];
-  static List<String> _FOREGROUND_STYLES = ['PCOULEUR', 'FOREGROUND'];
   static const String _COLOR_PATTERN =
     "^.*\\[(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3}),(x[0-9a-fA-F]{2}|[0-9]{1,3})\\]\$";
   
@@ -1165,40 +1157,34 @@ abstract class DaxeNode {
     if (styleParam != null) {
       List<String> styleList = styleParam.split(';');
       for (String style in styleList) {
-        if (_BOLD_STYLES.contains(style)) {
+        if (style == 'BOLD') {
           hn.style.fontWeight = 'bold';
-        } else if (_ITALIC_STYLES.contains(style)) {
+        } else if (style == 'ITALIC') {
           hn.style.fontStyle = 'italic';
-        } else if (_SUPERSCRIPT_STYLES.contains(style)) {
+        } else if (style == 'SUPERSCRIPT') {
           hn.style.verticalAlign = 'super';
           hn.style.fontSize = '80%';
-        } else if (_SUBSCRIPT_STYLES.contains(style)) {
+        } else if (style == 'SUBSCRIPT') {
           hn.style.verticalAlign = 'sub';
           hn.style.fontSize = '80%';
-        } else if (_UNDERLINE_STYLES.contains(style)) {
+        } else if (style == 'UNDERLINE') {
           hn.style.textDecoration = 'underline';
-        } else if (_STRIKETHROUGH_STYLES.contains(style)) {
+        } else if (style == 'STRIKETHROUGH') {
           hn.style.textDecoration = 'line-through';
-        } else if (style.startsWith(_BACKGROUND_STYLES[0]) ||
-            style.startsWith(_BACKGROUND_STYLES[1])) {
+        } else if (style.startsWith('BACKGROUND')) {
           hn.style.background = _getColor(style);
-        } else if (style.startsWith(_FOREGROUND_STYLES[0]) ||
-            style.startsWith(_FOREGROUND_STYLES[1])) {
+        } else if (style.startsWith('FOREGROUND')) {
           hn.style.color = _getColor(style);
         }
       }
     }
-    String fontParam = doc.cfg.elementParameterValue(ref, 'police', null);
-    if (fontParam == null)
-      fontParam = doc.cfg.elementParameterValue(ref, 'font', null);
+    String fontParam = doc.cfg.elementParameterValue(ref, 'font', null);
     if (fontParam != null) {
       if (fontParam == 'Monospaced')
         fontParam = 'monospace';
       hn.style.fontFamily = fontParam;
     }
-    String sizeParam = doc.cfg.elementParameterValue(ref, 'taille', null);
-    if (sizeParam == null)
-      sizeParam = doc.cfg.elementParameterValue(ref, 'size', null);
+    String sizeParam = doc.cfg.elementParameterValue(ref, 'size', null);
     if (sizeParam != null) {
       hn.style.fontSize = sizeParam;
     }

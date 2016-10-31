@@ -52,7 +52,7 @@ class WXSList extends WXSAnnotated {
       else {
         final String espaceSchema = _domElement.namespaceURI;
         if (espaceSchema != tns)
-          _itemType = null; // si le type n'a pas été résolu il doit être un type des schémas XML
+          _itemType = null; // if the type has not been resolved, it must be an XML schema type
       }
     }
   }

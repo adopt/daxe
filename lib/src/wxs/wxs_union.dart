@@ -58,21 +58,22 @@ class WXSUnion extends WXSAnnotated {
           _wxsMemberTypes[i] = null;
           final String espaceSchema = _domElement.namespaceURI;
           if (espaceSchema != tns)
-            _memberTypes[i] = null; // si le type n'a pas été résolu il doit être un type des schémas XML
+            _memberTypes[i] = null;
+            // if the type has not been resolved it must be an XML schema type
         }
       }
     }
   }
 
   List<String> possibleValues() {
-    final List<String> liste = new List<String>();
+    final List<String> list = new List<String>();
     if (_memberTypes != null) {
       for (int i=0; i<_memberTypes.length; i++) {
         if (_wxsMemberTypes[i] != null) {
           final List<String> lv = _wxsMemberTypes[i].possibleValues();
           if (lv == null)
             return(null);
-          liste.addAll(lv);
+          list.addAll(lv);
         } else {
           final String type = _memberTypes[i];
           final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(type));
@@ -81,30 +82,30 @@ class WXSUnion extends WXSAnnotated {
             final List<String> lv = DaxeWXS._booleanValues(type, _domElement);
             if (lv == null)
               return(null);
-            liste.addAll(lv);
+            list.addAll(lv);
           }
         }
       }
     }
     for (WXSSimpleType st in _simpleTypes) {
-      final List<String> listest = st.possibleValues();
-      if (listest == null)
+      final List<String> stList = st.possibleValues();
+      if (stList == null)
         return(null);
-      liste.addAll(listest);
+      list.addAll(stList);
     }
-    if (liste.length == 0)
+    if (list.length == 0)
       return(null);
-    return(liste);
+    return(list);
   }
 
   List<String> suggestedValues() {
-    final List<String> liste = new List<String>();
+    final List<String> list = new List<String>();
     if (_memberTypes != null) {
       for (int i=0; i<_memberTypes.length; i++) {
         if (_wxsMemberTypes[i] != null) {
           final List<String> lv = _wxsMemberTypes[i].possibleValues();
           if (lv != null)
-            liste.addAll(lv);
+            list.addAll(lv);
         } else {
           final String type = _memberTypes[i];
           final String tns = _domElement.lookupNamespaceURI(DaxeWXS._namePrefix(type));
@@ -112,19 +113,19 @@ class WXSUnion extends WXSAnnotated {
           if (espaceSchema == tns) {
             final List<String> lv = DaxeWXS._booleanValues(type, _domElement);
             if (lv != null)
-              liste.addAll(lv);
+              list.addAll(lv);
           }
         }
       }
     }
     for (WXSSimpleType st in _simpleTypes) {
-      final List<String> listest = st.possibleValues();
-      if (listest != null)
-        liste.addAll(listest);
+      final List<String> stList = st.possibleValues();
+      if (stList != null)
+        list.addAll(stList);
     }
-    if (liste.length == 0)
+    if (list.length == 0)
       return(null);
-    return(liste);
+    return(list);
   }
 
   bool validValue(final String value) {

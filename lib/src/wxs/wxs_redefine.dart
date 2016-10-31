@@ -21,7 +21,7 @@ part of wxs;
 
 class WXSRedefine implements WXSThing, Parent {
 
-  // annotations : inutile ici
+  // annotations : useless here
   List<WXSThing> _redefinables; // (simpleType|complexType|group|attributeGroup)
   String _schemaLocation = null; // URI
 

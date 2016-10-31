@@ -154,15 +154,16 @@ Future initDaxe({LeftPanel left, ActionFunction saveFunction,
 }
 
 /**
- * Adds a custom display type. Two constructors are required to define the display type:
+ * Adds a custom display type or changes a core one.
+ * Two constructors are required to define the display type:
  * 
  * * one to create a new node, with the element reference in the schema as a parameter;
  *   [Config] methods can be used via doc.cfg to obtain useful information with the reference.
  * * another one to create a new Daxe node based on a DOM [x.Node];
  *   it takes the future [DaxeNode] parent as a 2nd parameter.
  */
-void addDisplayType(String displayType, ConstructorFromRef cref, ConstructorFromNode cnode) {
-  NodeFactory.addDisplayType(displayType, cref, cnode);
+void setDisplayType(String displayType, ConstructorFromRef cref, ConstructorFromNode cnode) {
+  NodeFactory.setDisplayType(displayType, cref, cnode);
 }
 
 /**

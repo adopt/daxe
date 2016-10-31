@@ -17,7 +17,7 @@
 
 /**
  * Core Daxe nodes. Other Daxe nodes can be added by extending Daxe
- * (see [daxe]) and using [NodeFactory.addDisplayType].
+ * (see [daxe]) and using [NodeFactory.setDisplayType].
  */
 
 library nodes;

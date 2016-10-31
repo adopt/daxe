@@ -50,18 +50,18 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   List<WXSElement> allElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     for (WXSElement element in _elements)
-      liste.addAll(element.allElements());
-    return(liste);
+      list.addAll(element.allElements());
+    return(list);
   }
 
   // from WithSubElements
   List<WXSElement> subElements() {
-    final List<WXSElement> liste = new List<WXSElement>();
+    final List<WXSElement> list = new List<WXSElement>();
     for (WXSElement element in _elements)
-      liste.addAll(element.matchingElements());
-    return(liste);
+      list.addAll(element.matchingElements());
+    return(list);
   }
 
   // from Parent
@@ -103,7 +103,7 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
 
   // from WithSubElements
   bool multipleChildren(final WXSElement child) {
-    // renvoie null si l'enfant n'en est pas un
+    // returns null if child is not a child
     for (WXSElement element in _elements)
       for (WXSElement elc in element.matchingElements())
         if (elc == child)
@@ -121,15 +121,15 @@ class WXSAll extends WXSAnnotated implements WithSubElements, Parent {
     int nb = 0;
     for (int i=start; i<subElements.length; i++) {
       final WXSElement sousElement = subElements[i];
-      bool trouve = false;
+      bool found = false;
       for (int j=0; j<_elements.length; j++) {
         if (sousElement == _elements[j]) {
-          trouve = true;
+          found = true;
           occurences[j]++;
           break;
         }
       }
-      if (!trouve)
+      if (!found)
         break;
       nb++;
     }

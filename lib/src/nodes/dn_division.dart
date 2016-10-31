@@ -25,7 +25,7 @@ part of nodes;
  * 
  * Parameters:
  * 
- * * `titreAtt`: an attribute that can be used as a title
+ * * `titleAtt`: an attribute that can be used as a title
  */
 class DNDivision extends DaxeNode {
   Tag _b1, _b2;

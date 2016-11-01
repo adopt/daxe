@@ -116,7 +116,6 @@
         <SUGGESTED_VALUE>string</SUGGESTED_VALUE>
         <SUGGESTED_VALUE>empty</SUGGESTED_VALUE>
         <SUGGESTED_VALUE>table</SUGGESTED_VALUE>
-        <SUGGESTED_VALUE>texttable</SUGGESTED_VALUE>
         <SUGGESTED_VALUE>simpletype</SUGGESTED_VALUE>
         <SUGGESTED_VALUE>style</SUGGESTED_VALUE>
         <SUGGESTED_VALUE>file</SUGGESTED_VALUE>
@@ -509,7 +508,6 @@
         <VALUE_TITLE value="area">area</VALUE_TITLE>
         <VALUE_TITLE value="string">string</VALUE_TITLE>
         <VALUE_TITLE value="table">table</VALUE_TITLE>
-        <VALUE_TITLE value="texttable">text table</VALUE_TITLE>
         <VALUE_TITLE value="simpletype">simple type</VALUE_TITLE>
         <VALUE_TITLE value="style">style</VALUE_TITLE>
         <VALUE_TITLE value="file">file</VALUE_TITLE>
@@ -991,7 +989,6 @@
         <VALUE_TITLE value="area">zone</VALUE_TITLE>
         <VALUE_TITLE value="string">string</VALUE_TITLE>
         <VALUE_TITLE value="table">table</VALUE_TITLE>
-        <VALUE_TITLE value="texttable">table texte</VALUE_TITLE>
         <VALUE_TITLE value="simpletype">typesimple</VALUE_TITLE>
         <VALUE_TITLE value="style">style</VALUE_TITLE>
         <VALUE_TITLE value="file">fichier</VALUE_TITLE>

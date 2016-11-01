@@ -169,7 +169,7 @@
     <ELEMENT_DISPLAY element="dl" type="area"/>
     <ELEMENT_DISPLAY element="dt" type="area"/>
     <ELEMENT_DISPLAY element="dd" type="area"/>
-    <ELEMENT_DISPLAY element="table" type="texttable">
+    <ELEMENT_DISPLAY element="table" type="table">
       <PARAMETER name="trTag" value="tr"/>
       <PARAMETER name="tdTag" value="td"/>
       <PARAMETER name="thTag" value="th"/>

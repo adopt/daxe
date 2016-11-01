@@ -234,7 +234,7 @@
                 <xsl:when test="@type='symbole'">symbol</xsl:when>
                 <xsl:when test="@type='symbole2'">symbol</xsl:when>
                 <xsl:when test="@type='tableau'">table</xsl:when>
-                <xsl:when test="@type='tabletexte'">texttable</xsl:when>
+                <xsl:when test="@type='tabletexte'">table</xsl:when>
                 <xsl:when test="@type='texte'">text</xsl:when>
                 <xsl:when test="@type='typesimple'">simpletype</xsl:when>
                 <xsl:when test="@type='vide'">empty</xsl:when>

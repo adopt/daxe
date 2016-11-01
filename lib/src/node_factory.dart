@@ -131,10 +131,6 @@ class NodeFactory {
         null,
         (x.Node node, DaxeNode parent) => new DNText.fromNode(node, parent)
     );
-    setDisplayType('texttable',
-        (x.Element ref) => new DNTable.fromRef(ref),
-        (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
-    );
     setDisplayType('witem',
         (x.Element ref) => new DNWItem.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNWItem.fromNode(node, parent)

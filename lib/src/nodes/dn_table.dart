@@ -20,7 +20,7 @@ part of nodes;
 /**
  * Table able to contain other elements in its cells.
  * 
- * Display types: 'texttable', 'tabletexte'.
+ * Display type: 'table'.
  * 
  * Parameters:
  * 

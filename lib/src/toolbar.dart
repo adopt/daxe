@@ -70,7 +70,7 @@ class Toolbar {
       }
       items.add(mathBox);
       ToolbarBox insertBox = new ToolbarBox();
-      refs = cfg.elementsWithType('texttable');
+      refs = cfg.elementsWithType('table');
       if (refs != null && refs.length > 0) {
         addInsertButton(cfg, insertBox, refs, iconPath + 'insert_table.png');
       }

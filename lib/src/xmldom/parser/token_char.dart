@@ -52,8 +52,20 @@ class TokenChar extends TokenItem {
         return(new MatchResult.ch(1, c));
       }
     } else if (isletter) {
-      // FIXME: more letters are acceptable
-      if ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.contains(c))
+      // see https://www.w3.org/TR/xml/#d0e804
+      // (this implementation is not strictly following the spec)
+      int code = c.codeUnitAt(0);
+      // NOTE: String.codeUnitAt returns a 16bit UTF16 code,
+      // range 0x10000 - 0xEFFFF (missing below) cannot be tested like that
+      // (we could use c.runes.toList()[0] instead of c.codeUnitAt(0),
+      // but it might impact performance).
+      if ((code >= 0x41 && code <= 0x5A) || (code >= 0x61 && code <= 0x7A) ||
+          (code >= 0xC0 && code <= 0xD6) || (code >= 0xD8 && code <= 0xF6) ||
+          (code >= 0xF8 && code <= 0x2FF) || (code >= 0x370 && code <= 0x37D) ||
+          (code >= 0x37F && code <= 0x1FFF) || (code >= 0x200C && code <= 0x200D) ||
+          (code >= 0x2070 && code <= 0x218F) || (code >= 0x2C00 && code <= 0x2FEF) ||
+          (code >= 0x3001 && code <= 0xD7FF) || (code >= 0xF900 && code <= 0xFDCF) ||
+          (code >= 0xFDF0 && code <= 0xFFFD))
         return(new MatchResult.ch(1, c));
     } else if (isany) {
       return(new MatchResult.ch(1, c));

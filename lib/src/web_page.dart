@@ -101,6 +101,8 @@ class WebPage {
       String msg = "Error reading the document: $ex";
       divdoc.text = msg;
       completer.completeError(msg);
+      if (application)
+        quit(async:true, byhand:false);
     });
     return(completer.future);
   }
@@ -154,7 +156,7 @@ class WebPage {
           h.window.onUnload.listen((h.Event e) {
             if (_hasQuit)
               return null;
-            quit(false);
+            quit(async:false, byhand:false);
           });
         }
       }
@@ -191,7 +193,7 @@ class WebPage {
     item = new MenuItem(Strings.get('menu.validation'), () => (new ValidationDialog()).show());
     fileMenu.add(item);
     if (application && doc.saveURL != null) {
-      item = new MenuItem(Strings.get('menu.quit'), () => quit(true), shortcut: 'Q');
+      item = new MenuItem(Strings.get('menu.quit'), () => quit(async:true, byhand:true), shortcut: 'Q');
       fileMenu.add(item);
     }
     mbar.insert(fileMenu, 0);
@@ -693,7 +695,7 @@ class WebPage {
   /**
    * Tell the Daxe application server to exit and tell user to close the window.
    */
-  void quit(bool async) {
+  void quit({bool async, bool byhand}) {
     h.HttpRequest request = new h.HttpRequest();
     Uri saveUri = Uri.parse(doc.saveURL);
     Uri quitUri = saveUri.replace(path:'/quit');
@@ -711,7 +713,8 @@ class WebPage {
       //h.window.close(); // This does not work in recent browsers
       // A workaround would be to start a new browser process when opening a file,
       // and kill it (nicely) with the server when the user quits.
-      h.window.alert(Strings.get('quit.byhand'));
+      if (byhand)
+        h.window.alert(Strings.get('quit.byhand'));
       _hasQuit = true;
     });
     request.onError.listen((h.ProgressEvent event) {

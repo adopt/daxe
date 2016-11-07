@@ -37,20 +37,21 @@ class DNHiddenP extends DaxeNode {
   
   @override
   h.Element html() {
-    h.DivElement div = new h.DivElement();
-    div.id = "$id";
-    div.classes.add('dn');
-    div.classes.add('hiddenp');
+    h.ParagraphElement p = new h.ParagraphElement();
+    p.id = "$id";
+    p.classes.add('dn');
+    p.classes.add('hiddenp');
     if (!valid)
-      div.classes.add('invalid');
+      p.classes.add('invalid');
     if (css != null)
-      div.setAttribute('style', css);
+      p.setAttribute('style', css);
     // FIXME: align:justify is incompatible with whitespace:pre-wrap
+    // TODO: get more CSS from style elements ?
     for (DaxeNode dn = firstChild; dn != null; ) {
-      div.append(dn.html());
+      p.append(dn.html());
       dn = dn.nextSibling;
     }
-    return(div);
+    return(p);
   }
   
   @override

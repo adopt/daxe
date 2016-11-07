@@ -788,6 +788,12 @@ span.validation_path {
   z-index: -1;
 }
 
+/* DNLineBreak */
+.br::before {
+  content: " ↵";
+  color: #BBB;
+}
+
 /* DNList */
 ul.list {
   list-style: none;

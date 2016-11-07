@@ -37,6 +37,7 @@ class DNLineBreak extends DaxeNode {
     span = new h.SpanElement();
     span.id = "$id";
     span.classes.add('dn');
+    span.classes.add('br');
     span.append(new h.BRElement());
     return(span);
   }
@@ -49,5 +50,26 @@ class DNLineBreak extends DaxeNode {
   @override
   Position lastCursorPositionInside() {
     return(null);
+  }
+  
+  /**
+   * Called by DaxeDocument when a newline character is inserted
+   * with the shift key.
+   * Returns true if the event was handled.
+   */
+  static bool handleNewline() {
+    Position selectionStart = page.getSelectionStart();
+    Position selectionEnd = page.getSelectionEnd();
+    if (selectionStart != selectionEnd)
+      return false;
+    DaxeNode textParent = selectionStart.dn;
+    while (textParent is DNText || textParent is DNStyle)
+      textParent = textParent.parent;
+    x.Element brRef = doc.cfg.elementReference('br');
+    if (!doc.cfg.isSubElement(textParent.ref, brRef))
+      return false;
+    DNLineBreak br = new DNLineBreak.fromRef(brRef);
+    doc.insertNode(br, selectionStart);
+    return true;
   }
 }

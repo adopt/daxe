@@ -879,8 +879,9 @@ abstract class DaxeNode {
           hnx2 = box.right;
           hny2 = box.bottom;
           bottomLineHeight = span_test.offset.height.toDouble();
-        } else if (hn is h.DivElement || hn is h.TableCellElement || hn is h.TableRowElement ||
-            hn is h.TableElement || hn is h.ImageElement || hn.classes.contains('form')) {
+        } else if (hn is h.DivElement || hn is h.ParagraphElement || hn is h.TableCellElement ||
+            hn is h.TableRowElement || hn is h.TableElement || hn is h.ImageElement ||
+            hn.classes.contains('form')) {
           // block
           // for DivElement: no span to tag the div: we take the entire div into account
           h.Rectangle box = hn.getBoundingClientRect();

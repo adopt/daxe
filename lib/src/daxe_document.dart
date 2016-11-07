@@ -754,9 +754,11 @@ class DaxeDocument {
         }
       }
     }
-    // Handles automatic insertion of hidden paragraphs
+    // Handles automatic insertion of hidden paragraphs and line breaks
     if (s == '\n' && hiddenParaRefs != null) {
-      if (DNHiddenP.handleNewlineOnSelection())
+      if (shift && selectionStart == selectionEnd && DNLineBreak.handleNewline())
+        return;
+      else if (DNHiddenP.handleNewlineOnSelection())
         return;
     }
     // check if text is allowed here

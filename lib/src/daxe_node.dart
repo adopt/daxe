@@ -271,7 +271,8 @@ abstract class DaxeNode {
     if (newlineAfter())
       return(true);
     h.Element hnode = getHTMLNode(); 
-    return(hnode is h.DivElement || hnode is h.TableElement || hnode is h.UListElement);
+    return(hnode is h.DivElement || hnode is h.ParagraphElement || hnode is h.TableElement ||
+      hnode is h.UListElement || hnode is h.LIElement);
   }
   
   /**

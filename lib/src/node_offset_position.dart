@@ -305,7 +305,8 @@ class NodeOffsetPosition implements Position {
         if (n is h.ImageElement || n is h.TableRowElement) {
           r = n.getBoundingClientRect();
           return(new Point(r.right, r.top));
-        } else if (n is h.DivElement || n is h.TableElement || n is h.UListElement || n is h.LIElement) {
+        } else if (n is h.DivElement || n is h.ParagraphElement || n is h.TableElement ||
+            n is h.UListElement || n is h.LIElement) {
           r = n.getBoundingClientRect();
           return(new Point(r.left, r.bottom));
         } else {

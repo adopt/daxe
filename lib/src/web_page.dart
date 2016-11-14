@@ -46,6 +46,7 @@ class WebPage {
   ActionFunction saveFunction;
   ActionFunction customizeToolbar;
   bool _inited;
+  Timer _scrollDocumentTimer;
   
   /**
    * Creates the web page, using the following optional arguments:
@@ -294,6 +295,32 @@ class WebPage {
       return;
     if (_contextualMenu != null)
       return;
+    
+    // start scrolling if the cursor is near bottom
+    h.DivElement doc1 = h.document.getElementById('doc1');
+    h.Rectangle docBox = doc1.getBoundingClientRect();
+    int y = event.client.y;
+    if (y > docBox.bottom - 5 &&
+        doc1.scrollTop < doc1.scrollHeight - doc1.offsetHeight) {
+      if (_scrollDocumentTimer == null) {
+        _scrollDocumentTimer = new Timer.periodic(new Duration(milliseconds:10),
+        (Timer timer) {
+          if (_selectionStart != null &&
+              doc1.scrollTop < doc1.scrollHeight - doc1.offsetHeight) {
+            doc1.scrollTop += 3;
+          } else {
+            _scrollDocumentTimer.cancel();
+            _scrollDocumentTimer = null;
+          }
+        });
+      }
+      event.preventDefault();
+      return;
+    } else if (_scrollDocumentTimer != null) {
+      _scrollDocumentTimer.cancel();
+      _scrollDocumentTimer = null;
+    }
+    
     Position newpos = Cursor.findPosition(event);
     if (_selectionByWords) {
       if (_selectionEnd > _selectionStart && newpos <= _selectionStart)
@@ -536,7 +563,7 @@ class WebPage {
     Point pt = startPos.positionOnScreen();
     if (pt == null)
       return;
-    h.DivElement doc1 = h.document.getElementById('doc1'); 
+    h.DivElement doc1 = h.document.getElementById('doc1');
     int doctop = doc1.offset.top;
     doc1.scrollTop += pt.y.toInt() - doctop - 10;
   }

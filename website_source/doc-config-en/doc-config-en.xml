@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<XPAGES>
+<?xml version="1.0" encoding="UTF-8"?><XPAGES>
   <INFORMATIONS>
     <LABEL>doc-config-en</LABEL>
     <TITRE>Daxe configuration files</TITRE>
@@ -8,7 +7,7 @@
   </INFORMATIONS>
   
   <PAGE label="intro-doc-config-en" titre="Introduction">
-    <PARAGRAPHE>To provide a user interface for a given XML language, Daxe needs the language definition (given with an XML schema) and a configuration file describing the user interface for the language. It works in the same way as <LIENWEB url="http://jaxe.sourceforge.net/en/">Jaxe</LIENWEB>, and in fact the config files are mostly compatible.</PARAGRAPHE>
+    <PARAGRAPHE>To provide a user interface for a given XML language, Daxe needs the language definition (given with an XML schema) and a configuration file describing the user interface for the language. It works in the same way as <LIENWEB url="http://jaxe.sourceforge.net/en/">Jaxe</LIENWEB>, but the config files use a different language. An XSLT stylesheet is available in the <CODE>config</CODE> directory to transform a Jaxe configuration file into a Daxe one.</PARAGRAPHE>
     <PARAGRAPHE>Specifically, configuration files contain basic information about the XML language (a link to the schema and a list of root elements), saving options, menus (especially to insert the elements), display types for the elements, and all the strings used in the interface, depending on the user language.</PARAGRAPHE>
     <PARAGRAPHE>They are located in Daxe's <CODE>config</CODE> directory, and their names end with "_config.xml".</PARAGRAPHE>
   </PAGE>
@@ -143,22 +142,22 @@
       <TR><TD><CODE>witem</CODE></TD><TD>Must be used for items in a list using the <CODE>wlist</CODE> type.</TD><TD><FICHIER nom="images_types/witem.png"/></TD></TR>
       <TR><TD><CODE>simpletype</CODE></TD><TD>Displays an element having a simple value, in a small panel. Usable only for the elements with a simple type in the XML schema. The precise display (text field, menu or checkbox) and the validation are done based on the XML schema constraints.</TD><TD><FICHIER nom="images_types/typesimple.png"/></TD></TR>
       <TR><TD><CODE>equationmem</CODE></TD><TD>Displays the image of an equation. The equation can be edited by a simple click on the image, with a dialog showing at the same time the text of the equation (using a very simple <LIENPAGE contribution="jaxe-user-guide" page="equations">syntax</LIENPAGE> specific to Jaxe/Daxe) and the corresponding image. The text of the equation is store as an attribute, and the image is encoded in base64 and added as text inside the element.</TD><TD><EQUATION texte="int(1/sqrt(x);x;1;infty)">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
-          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
+            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
           VmDLBpoAAAAASUVORK5CYII=</EQUATION></TD></TR>
       <TR><TD><CODE>equatexmem</CODE></TD><TD>This works in the same way as the previous type, but using a TeX syntax.</TD><TD><FICHIER nom="images_types/equatex.png"/></TD></TR>
       <TR><TD><CODE>form</CODE></TD><TD>Displays an element and all its sub-elements as a form. Beware not to use this type with elements that could have an infinitely deep subtree !
@@ -181,8 +180,8 @@
     <PARAGRAPHE>Here is a list of all the parameters:</PARAGRAPHE>
     <TABLEAU>
       <TR><TH>type</TH><TH>parameter name</TH><TH>description</TH></TR>
-      <TR><TD>division and area</TD><TD>titreAtt</TD><TD>attribute for the title</TD></TR>
-      <TR><TD>division, area, string and empty</TD><TD>attributsVisibles</TD><TD>displays all the attributes on the start tag (true|false)</TD></TR>
+      <TR><TD>division and area</TD><TD>titleAtt</TD><TD>attribute for the title</TD></TR>
+      <TR><TD>division, area, string and empty</TD><TD>visibleAttributes</TD><TD>displays all the attributes on the start tag (true|false)</TD></TR>
       <TR><TD>table</TD><TD>trTag</TD><TD>element for a line</TD></TR>
       <TR><TD>table</TD><TD>tdTag</TD><TD>element for a cell</TD></TR>
       <TR><TD>table</TD><TD>thTag</TD><TD>element for a header cell</TD></TR>
@@ -199,7 +198,7 @@
       <TR><TD>file</TD><TD>heightAtt</TD><TD>the name of the attribute with the width (in pixels)</TD></TR>
       <TR><TD>item</TD><TD>image1</TD><TD>first bullet image</TD></TR>
       <TR><TD>item</TD><TD>image2</TD><TD>second bullet image</TD></TR>
-      <TR><TD>equationmem and equatexmem</TD><TD>texteAtt</TD><TD>attribute with the equation text</TD></TR>
+      <TR><TD>equationmem and equatexmem</TD><TD>textAtt</TD><TD>attribute with the equation text</TD></TR>
       <TR><TD>anchor</TD><TD>nameAtt</TD><TD>the name of the name attribute</TD></TR>
       <TR><TD>anchor</TD><TD>hrefAtt</TD><TD>the name of the href attribute</TD></TR>
       <TR><TD>hiddenp, hiddendiv and stylespan</TD><TD>styleAtt</TD><TD>the name of the CSS style attribute</TD></TR>

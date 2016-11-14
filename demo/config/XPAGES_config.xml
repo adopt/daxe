@@ -1,1960 +1,1895 @@
-<?xml version="1.0" encoding="UTF-8"?><CONFIG_JAXE>
-<LANGAGE>
-<FICHIER_SCHEMA nom="XPAGES.xsd"/>
-<RACINE element="XPAGES"/>
-</LANGAGE>
-
-<ENREGISTREMENT>
-<ENCODAGE>UTF-8</ENCODAGE>
-</ENREGISTREMENT>
-
-<MENUS>
-<MENU nom="Divisions">
-<MENU_INSERTION nom="INFORMATIONS" type_noeud="element"/>
-<MENU_INSERTION nom="PAGE" type_noeud="element"/>
-<MENU_INSERTION nom="REFXPAGES" type_noeud="element"/>
-<MENU_INSERTION nom="SECTION" type_noeud="element"/>
-<MENU_INSERTION nom="PARAGRAPHE" raccourci="P" type_noeud="element"/>
-</MENU>
-<MENU nom="Listes/Tableaux">
-<MENU_INSERTION nom="TABLEAU" type_noeud="element"/>
-<MENU_INSERTION nom="LISTE" type_noeud="element"/>
-<MENU_INSERTION nom="ITEM" type_noeud="element"/>
-</MENU>
-<MENU nom="Figures">
-<MENU_INSERTION nom="ENVIMAGE" type_noeud="element"/>
-<MENU_INSERTION nom="FICHIER" type_noeud="element"/>
-<MENU_INSERTION nom="FORMATS"/>
-<MENU_INSERTION nom="LEGENDE" type_noeud="element"/>
-<MENU_INSERTION nom="CREDIT" type_noeud="element"/>
-</MENU>
-<MENU nom="Interactif">
-<MENU_INSERTION nom="APPLICATION"/>
-<MENU_INSERTION nom="PARAM" type_noeud="element"/>
-</MENU>
-<MENU nom="Exercices">
-<MENU_INSERTION nom="EXERCICE"/>
-<MENU_INSERTION nom="ENONCE" type_noeud="element"/>
-<MENU_INSERTION nom="DIFFICULTE"/>
-<MENU_INSERTION nom="TEMPS"/>
-<MENU_INSERTION nom="QUESTION"/>
-<MENU_INSERTION nom="AIDE" type_noeud="element"/>
-<MENU_INSERTION nom="SOLUTION"/>
-<MENU_INSERTION nom="POINTS"/>
-<MENU_INSERTION nom="QCM" type_noeud="element"/>
-<MENU_INSERTION nom="ENONCEQCM"/>
-<MENU_INSERTION nom="QUESTIONQCM" type_noeud="element"/>
-<MENU_INSERTION nom="REPONSEQCM"/>
-<MENU_INSERTION nom="TEXTEREP" type_noeud="element"/>
-<MENU_INSERTION nom="COMMENTAIREREP" type_noeud="element"/>
-</MENU>
-<MENU nom="Autres">
-<MENU_INSERTION nom="LIENPAGE" type_noeud="element"/>
-<MENU_INSERTION nom="LIENWEB" type_noeud="element"/>
-<MENU_INSERTION nom="LIENIMAGE"/>
-<MENU_INSERTION nom="GLOSSAIRE" type_noeud="element"/>
-<MENU_INSERTION nom="BIBLIOGRAPHIE"/>
-<MENU_INSERTION nom="REFOUVRAGE"/>
-<MENU_INSERTION nom="REFARTICLE"/>
-<MENU_INSERTION nom="REFWEB"/>
-<MENU_INSERTION nom="SYMBOLE"/>
-<MENU_INSERTION nom="EQUATION" raccourci="E" type_noeud="element"/>
-<MENU_INSERTION nom="EQUATEX" raccourci="T" type_noeud="element"/>
-<MENU_INSERTION nom="CODE" type_noeud="element"/>
-<MENU_INSERTION nom="COMMENTAIRE" type_noeud="element"/>
-<MENU_INSERTION nom="NBSP" type_noeud="element"/>
-</MENU>
-<MENU nom="Style">
-<MENU_FONCTION classe="jaxe.FonctionNormal" nom="Normal"/>
-<MENU_INSERTION nom="SUP" type_noeud="element"/>
-<MENU_INSERTION nom="SUB" type_noeud="element"/>
-<MENU_INSERTION nom="EM" type_noeud="element"/>
-</MENU>
-</MENUS>
-
-<AFFICHAGE_NOEUDS>
-<AFFICHAGE_ELEMENT element="XPAGES" type="division"/>
-<AFFICHAGE_ELEMENT element="PAGE" type="division">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-<AFFICHAGE_ATTRIBUT attribut="role">
-<VALEUR_SUGGEREE>autre</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>introduction</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>conclusion</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>prerequis</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>objectifs</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>rappel</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>definition</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>demonstration</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>exemple</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>conseil</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>remarque</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>attention</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>complement</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>methode</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>activite</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>bibliographie</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>citation</VALEUR_SUGGEREE>
-</AFFICHAGE_ATTRIBUT>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="REFXPAGES" type="vide">
-<PARAMETRE nom="titreAtt" valeur="label"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="SECTION" type="division">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-<AFFICHAGE_ATTRIBUT attribut="role">
-<VALEUR_SUGGEREE>autre</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>introduction</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>conclusion</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>prerequis</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>objectifs</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>rappel</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>definition</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>demonstration</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>exemple</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>conseil</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>remarque</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>attention</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>complement</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>methode</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>activite</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>bibliographie</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>citation</VALEUR_SUGGEREE>
-</AFFICHAGE_ATTRIBUT>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="PARAGRAPHE" type="zone"/>
-<AFFICHAGE_ELEMENT element="INFORMATIONS" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="LABEL" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="TITRE" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="AUTEUR" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="DATECRE" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="DATEMAJ" type="formulaire"/>
-<!--<AFFICHAGE_ELEMENT element="LOGO" type="vide">
-<PARAMETRE nom="srcAtt" valeur="fichier"/>
-</AFFICHAGE_ELEMENT>-->
-<AFFICHAGE_ELEMENT element="LOGO" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="INTERFACE" type="formulaire">
-<VALEUR_SUGGEREE>azur</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>bois</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>etoiles</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>marbre</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>parchemin</VALEUR_SUGGEREE>
-<VALEUR_SUGGEREE>peinture</VALEUR_SUGGEREE>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="RUBRIQUES" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="LANGUE" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="TABLEAU" type="tabletexte">
-<PARAMETRE nom="trTag" valeur="TR"/>
-<PARAMETRE nom="tdTag" valeur="TD"/>
-<PARAMETRE nom="thTag" valeur="TH"/>
-<PARAMETRE nom="colspanAttr" valeur="colspan"/>
-<PARAMETRE nom="rowspanAttr" valeur="rowspan"/>
-<PARAMETRE nom="alignAttr" valeur="align"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="TR" type="zone"/>
-<AFFICHAGE_ELEMENT element="TD" type="string"/>
-<AFFICHAGE_ELEMENT element="TH" type="string">
-<PARAMETRE nom="style" valeur="GRAS"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="LISTE" type="liste">
-<PARAMETRE nom="typeListe" valeur="POINTS"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="ITEM" type="item"/>
-<AFFICHAGE_ELEMENT element="ENVIMAGE" type="zone">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="FICHIER" type="fichier">
-<PARAMETRE nom="srcAtt" valeur="nom"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="FORMATS" type="zone">
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="LEGENDE" type="zone"/>
-<AFFICHAGE_ELEMENT element="CREDIT" type="zone"/>
-<AFFICHAGE_ELEMENT element="APPLICATION" type="zone">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="PARAM" type="vide">
-<PARAMETRE nom="titreAtt" valeur="nom"/>
-</AFFICHAGE_ELEMENT>
-
-<AFFICHAGE_ELEMENT element="EXERCICE" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="ENONCE" type="zone"/>
-<AFFICHAGE_ELEMENT element="DIFFICULTE" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="TEMPS" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="QUESTION" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="AIDE" type="zone"/>
-<AFFICHAGE_ELEMENT element="SOLUTION" type="zone"/>
-<AFFICHAGE_ELEMENT element="POINTS" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="QCM" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="QUESTIONQCM" type="formulaire"/>
-<AFFICHAGE_ELEMENT element="ENONCEQCM" type="zone"/>
-<AFFICHAGE_ELEMENT element="REPONSEQCM" type="formulaire">
-<PARAMETRE nom="attributsVisibles" valeur="true"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="TEXTEREP" type="zone"/>
-<AFFICHAGE_ELEMENT element="COMMENTAIREREP" type="zone"/>
-
-<AFFICHAGE_ELEMENT element="LIENPAGE" type="string"/>
-<AFFICHAGE_ELEMENT element="LIENWEB" type="string"/>
-<AFFICHAGE_ELEMENT element="LIENIMAGE" type="string"/>
-<AFFICHAGE_ELEMENT element="GLOSSAIRE" type="string">
-<PARAMETRE nom="titreAtt" valeur="mot"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="BIBLIOGRAPHIE" type="zone">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="REFOUVRAGE" type="vide">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="REFARTICLE" type="vide">
-<PARAMETRE nom="titreAtt" valeur="titreArticle"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="REFWEB" type="vide">
-<PARAMETRE nom="titreAtt" valeur="titre"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="SYMBOLE" type="symbole2"/>
-<AFFICHAGE_ELEMENT element="EQUATION" type="equationmem">
-<PARAMETRE nom="srcAtt" valeur="image"/>
-<PARAMETRE nom="texteAtt" valeur="texte"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="EQUATEX" type="equatexmem">
-<PARAMETRE nom="serveur" valeur="//media4.obspm.fr/serveurtex/tex.php"/>
-<PARAMETRE nom="texteAtt" valeur="texte"/>
-<PARAMETRE nom="labelAtt" valeur="label"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="CODE" type="string">
-<PARAMETRE nom="police" valeur="Monospaced"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="COMMENTAIRE" type="zone"/>
-<AFFICHAGE_ELEMENT element="NBSP" type="vide"/>
-<AFFICHAGE_ELEMENT element="SUP" type="style">
-<PARAMETRE nom="style" valeur="EXPOSANT"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="SUB" type="style">
-<PARAMETRE nom="style" valeur="INDICE"/>
-</AFFICHAGE_ELEMENT>
-<AFFICHAGE_ELEMENT element="EM" type="string">
-<PARAMETRE nom="style" valeur="ITALIQUE"/>
-</AFFICHAGE_ELEMENT>
-</AFFICHAGE_NOEUDS>
-
-<EXPORTS>
-<EXPORT nom="Site public" sortie="HTML">
-<FICHIER_XSL nom="XPAGES1.xsl">
-<PARAMETRE nom="jaxe-uri-xml" valeur="*"/>
-</FICHIER_XSL>
-<FICHIER_XSL nom="XPAGES2.xsl">
-<PARAMETRE nom="jaxe-fichier-xml" valeur="*"/>
-<PARAMETRE nom="jaxe-fichier-xsl" valeur="*"/>
-<PARAMETRE nom="jaxe-fichier-destination" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-destination" valeur="*"/>
-</FICHIER_XSL>
-<FICHIER_XSL nom="XPAGES3.xsl">
-<PARAMETRE nom="jaxe-fichier-xml" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-xsl" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-xml" valeur="*"/>
-<PARAMETRE nom="jaxe-fichier-destination" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-destination" valeur="*"/>
-<PARAMETRE nom="affichage" valeur="web"/>
-<PARAMETRE nom="sortie" valeur="public"/>
-</FICHIER_XSL>
-</EXPORT>
-<EXPORT nom="Site de production" sortie="HTML">
-<FICHIER_XSL nom="XPAGES1.xsl">
-<PARAMETRE nom="jaxe-uri-xml" valeur="*"/>
-</FICHIER_XSL>
-<FICHIER_XSL nom="XPAGES2.xsl">
-<PARAMETRE nom="jaxe-fichier-xml" valeur="*"/>
-<PARAMETRE nom="jaxe-fichier-xsl" valeur="*"/>
-<PARAMETRE nom="jaxe-fichier-destination" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-destination" valeur="*"/>
-</FICHIER_XSL>
-<FICHIER_XSL nom="XPAGES3.xsl">
-<PARAMETRE nom="jaxe-fichier-xml" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-xsl" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-xml" valeur="*"/>
-<PARAMETRE nom="jaxe-fichier-destination" valeur="*"/>
-<PARAMETRE nom="jaxe-uri-destination" valeur="*"/>
-<PARAMETRE nom="affichage" valeur="web"/>
-<PARAMETRE nom="sortie" valeur="production"/>
-</FICHIER_XSL>
-</EXPORT>
-</EXPORTS>
-
-<STRINGS langue="fr">
-<DESCRIPTION_CONFIG>Ensemble de pages sur un sujet donné</DESCRIPTION_CONFIG>
-
-<STRINGS_MENU menu="Divisions">
-<TITRE>Divisions</TITRE>
-<STRINGS_MENU menu="PARAGRAPHE">
-<TITRE>Paragraphe</TITRE>
-</STRINGS_MENU>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Listes/Tableaux">
-<TITRE>Listes/Tableaux</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Figures">
-<TITRE>Figures</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Interactif">
-<TITRE>Interactif</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Autres">
-<TITRE>Autres</TITRE>
-<STRINGS_MENU menu="NBSP">
-<TITRE>Espace insécable</TITRE>
-</STRINGS_MENU>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Style">
-<TITRE>Style</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Normal">
-<TITRE>Sans style</TITRE>
-</STRINGS_MENU>
-
-<STRINGS_ELEMENT element="XPAGES">
-<TITRE>Ensemble XPAGES</TITRE>
-<DOCUMENTATION>
-Un ensemble de pages qui se suivent, sur un sujet donné.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="INFORMATIONS">
-<TITRE>Informations</TITRE>
-<DOCUMENTATION>
-Informations sur le document. Le label et le titre sont obligatoires.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LABEL">
-<TITRE>Label</TITRE>
-<DOCUMENTATION>
-Identifiant pour cette contribution.
-Ne peut contenir que des lettres de a à z, des chiffres de 0 à 9, et le caractère "-".
-Le nom du fichier XML et le nom du dossier doivent correspondre au label.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TITRE">
-<TITRE>Titre</TITRE>
-<DOCUMENTATION>
-Titre de l'ensemble de pages.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="AUTEUR">
-<TITRE>Auteur</TITRE>
-<DOCUMENTATION>
-Un auteur
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="DATECRE">
-<TITRE>Date de création</TITRE>
-<DOCUMENTATION>
-Date de création, au format JJ/MM/AAAA
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="DATEMAJ">
-<TITRE>Date de mise à jour</TITRE>
-<DOCUMENTATION>
-Date de mise à jour, au format JJ/MM/AAAA
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LOGO">
-<TITRE>Logo</TITRE>
-<DOCUMENTATION>
-Fichier image d'un logo à utiliser pour l'interface du site.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="fichier">
-<TITRE>fichier</TITRE>
-<DOCUMENTATION>
-Chemin vers le fichier de l'image, relatif au fichier XML.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="lien">
-<TITRE>lien</TITRE>
-<DOCUMENTATION>
-Lien optionnel d'une page web vers laquelle aller quand on clique sur le logo.
-Doit commencer par "http://".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="INTERFACE">
-<TITRE>Interface</TITRE>
-<DOCUMENTATION>
-Interface des pages.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="azur">azur</TITRE_VALEUR>
-<TITRE_VALEUR valeur="bois">bois</TITRE_VALEUR>
-<TITRE_VALEUR valeur="etoiles">étoiles</TITRE_VALEUR>
-<TITRE_VALEUR valeur="marbre">marbre</TITRE_VALEUR>
-<TITRE_VALEUR valeur="parchemin">parchemin</TITRE_VALEUR>
-<TITRE_VALEUR valeur="peinture">peinture</TITRE_VALEUR>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="RUBRIQUES">
-<TITRE>Rubriques</TITRE>
-<DOCUMENTATION>
-Afficher les rubriques ou non. Par défaut, utilise la valeur de l'élément parent.
-L'élément XPAGES de plus haut niveau a la valeur "oui" par défaut.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LANGUE">
-<TITRE>Langue</TITRE>
-<DOCUMENTATION>
-Code de la langue à utiliser pour l'interface utilisateur.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="PAGE">
-<TITRE>Page</TITRE>
-<DOCUMENTATION>
-Page écran, d'environ 1000 caractères.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="label">
-<TITRE>label</TITRE>
-<DOCUMENTATION>
-Label de la page (identifiant caché permettant de faire un lien vers cette page).
-Ne doit être composé que de lettres minuscules de a à z.
-Utiliser le label "index" pour la page d'entrée du site.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre de la page.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="role">
-<TITRE>rôle</TITRE>
-<DOCUMENTATION>
-Rôle sémantique de la page : sens qu'on lui donne.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="autre">autre</TITRE_VALEUR>
-<TITRE_VALEUR valeur="introduction">introduction</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conclusion">conclusion</TITRE_VALEUR>
-<TITRE_VALEUR valeur="prerequis">prérequis</TITRE_VALEUR>
-<TITRE_VALEUR valeur="objectifs">objectifs</TITRE_VALEUR>
-<TITRE_VALEUR valeur="rappel">rappel</TITRE_VALEUR>
-<TITRE_VALEUR valeur="definition">définition</TITRE_VALEUR>
-<TITRE_VALEUR valeur="demonstration">démonstration</TITRE_VALEUR>
-<TITRE_VALEUR valeur="exemple">exemple</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conseil">conseil</TITRE_VALEUR>
-<TITRE_VALEUR valeur="remarque">remarque</TITRE_VALEUR>
-<TITRE_VALEUR valeur="attention">attention</TITRE_VALEUR>
-<TITRE_VALEUR valeur="complement">complément</TITRE_VALEUR>
-<TITRE_VALEUR valeur="methode">méthode</TITRE_VALEUR>
-<TITRE_VALEUR valeur="activite">activité</TITRE_VALEUR>
-<TITRE_VALEUR valeur="bibliographie">bibliographie</TITRE_VALEUR>
-<TITRE_VALEUR valeur="citation">citation</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFXPAGES">
-<TITRE>Réf. document XPAGES</TITRE>
-<DOCUMENTATION>
-Référence vers un autre ensemble de pages, dont le titre sera affiché
-dans le sommaire de cet ensemble.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="label">
-<TITRE>label</TITRE>
-<DOCUMENTATION>
-Label du document XPAGES référencé.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SECTION">
-<TITRE>Section</TITRE>
-<DOCUMENTATION>
-Une section à l'intérieur d'une page, qui peut avoir un titre.
-Le rôle permet de donner un sens à la section, pour des transformations XML ultérieures ou un affichage particulier.
-L'importance "grande" permet de mettre en valeur la section par rapport au reste du texte.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre de la section.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="role">
-<TITRE>rôle</TITRE>
-<DOCUMENTATION>
-Rôle sémantique de la section : sens qu'on lui donne.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="autre">autre</TITRE_VALEUR>
-<TITRE_VALEUR valeur="introduction">introduction</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conclusion">conclusion</TITRE_VALEUR>
-<TITRE_VALEUR valeur="prerequis">prérequis</TITRE_VALEUR>
-<TITRE_VALEUR valeur="objectifs">objectifs</TITRE_VALEUR>
-<TITRE_VALEUR valeur="rappel">rappel</TITRE_VALEUR>
-<TITRE_VALEUR valeur="definition">définition</TITRE_VALEUR>
-<TITRE_VALEUR valeur="demonstration">démonstration</TITRE_VALEUR>
-<TITRE_VALEUR valeur="exemple">exemple</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conseil">conseil</TITRE_VALEUR>
-<TITRE_VALEUR valeur="remarque">remarque</TITRE_VALEUR>
-<TITRE_VALEUR valeur="attention">attention</TITRE_VALEUR>
-<TITRE_VALEUR valeur="complement">complément</TITRE_VALEUR>
-<TITRE_VALEUR valeur="methode">méthode</TITRE_VALEUR>
-<TITRE_VALEUR valeur="activite">activité</TITRE_VALEUR>
-<TITRE_VALEUR valeur="bibliographie">bibliographie</TITRE_VALEUR>
-<TITRE_VALEUR valeur="citation">citation</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="importance">
-<TITRE>importance</TITRE>
-<DOCUMENTATION>
-Importance de la section. Une section importante pourra être mise en évidence
-dans le site web généré.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="normale">normale</TITRE_VALEUR>
-<TITRE_VALEUR valeur="grande">grande</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="PARAGRAPHE">
-<TITRE>P</TITRE>
-<DOCUMENTATION>
-Un paragraphe (quelques lignes sans saut de ligne).
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="TABLEAU">
-<TITRE>Tableau</TITRE>
-<DOCUMENTATION>
-Tableau.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre du tableau
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TR">
-<TITRE>Ligne de table</TITRE>
-<DOCUMENTATION>
-Ligne d'un tableau
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TD">
-<TITRE>Cellule de table</TITRE>
-<DOCUMENTATION>
-Cellule d'un tableau
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="align">
-<TITRE>align</TITRE>
-<DOCUMENTATION>
-Alignement du texte de la cellule
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="colspan">
-<TITRE>colspan</TITRE>
-<DOCUMENTATION>
-Regroupement horizontal de cellules :
-nombres de cellules à regrouper à droite de celle-ci
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="rowspan">
-<TITRE>rowspan</TITRE>
-<DOCUMENTATION>
-Regroupement vertical de cellules :
-nombres de cellules à regrouper en bas de celle-ci
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TH">
-<TITRE>Cellule entête de table</TITRE>
-<DOCUMENTATION>
-Entête d'une colonne
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="align">
-<TITRE>align</TITRE>
-<DOCUMENTATION>
-Alignement du texte de la cellule
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="colspan">
-<TITRE>colspan</TITRE>
-<DOCUMENTATION>
-Regroupement horizontal de cellules :
-nombres de cellules à regrouper à droite de celle-ci
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="rowspan">
-<TITRE>rowspan</TITRE>
-<DOCUMENTATION>
-Regroupement vertical de cellules :
-nombres de cellules à regrouper en bas de celle-ci
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LISTE">
-<TITRE>Liste</TITRE>
-<DOCUMENTATION>
-Liste avec des puces ou des numéros
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="type">
-<TITRE>type</TITRE>
-<TITRE_VALEUR valeur="puces">puces</TITRE_VALEUR>
-<TITRE_VALEUR valeur="numéros">numéros</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ITEM">
-<TITRE>Elément de liste</TITRE>
-<DOCUMENTATION>
-Elément d'une liste
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ENVIMAGE">
-<TITRE>Environnement d'image</TITRE>
-<DOCUMENTATION>
-Environnement pour des images ou animations.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre de l'image ou animation.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>localisation</TITRE>
-<DOCUMENTATION>
-Positionnement souhaité pour l'image :
-- texte : dans le texte à la taille d'origine
-- page : dans la page à côté du texte, réduit si nécessaire
-- icône : sous forme de petite icône à côté du paragraphe qui suit
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">texte</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icône</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="FICHIER">
-<TITRE>Fichier</TITRE>
-<DOCUMENTATION>
-Fichier image ou animation à inclure dans le texte,
-ou à localiser dans une page qui s'ouvrira à part du texte.
-Si le contenu du fichier doit être accompagné d'une légende,
-il est nécessaire de passer par l'élément ENVIMAGE.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="nom">
-<TITRE>nom</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="FORMATS">
-<TITRE>Formats</TITRE>
-<DOCUMENTATION>
-Permet de spécifier plusieurs fichiers, avec des formats différents, pour un même media.
-Un seul fichier sera affiché, choisi en fonction des capacités de l'environnement d'affichage.
-Cet élément n'est utile qu'avec des formats qui ne sont pas lisibles partout, par exemple pour des vidéos.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LEGENDE">
-<TITRE>Légende</TITRE>
-<DOCUMENTATION>
-Légende d'un tableau ou d'une figure
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="CREDIT">
-<TITRE>Crédit</TITRE>
-<DOCUMENTATION>
-crédit des documents
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="APPLICATION">
-<TITRE>Application interactive</TITRE>
-<DOCUMENTATION>
-Application interactive. Remplace les éléments APPLET et FLASH en généralisant le concept.
-L'attribut type précise le type d'application (applet Java, Flash ou HTML/Javascript).
-Le fichier indiqué doit être un .jar pour les applets Java, un .swf pour les applications Flash, et un .html pour les applications Javascript.
-Les applets Java doivent avoir un paramètre "code" avec le nom de la classe.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="type">
-<TITRE>type</TITRE>
-<DOCUMENTATION>
-Type d'application (applet Java, Flash ou HTML/Javascript).
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="applet">applet Java</TITRE_VALEUR>
-<TITRE_VALEUR valeur="flash">Flash</TITRE_VALEUR>
-<TITRE_VALEUR valeur="html">HTML/Javascript</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-<DOCUMENTATION>
-Titre de l'application.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="fichier">
-<TITRE>fichier</TITRE>
-<DOCUMENTATION>
-Fichier de l'application.
-Doit être un .jar pour les applets Java, un .swf pour les applications Flash, et un .html pour les applications Javascript.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="contribution">
-<TITRE>contribution</TITRE>
-<DOCUMENTATION>
-Contribution du fichier de l'application.
-Permet de ne pas avoir à recopier plusieurs fois une application utilisée dans plusieurs contributions.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="largeur">
-<TITRE>largeur</TITRE>
-<DOCUMENTATION>
-Largeur de la zone de l'application, en pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="hauteur">
-<TITRE>hauteur</TITRE>
-<DOCUMENTATION>
-Hauteur de la zone de l'application, en pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>localisation</TITRE>
-<DOCUMENTATION>
-Positionnement souhaité pour l'application :
-- texte : dans le texte
-- page : dans la page à côté du texte
-- icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">texte</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icône</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="PARAM">
-<TITRE>Paramètre</TITRE>
-<DOCUMENTATION>
-Paramètre d'applet ou d'objet Flash
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="nom">
-<TITRE>nom</TITRE>
-<DOCUMENTATION>
-Nom du paramètre.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="valeur">
-<TITRE>valeur</TITRE>
-<DOCUMENTATION>
-Valeur du paramètre.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="EXERCICE">
-<TITRE>Exercice</TITRE>
-<DOCUMENTATION>
-Exercice de type questions-réponses
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="type">
-<TITRE>type</TITRE>
-<TITRE_VALEUR valeur="évaluation">évaluation</TITRE_VALEUR>
-<TITRE_VALEUR valeur="auto-évaluation">auto-évaluation</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="DIFFICULTE">
-<TITRE>Difficulté</TITRE>
-<DOCUMENTATION>
-Indication du niveau de difficulté :
-* : facile, ou application directe du cours
-** : moyen
-*** : difficile
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TEMPS">
-<TITRE>Temps</TITRE>
-<DOCUMENTATION>
-Temps indicatif nécessaire pour résoudre l'exercice
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="QUESTION">
-<TITRE>Question</TITRE>
-<DOCUMENTATION>
-Question d'un exercice, avec un énoncé, éventuellement des aides, une solution, et éventuellement des points.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ENONCE">
-<TITRE>Enoncé</TITRE>
-<DOCUMENTATION>
-Enoncé d'un exercice ou d'une question
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="AIDE">
-<TITRE>Aide</TITRE>
-<DOCUMENTATION>
-Aide d'un exercice
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SOLUTION">
-<TITRE>Solution</TITRE>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="POINTS">
-<TITRE>Points</TITRE>
-<DOCUMENTATION>
-Nombre de points gagnés si la réponse est correcte.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="QCM">
-<TITRE>QCM</TITRE>
-<DOCUMENTATION>
-Questionnaire à choix multiples, avec des commentaires affichés après le choix de l'utilisateur.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="QUESTIONQCM">
-<TITRE>Question de QCM</TITRE>
-<DOCUMENTATION>
-Question d'un QCM, avec un énoncé, éventuellement des aides, et les réponses possibles.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ENONCEQCM">
-<TITRE>Enoncé de question</TITRE>
-<DOCUMENTATION>
-Enoncé d'une question de QCM (texte court)
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REPONSEQCM">
-<TITRE>Réponse de QCM</TITRE>
-<DOCUMENTATION>
-Réponse possible à un QCM.
-Contient le texte de la réponse et un commentaire à afficher si la réponse donnée est incorrecte.
-L'attribut bonne indique si la réponse est bonne ou pas.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="bonne">
-<TITRE>bonne</TITRE>
-<TITRE_VALEUR valeur="non">non</TITRE_VALEUR>
-<TITRE_VALEUR valeur="oui">oui</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TEXTEREP">
-<TITRE>Texte de réponse</TITRE>
-<DOCUMENTATION>
-Texte de la réponse
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="COMMENTAIREREP">
-<TITRE>Commentaire de réponse</TITRE>
-<DOCUMENTATION>
-Commentaire à afficher après le choix de l'utilisateur (en particulier si la réponse donnée est incorrecte).
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="LIENPAGE">
-<TITRE>Lien vers page interne</TITRE>
-<DOCUMENTATION>
-Lien vers une page de la même contribution (si contribution est vide),
-ou vers une page d'une autre contribution (avec contribution = le label de la contribution).
-Doit contenir du texte ou un fichier sur lequel sera placé le lien.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="contribution">
-<TITRE>contribution</TITRE>
-<DOCUMENTATION>
-Le label de la contribution. Vide si on veut faire un lien vers la même contribution.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="page">
-<TITRE>page</TITRE>
-<DOCUMENTATION>
-Le label de la page. Vide si on veut faire un lien vers la première page de la contribution.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LIENWEB">
-<TITRE>Lien web externe</TITRE>
-<DOCUMENTATION>
-Lien externe (avec url commençant par "http://").
-Doit contenir du texte ou un fichier sur lequel sera placé le lien.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>url</TITRE>
-<DOCUMENTATION>
-Adresse de la page web. Doit commencer par "http://".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LIENIMAGE">
-<TITRE>Lien vers image</TITRE>
-<DOCUMENTATION>
-Lien vers un environnement d'image dans la même page.
-Doit contenir du texte ou un fichier sur lequel sera placé le lien.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>label</TITRE>
-<DOCUMENTATION>
-Label de l'environnement d'image (qui doit se trouver dans la même page).
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="GLOSSAIRE">
-<TITRE>Mot du glossaire</TITRE>
-<DOCUMENTATION>
-Renvoi au glossaire des mots importants ou jargonneux,
-et éventuelle proposition de définition pour le glossaire.
-Les attributs définissent le mot affiché et le mot de référence,
-et le contenu de l'élément correspond à sa définition.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="mot">
-<TITRE>mot</TITRE>
-<DOCUMENTATION>
-Mot affiché.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="ref">
-<TITRE>ref</TITRE>
-<DOCUMENTATION>
-Mot de référence dans le glossaire, s'il est différent du mot affiché.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="BIBLIOGRAPHIE">
-<TITRE>Bibliographie</TITRE>
-<DOCUMENTATION>
-Liste de références bibliographiques et webographiques.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFOUVRAGE">
-<TITRE>Réf. ouvrage</TITRE>
-<DOCUMENTATION>
-Référence bibliographique pour un ouvrage.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="sous-titre">
-<TITRE>sous-titre</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="premierAuteur">
-<TITRE>premier auteur</TITRE>
-<DOCUMENTATION>
-Ecrire sous la forme "NOM, Prénom".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autresAuteurs">
-<TITRE>autres auteurs</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="volume">
-<TITRE>volume</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="lieu">
-<TITRE>lieu</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="editeur">
-<TITRE>éditeur</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="annee">
-<TITRE>année</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="pagination">
-<TITRE>pagination</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="collection">
-<TITRE>collection</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="isbn">
-<TITRE>ISBN</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>URL</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autre">
-<TITRE>autre</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFARTICLE">
-<TITRE>Réf. article</TITRE>
-<DOCUMENTATION>
-Référence bibliographique pour un article de périodique.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titreArticle">
-<TITRE>titre de l'article</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titrePeriodique">
-<TITRE>titre du périodique</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="premierAuteur">
-<TITRE>premier auteur</TITRE>
-<DOCUMENTATION>
-Ecrire sous la forme "NOM, Prénom".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autresAuteurs">
-<TITRE>autres auteurs</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="annee">
-<TITRE>année</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="volume">
-<TITRE>volume</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="numero">
-<TITRE>numéro</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="pagination">
-<TITRE>pagination</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>URL</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autre">
-<TITRE>autre</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFWEB">
-<TITRE>Réf. web</TITRE>
-<DOCUMENTATION>
-Référence pour une page web.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>URL</TITRE>
-<DOCUMENTATION>
-Adresse de la page web. Doit commencer par "http://".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="auteurs">
-<TITRE>auteurs</TITRE>
-<DOCUMENTATION>
-Auteurs ou collectivité.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>titre</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titreSite">
-<TITRE>titre du site</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="dateConsultation">
-<TITRE>date de consultation</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="description">
-<TITRE>description</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SYMBOLE">
-<TITRE>Symbole</TITRE>
-<DOCUMENTATION>
-Lettre grecque ou petite image à incorporer dans le texte.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="EQUATION">
-<TITRE>Equation</TITRE>
-<DOCUMENTATION>
-Equation: texte de l'équation dans l'attribut texte (avec la syntaxe de Jaxe),
-et image PNG encodée en base64 à l'intérieur de l'élément.
-Plus tard l'image sera redirigée vers un fichier dont la référence
-sera dans un attribut "image".
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="texte">
-<TITRE>texte</TITRE>
-<DOCUMENTATION>
-Texte de l'équation, avec la syntaxe de Jaxe.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="CODE">
-<TITRE>Code</TITRE>
-<DOCUMENTATION>
-Code informatique (généralement affiché avec une police dont les lettres ont la même taille)
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="EQUATEX">
-<TITRE>Equation TeX</TITRE>
-<DOCUMENTATION>
-Equation TeX: texte de l'équation dans l'attribut texte avec la syntaxe TeX,
-et image PNG encodée en base64 à l'intérieur de l'élément.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="texte">
-<TITRE>texte</TITRE>
-<DOCUMENTATION>
-Texte de l'équation, avec la syntaxe TeX.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="CODE">
-<TITRE>Code</TITRE>
-<DOCUMENTATION>
-Code informatique (généralement affiché avec une police dont les lettres ont la même taille)
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="COMMENTAIRE">
-<TITRE>Commentaire</TITRE>
-<DOCUMENTATION>
-Commentaire de l'auteur, qui ne sera pas affiché dans le résultat final.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="NBSP">
-<TITRE>_</TITRE>
-<DOCUMENTATION>
-Espace insécable
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="SUP">
-<TITRE>Exposant</TITRE>
-<DOCUMENTATION>
-Exposant
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SUB">
-<TITRE>Indice</TITRE>
-<DOCUMENTATION>
-Indice
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="EM">
-<TITRE>Emphase</TITRE>
-<DOCUMENTATION>
-Emphase
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_EXPORT export="Site public">
-<TITRE>Site public...</TITRE>
-<DOCUMENTATION>
-Génération du site sans les solutions des exercices d'évaluation, ni les commentaires des auteurs.
-</DOCUMENTATION>
-</STRINGS_EXPORT>
-<STRINGS_EXPORT export="Site de production">
-<TITRE>Site de production...</TITRE>
-<DOCUMENTATION>
-Génération du site avec les solutions des exercices d'évaluation et les commentaires des auteurs.
-Produit aussi automatiquement des fichiers qui aident à corriger les mauvais liens.
-</DOCUMENTATION>
-</STRINGS_EXPORT>
-</STRINGS>
-
-<STRINGS langue="en">
-<DESCRIPTION_CONFIG>Set of pages on a given subject</DESCRIPTION_CONFIG>
-
-<STRINGS_MENU menu="Divisions">
-<TITRE>Divisions</TITRE>
-<STRINGS_MENU menu="PARAGRAPHE">
-<TITRE>Paragraph</TITRE>
-</STRINGS_MENU>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Listes/Tableaux">
-<TITRE>Lists/Tables</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Figures">
-<TITRE>Figures</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Interactif">
-<TITRE>Interactive</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Autres">
-<TITRE>Other</TITRE>
-<STRINGS_MENU menu="NBSP">
-<TITRE>Non-breaking space</TITRE>
-</STRINGS_MENU>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Style">
-<TITRE>Style</TITRE>
-</STRINGS_MENU>
-<STRINGS_MENU menu="Normal">
-<TITRE>Normal</TITRE>
-</STRINGS_MENU>
-
-<STRINGS_ELEMENT element="XPAGES">
-<TITRE>XPAGES set</TITRE>
-<DOCUMENTATION>
-A set of pages on a given subject.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="INFORMATIONS">
-<TITRE>Informations</TITRE>
-<DOCUMENTATION>
-Informations about the document. The label and title are required.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LABEL">
-<TITRE>Label</TITRE>
-<DOCUMENTATION>
-Identifier for this contribution
-Can only contain lowercase letters from a to z, digits from 0 to 9, and the character "-".
-The name of the XML file and the name of the folder must match the label.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TITRE">
-<TITRE>Title</TITRE>
-<DOCUMENTATION>
-Title for the set of pages.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="AUTEUR">
-<TITRE>Author</TITRE>
-<DOCUMENTATION>
-An author
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="DATECRE">
-<TITRE>Creation date</TITRE>
-<DOCUMENTATION>
-Date of creation, with the format DD/MM/YYYY
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="DATEMAJ">
-<TITRE>Update date</TITRE>
-<DOCUMENTATION>
-Date of update, with the format DD/MM/YYYY
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LOGO">
-<TITRE>Logo</TITRE>
-<DOCUMENTATION>
-Image file for a logo to use in the site interface.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="fichier">
-<TITRE>file</TITRE>
-<DOCUMENTATION>
-Path to the image file, relative to the XML file.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="lien">
-<TITRE>link</TITRE>
-<DOCUMENTATION>
-Optional link to a web page to go to when the logo is clicked.
-Must start with "http://".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="INTERFACE">
-<TITRE>Interface</TITRE>
-<DOCUMENTATION>
-Interface for the pages.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="azur">azure</TITRE_VALEUR>
-<TITRE_VALEUR valeur="bois">wood</TITRE_VALEUR>
-<TITRE_VALEUR valeur="etoiles">stars</TITRE_VALEUR>
-<TITRE_VALEUR valeur="marbre">marble</TITRE_VALEUR>
-<TITRE_VALEUR valeur="parchemin">parchment</TITRE_VALEUR>
-<TITRE_VALEUR valeur="peinture">painting</TITRE_VALEUR>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="RUBRIQUES">
-<TITRE>Menubar</TITRE>
-<DOCUMENTATION>
-Displays the top menubar or not. By default, uses the value of the parent element.
-The root XPAGES element has the "yes" value by default.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="oui">yes</TITRE_VALEUR>
-<TITRE_VALEUR valeur="non">no</TITRE_VALEUR>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LANGUE">
-<TITRE>Language</TITRE>
-<DOCUMENTATION>
-Code for the language to use in the user interface.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="PAGE">
-<TITRE>Page</TITRE>
-<DOCUMENTATION>
-A page. Ideally, it should fit a computer screen, and be about 1000 characters long.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="label">
-<TITRE>label</TITRE>
-<DOCUMENTATION>
-Label of the page (hidden identifier used to create links to this page).
-Should only contain lowercase letters from a to z and the character "-".
-Use the "index" label for the website home page.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Title for the page.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="role">
-<TITRE>role</TITRE>
-<DOCUMENTATION>
-Semantic role (meaning) of the page.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="autre">other</TITRE_VALEUR>
-<TITRE_VALEUR valeur="introduction">introduction</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conclusion">conclusion</TITRE_VALEUR>
-<TITRE_VALEUR valeur="prerequis">prerequisites</TITRE_VALEUR>
-<TITRE_VALEUR valeur="objectifs">objectives</TITRE_VALEUR>
-<TITRE_VALEUR valeur="rappel">reminder</TITRE_VALEUR>
-<TITRE_VALEUR valeur="definition">definition</TITRE_VALEUR>
-<TITRE_VALEUR valeur="demonstration">demonstration</TITRE_VALEUR>
-<TITRE_VALEUR valeur="exemple">example</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conseil">advise</TITRE_VALEUR>
-<TITRE_VALEUR valeur="remarque">remark</TITRE_VALEUR>
-<TITRE_VALEUR valeur="attention">warning</TITRE_VALEUR>
-<TITRE_VALEUR valeur="complement">additional_information</TITRE_VALEUR>
-<TITRE_VALEUR valeur="methode">method</TITRE_VALEUR>
-<TITRE_VALEUR valeur="activite">activity</TITRE_VALEUR>
-<TITRE_VALEUR valeur="bibliographie">bibliography</TITRE_VALEUR>
-<TITRE_VALEUR valeur="citation">citation</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFXPAGES">
-<TITRE>Ref. XPAGES document</TITRE>
-<DOCUMENTATION>
-Reference to another set of pages, whose title will be displayed
-in the table of contents for this set.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="label">
-<TITRE>label</TITRE>
-<DOCUMENTATION>
-Label of the referenced XPAGES document.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SECTION">
-<TITRE>Section</TITRE>
-<DOCUMENTATION>
-A section inside a page, usually with a title.
-The "role" attribute is used to give meaning to the section, for later XML transformations or a specific display.
-The importance "high" is used to highlight the section from the rest of the text.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Section title.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="role">
-<TITRE>role</TITRE>
-<DOCUMENTATION>
-Semantic role (meaning) of the section.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="autre">other</TITRE_VALEUR>
-<TITRE_VALEUR valeur="introduction">introduction</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conclusion">conclusion</TITRE_VALEUR>
-<TITRE_VALEUR valeur="prerequis">prerequisites</TITRE_VALEUR>
-<TITRE_VALEUR valeur="objectifs">objectives</TITRE_VALEUR>
-<TITRE_VALEUR valeur="rappel">reminder</TITRE_VALEUR>
-<TITRE_VALEUR valeur="definition">definition</TITRE_VALEUR>
-<TITRE_VALEUR valeur="demonstration">demonstration</TITRE_VALEUR>
-<TITRE_VALEUR valeur="exemple">example</TITRE_VALEUR>
-<TITRE_VALEUR valeur="conseil">advise</TITRE_VALEUR>
-<TITRE_VALEUR valeur="remarque">remark</TITRE_VALEUR>
-<TITRE_VALEUR valeur="attention">warning</TITRE_VALEUR>
-<TITRE_VALEUR valeur="complement">additional_information</TITRE_VALEUR>
-<TITRE_VALEUR valeur="methode">method</TITRE_VALEUR>
-<TITRE_VALEUR valeur="activite">activity</TITRE_VALEUR>
-<TITRE_VALEUR valeur="bibliographie">bibliography</TITRE_VALEUR>
-<TITRE_VALEUR valeur="citation">citation</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="importance">
-<TITRE>importance</TITRE>
-<DOCUMENTATION>
-Importance of the section. An important section will be more visible
-in the generated website.
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="normale">normal</TITRE_VALEUR>
-<TITRE_VALEUR valeur="grande">high</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="PARAGRAPHE">
-<TITRE>P</TITRE>
-<DOCUMENTATION>
-A paragraph (a few lines without a line break).
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="TABLEAU">
-<TITRE>Table</TITRE>
-<DOCUMENTATION>
-Table
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Table title
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TR">
-<TITRE>Table row</TITRE>
-<DOCUMENTATION>
-Table row.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TD">
-<TITRE>Table cell</TITRE>
-<DOCUMENTATION>
-Table cell.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="align">
-<TITRE>align</TITRE>
-<DOCUMENTATION>
-Alignement for the text in the cell
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="colspan">
-<TITRE>colspan</TITRE>
-<DOCUMENTATION>
-Horizontal cell gathering :
-number of cells to regroup to the right of this one.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="rowspan">
-<TITRE>rowspan</TITRE>
-<DOCUMENTATION>
-Vertical cell gathering :
-number of cells to regroup to the bottom of this one.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TH">
-<TITRE>Table Header cell</TITRE>
-<DOCUMENTATION>
-Column header
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="align">
-<TITRE>align</TITRE>
-<DOCUMENTATION>
-Alignement for the text in the cell
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="colspan">
-<TITRE>colspan</TITRE>
-<DOCUMENTATION>
-Horizontal cell gathering :
-number of cells to regroup to the right of this one.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="rowspan">
-<TITRE>rowspan</TITRE>
-<DOCUMENTATION>
-Vertical cell gathering :
-number of cells to regroup to the bottom of this one.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LISTE">
-<TITRE>List</TITRE>
-<DOCUMENTATION>
-Bulleted or ordered list
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="type">
-<TITRE>type</TITRE>
-<TITRE_VALEUR valeur="puces">bullets</TITRE_VALEUR>
-<TITRE_VALEUR valeur="numéros">numbers</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ITEM">
-<TITRE>List item</TITRE>
-<DOCUMENTATION>
-Element in a list.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="ENVIMAGE">
-<TITRE>Image environment</TITRE>
-<DOCUMENTATION>
-Environnement for images or animations.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Title for the image or animation.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>layout</TITRE>
-<DOCUMENTATION>
-Position for the image :
-- text : within the text, with the original size
-- page : in the page next to the text, reduced if necessary
-- icon : as a small icon, next to the following paragraph
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">text</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icon</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="FICHIER">
-<TITRE>File</TITRE>
-<DOCUMENTATION>
-File for an image or animation to include in the text.
-If the image or animation has to be followed by a legend,
-it is necessary to used the IMAGEENV element.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="nom">
-<TITRE>name</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="FORMATS">
-<TITRE>Formats</TITRE>
-<DOCUMENTATION>
-Can be used to specify several files, each with a different format, for the same media.
-Only one file will be displayed, chosen according to the capabilities of the display environment.
-This element is only useful with formats that are not readable everywhere, for instance for videos.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LEGENDE">
-<TITRE>Legend</TITRE>
-<DOCUMENTATION>
-Legend for a table or a figure.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="CREDIT">
-<TITRE>Copyright info</TITRE>
-<DOCUMENTATION>
-Copyright information
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="APPLICATION">
-<TITRE>Interactive application</TITRE>
-<DOCUMENTATION>
-Interactive application. Replaces APPLET and FLASH by generalizing the concept.
-The type attribute specifies the application type (Java applet, Flash or HTML/Javascript).
-The file attribute must be a .jar for Java applets, a .swf for Flash applications, and a .html for Javascript applications.
-Java applets must have a "code" parameter with the class name.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="type">
-<TITRE>type</TITRE>
-<DOCUMENTATION>
-Application type (Java applet, Flash or HTML/Javascript).
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="applet">Java applet</TITRE_VALEUR>
-<TITRE_VALEUR valeur="flash">Flash</TITRE_VALEUR>
-<TITRE_VALEUR valeur="html">HTML/Javascript</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-<DOCUMENTATION>
-Application title
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="fichier">
-<TITRE>file</TITRE>
-<DOCUMENTATION>
-Application file.
-Must be a .jar for Java applets, a .swf for Flash applications, and a .html for Javascript applications.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="contribution">
-<TITRE>contribution</TITRE>
-<DOCUMENTATION>
-Contribution of the application file.
-Can be used to avoid copying many times an application used in several contributions.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="largeur">
-<TITRE>width</TITRE>
-<DOCUMENTATION>
-Width for the application area, in pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="hauteur">
-<TITRE>height</TITRE>
-<DOCUMENTATION>
-Height for the application area, in pixels.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="localisation">
-<TITRE>layout</TITRE>
-<DOCUMENTATION>
-Position for the application :
-- text : within the text
-- page : in the page next to the text
-- icon : available with a small icon, next to the following paragraph
-</DOCUMENTATION>
-<TITRE_VALEUR valeur="texte">text</TITRE_VALEUR>
-<TITRE_VALEUR valeur="page">page</TITRE_VALEUR>
-<TITRE_VALEUR valeur="icône">icon</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="PARAM">
-<TITRE>Parameter</TITRE>
-<DOCUMENTATION>
-Parameter for a Java applet of a Flash object.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="nom">
-<TITRE>name</TITRE>
-<DOCUMENTATION>
-Parameter name.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="valeur">
-<TITRE>value</TITRE>
-<DOCUMENTATION>
-Parameter value.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="EXERCICE">
-<TITRE>Exercise</TITRE>
-<DOCUMENTATION>
-Exercise with questions and answers
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="type">
-<TITRE>type</TITRE>
-<TITRE_VALEUR valeur="évaluation">evaluation</TITRE_VALEUR>
-<TITRE_VALEUR valeur="auto-évaluation">self-assessment</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="DIFFICULTE">
-<TITRE>Difficulty</TITRE>
-<DOCUMENTATION>
-gives an idea of the difficulty :
-* : easy, direct application of the lecture
-** : medium
-*** : hard
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TEMPS">
-<TITRE>Time</TITRE>
-<DOCUMENTATION>
-Indicative time to solve the exercise
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="QUESTION">
-<TITRE>Question</TITRE>
-<DOCUMENTATION>
-Exercise question, with the terms, optional helps, a solution, and optional points.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ENONCE">
-<TITRE>Terms</TITRE>
-<DOCUMENTATION>
-Terms of an exercise or a question
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="AIDE">
-<TITRE>Help</TITRE>
-<DOCUMENTATION>
-Help for a question
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SOLUTION">
-<TITRE>Solution</TITRE>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="POINTS">
-<TITRE>Points</TITRE>
-<DOCUMENTATION>
-Awarded points if the answer is correct
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="QCM">
-<TITRE>Quiz</TITRE>
-<DOCUMENTATION>
-Quiz with comments displayed depending on the user's answer
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="QUESTIONQCM">
-<TITRE>Quiz question</TITRE>
-<DOCUMENTATION>
-Quiz question, with the terms, optional helps, and possible answers.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="ENONCEQCM">
-<TITRE>Question terms</TITRE>
-<DOCUMENTATION>
-Quiz question terms (short text)
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REPONSEQCM">
-<TITRE>Quiz answer</TITRE>
-<DOCUMENTATION>
-Possible answer for a quiz. Contains the text of the answer and a comment to display after a choice. The "correct" attribute tells if the answer is right or wrong.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="bonne">
-<TITRE>correct</TITRE>
-<TITRE_VALEUR valeur="non">no</TITRE_VALEUR>
-<TITRE_VALEUR valeur="oui">yes</TITRE_VALEUR>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="TEXTEREP">
-<TITRE>Answer text</TITRE>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="COMMENTAIREREP">
-<TITRE>Answer comment</TITRE>
-<DOCUMENTATION>
-Comment to display after a choice (especially if the answer in wrong).
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="LIENPAGE">
-<TITRE>Link to internal page</TITRE>
-<DOCUMENTATION>
-Link to a page in the same contribution (if "contribution" is empty),
-or link to a page in another contribution (with the "contribution" attribute specifying the contribution label).
-Must contain text or a file upon which the link will be displayed.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="contribution">
-<TITRE>contribution</TITRE>
-<DOCUMENTATION>
-The contribution label. Empty for a link to the same contribution.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="page">
-<TITRE>page</TITRE>
-<DOCUMENTATION>
-The page label. Empty to create a link to the first page in a contribution.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LIENWEB">
-<TITRE>External link</TITRE>
-<DOCUMENTATION>
-External link (with a URL strating with "http://").
-Must contain text or a file upon which the link will be displayed.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>url</TITRE>
-<DOCUMENTATION>
-Address for the web page. Must start with "http://".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="LIENIMAGE">
-<TITRE>Image link</TITRE>
-<DOCUMENTATION>
-Link to an image environnement in the same page.
-Must contain text or a file upon which the link will be displayed.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>label</TITRE>
-<DOCUMENTATION>
-Label for the image environnement (which must be in the same page).
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="GLOSSAIRE">
-<TITRE>Glossary word</TITRE>
-<DOCUMENTATION>
-Refers to the glossary, and can suggest a definition for the glossary.
-The attributes define the displayed word and the reference word,
-while the element content is the definition.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="mot">
-<TITRE>word</TITRE>
-<DOCUMENTATION>
-Displayed word.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="ref">
-<TITRE>ref</TITRE>
-<DOCUMENTATION>
-Reference word in the glossary, if different from the displayed word.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="BIBLIOGRAPHIE">
-<TITRE>Bibliography</TITRE>
-<DOCUMENTATION>
-List of bibliographic and webographic references.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFOUVRAGE">
-<TITRE>Ref. monograph</TITRE>
-<DOCUMENTATION>
-Bibliographic reference for a monograph.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="sous-titre">
-<TITRE>subtitle</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="premierAuteur">
-<TITRE>first author</TITRE>
-<DOCUMENTATION>
-Write with the syntax "LASTNAME, Firstname".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autresAuteurs">
-<TITRE>other authors</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="volume">
-<TITRE>volume</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="lieu">
-<TITRE>location</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="editeur">
-<TITRE>editor</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="annee">
-<TITRE>year</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="pagination">
-<TITRE>pagination</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="collection">
-<TITRE>collection</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="isbn">
-<TITRE>isbn number</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>URL</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autre">
-<TITRE>other</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFARTICLE">
-<TITRE>Ref. article</TITRE>
-<DOCUMENTATION>
-Bibliographic reference for an article.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="titreArticle">
-<TITRE>article title</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titrePeriodique">
-<TITRE>serial title</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="premierAuteur">
-<TITRE>first author</TITRE>
-<DOCUMENTATION>
-Write with the syntax "LASTNAME, Firstname".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autresAuteurs">
-<TITRE>other authors</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="annee">
-<TITRE>year</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="volume">
-<TITRE>volume</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="numero">
-<TITRE>number</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="pagination">
-<TITRE>pagination</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>URL</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="autre">
-<TITRE>other</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="REFWEB">
-<TITRE>Ref. web</TITRE>
-<DOCUMENTATION>
-Reference for a web page.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="url">
-<TITRE>URL</TITRE>
-<DOCUMENTATION>
-Web page URL. Must start with "http://".
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="auteurs">
-<TITRE>authors</TITRE>
-<DOCUMENTATION>
-Authors or collectivity.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titre">
-<TITRE>title</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="titreSite">
-<TITRE>Website title</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="dateConsultation">
-<TITRE>consultation date</TITRE>
-</STRINGS_ATTRIBUT>
-<STRINGS_ATTRIBUT attribut="description">
-<TITRE>description</TITRE>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SYMBOLE">
-<TITRE>Symbol</TITRE>
-<DOCUMENTATION>
-Greek letter or small image to insert in the text.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="EQUATION">
-<TITRE>Equation</TITRE>
-<DOCUMENTATION>
-Equation : text for the equation in the "text" attribute (with Jaxe's syntax),
-and PNG image encoded in base64 inside the XML document.
-Later, the image will be redirected towards a file whose reference will be
-in an "image" attribute.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="texte">
-<TITRE>text</TITRE>
-<DOCUMENTATION>
-Text for the equation, with Jaxe's syntax.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="EQUATEX">
-<TITRE>TeX Equation</TITRE>
-<DOCUMENTATION>
-TeX Equation : text for the equation in the "text" attribute (with TeX syntax),
-and PNG image encoded in base64 inside the XML document.
-</DOCUMENTATION>
-<STRINGS_ATTRIBUT attribut="texte">
-<TITRE>text</TITRE>
-<DOCUMENTATION>
-Text for the equation, using TeX syntax.
-</DOCUMENTATION>
-</STRINGS_ATTRIBUT>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="CODE">
-<TITRE>Code</TITRE>
-<DOCUMENTATION>
-Computer code (usually displayed with a monospaced font).
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="COMMENTAIRE">
-<TITRE>Comment</TITRE>
-<DOCUMENTATION>
-Author comment, that will not be displayed in the final result.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="NBSP">
-<TITRE>_</TITRE>
-<DOCUMENTATION>
-Non-breaking space.
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_ELEMENT element="SUP">
-<TITRE>Superscript</TITRE>
-<DOCUMENTATION>
-Superscript
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="SUB">
-<TITRE>Subscript</TITRE>
-<DOCUMENTATION>
-Subscript
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-<STRINGS_ELEMENT element="EM">
-<TITRE>Emphasis</TITRE>
-<DOCUMENTATION>
-Emphasis
-</DOCUMENTATION>
-</STRINGS_ELEMENT>
-
-<STRINGS_EXPORT export="Site public">
-<TITRE>Public website...</TITRE>
-<DOCUMENTATION>
-Generates the website without the solutions for evaluation exercises, and without the author comments.
-</DOCUMENTATION>
-</STRINGS_EXPORT>
-<STRINGS_EXPORT export="Site de production">
-<TITRE>Production website...</TITRE>
-<DOCUMENTATION>
-Generates the website with the solutions for evaluation exercises and the author comments.
-Also creates automatically some files to help fix broken links.
-</DOCUMENTATION>
-</STRINGS_EXPORT>
-</STRINGS>
-</CONFIG_JAXE>
+<?xml version="1.0" encoding="UTF-8"?>
+<DAXE_CONFIG>
+  <LANGUAGE>
+    <SCHEMA_FILE name="XPAGES.xsd"/>
+    <ROOT element="XPAGES"/>
+  </LANGUAGE>
+  
+  <SAVING>
+    <ENCODING>UTF-8</ENCODING>
+  </SAVING>
+  
+  <MENUS>
+    <MENU name="Divisions">
+      <INSERT_MENU name="INFORMATIONS" node_type="element"/>
+      <INSERT_MENU name="PAGE" node_type="element"/>
+      <INSERT_MENU name="REFXPAGES" node_type="element"/>
+      <INSERT_MENU name="SECTION" node_type="element"/>
+      <INSERT_MENU name="PARAGRAPHE" node_type="element" shortcut="P"/>
+    </MENU>
+    <MENU name="Listes/Tableaux">
+      <INSERT_MENU name="TABLEAU" node_type="element"/>
+      <INSERT_MENU name="LISTE" node_type="element"/>
+      <INSERT_MENU name="ITEM" node_type="element"/>
+    </MENU>
+    <MENU name="Figures">
+      <INSERT_MENU name="ENVIMAGE" node_type="element"/>
+      <INSERT_MENU name="FICHIER" node_type="element"/>
+      <INSERT_MENU name="FORMATS"/>
+      <INSERT_MENU name="LEGENDE" node_type="element"/>
+      <INSERT_MENU name="CREDIT" node_type="element"/>
+    </MENU>
+    <MENU name="Interactif">
+      <INSERT_MENU name="APPLICATION"/>
+      <INSERT_MENU name="PARAM" node_type="element"/>
+    </MENU>
+    <MENU name="Exercices">
+      <INSERT_MENU name="EXERCICE"/>
+      <INSERT_MENU name="ENONCE" node_type="element"/>
+      <INSERT_MENU name="DIFFICULTE"/>
+      <INSERT_MENU name="TEMPS"/>
+      <INSERT_MENU name="QUESTION"/>
+      <INSERT_MENU name="AIDE" node_type="element"/>
+      <INSERT_MENU name="SOLUTION"/>
+      <INSERT_MENU name="POINTS"/>
+      <INSERT_MENU name="QCM" node_type="element"/>
+      <INSERT_MENU name="ENONCEQCM"/>
+      <INSERT_MENU name="QUESTIONQCM" node_type="element"/>
+      <INSERT_MENU name="REPONSEQCM"/>
+      <INSERT_MENU name="TEXTEREP" node_type="element"/>
+      <INSERT_MENU name="COMMENTAIREREP" node_type="element"/>
+    </MENU>
+    <MENU name="Autres">
+      <INSERT_MENU name="LIENPAGE" node_type="element"/>
+      <INSERT_MENU name="LIENWEB" node_type="element"/>
+      <INSERT_MENU name="LIENIMAGE"/>
+      <INSERT_MENU name="GLOSSAIRE" node_type="element"/>
+      <INSERT_MENU name="BIBLIOGRAPHIE"/>
+      <INSERT_MENU name="REFOUVRAGE"/>
+      <INSERT_MENU name="REFARTICLE"/>
+      <INSERT_MENU name="REFWEB"/>
+      <INSERT_MENU name="SYMBOLE"/>
+      <INSERT_MENU name="EQUATION" node_type="element" shortcut="E"/>
+      <INSERT_MENU name="EQUATEX" node_type="element" shortcut="T"/>
+      <INSERT_MENU name="CODE" node_type="element"/>
+      <INSERT_MENU name="COMMENTAIRE" node_type="element"/>
+      <INSERT_MENU name="NBSP" node_type="element"/>
+    </MENU>
+    <MENU name="Style">
+      <FUNCTION_MENU function_name="jaxe.FonctionNormal" name="Normal"/>
+      <INSERT_MENU name="SUP" node_type="element"/>
+      <INSERT_MENU name="SUB" node_type="element"/>
+      <INSERT_MENU name="EM" node_type="element"/>
+    </MENU>
+  </MENUS>
+  
+  <ELEMENTS_DISPLAY>
+    <ELEMENT_DISPLAY element="XPAGES" type="division"/>
+    <ELEMENT_DISPLAY element="PAGE" type="division">
+      <PARAMETER name="titleAtt" value="titre"/>
+      <ATTRIBUTE_DISPLAY attribute="role">
+        <SUGGESTED_VALUE>autre</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>introduction</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>conclusion</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>prerequis</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>objectifs</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>rappel</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>definition</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>demonstration</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>exemple</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>conseil</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>remarque</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>attention</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>complement</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>methode</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>activite</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>bibliographie</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>citation</SUGGESTED_VALUE>
+      </ATTRIBUTE_DISPLAY>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="REFXPAGES" type="empty">
+      <PARAMETER name="titleAtt" value="label"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="SECTION" type="division">
+      <PARAMETER name="titleAtt" value="titre"/>
+      <ATTRIBUTE_DISPLAY attribute="role">
+        <SUGGESTED_VALUE>autre</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>introduction</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>conclusion</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>prerequis</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>objectifs</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>rappel</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>definition</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>demonstration</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>exemple</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>conseil</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>remarque</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>attention</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>complement</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>methode</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>activite</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>bibliographie</SUGGESTED_VALUE>
+        <SUGGESTED_VALUE>citation</SUGGESTED_VALUE>
+      </ATTRIBUTE_DISPLAY>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="PARAGRAPHE" type="area"/>
+    <ELEMENT_DISPLAY element="INFORMATIONS" type="form"/>
+    <ELEMENT_DISPLAY element="LABEL" type="form"/>
+    <ELEMENT_DISPLAY element="TITRE" type="form"/>
+    <ELEMENT_DISPLAY element="AUTEUR" type="form"/>
+    <ELEMENT_DISPLAY element="DATECRE" type="form"/>
+    <ELEMENT_DISPLAY element="DATEMAJ" type="form"/>
+    
+    <ELEMENT_DISPLAY element="LOGO" type="form"/>
+    <ELEMENT_DISPLAY element="INTERFACE" type="form">
+      <SUGGESTED_VALUE>azur</SUGGESTED_VALUE>
+      <SUGGESTED_VALUE>bois</SUGGESTED_VALUE>
+      <SUGGESTED_VALUE>etoiles</SUGGESTED_VALUE>
+      <SUGGESTED_VALUE>marbre</SUGGESTED_VALUE>
+      <SUGGESTED_VALUE>parchemin</SUGGESTED_VALUE>
+      <SUGGESTED_VALUE>peinture</SUGGESTED_VALUE>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="RUBRIQUES" type="form"/>
+    <ELEMENT_DISPLAY element="LANGUE" type="form"/>
+    <ELEMENT_DISPLAY element="TABLEAU" type="table">
+      <PARAMETER name="trTag" value="TR"/>
+      <PARAMETER name="tdTag" value="TD"/>
+      <PARAMETER name="thTag" value="TH"/>
+      <PARAMETER name="colspanAttr" value="colspan"/>
+      <PARAMETER name="rowspanAttr" value="rowspan"/>
+      <PARAMETER name="alignAttr" value="align"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="TR" type="area"/>
+    <ELEMENT_DISPLAY element="TD" type="string"/>
+    <ELEMENT_DISPLAY element="TH" type="string">
+      <PARAMETER name="style" value="BOLD"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="LISTE" type="list">
+      <PARAMETER name="listType" value="POINTS"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="ITEM" type="item"/>
+    <ELEMENT_DISPLAY element="ENVIMAGE" type="area">
+      <PARAMETER name="titleAtt" value="titre"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="FICHIER" type="file">
+      <PARAMETER name="srcAtt" value="nom"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="FORMATS" type="area"/>
+    <ELEMENT_DISPLAY element="LEGENDE" type="area"/>
+    <ELEMENT_DISPLAY element="CREDIT" type="area"/>
+    <ELEMENT_DISPLAY element="APPLICATION" type="area">
+      <PARAMETER name="titleAtt" value="titre"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="PARAM" type="empty">
+      <PARAMETER name="titleAtt" value="nom"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="EXERCICE" type="form"/>
+    <ELEMENT_DISPLAY element="ENONCE" type="area"/>
+    <ELEMENT_DISPLAY element="DIFFICULTE" type="form"/>
+    <ELEMENT_DISPLAY element="TEMPS" type="form"/>
+    <ELEMENT_DISPLAY element="QUESTION" type="form"/>
+    <ELEMENT_DISPLAY element="AIDE" type="area"/>
+    <ELEMENT_DISPLAY element="SOLUTION" type="area"/>
+    <ELEMENT_DISPLAY element="POINTS" type="form"/>
+    <ELEMENT_DISPLAY element="QCM" type="form"/>
+    <ELEMENT_DISPLAY element="QUESTIONQCM" type="form"/>
+    <ELEMENT_DISPLAY element="ENONCEQCM" type="area"/>
+    <ELEMENT_DISPLAY element="REPONSEQCM" type="form">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="TEXTEREP" type="area"/>
+    <ELEMENT_DISPLAY element="COMMENTAIREREP" type="area"/>
+    
+    <ELEMENT_DISPLAY element="LIENPAGE" type="string"/>
+    <ELEMENT_DISPLAY element="LIENWEB" type="string"/>
+    <ELEMENT_DISPLAY element="LIENIMAGE" type="string"/>
+    <ELEMENT_DISPLAY element="GLOSSAIRE" type="string">
+      <PARAMETER name="titleAtt" value="mot"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="BIBLIOGRAPHIE" type="area">
+      <PARAMETER name="titleAtt" value="titre"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="REFOUVRAGE" type="empty">
+      <PARAMETER name="titleAtt" value="titre"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="REFARTICLE" type="empty">
+      <PARAMETER name="titleAtt" value="titreArticle"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="REFWEB" type="empty">
+      <PARAMETER name="titleAtt" value="titre"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="SYMBOLE" type="symbol"/>
+    <ELEMENT_DISPLAY element="EQUATION" type="equationmem">
+      <PARAMETER name="srcAtt" value="image"/>
+      <PARAMETER name="textAtt" value="texte"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="EQUATEX" type="equatexmem">
+      <PARAMETER name="server" value="//media4.obspm.fr/serveurtex/tex.php"/>
+      <PARAMETER name="textAtt" value="texte"/>
+      <PARAMETER name="labelAtt" value="label"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="CODE" type="string">
+      <PARAMETER name="font" value="Monospaced"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="COMMENTAIRE" type="area"/>
+    <ELEMENT_DISPLAY element="NBSP" type="empty"/>
+    <ELEMENT_DISPLAY element="SUP" type="style">
+      <PARAMETER name="style" value="SUPERSCRIPT"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="SUB" type="style">
+      <PARAMETER name="style" value="SUBSCRIPT"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="EM" type="string">
+      <PARAMETER name="style" value="ITALIC"/>
+    </ELEMENT_DISPLAY>
+  </ELEMENTS_DISPLAY>
+  
+  
+  
+  <STRINGS language="fr">
+    <CONFIG_DESCRIPTION>Ensemble de pages sur un sujet donné</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="Divisions">
+      <TITLE>Divisions</TITLE>
+      <MENU_STRINGS menu="PARAGRAPHE">
+        <TITLE>Paragraphe</TITLE>
+      </MENU_STRINGS>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Listes/Tableaux">
+      <TITLE>Listes/Tableaux</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Figures">
+      <TITLE>Figures</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Interactif">
+      <TITLE>Interactif</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Autres">
+      <TITLE>Autres</TITLE>
+      <MENU_STRINGS menu="NBSP">
+        <TITLE>Espace insécable</TITLE>
+      </MENU_STRINGS>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Style">
+      <TITLE>Style</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Normal">
+      <TITLE>Sans style</TITLE>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="XPAGES">
+      <TITLE>Ensemble XPAGES</TITLE>
+      <DOCUMENTATION>
+        Un ensemble de pages qui se suivent, sur un sujet donné.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="INFORMATIONS">
+      <TITLE>Informations</TITLE>
+      <DOCUMENTATION>
+        Informations sur le document. Le label et le titre sont obligatoires.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LABEL">
+      <TITLE>Label</TITLE>
+      <DOCUMENTATION>
+        Identifiant pour cette contribution.
+        Ne peut contenir que des lettres de a à z, des chiffres de 0 à 9, et le caractère "-".
+        Le nom du fichier XML et le nom du dossier doivent correspondre au label.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TITRE">
+      <TITLE>Titre</TITLE>
+      <DOCUMENTATION>
+        Titre de l'ensemble de pages.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="AUTEUR">
+      <TITLE>Auteur</TITLE>
+      <DOCUMENTATION>
+        Un auteur
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DATECRE">
+      <TITLE>Date de création</TITLE>
+      <DOCUMENTATION>
+        Date de création, au format JJ/MM/AAAA
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DATEMAJ">
+      <TITLE>Date de mise à jour</TITLE>
+      <DOCUMENTATION>
+        Date de mise à jour, au format JJ/MM/AAAA
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LOGO">
+      <TITLE>Logo</TITLE>
+      <DOCUMENTATION>
+        Fichier image d'un logo à utiliser pour l'interface du site.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="fichier">
+        <TITLE>fichier</TITLE>
+        <DOCUMENTATION>
+          Chemin vers le fichier de l'image, relatif au fichier XML.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="lien">
+        <TITLE>lien</TITLE>
+        <DOCUMENTATION>
+          Lien optionnel d'une page web vers laquelle aller quand on clique sur le logo.
+          Doit commencer par "http://".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="INTERFACE">
+      <TITLE>Interface</TITLE>
+      <DOCUMENTATION>
+        Interface des pages.
+      </DOCUMENTATION>
+      <VALUE_TITLE value="azur">azur</VALUE_TITLE>
+      <VALUE_TITLE value="bois">bois</VALUE_TITLE>
+      <VALUE_TITLE value="etoiles">étoiles</VALUE_TITLE>
+      <VALUE_TITLE value="marbre">marbre</VALUE_TITLE>
+      <VALUE_TITLE value="parchemin">parchemin</VALUE_TITLE>
+      <VALUE_TITLE value="peinture">peinture</VALUE_TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="RUBRIQUES">
+      <TITLE>Rubriques</TITLE>
+      <DOCUMENTATION>
+        Afficher les rubriques ou non. Par défaut, utilise la valeur de l'élément parent.
+        L'élément XPAGES de plus haut niveau a la valeur "oui" par défaut.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LANGUE">
+      <TITLE>Langue</TITLE>
+      <DOCUMENTATION>
+        Code de la langue à utiliser pour l'interface utilisateur.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="PAGE">
+      <TITLE>Page</TITLE>
+      <DOCUMENTATION>
+        Page écran, d'environ 1000 caractères.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="label">
+        <TITLE>label</TITLE>
+        <DOCUMENTATION>
+          Label de la page (identifiant caché permettant de faire un lien vers cette page).
+          Ne doit être composé que de lettres minuscules de a à z.
+          Utiliser le label "index" pour la page d'entrée du site.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+        <DOCUMENTATION>
+          Titre de la page.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="role">
+        <TITLE>rôle</TITLE>
+        <DOCUMENTATION>
+          Rôle sémantique de la page : sens qu'on lui donne.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="autre">autre</VALUE_TITLE>
+        <VALUE_TITLE value="introduction">introduction</VALUE_TITLE>
+        <VALUE_TITLE value="conclusion">conclusion</VALUE_TITLE>
+        <VALUE_TITLE value="prerequis">prérequis</VALUE_TITLE>
+        <VALUE_TITLE value="objectifs">objectifs</VALUE_TITLE>
+        <VALUE_TITLE value="rappel">rappel</VALUE_TITLE>
+        <VALUE_TITLE value="definition">définition</VALUE_TITLE>
+        <VALUE_TITLE value="demonstration">démonstration</VALUE_TITLE>
+        <VALUE_TITLE value="exemple">exemple</VALUE_TITLE>
+        <VALUE_TITLE value="conseil">conseil</VALUE_TITLE>
+        <VALUE_TITLE value="remarque">remarque</VALUE_TITLE>
+        <VALUE_TITLE value="attention">attention</VALUE_TITLE>
+        <VALUE_TITLE value="complement">complément</VALUE_TITLE>
+        <VALUE_TITLE value="methode">méthode</VALUE_TITLE>
+        <VALUE_TITLE value="activite">activité</VALUE_TITLE>
+        <VALUE_TITLE value="bibliographie">bibliographie</VALUE_TITLE>
+        <VALUE_TITLE value="citation">citation</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFXPAGES">
+      <TITLE>Réf. document XPAGES</TITLE>
+      <DOCUMENTATION>
+        Référence vers un autre ensemble de pages, dont le titre sera affiché
+        dans le sommaire de cet ensemble.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="label">
+        <TITLE>label</TITLE>
+        <DOCUMENTATION>
+          Label du document XPAGES référencé.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SECTION">
+      <TITLE>Section</TITLE>
+      <DOCUMENTATION>
+        Une section à l'intérieur d'une page, qui peut avoir un titre.
+        Le rôle permet de donner un sens à la section, pour des transformations XML ultérieures ou un affichage particulier.
+        L'importance "grande" permet de mettre en valeur la section par rapport au reste du texte.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+        <DOCUMENTATION>
+          Titre de la section.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="role">
+        <TITLE>rôle</TITLE>
+        <DOCUMENTATION>
+          Rôle sémantique de la section : sens qu'on lui donne.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="autre">autre</VALUE_TITLE>
+        <VALUE_TITLE value="introduction">introduction</VALUE_TITLE>
+        <VALUE_TITLE value="conclusion">conclusion</VALUE_TITLE>
+        <VALUE_TITLE value="prerequis">prérequis</VALUE_TITLE>
+        <VALUE_TITLE value="objectifs">objectifs</VALUE_TITLE>
+        <VALUE_TITLE value="rappel">rappel</VALUE_TITLE>
+        <VALUE_TITLE value="definition">définition</VALUE_TITLE>
+        <VALUE_TITLE value="demonstration">démonstration</VALUE_TITLE>
+        <VALUE_TITLE value="exemple">exemple</VALUE_TITLE>
+        <VALUE_TITLE value="conseil">conseil</VALUE_TITLE>
+        <VALUE_TITLE value="remarque">remarque</VALUE_TITLE>
+        <VALUE_TITLE value="attention">attention</VALUE_TITLE>
+        <VALUE_TITLE value="complement">complément</VALUE_TITLE>
+        <VALUE_TITLE value="methode">méthode</VALUE_TITLE>
+        <VALUE_TITLE value="activite">activité</VALUE_TITLE>
+        <VALUE_TITLE value="bibliographie">bibliographie</VALUE_TITLE>
+        <VALUE_TITLE value="citation">citation</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="importance">
+        <TITLE>importance</TITLE>
+        <DOCUMENTATION>
+          Importance de la section. Une section importante pourra être mise en évidence
+          dans le site web généré.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="normale">normale</VALUE_TITLE>
+        <VALUE_TITLE value="grande">grande</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAGRAPHE">
+      <TITLE>P</TITLE>
+      <DOCUMENTATION>
+        Un paragraphe (quelques lignes sans saut de ligne).
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="TABLEAU">
+      <TITLE>Tableau</TITLE>
+      <DOCUMENTATION>
+        Tableau.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+        <DOCUMENTATION>
+          Titre du tableau
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TR">
+      <TITLE>Ligne de table</TITLE>
+      <DOCUMENTATION>
+        Ligne d'un tableau
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TD">
+      <TITLE>Cellule de table</TITLE>
+      <DOCUMENTATION>
+        Cellule d'un tableau
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="align">
+        <TITLE>align</TITLE>
+        <DOCUMENTATION>
+          Alignement du texte de la cellule
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="colspan">
+        <TITLE>colspan</TITLE>
+        <DOCUMENTATION>
+          Regroupement horizontal de cellules :
+          nombres de cellules à regrouper à droite de celle-ci
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="rowspan">
+        <TITLE>rowspan</TITLE>
+        <DOCUMENTATION>
+          Regroupement vertical de cellules :
+          nombres de cellules à regrouper en bas de celle-ci
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TH">
+      <TITLE>Cellule entête de table</TITLE>
+      <DOCUMENTATION>
+        Entête d'une colonne
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="align">
+        <TITLE>align</TITLE>
+        <DOCUMENTATION>
+          Alignement du texte de la cellule
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="colspan">
+        <TITLE>colspan</TITLE>
+        <DOCUMENTATION>
+          Regroupement horizontal de cellules :
+          nombres de cellules à regrouper à droite de celle-ci
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="rowspan">
+        <TITLE>rowspan</TITLE>
+        <DOCUMENTATION>
+          Regroupement vertical de cellules :
+          nombres de cellules à regrouper en bas de celle-ci
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LISTE">
+      <TITLE>Liste</TITLE>
+      <DOCUMENTATION>
+        Liste avec des puces ou des numéros
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <VALUE_TITLE value="puces">puces</VALUE_TITLE>
+        <VALUE_TITLE value="numéros">numéros</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ITEM">
+      <TITLE>Elément de liste</TITLE>
+      <DOCUMENTATION>
+        Elément d'une liste
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENVIMAGE">
+      <TITLE>Environnement d'image</TITLE>
+      <DOCUMENTATION>
+        Environnement pour des images ou animations.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+        <DOCUMENTATION>
+          Titre de l'image ou animation.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="localisation">
+        <TITLE>localisation</TITLE>
+        <DOCUMENTATION>
+          Positionnement souhaité pour l'image :
+          - texte : dans le texte à la taille d'origine
+          - page : dans la page à côté du texte, réduit si nécessaire
+          - icône : sous forme de petite icône à côté du paragraphe qui suit
+        </DOCUMENTATION>
+        <VALUE_TITLE value="texte">texte</VALUE_TITLE>
+        <VALUE_TITLE value="page">page</VALUE_TITLE>
+        <VALUE_TITLE value="icône">icône</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FICHIER">
+      <TITLE>Fichier</TITLE>
+      <DOCUMENTATION>
+        Fichier image ou animation à inclure dans le texte,
+        ou à localiser dans une page qui s'ouvrira à part du texte.
+        Si le contenu du fichier doit être accompagné d'une légende,
+        il est nécessaire de passer par l'élément ENVIMAGE.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="nom">
+        <TITLE>nom</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FORMATS">
+      <TITLE>Formats</TITLE>
+      <DOCUMENTATION>
+        Permet de spécifier plusieurs fichiers, avec des formats différents, pour un même media.
+        Un seul fichier sera affiché, choisi en fonction des capacités de l'environnement d'affichage.
+        Cet élément n'est utile qu'avec des formats qui ne sont pas lisibles partout, par exemple pour des vidéos.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LEGENDE">
+      <TITLE>Légende</TITLE>
+      <DOCUMENTATION>
+        Légende d'un tableau ou d'une figure
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CREDIT">
+      <TITLE>Crédit</TITLE>
+      <DOCUMENTATION>
+        crédit des documents
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="APPLICATION">
+      <TITLE>Application interactive</TITLE>
+      <DOCUMENTATION>
+        Application interactive. Remplace les éléments APPLET et FLASH en généralisant le concept.
+        L'attribut type précise le type d'application (applet Java, Flash ou HTML/Javascript).
+        Le fichier indiqué doit être un .jar pour les applets Java, un .swf pour les applications Flash, et un .html pour les applications Javascript.
+        Les applets Java doivent avoir un paramètre "code" avec le nom de la classe.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <DOCUMENTATION>
+          Type d'application (applet Java, Flash ou HTML/Javascript).
+        </DOCUMENTATION>
+        <VALUE_TITLE value="applet">applet Java</VALUE_TITLE>
+        <VALUE_TITLE value="flash">Flash</VALUE_TITLE>
+        <VALUE_TITLE value="html">HTML/Javascript</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+        <DOCUMENTATION>
+          Titre de l'application.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="fichier">
+        <TITLE>fichier</TITLE>
+        <DOCUMENTATION>
+          Fichier de l'application.
+          Doit être un .jar pour les applets Java, un .swf pour les applications Flash, et un .html pour les applications Javascript.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="contribution">
+        <TITLE>contribution</TITLE>
+        <DOCUMENTATION>
+          Contribution du fichier de l'application.
+          Permet de ne pas avoir à recopier plusieurs fois une application utilisée dans plusieurs contributions.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="largeur">
+        <TITLE>largeur</TITLE>
+        <DOCUMENTATION>
+          Largeur de la zone de l'application, en pixels.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="hauteur">
+        <TITLE>hauteur</TITLE>
+        <DOCUMENTATION>
+          Hauteur de la zone de l'application, en pixels.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="localisation">
+        <TITLE>localisation</TITLE>
+        <DOCUMENTATION>
+          Positionnement souhaité pour l'application :
+          - texte : dans le texte
+          - page : dans la page à côté du texte
+          - icône : accessible à partir d'une petite icône à côté du paragraphe qui suit
+        </DOCUMENTATION>
+        <VALUE_TITLE value="texte">texte</VALUE_TITLE>
+        <VALUE_TITLE value="page">page</VALUE_TITLE>
+        <VALUE_TITLE value="icône">icône</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAM">
+      <TITLE>Paramètre</TITLE>
+      <DOCUMENTATION>
+        Paramètre d'applet ou d'objet Flash
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="nom">
+        <TITLE>nom</TITLE>
+        <DOCUMENTATION>
+          Nom du paramètre.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="valeur">
+        <TITLE>valeur</TITLE>
+        <DOCUMENTATION>
+          Valeur du paramètre.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="EXERCICE">
+      <TITLE>Exercice</TITLE>
+      <DOCUMENTATION>
+        Exercice de type questions-réponses
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <VALUE_TITLE value="évaluation">évaluation</VALUE_TITLE>
+        <VALUE_TITLE value="auto-évaluation">auto-évaluation</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DIFFICULTE">
+      <TITLE>Difficulté</TITLE>
+      <DOCUMENTATION>
+        Indication du niveau de difficulté :
+        * : facile, ou application directe du cours
+        ** : moyen
+        *** : difficile
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TEMPS">
+      <TITLE>Temps</TITLE>
+      <DOCUMENTATION>
+        Temps indicatif nécessaire pour résoudre l'exercice
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="QUESTION">
+      <TITLE>Question</TITLE>
+      <DOCUMENTATION>
+        Question d'un exercice, avec un énoncé, éventuellement des aides, une solution, et éventuellement des points.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENONCE">
+      <TITLE>Enoncé</TITLE>
+      <DOCUMENTATION>
+        Enoncé d'un exercice ou d'une question
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="AIDE">
+      <TITLE>Aide</TITLE>
+      <DOCUMENTATION>
+        Aide d'un exercice
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SOLUTION">
+      <TITLE>Solution</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="POINTS">
+      <TITLE>Points</TITLE>
+      <DOCUMENTATION>
+        Nombre de points gagnés si la réponse est correcte.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="QCM">
+      <TITLE>QCM</TITLE>
+      <DOCUMENTATION>
+        Questionnaire à choix multiples, avec des commentaires affichés après le choix de l'utilisateur.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="QUESTIONQCM">
+      <TITLE>Question de QCM</TITLE>
+      <DOCUMENTATION>
+        Question d'un QCM, avec un énoncé, éventuellement des aides, et les réponses possibles.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENONCEQCM">
+      <TITLE>Enoncé de question</TITLE>
+      <DOCUMENTATION>
+        Enoncé d'une question de QCM (texte court)
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REPONSEQCM">
+      <TITLE>Réponse de QCM</TITLE>
+      <DOCUMENTATION>
+        Réponse possible à un QCM.
+        Contient le texte de la réponse et un commentaire à afficher si la réponse donnée est incorrecte.
+        L'attribut bonne indique si la réponse est bonne ou pas.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="bonne">
+        <TITLE>bonne</TITLE>
+        <VALUE_TITLE value="non">non</VALUE_TITLE>
+        <VALUE_TITLE value="oui">oui</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TEXTEREP">
+      <TITLE>Texte de réponse</TITLE>
+      <DOCUMENTATION>
+        Texte de la réponse
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="COMMENTAIREREP">
+      <TITLE>Commentaire de réponse</TITLE>
+      <DOCUMENTATION>
+        Commentaire à afficher après le choix de l'utilisateur (en particulier si la réponse donnée est incorrecte).
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="LIENPAGE">
+      <TITLE>Lien vers page interne</TITLE>
+      <DOCUMENTATION>
+        Lien vers une page de la même contribution (si contribution est vide),
+        ou vers une page d'une autre contribution (avec contribution = le label de la contribution).
+        Doit contenir du texte ou un fichier sur lequel sera placé le lien.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="contribution">
+        <TITLE>contribution</TITLE>
+        <DOCUMENTATION>
+          Le label de la contribution. Vide si on veut faire un lien vers la même contribution.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="page">
+        <TITLE>page</TITLE>
+        <DOCUMENTATION>
+          Le label de la page. Vide si on veut faire un lien vers la première page de la contribution.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LIENWEB">
+      <TITLE>Lien web externe</TITLE>
+      <DOCUMENTATION>
+        Lien externe (avec url commençant par "http://").
+        Doit contenir du texte ou un fichier sur lequel sera placé le lien.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>url</TITLE>
+        <DOCUMENTATION>
+          Adresse de la page web. Doit commencer par "http://".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LIENIMAGE">
+      <TITLE>Lien vers image</TITLE>
+      <DOCUMENTATION>
+        Lien vers un environnement d'image dans la même page.
+        Doit contenir du texte ou un fichier sur lequel sera placé le lien.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>label</TITLE>
+        <DOCUMENTATION>
+          Label de l'environnement d'image (qui doit se trouver dans la même page).
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="GLOSSAIRE">
+      <TITLE>Mot du glossaire</TITLE>
+      <DOCUMENTATION>
+        Renvoi au glossaire des mots importants ou jargonneux,
+        et éventuelle proposition de définition pour le glossaire.
+        Les attributs définissent le mot affiché et le mot de référence,
+        et le contenu de l'élément correspond à sa définition.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="mot">
+        <TITLE>mot</TITLE>
+        <DOCUMENTATION>
+          Mot affiché.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="ref">
+        <TITLE>ref</TITLE>
+        <DOCUMENTATION>
+          Mot de référence dans le glossaire, s'il est différent du mot affiché.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="BIBLIOGRAPHIE">
+      <TITLE>Bibliographie</TITLE>
+      <DOCUMENTATION>
+        Liste de références bibliographiques et webographiques.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFOUVRAGE">
+      <TITLE>Réf. ouvrage</TITLE>
+      <DOCUMENTATION>
+        Référence bibliographique pour un ouvrage.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="sous-titre">
+        <TITLE>sous-titre</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="premierAuteur">
+        <TITLE>premier auteur</TITLE>
+        <DOCUMENTATION>
+          Ecrire sous la forme "NOM, Prénom".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autresAuteurs">
+        <TITLE>autres auteurs</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="volume">
+        <TITLE>volume</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="lieu">
+        <TITLE>lieu</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="editeur">
+        <TITLE>éditeur</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="annee">
+        <TITLE>année</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="pagination">
+        <TITLE>pagination</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="collection">
+        <TITLE>collection</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="isbn">
+        <TITLE>ISBN</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>URL</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autre">
+        <TITLE>autre</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFARTICLE">
+      <TITLE>Réf. article</TITLE>
+      <DOCUMENTATION>
+        Référence bibliographique pour un article de périodique.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titreArticle">
+        <TITLE>titre de l'article</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titrePeriodique">
+        <TITLE>titre du périodique</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="premierAuteur">
+        <TITLE>premier auteur</TITLE>
+        <DOCUMENTATION>
+          Ecrire sous la forme "NOM, Prénom".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autresAuteurs">
+        <TITLE>autres auteurs</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="annee">
+        <TITLE>année</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="volume">
+        <TITLE>volume</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="numero">
+        <TITLE>numéro</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="pagination">
+        <TITLE>pagination</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>URL</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autre">
+        <TITLE>autre</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFWEB">
+      <TITLE>Réf. web</TITLE>
+      <DOCUMENTATION>
+        Référence pour une page web.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>URL</TITLE>
+        <DOCUMENTATION>
+          Adresse de la page web. Doit commencer par "http://".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="auteurs">
+        <TITLE>auteurs</TITLE>
+        <DOCUMENTATION>
+          Auteurs ou collectivité.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>titre</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titreSite">
+        <TITLE>titre du site</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="dateConsultation">
+        <TITLE>date de consultation</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="description">
+        <TITLE>description</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SYMBOLE">
+      <TITLE>Symbole</TITLE>
+      <DOCUMENTATION>
+        Lettre grecque ou petite image à incorporer dans le texte.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="EQUATION">
+      <TITLE>Equation</TITLE>
+      <DOCUMENTATION>
+        Equation: texte de l'équation dans l'attribut texte (avec la syntaxe de Jaxe),
+        et image PNG encodée en base64 à l'intérieur de l'élément.
+        Plus tard l'image sera redirigée vers un fichier dont la référence
+        sera dans un attribut "image".
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="texte">
+        <TITLE>texte</TITLE>
+        <DOCUMENTATION>
+          Texte de l'équation, avec la syntaxe de Jaxe.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CODE">
+      <TITLE>Code</TITLE>
+      <DOCUMENTATION>
+        Code informatique (généralement affiché avec une police dont les lettres ont la même taille)
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="EQUATEX">
+      <TITLE>Equation TeX</TITLE>
+      <DOCUMENTATION>
+        Equation TeX: texte de l'équation dans l'attribut texte avec la syntaxe TeX,
+        et image PNG encodée en base64 à l'intérieur de l'élément.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="texte">
+        <TITLE>texte</TITLE>
+        <DOCUMENTATION>
+          Texte de l'équation, avec la syntaxe TeX.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CODE">
+      <TITLE>Code</TITLE>
+      <DOCUMENTATION>
+        Code informatique (généralement affiché avec une police dont les lettres ont la même taille)
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="COMMENTAIRE">
+      <TITLE>Commentaire</TITLE>
+      <DOCUMENTATION>
+        Commentaire de l'auteur, qui ne sera pas affiché dans le résultat final.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="NBSP">
+      <TITLE>_</TITLE>
+      <DOCUMENTATION>
+        Espace insécable
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="SUP">
+      <TITLE>Exposant</TITLE>
+      <DOCUMENTATION>
+        Exposant
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SUB">
+      <TITLE>Indice</TITLE>
+      <DOCUMENTATION>
+        Indice
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="EM">
+      <TITLE>Emphase</TITLE>
+      <DOCUMENTATION>
+        Emphase
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+  
+  
+  </STRINGS>
+  
+  <STRINGS language="en">
+    <CONFIG_DESCRIPTION>Set of pages on a given subject</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="Divisions">
+      <TITLE>Divisions</TITLE>
+      <MENU_STRINGS menu="PARAGRAPHE">
+        <TITLE>Paragraph</TITLE>
+      </MENU_STRINGS>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Listes/Tableaux">
+      <TITLE>Lists/Tables</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Figures">
+      <TITLE>Figures</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Interactif">
+      <TITLE>Interactive</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Autres">
+      <TITLE>Other</TITLE>
+      <MENU_STRINGS menu="NBSP">
+        <TITLE>Non-breaking space</TITLE>
+      </MENU_STRINGS>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Style">
+      <TITLE>Style</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="Normal">
+      <TITLE>Normal</TITLE>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="XPAGES">
+      <TITLE>XPAGES set</TITLE>
+      <DOCUMENTATION>
+        A set of pages on a given subject.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="INFORMATIONS">
+      <TITLE>Informations</TITLE>
+      <DOCUMENTATION>
+        Informations about the document. The label and title are required.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LABEL">
+      <TITLE>Label</TITLE>
+      <DOCUMENTATION>
+        Identifier for this contribution
+        Can only contain lowercase letters from a to z, digits from 0 to 9, and the character "-".
+        The name of the XML file and the name of the folder must match the label.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TITRE">
+      <TITLE>Title</TITLE>
+      <DOCUMENTATION>
+        Title for the set of pages.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="AUTEUR">
+      <TITLE>Author</TITLE>
+      <DOCUMENTATION>
+        An author
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DATECRE">
+      <TITLE>Creation date</TITLE>
+      <DOCUMENTATION>
+        Date of creation, with the format DD/MM/YYYY
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DATEMAJ">
+      <TITLE>Update date</TITLE>
+      <DOCUMENTATION>
+        Date of update, with the format DD/MM/YYYY
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LOGO">
+      <TITLE>Logo</TITLE>
+      <DOCUMENTATION>
+        Image file for a logo to use in the site interface.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="fichier">
+        <TITLE>file</TITLE>
+        <DOCUMENTATION>
+          Path to the image file, relative to the XML file.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="lien">
+        <TITLE>link</TITLE>
+        <DOCUMENTATION>
+          Optional link to a web page to go to when the logo is clicked.
+          Must start with "http://".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="INTERFACE">
+      <TITLE>Interface</TITLE>
+      <DOCUMENTATION>
+        Interface for the pages.
+      </DOCUMENTATION>
+      <VALUE_TITLE value="azur">azure</VALUE_TITLE>
+      <VALUE_TITLE value="bois">wood</VALUE_TITLE>
+      <VALUE_TITLE value="etoiles">stars</VALUE_TITLE>
+      <VALUE_TITLE value="marbre">marble</VALUE_TITLE>
+      <VALUE_TITLE value="parchemin">parchment</VALUE_TITLE>
+      <VALUE_TITLE value="peinture">painting</VALUE_TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="RUBRIQUES">
+      <TITLE>Menubar</TITLE>
+      <DOCUMENTATION>
+        Displays the top menubar or not. By default, uses the value of the parent element.
+        The root XPAGES element has the "yes" value by default.
+      </DOCUMENTATION>
+      <VALUE_TITLE value="oui">yes</VALUE_TITLE>
+      <VALUE_TITLE value="non">no</VALUE_TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LANGUE">
+      <TITLE>Language</TITLE>
+      <DOCUMENTATION>
+        Code for the language to use in the user interface.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="PAGE">
+      <TITLE>Page</TITLE>
+      <DOCUMENTATION>
+        A page. Ideally, it should fit a computer screen, and be about 1000 characters long.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="label">
+        <TITLE>label</TITLE>
+        <DOCUMENTATION>
+          Label of the page (hidden identifier used to create links to this page).
+          Should only contain lowercase letters from a to z and the character "-".
+          Use the "index" label for the website home page.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+        <DOCUMENTATION>
+          Title for the page.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="role">
+        <TITLE>role</TITLE>
+        <DOCUMENTATION>
+          Semantic role (meaning) of the page.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="autre">other</VALUE_TITLE>
+        <VALUE_TITLE value="introduction">introduction</VALUE_TITLE>
+        <VALUE_TITLE value="conclusion">conclusion</VALUE_TITLE>
+        <VALUE_TITLE value="prerequis">prerequisites</VALUE_TITLE>
+        <VALUE_TITLE value="objectifs">objectives</VALUE_TITLE>
+        <VALUE_TITLE value="rappel">reminder</VALUE_TITLE>
+        <VALUE_TITLE value="definition">definition</VALUE_TITLE>
+        <VALUE_TITLE value="demonstration">demonstration</VALUE_TITLE>
+        <VALUE_TITLE value="exemple">example</VALUE_TITLE>
+        <VALUE_TITLE value="conseil">advise</VALUE_TITLE>
+        <VALUE_TITLE value="remarque">remark</VALUE_TITLE>
+        <VALUE_TITLE value="attention">warning</VALUE_TITLE>
+        <VALUE_TITLE value="complement">additional_information</VALUE_TITLE>
+        <VALUE_TITLE value="methode">method</VALUE_TITLE>
+        <VALUE_TITLE value="activite">activity</VALUE_TITLE>
+        <VALUE_TITLE value="bibliographie">bibliography</VALUE_TITLE>
+        <VALUE_TITLE value="citation">citation</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFXPAGES">
+      <TITLE>Ref. XPAGES document</TITLE>
+      <DOCUMENTATION>
+        Reference to another set of pages, whose title will be displayed
+        in the table of contents for this set.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="label">
+        <TITLE>label</TITLE>
+        <DOCUMENTATION>
+          Label of the referenced XPAGES document.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SECTION">
+      <TITLE>Section</TITLE>
+      <DOCUMENTATION>
+        A section inside a page, usually with a title.
+        The "role" attribute is used to give meaning to the section, for later XML transformations or a specific display.
+        The importance "high" is used to highlight the section from the rest of the text.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+        <DOCUMENTATION>
+          Section title.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="role">
+        <TITLE>role</TITLE>
+        <DOCUMENTATION>
+          Semantic role (meaning) of the section.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="autre">other</VALUE_TITLE>
+        <VALUE_TITLE value="introduction">introduction</VALUE_TITLE>
+        <VALUE_TITLE value="conclusion">conclusion</VALUE_TITLE>
+        <VALUE_TITLE value="prerequis">prerequisites</VALUE_TITLE>
+        <VALUE_TITLE value="objectifs">objectives</VALUE_TITLE>
+        <VALUE_TITLE value="rappel">reminder</VALUE_TITLE>
+        <VALUE_TITLE value="definition">definition</VALUE_TITLE>
+        <VALUE_TITLE value="demonstration">demonstration</VALUE_TITLE>
+        <VALUE_TITLE value="exemple">example</VALUE_TITLE>
+        <VALUE_TITLE value="conseil">advise</VALUE_TITLE>
+        <VALUE_TITLE value="remarque">remark</VALUE_TITLE>
+        <VALUE_TITLE value="attention">warning</VALUE_TITLE>
+        <VALUE_TITLE value="complement">additional_information</VALUE_TITLE>
+        <VALUE_TITLE value="methode">method</VALUE_TITLE>
+        <VALUE_TITLE value="activite">activity</VALUE_TITLE>
+        <VALUE_TITLE value="bibliographie">bibliography</VALUE_TITLE>
+        <VALUE_TITLE value="citation">citation</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="importance">
+        <TITLE>importance</TITLE>
+        <DOCUMENTATION>
+          Importance of the section. An important section will be more visible
+          in the generated website.
+        </DOCUMENTATION>
+        <VALUE_TITLE value="normale">normal</VALUE_TITLE>
+        <VALUE_TITLE value="grande">high</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAGRAPHE">
+      <TITLE>P</TITLE>
+      <DOCUMENTATION>
+        A paragraph (a few lines without a line break).
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="TABLEAU">
+      <TITLE>Table</TITLE>
+      <DOCUMENTATION>
+        Table
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+        <DOCUMENTATION>
+          Table title
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TR">
+      <TITLE>Table row</TITLE>
+      <DOCUMENTATION>
+        Table row.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TD">
+      <TITLE>Table cell</TITLE>
+      <DOCUMENTATION>
+        Table cell.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="align">
+        <TITLE>align</TITLE>
+        <DOCUMENTATION>
+          Alignement for the text in the cell
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="colspan">
+        <TITLE>colspan</TITLE>
+        <DOCUMENTATION>
+          Horizontal cell gathering :
+          number of cells to regroup to the right of this one.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="rowspan">
+        <TITLE>rowspan</TITLE>
+        <DOCUMENTATION>
+          Vertical cell gathering :
+          number of cells to regroup to the bottom of this one.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TH">
+      <TITLE>Table Header cell</TITLE>
+      <DOCUMENTATION>
+        Column header
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="align">
+        <TITLE>align</TITLE>
+        <DOCUMENTATION>
+          Alignement for the text in the cell
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="colspan">
+        <TITLE>colspan</TITLE>
+        <DOCUMENTATION>
+          Horizontal cell gathering :
+          number of cells to regroup to the right of this one.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="rowspan">
+        <TITLE>rowspan</TITLE>
+        <DOCUMENTATION>
+          Vertical cell gathering :
+          number of cells to regroup to the bottom of this one.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LISTE">
+      <TITLE>List</TITLE>
+      <DOCUMENTATION>
+        Bulleted or ordered list
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <VALUE_TITLE value="puces">bullets</VALUE_TITLE>
+        <VALUE_TITLE value="numéros">numbers</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ITEM">
+      <TITLE>List item</TITLE>
+      <DOCUMENTATION>
+        Element in a list.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="ENVIMAGE">
+      <TITLE>Image environment</TITLE>
+      <DOCUMENTATION>
+        Environnement for images or animations.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+        <DOCUMENTATION>
+          Title for the image or animation.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="localisation">
+        <TITLE>layout</TITLE>
+        <DOCUMENTATION>
+          Position for the image :
+          - text : within the text, with the original size
+          - page : in the page next to the text, reduced if necessary
+          - icon : as a small icon, next to the following paragraph
+        </DOCUMENTATION>
+        <VALUE_TITLE value="texte">text</VALUE_TITLE>
+        <VALUE_TITLE value="page">page</VALUE_TITLE>
+        <VALUE_TITLE value="icône">icon</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FICHIER">
+      <TITLE>File</TITLE>
+      <DOCUMENTATION>
+        File for an image or animation to include in the text.
+        If the image or animation has to be followed by a legend,
+        it is necessary to used the IMAGEENV element.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="nom">
+        <TITLE>name</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="FORMATS">
+      <TITLE>Formats</TITLE>
+      <DOCUMENTATION>
+        Can be used to specify several files, each with a different format, for the same media.
+        Only one file will be displayed, chosen according to the capabilities of the display environment.
+        This element is only useful with formats that are not readable everywhere, for instance for videos.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LEGENDE">
+      <TITLE>Legend</TITLE>
+      <DOCUMENTATION>
+        Legend for a table or a figure.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CREDIT">
+      <TITLE>Copyright info</TITLE>
+      <DOCUMENTATION>
+        Copyright information
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="APPLICATION">
+      <TITLE>Interactive application</TITLE>
+      <DOCUMENTATION>
+        Interactive application. Replaces APPLET and FLASH by generalizing the concept.
+        The type attribute specifies the application type (Java applet, Flash or HTML/Javascript).
+        The file attribute must be a .jar for Java applets, a .swf for Flash applications, and a .html for Javascript applications.
+        Java applets must have a "code" parameter with the class name.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <DOCUMENTATION>
+          Application type (Java applet, Flash or HTML/Javascript).
+        </DOCUMENTATION>
+        <VALUE_TITLE value="applet">Java applet</VALUE_TITLE>
+        <VALUE_TITLE value="flash">Flash</VALUE_TITLE>
+        <VALUE_TITLE value="html">HTML/Javascript</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+        <DOCUMENTATION>
+          Application title
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="fichier">
+        <TITLE>file</TITLE>
+        <DOCUMENTATION>
+          Application file.
+          Must be a .jar for Java applets, a .swf for Flash applications, and a .html for Javascript applications.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="contribution">
+        <TITLE>contribution</TITLE>
+        <DOCUMENTATION>
+          Contribution of the application file.
+          Can be used to avoid copying many times an application used in several contributions.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="largeur">
+        <TITLE>width</TITLE>
+        <DOCUMENTATION>
+          Width for the application area, in pixels.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="hauteur">
+        <TITLE>height</TITLE>
+        <DOCUMENTATION>
+          Height for the application area, in pixels.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="localisation">
+        <TITLE>layout</TITLE>
+        <DOCUMENTATION>
+          Position for the application :
+          - text : within the text
+          - page : in the page next to the text
+          - icon : available with a small icon, next to the following paragraph
+        </DOCUMENTATION>
+        <VALUE_TITLE value="texte">text</VALUE_TITLE>
+        <VALUE_TITLE value="page">page</VALUE_TITLE>
+        <VALUE_TITLE value="icône">icon</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="PARAM">
+      <TITLE>Parameter</TITLE>
+      <DOCUMENTATION>
+        Parameter for a Java applet of a Flash object.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="nom">
+        <TITLE>name</TITLE>
+        <DOCUMENTATION>
+          Parameter name.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="valeur">
+        <TITLE>value</TITLE>
+        <DOCUMENTATION>
+          Parameter value.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="EXERCICE">
+      <TITLE>Exercise</TITLE>
+      <DOCUMENTATION>
+        Exercise with questions and answers
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="type">
+        <TITLE>type</TITLE>
+        <VALUE_TITLE value="évaluation">evaluation</VALUE_TITLE>
+        <VALUE_TITLE value="auto-évaluation">self-assessment</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="DIFFICULTE">
+      <TITLE>Difficulty</TITLE>
+      <DOCUMENTATION>
+        gives an idea of the difficulty :
+        * : easy, direct application of the lecture
+        ** : medium
+        *** : hard
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TEMPS">
+      <TITLE>Time</TITLE>
+      <DOCUMENTATION>
+        Indicative time to solve the exercise
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="QUESTION">
+      <TITLE>Question</TITLE>
+      <DOCUMENTATION>
+        Exercise question, with the terms, optional helps, a solution, and optional points.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENONCE">
+      <TITLE>Terms</TITLE>
+      <DOCUMENTATION>
+        Terms of an exercise or a question
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="AIDE">
+      <TITLE>Help</TITLE>
+      <DOCUMENTATION>
+        Help for a question
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SOLUTION">
+      <TITLE>Solution</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="POINTS">
+      <TITLE>Points</TITLE>
+      <DOCUMENTATION>
+        Awarded points if the answer is correct
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="QCM">
+      <TITLE>Quiz</TITLE>
+      <DOCUMENTATION>
+        Quiz with comments displayed depending on the user's answer
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="QUESTIONQCM">
+      <TITLE>Quiz question</TITLE>
+      <DOCUMENTATION>
+        Quiz question, with the terms, optional helps, and possible answers.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="ENONCEQCM">
+      <TITLE>Question terms</TITLE>
+      <DOCUMENTATION>
+        Quiz question terms (short text)
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REPONSEQCM">
+      <TITLE>Quiz answer</TITLE>
+      <DOCUMENTATION>
+        Possible answer for a quiz. Contains the text of the answer and a comment to display after a choice. The "correct" attribute tells if the answer is right or wrong.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="bonne">
+        <TITLE>correct</TITLE>
+        <VALUE_TITLE value="non">no</VALUE_TITLE>
+        <VALUE_TITLE value="oui">yes</VALUE_TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="TEXTEREP">
+      <TITLE>Answer text</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="COMMENTAIREREP">
+      <TITLE>Answer comment</TITLE>
+      <DOCUMENTATION>
+        Comment to display after a choice (especially if the answer in wrong).
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="LIENPAGE">
+      <TITLE>Link to internal page</TITLE>
+      <DOCUMENTATION>
+        Link to a page in the same contribution (if "contribution" is empty),
+        or link to a page in another contribution (with the "contribution" attribute specifying the contribution label).
+        Must contain text or a file upon which the link will be displayed.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="contribution">
+        <TITLE>contribution</TITLE>
+        <DOCUMENTATION>
+          The contribution label. Empty for a link to the same contribution.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="page">
+        <TITLE>page</TITLE>
+        <DOCUMENTATION>
+          The page label. Empty to create a link to the first page in a contribution.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LIENWEB">
+      <TITLE>External link</TITLE>
+      <DOCUMENTATION>
+        External link (with a URL strating with "http://").
+        Must contain text or a file upon which the link will be displayed.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>url</TITLE>
+        <DOCUMENTATION>
+          Address for the web page. Must start with "http://".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="LIENIMAGE">
+      <TITLE>Image link</TITLE>
+      <DOCUMENTATION>
+        Link to an image environnement in the same page.
+        Must contain text or a file upon which the link will be displayed.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>label</TITLE>
+        <DOCUMENTATION>
+          Label for the image environnement (which must be in the same page).
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="GLOSSAIRE">
+      <TITLE>Glossary word</TITLE>
+      <DOCUMENTATION>
+        Refers to the glossary, and can suggest a definition for the glossary.
+        The attributes define the displayed word and the reference word,
+        while the element content is the definition.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="mot">
+        <TITLE>word</TITLE>
+        <DOCUMENTATION>
+          Displayed word.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="ref">
+        <TITLE>ref</TITLE>
+        <DOCUMENTATION>
+          Reference word in the glossary, if different from the displayed word.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="BIBLIOGRAPHIE">
+      <TITLE>Bibliography</TITLE>
+      <DOCUMENTATION>
+        List of bibliographic and webographic references.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFOUVRAGE">
+      <TITLE>Ref. monograph</TITLE>
+      <DOCUMENTATION>
+        Bibliographic reference for a monograph.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="sous-titre">
+        <TITLE>subtitle</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="premierAuteur">
+        <TITLE>first author</TITLE>
+        <DOCUMENTATION>
+          Write with the syntax "LASTNAME, Firstname".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autresAuteurs">
+        <TITLE>other authors</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="volume">
+        <TITLE>volume</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="lieu">
+        <TITLE>location</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="editeur">
+        <TITLE>editor</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="annee">
+        <TITLE>year</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="pagination">
+        <TITLE>pagination</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="collection">
+        <TITLE>collection</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="isbn">
+        <TITLE>isbn number</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>URL</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autre">
+        <TITLE>other</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFARTICLE">
+      <TITLE>Ref. article</TITLE>
+      <DOCUMENTATION>
+        Bibliographic reference for an article.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="titreArticle">
+        <TITLE>article title</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titrePeriodique">
+        <TITLE>serial title</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="premierAuteur">
+        <TITLE>first author</TITLE>
+        <DOCUMENTATION>
+          Write with the syntax "LASTNAME, Firstname".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autresAuteurs">
+        <TITLE>other authors</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="annee">
+        <TITLE>year</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="volume">
+        <TITLE>volume</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="numero">
+        <TITLE>number</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="pagination">
+        <TITLE>pagination</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>URL</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="autre">
+        <TITLE>other</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="REFWEB">
+      <TITLE>Ref. web</TITLE>
+      <DOCUMENTATION>
+        Reference for a web page.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="url">
+        <TITLE>URL</TITLE>
+        <DOCUMENTATION>
+          Web page URL. Must start with "http://".
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="auteurs">
+        <TITLE>authors</TITLE>
+        <DOCUMENTATION>
+          Authors or collectivity.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titre">
+        <TITLE>title</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="titreSite">
+        <TITLE>Website title</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="dateConsultation">
+        <TITLE>consultation date</TITLE>
+      </ATTRIBUTE_STRINGS>
+      <ATTRIBUTE_STRINGS attribute="description">
+        <TITLE>description</TITLE>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SYMBOLE">
+      <TITLE>Symbol</TITLE>
+      <DOCUMENTATION>
+        Greek letter or small image to insert in the text.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="EQUATION">
+      <TITLE>Equation</TITLE>
+      <DOCUMENTATION>
+        Equation : text for the equation in the "text" attribute (with Jaxe's syntax),
+        and PNG image encoded in base64 inside the XML document.
+        Later, the image will be redirected towards a file whose reference will be
+        in an "image" attribute.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="texte">
+        <TITLE>text</TITLE>
+        <DOCUMENTATION>
+          Text for the equation, with Jaxe's syntax.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="EQUATEX">
+      <TITLE>TeX Equation</TITLE>
+      <DOCUMENTATION>
+        TeX Equation : text for the equation in the "text" attribute (with TeX syntax),
+        and PNG image encoded in base64 inside the XML document.
+      </DOCUMENTATION>
+      <ATTRIBUTE_STRINGS attribute="texte">
+        <TITLE>text</TITLE>
+        <DOCUMENTATION>
+          Text for the equation, using TeX syntax.
+        </DOCUMENTATION>
+      </ATTRIBUTE_STRINGS>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="CODE">
+      <TITLE>Code</TITLE>
+      <DOCUMENTATION>
+        Computer code (usually displayed with a monospaced font).
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="COMMENTAIRE">
+      <TITLE>Comment</TITLE>
+      <DOCUMENTATION>
+        Author comment, that will not be displayed in the final result.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="NBSP">
+      <TITLE>_</TITLE>
+      <DOCUMENTATION>
+        Non-breaking space.
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="SUP">
+      <TITLE>Superscript</TITLE>
+      <DOCUMENTATION>
+        Superscript
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="SUB">
+      <TITLE>Subscript</TITLE>
+      <DOCUMENTATION>
+        Subscript
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="EM">
+      <TITLE>Emphasis</TITLE>
+      <DOCUMENTATION>
+        Emphasis
+      </DOCUMENTATION>
+    </ELEMENT_STRINGS>
+    
+  
+  
+  </STRINGS>
+</DAXE_CONFIG>

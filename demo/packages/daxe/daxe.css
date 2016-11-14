@@ -221,6 +221,18 @@ div.submenu {
   color: #A0A0A0;
 }
 
+.submenu_icon {
+  vertical-align: middle;
+}
+
+.disabled .submenu_icon {
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  padding-left: 13px;
+  background: url('images/submenu_disabled.png') left top no-repeat;
+}
+
 
 .toolbar {
   cursor: default;
@@ -776,6 +788,12 @@ span.validation_path {
   z-index: -1;
 }
 
+/* DNLineBreak */
+.br::before {
+  content: " ↵";
+  color: #BBB;
+}
+
 /* DNList */
 ul.list {
   list-style: none;
@@ -947,19 +965,19 @@ span.simple_type-title {
 
 /* Fonts for symbols and equations */
 
-@font-face { 
+@font-face {
     font-family: 'STIXSubset-Regular';
     src: url('fonts/STIXSubset-Regular.eot');
     src: local('STIXSubset-Regular'), url('fonts/STIXSubset-Regular.ttf') format('truetype');
 }
 
-@font-face { 
+@font-face {
     font-family: 'STIXSubset-Bold';
     src: url('fonts/STIXSubset-Bold.eot');
     src: local('STIXSubset-Bold'), url('fonts/STIXSubset-Bold.ttf') format('truetype');
 }
 
-@font-face { 
+@font-face {
     font-family: 'STIXSubset-Italic';
     src: url('fonts/STIXSubset-Italic.eot');
     src: local('STIXSubset-Italic'), url('fonts/STIXSubset-Italic.ttf') format('truetype');

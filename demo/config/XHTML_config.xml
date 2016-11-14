@@ -1,545 +1,542 @@
-<?xml version="1.0" encoding="UTF-8"?><CONFIG_JAXE>
-  <LANGAGE>
-    <FICHIER_SCHEMA nom="xhtml1-strict.xsd"/>
-    <RACINE element="html"/>
-  </LANGAGE>
+<?xml version="1.0" encoding="UTF-8"?>
+<DAXE_CONFIG>
+  <LANGUAGE>
+    <SCHEMA_FILE name="xhtml1-strict.xsd"/>
+    <ROOT element="html"/>
+  </LANGUAGE>
   
   <MENUS>
-    <MENU nom="structure">
-      <MENU_INSERTION nom="html" type_noeud="element"/>
-      <MENU_INSERTION nom="head" type_noeud="element"/>
-      <MENU_INSERTION nom="title" type_noeud="element"/>
-      <MENU_INSERTION nom="meta" type_noeud="element"/>
-      <MENU_INSERTION nom="link" type_noeud="element"/>
-      <MENU_INSERTION nom="body" type_noeud="element"/>
+    <MENU name="structure">
+      <INSERT_MENU name="html" node_type="element"/>
+      <INSERT_MENU name="head" node_type="element"/>
+      <INSERT_MENU name="title" node_type="element"/>
+      <INSERT_MENU name="meta" node_type="element"/>
+      <INSERT_MENU name="link" node_type="element"/>
+      <INSERT_MENU name="body" node_type="element"/>
     </MENU>
-    <MENU nom="divisions">
-      <MENU_INSERTION nom="h1" type_noeud="element"/>
-      <MENU_INSERTION nom="h2" type_noeud="element"/>
-      <MENU_INSERTION nom="h3" type_noeud="element"/>
-      <MENU_INSERTION nom="h4" type_noeud="element"/>
-      <MENU_INSERTION nom="h5" type_noeud="element"/>
-      <MENU_INSERTION nom="div" type_noeud="element"/>
-      <MENU_INSERTION nom="hr" type_noeud="element"/>
+    <MENU name="divisions">
+      <INSERT_MENU name="h1" node_type="element"/>
+      <INSERT_MENU name="h2" node_type="element"/>
+      <INSERT_MENU name="h3" node_type="element"/>
+      <INSERT_MENU name="h4" node_type="element"/>
+      <INSERT_MENU name="h5" node_type="element"/>
+      <INSERT_MENU name="div" node_type="element"/>
+      <INSERT_MENU name="hr" node_type="element"/>
     </MENU>
-    <MENU nom="texte">
-      <MENU_INSERTION nom="p" raccourci="P" type_noeud="element"/>
-      <MENU_INSERTION nom="a" type_noeud="element"/>
-      <MENU_INSERTION nom="blockquote" type_noeud="element"/>
-      <MENU_INSERTION nom="pre" type_noeud="element"/>
-      <MENU_INSERTION nom="em" type_noeud="element"/>
-      <MENU_INSERTION nom="span" type_noeud="element"/>
-      <MENU_INSERTION nom="strong" type_noeud="element"/>
-      <MENU_INSERTION nom="tt" type_noeud="element"/>
-      <MENU_INSERTION nom="abbr" type_noeud="element"/>
-      <MENU_INSERTION nom="acronym" type_noeud="element"/>
-      <MENU_INSERTION nom="address" type_noeud="element"/>
-      <MENU_INSERTION nom="br" type_noeud="element"/>
-      <MENU_INSERTION nom="cite" type_noeud="element"/>
-      <MENU_INSERTION nom="code" type_noeud="element"/>
-      <MENU_INSERTION nom="style" type_noeud="element"/>
-      <MENU_INSERTION nom="commentaire" type_noeud="commentaire"/>
+    <MENU name="texte">
+      <INSERT_MENU name="p" node_type="element" shortcut="P"/>
+      <INSERT_MENU name="a" node_type="element"/>
+      <INSERT_MENU name="blockquote" node_type="element"/>
+      <INSERT_MENU name="pre" node_type="element"/>
+      <INSERT_MENU name="em" node_type="element"/>
+      <INSERT_MENU name="span" node_type="element"/>
+      <INSERT_MENU name="strong" node_type="element"/>
+      <INSERT_MENU name="tt" node_type="element"/>
+      <INSERT_MENU name="abbr" node_type="element"/>
+      <INSERT_MENU name="acronym" node_type="element"/>
+      <INSERT_MENU name="address" node_type="element"/>
+      <INSERT_MENU name="br" node_type="element"/>
+      <INSERT_MENU name="cite" node_type="element"/>
+      <INSERT_MENU name="code" node_type="element"/>
+      <INSERT_MENU name="style" node_type="element"/>
+      <INSERT_MENU name="commentaire" node_type="comment"/>
     </MENU>
-    <MENU nom="listes_tables">
-      <MENU_INSERTION nom="ul" type_noeud="element"/>
-      <MENU_INSERTION nom="li" type_noeud="element"/>
-      <MENU_INSERTION nom="ol" type_noeud="element"/>
-      <MENU_INSERTION nom="dl" type_noeud="element"/>
-      <MENU_INSERTION nom="dt" type_noeud="element"/>
-      <MENU_INSERTION nom="dd" type_noeud="element"/>
-      <MENU_INSERTION nom="table" type_noeud="element"/>
+    <MENU name="listes_tables">
+      <INSERT_MENU name="ul" node_type="element"/>
+      <INSERT_MENU name="li" node_type="element"/>
+      <INSERT_MENU name="ol" node_type="element"/>
+      <INSERT_MENU name="dl" node_type="element"/>
+      <INSERT_MENU name="dt" node_type="element"/>
+      <INSERT_MENU name="dd" node_type="element"/>
+      <INSERT_MENU name="table" node_type="element"/>
     </MENU>
-    <MENU nom="objets">
-      <MENU_INSERTION nom="img" type_noeud="element"/>
-      <MENU_INSERTION nom="object" type_noeud="element"/>
-      <MENU_INSERTION nom="param" type_noeud="element"/>
+    <MENU name="objets">
+      <INSERT_MENU name="img" node_type="element"/>
+      <INSERT_MENU name="object" node_type="element"/>
+      <INSERT_MENU name="param" node_type="element"/>
     </MENU>
-    <MENU nom="formulaires">
-      <MENU_INSERTION nom="form" type_noeud="element"/>
-      <MENU_INSERTION nom="input" type_noeud="element"/>
-      <MENU_INSERTION nom="label" type_noeud="element"/>
-      <MENU_INSERTION nom="select" type_noeud="element"/>
-      <MENU_INSERTION nom="option" type_noeud="element"/>
-      <MENU_INSERTION nom="textarea" type_noeud="element"/>
+    <MENU name="formulaires">
+      <INSERT_MENU name="form" node_type="element"/>
+      <INSERT_MENU name="input" node_type="element"/>
+      <INSERT_MENU name="label" node_type="element"/>
+      <INSERT_MENU name="select" node_type="element"/>
+      <INSERT_MENU name="option" node_type="element"/>
+      <INSERT_MENU name="textarea" node_type="element"/>
     </MENU>
-    <MENU nom="styles">
-      <MENU_FONCTION classe="jaxe.FonctionNormal" nom="normal"/>
-      <MENU_INSERTION nom="sup" type_noeud="element"/>
-      <MENU_INSERTION nom="sub" type_noeud="element"/>
-      <MENU_INSERTION nom="i" type_noeud="element"/>
-      <MENU_INSERTION nom="b" type_noeud="element"/>
+    <MENU name="styles">
+      <FUNCTION_MENU function_name="jaxe.FonctionNormal" name="normal"/>
+      <INSERT_MENU name="sup" node_type="element"/>
+      <INSERT_MENU name="sub" node_type="element"/>
+      <INSERT_MENU name="i" node_type="element"/>
+      <INSERT_MENU name="b" node_type="element"/>
     </MENU>
   </MENUS>
   
-  <AFFICHAGE_NOEUDS>
-    <AFFICHAGE_ELEMENT element="html" type="division"/>
-    <AFFICHAGE_ELEMENT element="head" type="division"/>
-    <AFFICHAGE_ELEMENT element="title" type="string">
-      <PARAMETRE nom="style" valeur="GRAS"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="meta" type="vide">
-      <PARAMETRE nom="titreAtt" valeur="name"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="link" type="vide"/>
-    <AFFICHAGE_ELEMENT element="body" type="division"/>
-    <AFFICHAGE_ELEMENT element="h1" type="string">
-      <PARAMETRE nom="style" valeur="GRAS"/>
-      <PARAMETRE nom="police" valeur="Helvetica"/>
-      <PARAMETRE nom="taille" valeur="24"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h2" type="string">
-      <PARAMETRE nom="style" valeur="GRAS"/>
-      <PARAMETRE nom="taille" valeur="16"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h3" type="string">
-      <PARAMETRE nom="style" valeur="GRAS"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="h4" type="string"/>
-    <AFFICHAGE_ELEMENT element="h5" type="string"/>
-    <AFFICHAGE_ELEMENT element="div" type="division"/>
-    <AFFICHAGE_ELEMENT element="hr" type="hr"/>
-    <AFFICHAGE_ELEMENT element="p" type="hiddenp"/>
-    <AFFICHAGE_ELEMENT element="a" type="anchor"/>
-    <AFFICHAGE_ELEMENT element="blockquote" type="zone"/>
-    <AFFICHAGE_ELEMENT element="pre" type="zone">
-      <PARAMETRE nom="police" valeur="Monospaced"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="em" type="string">
-      <PARAMETRE nom="style" valeur="ITALIQUE"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="span" type="stylespan"/>
-    <AFFICHAGE_ELEMENT element="strong" type="string"/>
-    <AFFICHAGE_ELEMENT element="tt" type="string">
-      <PARAMETRE nom="police" valeur="Monospaced"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="abbr" type="string"/>
-    <AFFICHAGE_ELEMENT element="acronym" type="string"/>
-    <AFFICHAGE_ELEMENT element="address" type="string"/>
-    <AFFICHAGE_ELEMENT element="br" type="vide"/>
-    <AFFICHAGE_ELEMENT element="cite" type="string"/>
-    <AFFICHAGE_ELEMENT element="code" type="zone">
-      <PARAMETRE nom="police" valeur="Monospaced"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="style" type="zone">
-      <PARAMETRE nom="titreAtt" valeur="type"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="ul" type="wlist"/>
-    <AFFICHAGE_ELEMENT element="li" type="witem"/>
-    <AFFICHAGE_ELEMENT element="ol" type="wlist">
-      <PARAMETRE nom="type" valeur="ol"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="dl" type="zone"/>
-    <AFFICHAGE_ELEMENT element="dt" type="string"/>
-    <AFFICHAGE_ELEMENT element="dd" type="string"/>
-    <AFFICHAGE_ELEMENT element="table" type="tabletexte">
-      <PARAMETRE nom="trTag" valeur="tr"/>
-      <PARAMETRE nom="tdTag" valeur="td"/>
-      <PARAMETRE nom="thTag" valeur="th"/>
-      <PARAMETRE nom="colspanAttr" valeur="colspan"/>
-      <PARAMETRE nom="rowspanAttr" valeur="rowspan"/>
-      <PARAMETRE nom="alignAttr" valeur="align"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="tr" type="zone"/>
-    <AFFICHAGE_ELEMENT element="td" type="string"/>
-    <AFFICHAGE_ELEMENT element="th" type="string">
-      <PARAMETRE nom="style" valeur="GRAS"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="img" type="fichier">
-      <PARAMETRE nom="srcAtt" valeur="src"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="object" type="zone"/>
-    <AFFICHAGE_ELEMENT element="param" type="vide">
-      <PARAMETRE nom="titreAtt" valeur="name"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="form" type="zone"/>
-    <AFFICHAGE_ELEMENT element="input" type="vide"/>
-    <AFFICHAGE_ELEMENT element="label" type="string"/>
-    <AFFICHAGE_ELEMENT element="select" type="zone"/>
-    <AFFICHAGE_ELEMENT element="option" type="string"/>
-    <AFFICHAGE_ELEMENT element="textarea" type="string"/>
-    <AFFICHAGE_ELEMENT element="sup" type="style">
-      <PARAMETRE nom="style" valeur="EXPOSANT"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="sub" type="style">
-      <PARAMETRE nom="style" valeur="INDICE"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="i" type="style">
-      <PARAMETRE nom="style" valeur="ITALIQUE"/>
-    </AFFICHAGE_ELEMENT>
-    <AFFICHAGE_ELEMENT element="b" type="style">
-      <PARAMETRE nom="style" valeur="GRAS"/>
-    </AFFICHAGE_ELEMENT>
-  </AFFICHAGE_NOEUDS>
+  <ELEMENTS_DISPLAY>
+    <ELEMENT_DISPLAY element="html" type="division"/>
+    <ELEMENT_DISPLAY element="head" type="division"/>
+    <ELEMENT_DISPLAY element="title" type="string">
+      <PARAMETER name="style" value="BOLD"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="meta" type="empty">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="link" type="empty"/>
+    <ELEMENT_DISPLAY element="body" type="division"/>
+    <ELEMENT_DISPLAY element="h1" type="string">
+      <PARAMETER name="style" value="BOLD"/>
+      <PARAMETER name="font" value="Helvetica"/>
+      <PARAMETER name="size" value="24"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="h2" type="string">
+      <PARAMETER name="style" value="BOLD"/>
+      <PARAMETER name="size" value="16"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="h3" type="string">
+      <PARAMETER name="style" value="BOLD"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="h4" type="string"/>
+    <ELEMENT_DISPLAY element="h5" type="string"/>
+    <ELEMENT_DISPLAY element="div" type="division"/>
+    <ELEMENT_DISPLAY element="hr" type="hr"/>
+    <ELEMENT_DISPLAY element="p" type="hiddenp"/>
+    <ELEMENT_DISPLAY element="a" type="anchor"/>
+    <ELEMENT_DISPLAY element="blockquote" type="area"/>
+    <ELEMENT_DISPLAY element="pre" type="area">
+      <PARAMETER name="font" value="Monospaced"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="em" type="string">
+      <PARAMETER name="style" value="ITALIC"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="span" type="stylespan"/>
+    <ELEMENT_DISPLAY element="strong" type="string"/>
+    <ELEMENT_DISPLAY element="tt" type="string">
+      <PARAMETER name="font" value="Monospaced"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="abbr" type="string"/>
+    <ELEMENT_DISPLAY element="acronym" type="string"/>
+    <ELEMENT_DISPLAY element="address" type="string"/>
+    <ELEMENT_DISPLAY element="br" type="empty"/>
+    <ELEMENT_DISPLAY element="cite" type="string"/>
+    <ELEMENT_DISPLAY element="code" type="area">
+      <PARAMETER name="font" value="Monospaced"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="style" type="area">
+      <PARAMETER name="titleAtt" value="type"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="ul" type="wlist"/>
+    <ELEMENT_DISPLAY element="li" type="witem"/>
+    <ELEMENT_DISPLAY element="ol" type="wlist">
+      <PARAMETER name="type" value="ol"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="dl" type="area"/>
+    <ELEMENT_DISPLAY element="dt" type="string"/>
+    <ELEMENT_DISPLAY element="dd" type="string"/>
+    <ELEMENT_DISPLAY element="table" type="table">
+      <PARAMETER name="trTag" value="tr"/>
+      <PARAMETER name="tdTag" value="td"/>
+      <PARAMETER name="thTag" value="th"/>
+      <PARAMETER name="colspanAttr" value="colspan"/>
+      <PARAMETER name="rowspanAttr" value="rowspan"/>
+      <PARAMETER name="alignAttr" value="align"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="tr" type="area"/>
+    <ELEMENT_DISPLAY element="td" type="string"/>
+    <ELEMENT_DISPLAY element="th" type="string">
+      <PARAMETER name="style" value="BOLD"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="img" type="file">
+      <PARAMETER name="srcAtt" value="src"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="object" type="area"/>
+    <ELEMENT_DISPLAY element="param" type="empty">
+      <PARAMETER name="titleAtt" value="name"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="form" type="area"/>
+    <ELEMENT_DISPLAY element="input" type="empty"/>
+    <ELEMENT_DISPLAY element="label" type="string"/>
+    <ELEMENT_DISPLAY element="select" type="area"/>
+    <ELEMENT_DISPLAY element="option" type="string"/>
+    <ELEMENT_DISPLAY element="textarea" type="string"/>
+    <ELEMENT_DISPLAY element="sup" type="style">
+      <PARAMETER name="style" value="SUPERSCRIPT"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="sub" type="style">
+      <PARAMETER name="style" value="SUBSCRIPT"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="i" type="style">
+      <PARAMETER name="style" value="ITALIC"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="b" type="style">
+      <PARAMETER name="style" value="BOLD"/>
+    </ELEMENT_DISPLAY>
+  </ELEMENTS_DISPLAY>
   
-  <EXPORTS>
-    <EXPORT nom="HTML" sortie="HTML">
-      <FICHIER_XSL nom="XHTML.xsl"/>
-    </EXPORT>
-  </EXPORTS>
   
-  <STRINGS langue="en">
-    <DESCRIPTION_CONFIG>XHTML strict</DESCRIPTION_CONFIG>
+  
+  <STRINGS language="en">
+    <CONFIG_DESCRIPTION>XHTML strict</CONFIG_DESCRIPTION>
     
-    <STRINGS_MENU menu="structure">
-      <TITRE>Structure</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="html">
-      <TITRE>html</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="head">
-      <TITRE>head</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="title">
-      <TITRE>title</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="meta">
-      <TITRE>meta</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="link">
-      <TITRE>link</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="body">
-      <TITRE>body</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="structure">
+      <TITLE>Structure</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="html">
+      <TITLE>html</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="head">
+      <TITLE>head</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="title">
+      <TITLE>title</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="meta">
+      <TITLE>meta</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="link">
+      <TITLE>link</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="body">
+      <TITLE>body</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="divisions">
-      <TITRE>Divisions</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h1">
-      <TITRE>heading 1</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h2">
-      <TITRE>heading 2</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h3">
-      <TITRE>heading 3</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h4">
-      <TITRE>heading 4</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h5">
-      <TITRE>heading 5</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="div">
-      <TITRE>division</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="hr">
-      <TITRE>horizontal line</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="divisions">
+      <TITLE>Divisions</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h1">
+      <TITLE>heading 1</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h2">
+      <TITLE>heading 2</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h3">
+      <TITLE>heading 3</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h4">
+      <TITLE>heading 4</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h5">
+      <TITLE>heading 5</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="div">
+      <TITLE>division</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="hr">
+      <TITLE>horizontal line</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="texte">
-      <TITRE>Text</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="p">
-      <TITRE>paragraph</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="a">
-      <TITRE>anchor</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="blockquote">
-      <TITRE>blockquote</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="pre">
-      <TITRE>preformat</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="em">
-      <TITRE>emphasis</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="strong">
-      <TITRE>strong</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="tt">
-      <TITRE>fixed width (tt)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="abbr">
-      <TITRE>abbreviation</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="acronym">
-      <TITRE>acronym</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="address">
-      <TITRE>address</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="br">
-      <TITRE>line break (br)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="cite">
-      <TITRE>citation</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="code">
-      <TITRE>code</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="style">
-      <TITRE>style</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="commentaire">
-      <TITRE>XML comment</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="texte">
+      <TITLE>Text</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="p">
+      <TITLE>paragraph</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="a">
+      <TITLE>anchor</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="blockquote">
+      <TITLE>blockquote</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="pre">
+      <TITLE>preformat</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="em">
+      <TITLE>emphasis</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="strong">
+      <TITLE>strong</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="tt">
+      <TITLE>fixed width (tt)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="abbr">
+      <TITLE>abbreviation</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="acronym">
+      <TITLE>acronym</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="address">
+      <TITLE>address</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="br">
+      <TITLE>line break (br)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="cite">
+      <TITLE>citation</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="code">
+      <TITLE>code</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="style">
+      <TITLE>style</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="commentaire">
+      <TITLE>XML comment</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="listes_tables">
-      <TITRE>Lists and Tables</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="ul">
-      <TITRE>bulleted list (ul)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="li">
-      <TITRE>list item (li)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="ol">
-      <TITRE>ordered list (ol)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="dl">
-      <TITRE>definition list (dl)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="dt">
-      <TITRE>definition term (dt)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="dd">
-      <TITRE>definition (dd)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="table">
-      <TITRE>table</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="listes_tables">
+      <TITLE>Lists and Tables</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="ul">
+      <TITLE>bulleted list (ul)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="li">
+      <TITLE>list item (li)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="ol">
+      <TITLE>ordered list (ol)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="dl">
+      <TITLE>definition list (dl)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="dt">
+      <TITLE>definition term (dt)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="dd">
+      <TITLE>definition (dd)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="table">
+      <TITLE>table</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="objets">
-      <TITRE>Objects</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="img">
-      <TITRE>image</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="object">
-      <TITRE>object</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="param">
-      <TITRE>parameter</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="objets">
+      <TITLE>Objects</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="img">
+      <TITLE>image</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="object">
+      <TITLE>object</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="param">
+      <TITLE>parameter</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="formulaires">
-      <TITRE>Forms</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="form">
-      <TITRE>form</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="input">
-      <TITRE>input</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="label">
-      <TITRE>label</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="select">
-      <TITRE>select</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="option">
-      <TITRE>option</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="textarea">
-      <TITRE>textarea</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="formulaires">
+      <TITLE>Forms</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="form">
+      <TITLE>form</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="input">
+      <TITLE>input</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="label">
+      <TITLE>label</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="select">
+      <TITLE>select</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="option">
+      <TITLE>option</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="textarea">
+      <TITLE>textarea</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="styles">
-      <TITRE>Styles</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="normal">
-      <TITRE>standard</TITRE>
+    <MENU_STRINGS menu="styles">
+      <TITLE>Styles</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="normal">
+      <TITLE>standard</TITLE>
       <DOCUMENTATION>
         Removes all the styles in the selected text
       </DOCUMENTATION>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="sup">
-      <TITRE>superscript</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="sub">
-      <TITRE>subscript</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="i">
-      <TITRE>italic</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="b">
-      <TITRE>bold</TITRE>
-    </STRINGS_MENU>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="sup">
+      <TITLE>superscript</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="sub">
+      <TITLE>subscript</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="i">
+      <TITLE>italic</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="b">
+      <TITLE>bold</TITLE>
+    </MENU_STRINGS>
   </STRINGS>
   
   
-  <STRINGS langue="fr">
-    <DESCRIPTION_CONFIG>XHTML strict</DESCRIPTION_CONFIG>
+  <STRINGS language="fr">
+    <CONFIG_DESCRIPTION>XHTML strict</CONFIG_DESCRIPTION>
     
-    <STRINGS_MENU menu="structure">
-      <TITRE>Structure</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="html">
-      <TITRE>Document XHTML</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="head">
-      <TITRE>Entête (head)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="title">
-      <TITRE>Titre (title)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="meta">
-      <TITRE>Métadonnée (meta)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="link">
-      <TITRE>Lien (link)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="body">
-      <TITRE>Corps du document (body)</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="structure">
+      <TITLE>Structure</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="html">
+      <TITLE>Document XHTML</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="head">
+      <TITLE>Entête (head)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="title">
+      <TITLE>Titre (title)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="meta">
+      <TITLE>Métadonnée (meta)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="link">
+      <TITLE>Lien (link)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="body">
+      <TITLE>Corps du document (body)</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="divisions">
-      <TITRE>Divisions</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h1">
-      <TITRE>Titre niveau 1 (h1)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h2">
-      <TITRE>Titre niveau 2 (h2)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h3">
-      <TITRE>Titre niveau 3 (h3)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h4">
-      <TITRE>Titre niveau 4 (h4)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="h5">
-      <TITRE>Titre niveau 5 (h5)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="div">
-      <TITRE>Division (div)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="hr">
-      <TITRE>ligne de division (hr)</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="divisions">
+      <TITLE>Divisions</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h1">
+      <TITLE>Titre niveau 1 (h1)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h2">
+      <TITLE>Titre niveau 2 (h2)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h3">
+      <TITLE>Titre niveau 3 (h3)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h4">
+      <TITLE>Titre niveau 4 (h4)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="h5">
+      <TITLE>Titre niveau 5 (h5)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="div">
+      <TITLE>Division (div)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="hr">
+      <TITLE>ligne de division (hr)</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="texte">
-      <TITRE>Texte</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="p">
-      <TITRE>Paragraphe (p)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="a">
-      <TITRE>Ancre (a)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="blockquote">
-      <TITRE>Indentation (blockquote)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="pre">
-      <TITRE>Texte préformaté (pre)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="em">
-      <TITRE>Emphase (em)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="strong">
-      <TITRE>Appuyé (strong)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="tt">
-      <TITRE>Télétype (tt)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="abbr">
-      <TITRE>Abbréviation (abbr)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="acronym">
-      <TITRE>Acronyme (acronym)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="address">
-      <TITRE>Adresse (address)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="br">
-      <TITRE>Saut de ligne (br)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="cite">
-      <TITRE>Citation (cite)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="code">
-      <TITRE>Code (code)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="style">
-      <TITRE>Style (style)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="commentaire">
-      <TITRE>Commentaire XML</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="texte">
+      <TITLE>Texte</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="p">
+      <TITLE>Paragraphe (p)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="a">
+      <TITLE>Ancre (a)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="blockquote">
+      <TITLE>Indentation (blockquote)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="pre">
+      <TITLE>Texte préformaté (pre)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="em">
+      <TITLE>Emphase (em)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="strong">
+      <TITLE>Appuyé (strong)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="tt">
+      <TITLE>Télétype (tt)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="abbr">
+      <TITLE>Abbréviation (abbr)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="acronym">
+      <TITLE>Acronyme (acronym)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="address">
+      <TITLE>Adresse (address)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="br">
+      <TITLE>Saut de ligne (br)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="cite">
+      <TITLE>Citation (cite)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="code">
+      <TITLE>Code (code)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="style">
+      <TITLE>Style (style)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="commentaire">
+      <TITLE>Commentaire XML</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="listes_tables">
-      <TITRE>Listes/Tables</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="ul">
-      <TITRE>Liste à points (ul)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="li">
-      <TITRE>élément de liste (li)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="ol">
-      <TITRE>Liste numérotée (ol)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="dl">
-      <TITRE>Liste de définitions (dl)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="dt">
-      <TITRE>Titre de liste de déf. (dt)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="dd">
-      <TITRE>Définition de liste de déf. (dd)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="table">
-      <TITRE>Table (table)</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="listes_tables">
+      <TITLE>Listes/Tables</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="ul">
+      <TITLE>Liste à points (ul)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="li">
+      <TITLE>élément de liste (li)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="ol">
+      <TITLE>Liste numérotée (ol)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="dl">
+      <TITLE>Liste de définitions (dl)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="dt">
+      <TITLE>Titre de liste de déf. (dt)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="dd">
+      <TITLE>Définition de liste de déf. (dd)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="table">
+      <TITLE>Table (table)</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="objets">
-      <TITRE>Objets</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="img">
-      <TITRE>Image (img)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="object">
-      <TITRE>Objet (object)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="param">
-      <TITRE>Paramètre (param)</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="objets">
+      <TITLE>Objets</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="img">
+      <TITLE>Image (img)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="object">
+      <TITLE>Objet (object)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="param">
+      <TITLE>Paramètre (param)</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="formulaires">
-      <TITRE>Formulaires</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="form">
-      <TITRE>Formulaire (form)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="input">
-      <TITRE>Entrée de donnée (input)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="label">
-      <TITRE>Label (label)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="select">
-      <TITRE>Menu de sélection (select)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="option">
-      <TITRE>Option de sélection (option)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="textarea">
-      <TITRE>Zone de texte (textarea)</TITRE>
-    </STRINGS_MENU>
+    <MENU_STRINGS menu="formulaires">
+      <TITLE>Formulaires</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="form">
+      <TITLE>Formulaire (form)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="input">
+      <TITLE>Entrée de donnée (input)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="label">
+      <TITLE>Label (label)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="select">
+      <TITLE>Menu de sélection (select)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="option">
+      <TITLE>Option de sélection (option)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="textarea">
+      <TITLE>Zone de texte (textarea)</TITLE>
+    </MENU_STRINGS>
     
-    <STRINGS_MENU menu="styles">
-      <TITRE>Styles</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="normal">
-      <TITRE>Sans style</TITRE>
+    <MENU_STRINGS menu="styles">
+      <TITLE>Styles</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="normal">
+      <TITLE>Sans style</TITLE>
       <DOCUMENTATION>
         Retire tous les styles du texte sélectionné, le transformant en texte normal
       </DOCUMENTATION>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="sup">
-      <TITRE>Exposant (sup)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="sub">
-      <TITRE>Indice (sub)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="i">
-      <TITRE>Italique (i)</TITRE>
-    </STRINGS_MENU>
-    <STRINGS_MENU menu="b">
-      <TITRE>Gras (b)</TITRE>
-    </STRINGS_MENU>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="sup">
+      <TITLE>Exposant (sup)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="sub">
+      <TITLE>Indice (sub)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="i">
+      <TITLE>Italique (i)</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="b">
+      <TITLE>Gras (b)</TITLE>
+    </MENU_STRINGS>
   </STRINGS>
   
-</CONFIG_JAXE>
+</DAXE_CONFIG>

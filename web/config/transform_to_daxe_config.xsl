@@ -229,7 +229,7 @@
                 <xsl:when test="@type='champ'">field</xsl:when>
                 <xsl:when test="@type='fichier'">file</xsl:when>
                 <xsl:when test="@type='formulaire'">form</xsl:when>
-                <xsl:when test="@type='list'">liste</xsl:when>
+                <xsl:when test="@type='liste'">list</xsl:when>
                 <xsl:when test="@type='symbol2'">symbol</xsl:when>
                 <xsl:when test="@type='symbole'">symbol</xsl:when>
                 <xsl:when test="@type='symbole2'">symbol</xsl:when>

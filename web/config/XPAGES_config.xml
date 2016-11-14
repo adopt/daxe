@@ -154,7 +154,7 @@
     <ELEMENT_DISPLAY element="TH" type="string">
       <PARAMETER name="style" value="BOLD"/>
     </ELEMENT_DISPLAY>
-    <ELEMENT_DISPLAY element="LISTE" type="liste">
+    <ELEMENT_DISPLAY element="LISTE" type="list">
       <PARAMETER name="listType" value="POINTS"/>
     </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="ITEM" type="item"/>

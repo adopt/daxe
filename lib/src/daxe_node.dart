@@ -1249,6 +1249,13 @@ abstract class DaxeNode {
   }
   
   /**
+   * Makes the node draggable using the given HTML element.
+   */
+  void setupDrag(h.Element hel) {
+    page.cursor.setupDrag(hel, this);
+  }
+  
+  /**
    * Only used when needsSpecialDNText is true.
    * Returns a ParentUpdatingDNText by default.
    */

@@ -62,6 +62,7 @@ class DNSimpleType extends DaxeNode {
     titleSpan.classes.add('simple_type-title');
     String title = doc.cfg.elementTitle(ref);
     titleSpan.append(new h.Text(title));
+    setupDrag(titleSpan);
     span.append(titleSpan);
     
     String value;

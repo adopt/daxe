@@ -157,6 +157,7 @@ class DNForm extends DaxeNode {
         spanTitle.classes.add('required');
       else
         spanTitle.classes.add('optional');
+      setupDrag(spanTitle);
       div.append(spanTitle);
       
       h.TableElement table = new h.TableElement();

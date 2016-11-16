@@ -35,6 +35,8 @@ class Cursor {
   bool donePaste;
   int metaKeyCode; // previous keyDown keyCode if event.metaKey was true
   bool shiftOnKeyPress = false; // shift active during keyPress
+  Position _draggedSelectionStart = null;
+  Position _draggedSelectionEnd = null;
 
   Cursor() {
     ta = h.querySelector("#tacursor");
@@ -249,7 +251,11 @@ class Cursor {
         return;
       }
       if (ta.value != '') {
-        pasteString(ta.value);
+        try {
+          pasteString(ta.value);
+        } on DaxeException catch(ex) {
+          h.window.alert(ex.toString());
+        }
         ta.value = '';
         page.updateAfterPathChange();
       }
@@ -1145,6 +1151,7 @@ class Cursor {
       else
         parent.insertBefore(n3, span.nextNode);
     }
+    setupDrag(span, null);
   }
 
   void deSelect() {
@@ -1397,7 +1404,7 @@ class Cursor {
 
   /**
    * Parses the given String and pastes the XML or text at the current position.
-   * Returns true if it was pasted without error.
+   * Throws a DaxeException if it was not valid.
    */
   void pasteString(String s) {
     s = s.replaceAll(new RegExp(r'<\?xml[^?]*\?>'), ''); // remove doc decl
@@ -1419,18 +1426,14 @@ class Cursor {
     }
     parse += ">$s</root>";
     try {
-      try {
-        x.DOMParser dp = new x.DOMParser();
-        tmpdoc = dp.parseFromString(parse);
-      } on x.DOMException {
-        // this is not XML, it is inserted as string if it is possible
-        pasteText(s);
-        return;
-      }
-      pasteXML(tmpdoc);
-    } on DaxeException catch(ex) {
-      h.window.alert(ex.toString());
+      x.DOMParser dp = new x.DOMParser();
+      tmpdoc = dp.parseFromString(parse);
+    } on x.DOMException {
+      // this is not XML, it is inserted as string if it is possible
+      pasteText(s);
+      return;
     }
+    pasteXML(tmpdoc);
   }
 
   /**
@@ -1979,6 +1982,67 @@ class Cursor {
     } else {
       h.window.alert(Strings.get('menu.cut_with_keyboard'));
     }
+  }
+  
+  /**
+   * Makes the HTML element draggable. If a DaxeNode is specified,
+   * the HTML element represents it and the DaxeNode will be dragged.
+   * If the DaxeNode is null, the current selection will be used instead.
+   */
+  void setupDrag(h.Element hel, DaxeNode dn) {
+    hel.draggable = true;
+    hel.onDragStart.listen((h.MouseEvent e) {
+      e.dataTransfer.effectAllowed = 'copyMove';
+      String data;
+      if (selectionStart != null && selectionEnd > selectionStart &&
+          (dn == null ||
+            (selectionStart <= new Position(dn.parent, dn.parent.offsetOf(dn)) &&
+            selectionEnd >= new Position(dn.parent, dn.parent.offsetOf(dn)+1)))) {
+        data = copy();
+      } else if (dn != null) {
+        data = dn.toString();
+        page.selectNode(dn);
+        e.dataTransfer.setDragImage(dn.getHTMLNode(), 0, 0); // TODO: test IE11
+      } else {
+        return;
+      }
+      _draggedSelectionStart = selectionStart;
+      _draggedSelectionEnd = selectionEnd;
+      e.dataTransfer.setData('text', data); // not 'text/plain' because of IE11
+    });
+    hel.onDragEnd.listen((h.MouseEvent e) {
+      _draggedSelectionStart = null;
+      _draggedSelectionEnd = null;
+    });
+  }
+  
+  void drop(Position pos, String data, String dropEffect) {
+    bool combine = false;
+    if (_draggedSelectionStart != null && dropEffect == 'move') {
+      if (pos >= _draggedSelectionStart && pos <= _draggedSelectionEnd)
+        return;
+      if (pos < _draggedSelectionStart)
+        pos = new Position.leftOffsetPosition(pos);
+      else
+        pos = new Position.rightOffsetPosition(pos);
+      setSelection(_draggedSelectionStart, _draggedSelectionEnd);
+      removeSelection();
+      // UndoableEdit._insert assumes the position is a NodeOffsetPosition
+      pos = new Position.nodeOffsetPosition(pos);
+      combine = true;
+    }
+    moveTo(pos);
+    try {
+      pasteString(data);
+    } on DaxeException catch(ex) {
+      h.window.alert(ex.toString());
+      if (combine) {
+        combine = false;
+        doc.undo();
+      }
+    }
+    if (combine)
+      doc.combineLastEdits(Strings.get('undo.drag_and_drop'), 2);
   }
 }
 

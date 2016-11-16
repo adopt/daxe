@@ -82,6 +82,7 @@ class DNFile extends DaxeNode {
       _img.onLoad.listen((h.Event event) => _imageLoaded());
       _img.onClick.listen((h.MouseEvent event) => attributeDialog());
       _img.onError.listen((h.Event e) => _imageNotLoaded());
+      setupDrag(_img);
       return(_img);
     } else {
       h.SpanElement span = new h.SpanElement();
@@ -90,6 +91,7 @@ class DNFile extends DaxeNode {
       span.classes.add('file-label');
       span.text = getAttribute(_srcAtt) != null ? getAttribute(_srcAtt) : '?';
       span.onClick.listen((h.MouseEvent event) => attributeDialog());
+      setupDrag(span);
       return(span);
     }
   }

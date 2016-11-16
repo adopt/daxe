@@ -121,6 +121,7 @@ class Tag {
       event.preventDefault();
       event.stopPropagation();
     });
+    _dn.setupDrag(span);
     return(span);
   }
   

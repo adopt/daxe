@@ -40,7 +40,9 @@ class DNHr extends DaxeNode {
     if (attRefs != null && attRefs.length > 0) {
       div.onClick.listen((h.MouseEvent event) => attributeDialog());
     }
-    div.append(new h.HRElement());
+    var hr = new h.HRElement();
+    setupDrag(hr); // NOTE: this is only for the mouse-precise
+    div.append(hr);
     return(div);
   }
   
@@ -54,4 +56,8 @@ class DNHr extends DaxeNode {
     return(null);
   }
   
+  @override
+  h.Element getHTMLContentsNode() {
+    return(null);
+  }
 }

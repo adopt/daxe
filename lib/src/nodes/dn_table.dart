@@ -217,6 +217,8 @@ class DNTable extends DaxeNode {
     bSplitY.title = Strings.get('table.split_y');
     form.append(bSplitY);
     
+    setupDrag(form);
+    
     div.append(form);
     
     h.TableElement table = new h.TableElement();

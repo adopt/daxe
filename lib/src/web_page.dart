@@ -132,6 +132,9 @@ class WebPage {
       divdoc.onMouseDown.listen((h.MouseEvent event) => _onMouseDown(event));
       divdoc.onMouseMove.listen((h.MouseEvent event) => _onMouseMove(event));
       divdoc.onMouseUp.listen((h.MouseEvent event) => _onMouseUp(event));
+      divdoc.onDragEnter.listen((h.MouseEvent event) => _onDragEnter(event));
+      divdoc.onDragOver.listen((h.MouseEvent event) => _onDragOver(event));
+      divdoc.onDrop.listen((h.MouseEvent event) => _onDrop(event));
       divdoc.onContextMenu.listen((h.MouseEvent event) => _onContextMenu(event));
       h.document.getElementById('doc1').onScroll.listen((h.Event event) => _onScroll(event));
       h.document.onMouseUp.listen((h.MouseEvent event) {
@@ -248,13 +251,14 @@ class WebPage {
     if (_contextualMenu != null)
       closeContextualMenu();
     // do not stop event propagation in some cases:
-    if (event.target is h.ImageElement ||
-        event.target is h.ButtonElement ||
-        event.target is h.TextInputElement ||
-        event.target is h.SelectElement ||
-        event.target is h.OptionElement)
+    h.Element target = event.target;
+    if (target is h.ImageElement || target is h.ButtonElement ||
+        target is h.TextInputElement || target is h.SelectElement ||
+        target is h.OptionElement)
       return;
-    h.Element parent = event.target;
+    if (target != null && target.draggable)
+      return; // this event might trigger a drag&drop
+    h.Element parent = target;
     while (parent is h.Element && !parent.classes.contains('dn')) {
       parent = parent.parent;
     }
@@ -368,6 +372,13 @@ class WebPage {
         event.target is h.SelectElement)
       return;
     */
+    // case of a selected text: mousedown has been ignored because
+    // it might be a drag&drop, so we have to set _selectionStart here
+    h.Element target = event.target;
+    if (target != null && target.classes.contains('selection') &&
+        target.draggable && _selectionStart == null) {
+      _selectionStart = Cursor.findPosition(event);
+    }
     if (!_selectionByWords)
       _selectionEnd = Cursor.findPosition(event);
     _lastClickPosition = null;
@@ -383,6 +394,49 @@ class WebPage {
     _selectionEnd = null;
     _selectionByWords = false;
     event.preventDefault();
+  }
+  
+  /**
+   * Cancels the default dragenter to get drag and drop to work.
+   */
+  void _onDragEnter(h.MouseEvent event) {
+    event.preventDefault();
+  }
+  
+  /**
+   * Display the cursor to show where the dragged content will be dropped.
+   */
+  void _onDragOver(h.MouseEvent event) {
+    if (event.target is h.TextInputElement)
+      return;
+    Position pos = Cursor.findPosition(event);
+    _cursor.setSelection(pos, pos);
+    event.preventDefault();
+    if (event.ctrlKey || event.dataTransfer.effectAllowed == 'copy')
+      event.dataTransfer.dropEffect = 'copy';
+    else
+      event.dataTransfer.dropEffect = 'move';
+  }
+  
+  void _onDrop(h.MouseEvent event) {
+    if (event.target is h.TextInputElement)
+      return;
+    event.preventDefault();
+    Position pos = Cursor.findPosition(event);
+    String effect = event.dataTransfer.dropEffect;
+    if (effect == 'none') {
+      // this is the case with Chrome...
+      String allowed = event.dataTransfer.effectAllowed;
+      if (allowed == 'copy')
+        effect = 'copy';
+      else if (allowed == 'move')
+        effect = 'move';
+      else if (event.ctrlKey)
+        effect = 'copy';
+      else
+        effect = 'move';
+    }
+    _cursor.drop(pos, event.dataTransfer.getData('text'), effect);
   }
   
   /**

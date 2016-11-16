@@ -66,6 +66,7 @@ class DNEquaTexMem extends DaxeNode {
     _img.onLoad.listen((h.Event event) => fixWidth());
     _img.onClick.listen((h.MouseEvent event) => attributeDialog());
     _img.style.verticalAlign = 'middle';
+    setupDrag(_img);
     return(_img);
   }
 

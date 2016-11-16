@@ -42,7 +42,6 @@ class DNTable extends DaxeNode {
   
   DNTable.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
     init();
-    createNewStructure();
   }
   
   DNTable.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
@@ -69,17 +68,6 @@ class DNTable extends DaxeNode {
     for (x.Node xtr=node.firstChild; xtr != null; xtr=xtr.nextSibling) {
       if (xtr.nodeType == x.Node.ELEMENT_NODE && xtr.nodeName == _trtag) {
         DaxeNode tr = new DNTR.fromNode(xtr, this);
-        for (x.Node xtd=xtr.firstChild; xtd != null; xtd=xtd.nextSibling) {
-          if (xtd.nodeType == x.Node.ELEMENT_NODE) {
-            if (xtd.nodeName == _tdtag) {
-              DaxeNode td = new DNTD.fromNode(xtd, tr);
-              tr.appendChild(td);
-            } else if (xtd.nodeName == _thtag) {
-              DaxeNode th = new DNTH.fromNode(xtd, tr);
-              tr.appendChild(th);
-            }
-          }
-        }
         appendChild(tr);
       }
     }
@@ -252,6 +240,11 @@ class DNTable extends DaxeNode {
       return(null);
     }
     return(new Position(lastChild.lastChild, lastChild.lastChild.offsetLength));
+  }
+  
+  void newNodeCreationUI(ActionFunction okfct) {
+    createNewStructure();
+    super.newNodeCreationUI(okfct);
   }
   
   void createNewStructure() {
@@ -713,10 +706,20 @@ class DNTR extends DaxeNode {
     userCannotEdit = true;
   }
   
-  DNTR.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
+  DNTR.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
     userCannotRemove = true;
     userCannotEdit = true;
-    fixLineBreaks();
+    _cleanChildren();
+  }
+  
+  // keep only the td and th
+  void _cleanChildren() {
+    DaxeNode next;
+    for (DaxeNode dn = firstChild; dn != null; dn = next) {
+      next = dn.nextSibling;
+      if (dn is! DNTD && dn is! DNTH)
+        removeChild(dn);
+    }
   }
   
   @override

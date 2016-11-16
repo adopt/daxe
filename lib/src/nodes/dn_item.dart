@@ -48,6 +48,7 @@ class DNItem extends DaxeNode {
         event.stopPropagation();
       });
     }
+    setupDrag(bullet1);
     li.append(bullet1);
     h.SpanElement contents = new h.SpanElement();
     DaxeNode dn = firstChild;
@@ -67,6 +68,7 @@ class DNItem extends DaxeNode {
         event.stopPropagation();
       });
     }
+    setupDrag(bullet2);
     li.append(bullet2);
     return(li);
   }

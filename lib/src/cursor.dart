@@ -2035,10 +2035,46 @@ class Cursor {
     try {
       pasteString(data);
     } on DaxeException catch(ex) {
-      h.window.alert(ex.toString());
-      if (combine) {
-        combine = false;
-        doc.undo();
+      bool error = true;
+      // when dropping inside a table cell or list item,
+      // try to drop as a table row or list item, before or after current pos.
+      if (pos.dn is DNText && pos.dnOffset == 0 || pos.dnOffset == pos.dn.offsetLength) {
+        // move out of text nodes
+        DaxeNode dn = pos.dn;
+        if (pos.dnOffset == 0)
+          pos = new Position(dn.parent, dn.parent.offsetOf(dn));
+        else
+          pos = new Position(dn.parent, dn.parent.offsetOf(dn) + 1);
+      }
+      if (pos.dnOffset == 0 || pos.dnOffset == pos.dn.offsetLength) {
+        DaxeNode dn = pos.dn;
+        h.Element hel = dn.getHTMLNode();
+        if (hel is h.TableCellElement || hel is h.LIElement) {
+          if (pos.dnOffset == 0)
+            pos = new Position(dn.parent, dn.parent.offsetOf(dn));
+          else
+            pos = new Position(dn.parent, dn.parent.offsetOf(dn) + 1);
+        }
+        if (hel is h.TableCellElement) {
+          dn = pos.dn;
+          if (pos.dnOffset == 0)
+            pos = new Position(dn.parent, dn.parent.offsetOf(dn));
+          else if (pos.dnOffset == dn.offsetLength)
+            pos = new Position(dn.parent, dn.parent.offsetOf(dn) + 1);
+        }
+        moveTo(pos);
+        try {
+          pasteString(data);
+          error = false;
+        } on DaxeException {
+        }
+      }
+      if (error) {
+        h.window.alert(ex.toString());
+        if (combine) {
+          combine = false;
+          doc.undo();
+        }
       }
     }
     if (combine)

@@ -127,6 +127,18 @@ class NodeFactory {
         (x.Element ref) => new DNTable.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNTable.fromNode(node, parent)
     );
+    setDisplayType('tr',
+        (x.Element ref) => new DNTR.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTR.fromNode(node, parent)
+    );
+    setDisplayType('td',
+        (x.Element ref) => new DNTD.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTD.fromNode(node, parent)
+    );
+    setDisplayType('th',
+        (x.Element ref) => new DNTH.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNTH.fromNode(node, parent)
+    );
     setDisplayType('text',
         null,
         (x.Node node, DaxeNode parent) => new DNText.fromNode(node, parent)

@@ -149,9 +149,9 @@
       <PARAMETER name="rowspanAttr" value="rowspan"/>
       <PARAMETER name="alignAttr" value="align"/>
     </ELEMENT_DISPLAY>
-    <ELEMENT_DISPLAY element="TR" type="area"/>
-    <ELEMENT_DISPLAY element="TD" type="string"/>
-    <ELEMENT_DISPLAY element="TH" type="string">
+    <ELEMENT_DISPLAY element="TR" type="tr"/>
+    <ELEMENT_DISPLAY element="TD" type="td"/>
+    <ELEMENT_DISPLAY element="TH" type="th">
       <PARAMETER name="style" value="BOLD"/>
     </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="LISTE" type="list">

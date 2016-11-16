@@ -2049,7 +2049,7 @@ class Cursor {
       if (pos.dnOffset == 0 || pos.dnOffset == pos.dn.offsetLength) {
         DaxeNode dn = pos.dn;
         h.Element hel = dn.getHTMLNode();
-        if (hel is h.TableCellElement || hel is h.LIElement) {
+        if (hel is h.TableRowElement || hel is h.TableCellElement || hel is h.LIElement) {
           if (pos.dnOffset == 0)
             pos = new Position(dn.parent, dn.parent.offsetOf(dn));
           else

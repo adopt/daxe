@@ -724,6 +724,7 @@ class DaxeDocument {
     _edits.removeRange(_edits.length - nb, _edits.length);
     _edits.add(edit);
     _undoPosition -= (nb - 1);
+    page.updateUndoMenus();
   }
   
   /**

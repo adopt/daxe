@@ -133,7 +133,9 @@
     </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="noscript" type="area"/>
     <ELEMENT_DISPLAY element="body" type="division"/>
-    <ELEMENT_DISPLAY element="section" type="area"/>
+    <ELEMENT_DISPLAY element="section" type="area">
+      <PARAMETER name="titleAtt" value="id"/>
+    </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="header" type="area"/>
     <ELEMENT_DISPLAY element="footer" type="area"/>
     <ELEMENT_DISPLAY element="article" type="area"/>

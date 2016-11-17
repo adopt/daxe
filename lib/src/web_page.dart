@@ -428,8 +428,8 @@ class WebPage {
     if (tmpPos.dn.getHTMLNode() is h.TableRowElement &&
         (tmpPos.dnOffset == 0 || tmpPos.dnOffset == tmpPos.dn.offsetLength)) {
       h.Element content = tmpPos.dn.getHTMLContentsNode();
-      if (content.parent is h.TableCellElement) {
-        h.Rectangle rect = content.parent.getBoundingClientRect();
+      if (content is h.TableCellElement) {
+        h.Rectangle rect = content.getBoundingClientRect();
         if (!rect.containsPoint(event.client)) {
           DaxeNode dn = tmpPos.dn;
           if (tmpPos.dnOffset == 0)

@@ -410,6 +410,23 @@ class WebPage {
     if (event.target is h.TextInputElement)
       return;
     Position pos = Cursor.findPosition(event);
+    if (pos == null)
+      return;
+    if (pos.dn.getHTMLNode() is h.TableCellElement &&
+        (pos.dnOffset == 0 || pos.dnOffset == pos.dn.offsetLength)) {
+      // If pos is inside a h.TableCellElement but the event x/y is
+      // outside the getHTMLContentsNode(), move the Position outside
+      // the node (this is useful for the LON-CAPA Daxe extension).
+      h.Element content = pos.dn.getHTMLContentsNode();
+      h.Rectangle rect = content.getBoundingClientRect();
+      if (!rect.containsPoint(event.client)) {
+        DaxeNode dn = pos.dn;
+        if (pos.dnOffset == 0)
+          pos = new Position(dn.parent, dn.parent.offsetOf(dn));
+        else
+          pos = new Position(dn.parent, dn.parent.offsetOf(dn) + 1);
+      }
+    }
     _cursor.setSelection(pos, pos);
     event.preventDefault();
     if (event.ctrlKey || event.dataTransfer.effectAllowed == 'copy')

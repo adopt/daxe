@@ -302,9 +302,12 @@ class NodeOffsetPosition implements Position {
         if (n == null)
           return(null);
         h.Rectangle r;
-        if (n is h.ImageElement || n is h.TableRowElement) {
+        if (n is h.ImageElement) {
           r = n.getBoundingClientRect();
-          return(new Point(r.right, r.top));
+          return(new Point(r.right, r.top)); // should be 1em above bottom
+        } else if (n is h.TableRowElement) {
+          r = n.getBoundingClientRect();
+          return(new Point(r.left, r.bottom));
         } else if (n is h.DivElement || n is h.ParagraphElement || n is h.TableElement ||
             n is h.UListElement || n is h.LIElement) {
           r = n.getBoundingClientRect();

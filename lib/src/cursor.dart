@@ -912,7 +912,7 @@ class Cursor {
 
   bool _isBlock(h.Element el) {
     return(el is h.DivElement || el is h.ParagraphElement || el is h.TableElement ||
-      el is h.UListElement || el is h.LIElement);
+      el is h.TableRowElement || el is h.UListElement || el is h.LIElement);
   }
 
   /**

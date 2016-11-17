@@ -2038,7 +2038,7 @@ class Cursor {
       bool error = true;
       // when dropping inside a table cell or list item,
       // try to drop as a table row or list item, before or after current pos.
-      if (pos.dn is DNText && pos.dnOffset == 0 || pos.dnOffset == pos.dn.offsetLength) {
+      if (pos.dn is DNText && (pos.dnOffset == 0 || pos.dnOffset == pos.dn.offsetLength)) {
         // move out of text nodes
         DaxeNode dn = pos.dn;
         if (pos.dnOffset == 0)

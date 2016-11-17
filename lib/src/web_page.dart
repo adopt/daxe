@@ -466,7 +466,9 @@ class WebPage {
       else
         effect = 'move';
     }
-    _cursor.drop(pos, event.dataTransfer.getData('text'), effect);
+    String data = event.dataTransfer.getData('text');
+    if (data != null && data != '')
+      _cursor.drop(pos, data, effect);
   }
   
   /**

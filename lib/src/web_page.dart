@@ -425,7 +425,7 @@ class WebPage {
       else
         tmpPos = new Position(dn.parent, dn.parent.offsetOf(dn) + 1);
     }
-    if (tmpPos.dn.getHTMLNode() is h.TableCellElement &&
+    if (tmpPos.dn.getHTMLNode() is h.TableRowElement &&
         (tmpPos.dnOffset == 0 || tmpPos.dnOffset == tmpPos.dn.offsetLength)) {
       h.Element content = tmpPos.dn.getHTMLContentsNode();
       if (content.parent is h.TableCellElement) {

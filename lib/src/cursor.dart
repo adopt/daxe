@@ -55,18 +55,26 @@ class Cursor {
       for (String name in hnames)
         if (doc.cfg.elementReference(name) == null)
           return;
-      h.DataTransfer data = e.clipboardData;
-      // NOTE: data.types does not work in Firefox due to a bug in dart2js
-      // (dart bug #27616)
-      if (data.types is List<String>) {
-        if (data.types.contains('text/html')) {
-          pasteHTML(data.getData('text/html'), data.getData('text/plain'));
-          e.preventDefault();
-          donePaste = true;
-        } else if (data.types.contains('Files')) {
-          donePaste = pasteImage(data);
-          if (donePaste)
+      h.DataTransfer data = null;
+      try {
+        // e.clipboardData does not work with IE
+        // (not sure how to get window.clipboardData in pure Dart)
+        data = e.clipboardData;
+      } catch (ex) {
+      }
+      if (data != null) {
+        // NOTE: data.types does not work in Firefox due to a bug in dart2js
+        // (dart bug #27616)
+        if (data.types is List<String>) {
+          if (data.types.contains('text/html')) {
+            pasteHTML(data.getData('text/html'), data.getData('text/plain'));
             e.preventDefault();
+            donePaste = true;
+          } else if (data.types.contains('Files')) {
+            donePaste = pasteImage(data);
+            if (donePaste)
+              e.preventDefault();
+          }
         }
       }
     });
@@ -2002,7 +2010,11 @@ class Cursor {
       } else if (dn != null) {
         data = dn.toString();
         page.selectNode(dn);
-        e.dataTransfer.setDragImage(dn.getHTMLNode(), 0, 0); // TODO: test IE11
+        try {
+          // setDragImage is not supported by Internet Explorer
+          e.dataTransfer.setDragImage(dn.getHTMLNode(), 0, 0);
+        } catch (ex) {
+        }
       } else {
         return;
       }

@@ -48,7 +48,12 @@
 <ul>
 <li>
 
-<a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml">New XHTML document</a>
+<a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml">New XHTML 1.0 document</a>
+
+</li>
+<li>
+
+<a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML5_config.xml">New XHTML 5 document</a>
 
 </li>
 <li>
@@ -110,6 +115,21 @@
 </div>
 
 <div class="section_normale">
+<h2>Precompiled version</h2>
+
+<p>
+If you have trouble compiling (the Dart SDK is not available on all platforms), you can use this precompiled version, but it will not be up-to-date.
+</p>
+
+<p>
+
+<a target="_blank" class="lien" href="daxe.zip">daxe.zip</a>
+
+</p>
+
+</div>
+
+<div class="section_normale">
 <h2>Documentation</h2>
 
 <p>Although it doesn't have as many features, Daxe was designed to look like Jaxe, and use Jaxe configuration files. So Jaxe documentation can be used as well&nbsp;:</p>
@@ -151,7 +171,7 @@
 <h1>Introduction</h1>
 <div class="zone_texte">
     
-<p>To provide a user interface for a given XML language, Daxe needs the language definition (given with an XML schema) and a configuration file describing the user interface for the language. It works in the same way as <a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/">Jaxe</a>, and in fact the config files are mostly compatible.</p>
+<p>To provide a user interface for a given XML language, Daxe needs the language definition (given with an XML schema) and a configuration file describing the user interface for the language. It works in the same way as <a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/">Jaxe</a>, but the config files use a different language. An XSLT stylesheet is available in the <span class="code">config</span> directory to transform a Jaxe configuration file into a Daxe one.</p>
     
 <p>Specifically, configuration files contain basic information about the XML language (a link to the schema and a list of root elements), saving options, menus (especially to insert the elements), display types for the elements, and all the strings used in the interface, depending on the user language.</p>
     
@@ -546,9 +566,27 @@
 <span class="code">table</span>
 </td>
 <td class="tableaux1">Table display allowing the use of XML elements inside the cells. Also handles the rowspan and colspan attributes to gather cells vertically and horizontally.</td>
-<td class="tableaux1">
+<td class="tableaux1" rowspan="3">
 <img src="../pages_doc-config-en/images_types/tabletexte.png" alt="images_types/tabletexte.png">
 </td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">tr</span>
+</td>
+<td class="tableaux2">Table row.</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">
+<span class="code">td</span>
+</td>
+<td class="tableaux1">Table cell.</td>
 
 </tr>
       
@@ -792,7 +830,7 @@
 <tr>
 
 <td class="tableaux1">division and area</td>
-<td class="tableaux1">titreAtt</td>
+<td class="tableaux1">titleAtt</td>
 <td class="tableaux1">attribute for the title</td>
 
 </tr>
@@ -800,7 +838,7 @@
 <tr>
 
 <td class="tableaux2">division, area, string and empty</td>
-<td class="tableaux2">attributsVisibles</td>
+<td class="tableaux2">visibleAttributes</td>
 <td class="tableaux2">displays all the attributes on the start tag (true|false)</td>
 
 </tr>
@@ -938,7 +976,7 @@
 <tr>
 
 <td class="tableaux1">equationmem and equatexmem</td>
-<td class="tableaux1">texteAtt</td>
+<td class="tableaux1">textAtt</td>
 <td class="tableaux1">attribute with the equation text</td>
 
 </tr>

@@ -610,6 +610,32 @@ div.find {
   border: 1px solid #505050;
 }
 
+/* find element */
+#find_element_dlg {
+  position: absolute;
+  z-index: 2;
+  bottom: 1.3em;
+  left: 15em;
+  right: 0em;
+  overflow: auto;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #505050;
+}
+#find_element_dlg_attributes {
+  float: left;
+  height: 7em;
+  overflow-y: auto;
+  padding-right: 2em; /* for the scrollbar */
+}
+#find_element_dlg .buttons {
+  clear: left;
+}
+#find_element_dlg_attributes td {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
 div.options label {
   margin-right: 1em;
 }

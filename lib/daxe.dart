@@ -50,6 +50,7 @@ part 'src/config.dart';
 part 'src/daxe_node.dart';
 part 'src/daxe_attr.dart';
 part 'src/find_dialog.dart';
+part 'src/find_element_dialog.dart';
 part 'src/help_dialog.dart';
 part 'src/insert_panel.dart';
 part 'src/left_panel.dart';

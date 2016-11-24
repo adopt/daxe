@@ -27,6 +27,9 @@ class FindDialog {
   static String findString = '';
 
   void show() {
+    h.DivElement findElementDiv = h.document.getElementById('find_element_dlg');
+    if (findElementDiv != null)
+      findElementDiv.remove();
     h.DivElement div_find = h.document.getElementById('find_dlg');
     if (div_find != null) {
       h.TextInputElement inputFind = h.document.getElementById('find_dlg_find_field');
@@ -102,7 +105,6 @@ class FindDialog {
       ..htmlFor = 'find_cb_backwards'
       ..text = Strings.get("find.backwards");
     div_options.append(labelBackwards);
-    // TODO: option to look at attribute values, XPath search
     form.append(div_options);
 
     h.DivElement div_buttons = new h.DivElement();

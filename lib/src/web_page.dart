@@ -217,6 +217,8 @@ class WebPage {
     editMenu.add(new MenuItem(Strings.get('menu.select_all'), () => selectAll(), shortcut: 'A'));
     MenuItem findMenu = new MenuItem(Strings.get('find.find_replace'), () => (new FindDialog()).show(), shortcut: 'F');
     editMenu.add(findMenu);
+    MenuItem findElementMenu = new MenuItem(Strings.get('find.find_element'), () => (new FindElementDialog()).show());
+    editMenu.add(findElementMenu);
     mbar.insert(editMenu, 1);
     
     h.Element headers = h.document.getElementById('headers');

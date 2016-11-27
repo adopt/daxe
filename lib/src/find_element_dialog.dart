@@ -25,6 +25,9 @@ class FindElementDialog {
   static String elementName = '';
   static bool caseSensitive = false;
 
+  /**
+   * Displays the dialog.
+   */
   void show() {
     h.DivElement div_find = h.document.getElementById('find_dlg');
     if (div_find != null)
@@ -68,8 +71,11 @@ class FindElementDialog {
     var datalist = new h.DataListElement();
     datalist.id = 'find_element_dlg_datalist';
     var names = new List<String>();
-    for (x.Element ref in allRefs)
-      names.add(doc.cfg.elementName(ref));
+    for (x.Element ref in allRefs) {
+      String name = doc.cfg.elementName(ref);
+      if (!names.contains(name))
+        names.add(name);
+    }
     names.sort();
     for (String name in names) {
       var option = new h.OptionElement();
@@ -90,6 +96,12 @@ class FindElementDialog {
     contentInput
       ..id = 'find_element_dlg_content'
       ..size = 40;
+    contentInput.onKeyDown.listen((h.KeyboardEvent event) {
+      if (event.keyCode == h.KeyCode.ENTER) {
+        event.preventDefault();
+        next();
+      }
+    });
     td.append(contentInput);
     tr.append(td);
     td = new h.TableCellElement();
@@ -147,14 +159,16 @@ class FindElementDialog {
     h.DivElement pathDiv = h.document.getElementById('path');
     int bottom = findElementDiv.offsetHeight + pathDiv.offsetHeight;
     divdoc.style.bottom = "${bottom}px";
+    if (elementName != '')
+      updateAttributes();
     elementInput.focus();
     elementInput.setSelectionRange(0, elementInput.value.length);
   }
 
-/**
- * Updates the list of attributes based on the chosen element
- * (using the first element in the schema matching the name).
- */
+  /**
+   * Updates the list of attributes based on the chosen element
+   * (using the first element in the schema matching the name).
+   */
   void updateAttributes() {
     h.DivElement attributeDiv = h.document.getElementById('find_element_dlg_attributes');
     attributeDiv.children.clear();
@@ -173,12 +187,30 @@ class FindElementDialog {
           td.text = doc.cfg.attributeTitle(elementRef, attRef);
           tr.append(td);
           td = new h.TableCellElement();
+          // NOTE: we can't use SimpleTypeControl for attribute values,
+          // because an element name can match several element references
+          // with different types for attributes of the same name.
+          // However, we can suggest attribute values.
           var attValueInput = new h.TextInputElement();
           String attName = doc.cfg.attributeName(attRef);
           String inputId = 'find_element_dlg_attribute_' + attName;
           attValueInput
             ..id = inputId
             ..size = 40;
+          List<String> values = doc.cfg.attributeValues(attRef);
+          if (values == null || values.length == 0)
+            values = doc.cfg.attributeSuggestedValues(elementRef, attRef);
+          if (values != null) {
+            var datalist = new h.DataListElement();
+            datalist.id = 'find_element_dlg_attribute_' + attName + '_datalist';
+            for (String value in values) {
+              var option = new h.OptionElement();
+              option.value = value;
+              datalist.append(option);
+            }
+            attValueInput.attributes['list'] = datalist.id;
+            td.append(datalist);
+          }
           td.append(attValueInput);
           tr.append(td);
           td = new h.TableCellElement();
@@ -202,25 +234,31 @@ class FindElementDialog {
   }
   
   /**
-   * Returns all the infos related to user selection.
+   * Returns all the infos related to user selection:
+   * 0: element name (String),
+   * 1: element content (String),
+   * 2: element contains (bool),
+   * 3: attribute references (List<x.Element>),
+   * 4: attribute values (HashMap<x.Element,String>),
+   * 5: attribute contains (HashMap<x.Element,bool>).
    */
   List _getInfos() {
     var infos = new List();
     h.TextInputElement elementInput = h.document.getElementById('find_element_dlg_element');
-    String elementName = elementInput.value;
+    elementName = elementInput.value;
     if (elementName == '')
       return null;
-    List<x.Element> references = doc.cfg.elementReferences(elementName);
-    if (references.length == 0)
-      return null;
-    x.Element elementRef = references[0];
-    infos.add(elementRef);
+    infos.add(elementName);
     h.TextInputElement contentInput = h.document.getElementById('find_element_dlg_content');
     String content = contentInput.value;
     infos.add(content);
     h.CheckboxInputElement containsCheckbox = h.document.getElementById('find_element_dlg_content_contains');
     bool contentContains = containsCheckbox.checked;
     infos.add(contentContains);
+    List<x.Element> references = doc.cfg.elementReferences(elementName);
+    if (references.length == 0)
+      return null;
+    x.Element elementRef = references[0];
     List<x.Element> attRefs = doc.cfg.elementAttributes(elementRef);
     infos.add(attRefs);
     var attValues = new HashMap<x.Element,String>();
@@ -243,22 +281,26 @@ class FindElementDialog {
    * Returns true if the DaxeNode is matching the criteria given by the
    * following parameters.
    */
-  bool _isMatching(DaxeNode dn, x.Element elementRef, String content,
+  bool _isMatching(DaxeNode dn, String elementName, String content,
       bool contentContains, List<x.Element> attRefs, HashMap<x.Element,String> attValues,
       HashMap<x.Element,bool> attContains) {
-    if (dn.ref != elementRef)
+    if (dn.nodeName != elementName)
       return false;
     if (content != '') {
       if (!caseSensitive)
         content = content.toLowerCase();
-      if (dn.firstChild is DNText && dn.firstChild.nextSibling == null) {
-        String testString = dn.firstChild.nodeValue;
-        if (!caseSensitive)
-          testString = testString.toLowerCase();
-        if (!((contentContains && testString.contains(content)) ||
-            (!contentContains && testString == content))) {
-          return false;
-        }
+      String testString = '';
+      for (DaxeNode child in dn.childNodes) {
+        if (child is DNText)
+          testString += child.nodeValue;
+        else if (child is DNStyle && child.firstChild is DNText)
+          testString += child.firstChild.nodeValue;
+      }
+      if (!caseSensitive)
+        testString = testString.toLowerCase();
+      if (!((contentContains && testString.contains(content)) ||
+          (!contentContains && testString == content))) {
+        return false;
       }
     }
     for (x.Element attRef in attRefs) {
@@ -285,7 +327,7 @@ class FindElementDialog {
     List infos = _getInfos();
     if (infos == null)
       return;
-    x.Element elementRef = infos[0];
+    String elementName = infos[0];
     String content = infos[1];
     bool contentContains = infos[2];
     List<x.Element> attRefs = infos[3];
@@ -314,7 +356,7 @@ class FindElementDialog {
     }
     
     for ( ; parent != null; parent = parent.nextNode()) {
-      bool matching = _isMatching(parent, elementRef, content,
+      bool matching = _isMatching(parent, elementName, content,
           contentContains, attRefs, attValues, attContains);
       if (!matching)
         continue;
@@ -330,7 +372,7 @@ class FindElementDialog {
     List infos = _getInfos();
     if (infos == null)
       return;
-    x.Element elementRef = infos[0];
+    String elementName = infos[0];
     String content = infos[1];
     bool contentContains = infos[2];
     List<x.Element> attRefs = infos[3];
@@ -359,7 +401,7 @@ class FindElementDialog {
     }
     
     for ( ; parent != null; parent = parent.previousNode()) {
-      bool matching = _isMatching(parent, elementRef, content,
+      bool matching = _isMatching(parent, elementName, content,
           contentContains, attRefs, attValues, attContains);
       if (!matching)
         continue;

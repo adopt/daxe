@@ -701,7 +701,11 @@ class Cursor {
       UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
       Position dnpos = new Position(dn.parent, dn.parent.offsetOf(dn));
       edit.addSubEdit(new UndoableEdit.removeNode(dn));
-      DNText dn2 = new DNText(s2);
+      DNText dn2;
+      if (dn.parent.needsSpecialDNText)
+        dn2 = dn.parent.specialDNTextConstructor(s2);
+      else
+        dn2 = new DNText(s2);
       edit.addSubEdit(new UndoableEdit.insertNode(dnpos, dn2));
       doc.doNewEdit(edit);
       page.cursor.setSelection(new Position(dn2, offset1), new Position(dn2, newEnd));

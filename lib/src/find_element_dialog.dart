@@ -312,6 +312,8 @@ class FindElementDialog {
       bool contains = attContains[attRef];
       String attName = doc.cfg.attributeName(attRef);
       String testString = dn.getAttribute(attName);
+      if (testString == null)
+        return false;
       if (!caseSensitive)
         testString = testString.toLowerCase();
       if (!((contains && testString.contains(value)) ||

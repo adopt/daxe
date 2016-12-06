@@ -634,6 +634,7 @@ div.find {
 #find_element_dlg_attributes td {
   padding-left: 3px;
   padding-right: 3px;
+  white-space: nowrap;
 }
 
 div.options label {

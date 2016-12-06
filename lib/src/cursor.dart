@@ -196,8 +196,8 @@ class Cursor {
       backspace();
     } else if (keyCode == h.KeyCode.DELETE) {
       suppr();
-    } else if (keyCode == h.KeyCode.TAB && !ctrl && !shift) {
-      tab(event);
+    } else if (keyCode == h.KeyCode.TAB && !ctrl) {
+      tab(event, shift);
     } else if (ctrl && shortcuts[keyCode] != null) {
       event.preventDefault();
       return;
@@ -622,12 +622,14 @@ class Cursor {
 
   /**
    * Action for the tab key.
-   * Inserts 4 spaces only if spaces are preserved in the element
-   * (without looking at parents)
+   * Only does something if spaces are preserved in the element
+   * (without looking at parents).
+   * If selection is empty, inserts 4 spaces.
+   * If a text node is selected from the start or a new line,
+   * indent the selected block.
+   * Shift-tab can be used to unindent.
    */
-  void tab(h.Event event) {
-    if (selectionStart != selectionEnd)
-      return;
+  void tab(h.Event event, bool shift) {
     DaxeNode parent = selectionStart.dn;
     if (parent is DNText)
       parent = parent.parent;
@@ -649,10 +651,68 @@ class Cursor {
         }
       }
     }
-    if (spacePreserve) {
-      doc.insertString(selectionStart, "    ");
+    if (!spacePreserve)
+      return;
+    if (selectionStart != selectionEnd) {
+      // for a block of text
+      if (selectionStart.dn is! DNText || selectionEnd.dn is! DNText ||
+          selectionStart.dn != selectionEnd.dn)
+        return;
+      DaxeNode dn = selectionStart.dn;
+      String s = dn.nodeValue;
+      int offset1 = selectionStart.dnOffset;
+      int offset2 = selectionEnd.dnOffset;
+      if (offset1 != 0 && s[offset1 - 1] != '\n')
+        return;
+      String s2 = '';
+      if (offset1 != 0)
+        s2 = s.substring(0, offset1);
+      int offset_newline = s.indexOf('\n', offset1);
+      int offset = offset1;
+      int newEnd = offset2;
+      String tab = '    ';
+      while (offset_newline != -1 && offset < offset2) {
+        if (!shift) {
+          s2 += tab + s.substring(offset, offset_newline + 1);
+          newEnd += 4;
+        } else if (s.startsWith(tab, offset)) {
+          s2 += s.substring(offset + 4, offset_newline + 1);
+          newEnd -= 4;
+        } else {
+          s2 += s.substring(offset, offset_newline + 1);
+        }
+        offset = offset_newline + 1;
+        offset_newline = s.indexOf('\n', offset);
+      }
+      if (offset < offset2) {
+        if (!shift) {
+          s2 += tab + s.substring(offset);
+          newEnd += 4;
+        } else if (offset + 4 < offset2 && s.startsWith(tab, offset)) {
+          s2 += s.substring(offset + 4);
+          newEnd -= 4;
+        } else {
+          s2 += s.substring(offset);
+        }
+      } else {
+        if (s.length > offset)
+          s2 += s.substring(offset);
+      }
+      UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.insert_text'));
+      Position dnpos = new Position(dn.parent, dn.parent.offsetOf(dn));
+      edit.addSubEdit(new UndoableEdit.removeNode(dn));
+      DNText dn2 = new DNText(s2);
+      edit.addSubEdit(new UndoableEdit.insertNode(dnpos, dn2));
+      doc.doNewEdit(edit);
+      page.cursor.setSelection(new Position(dn2, offset1), new Position(dn2, newEnd));
       event.preventDefault();
+      return;
     }
+    
+    if (shift)
+      return;
+    doc.insertString(selectionStart, "    ");
+    event.preventDefault();
   }
 
   Position nextCaretPosition(Position pos) {

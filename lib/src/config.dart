@@ -370,7 +370,7 @@ class Config {
     x.Element pe = _findElement(_getSaving(), "NAMESPACE_PREFIX");
     while (pe != null) {
       if (namespace == pe.getAttribute("uri"))
-        return(pe.getAttribute("prefixe"));
+        return(pe.getAttribute("prefix"));
       pe = _nextElement(pe, "NAMESPACE_PREFIX");
     }
     return(_schema.namespacePrefix(namespace));

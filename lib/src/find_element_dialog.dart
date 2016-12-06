@@ -284,8 +284,13 @@ class FindElementDialog {
   bool _isMatching(DaxeNode dn, String elementName, String content,
       bool contentContains, List<x.Element> attRefs, HashMap<x.Element,String> attValues,
       HashMap<x.Element,bool> attContains) {
-    if (dn.nodeName != elementName)
-      return false;
+    if (elementName.contains(':')) {
+      if (dn.nodeName != elementName)
+        return false;
+    } else {
+      if (dn.localName != elementName)
+        return false;
+    }
     if (content != '') {
       if (!caseSensitive)
         content = content.toLowerCase();

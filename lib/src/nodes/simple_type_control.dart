@@ -144,15 +144,19 @@ class SimpleTypeControl {
       span.append(input);
       if (suggestedValues != null && suggestedValues.length > 0) {
         // add a custom menu, because datalist UI sucks and there is no way to configure it or script it safely
-        // set width to less than 100%, to give some room to arrowSpan
-        input.style.width = "90%"; // fallback for calc
-        input.style.width = "calc(100% - 2em)";
         h.SpanElement arrowSpan = new h.SpanElement();
         arrowSpan.text = '▼';
         arrowSpan.style.cursor = 'default';
         arrowSpan.onClick.listen((h.Event event) => showSuggestedValuesMenu(input));
         arrowSpan.onMouseOver.listen((h.Event event) => arrowSpan.style.background = '#E0E0E0');
         arrowSpan.onMouseOut.listen((h.Event event) => arrowSpan.style.background = null);
+        // mesure arrowSpan width and reduce input width accordingly
+        h.document.body.append(arrowSpan);
+        int width = arrowSpan.offsetWidth + 2;
+        arrowSpan.remove();
+        input.style.width = "90%"; // fallback for calc
+        input.style.width = "calc(100% - ${width}px)";
+        input.style.boxSizing = 'border-box';
         span.append(arrowSpan);
       }
     } else {

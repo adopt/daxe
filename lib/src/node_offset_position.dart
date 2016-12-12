@@ -233,6 +233,14 @@ class NodeOffsetPosition implements Position {
         range.setStart(n, offset);
         range.setEnd(n, offset);
         h.Rectangle r = range.getClientRects().first;
+        // BUG: if there are other nodes in the same line as the text
+        // node, and they are taller than the text, IE11 will return a large
+        // rect for the text, and the text can be anywhere between top and 
+        // bottom depending on y-alignment for the other elements on the line.
+        // (these can be images or equations, for instance).
+        // We might be able to work around this bug by replacing the next
+        // character with a span with display:inline-block containing the
+        // same character, but that could really slow down caret display.
         pt = new Point(r.right, r.top);
         return pt;
       }

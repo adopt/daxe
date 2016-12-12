@@ -45,6 +45,7 @@ class SourceWindow {
     bSelect.appendText(Strings.get("source.select_all"));
     bSelect.onClick.listen((h.MouseEvent event) => selectAll());
     divBottom.append(bSelect);
+    divBottom.appendText(' ');
     h.ButtonElement bOk = new h.ButtonElement();
     bOk.attributes['type'] = 'submit';
     bOk.appendText(Strings.get("button.Close"));

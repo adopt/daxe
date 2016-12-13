@@ -36,8 +36,9 @@ class FileChooser {
   List<DirectoryItem> items;
   DirectoryItem selectedItem;
   h.TableRowElement selectedTR;
+  bool withUpload;
   
-  FileChooser(this.uri, this.okfct);
+  FileChooser(this.uri, this.okfct, {this.withUpload:false});
   
   Future show() async {
     try {
@@ -59,6 +60,21 @@ class FileChooser {
     h.FormElement form = new h.FormElement();
     
     form.append(directoryDiv());
+    
+    if (withUpload) {
+      h.DivElement div_upload = new h.DivElement();
+      div_upload.style.float = 'left';
+      h.InputElement fileInput = new h.InputElement();
+      fileInput.name = 'file';
+      fileInput.type = 'file';
+      div_upload.append(fileInput);
+      h.ButtonElement bUpload = new h.ButtonElement();
+      bUpload.attributes['type'] = 'button';
+      bUpload.appendText(Strings.get("open.upload"));
+      bUpload.onClick.listen((h.MouseEvent event) => upload(fileInput.files));
+      div_upload.append(bUpload);
+      form.append(div_upload);
+    }
     
     h.DivElement div_buttons = new h.DivElement();
     div_buttons.classes.add('buttons');
@@ -324,6 +340,18 @@ class FileChooser {
   
   Uri getSelectedUri() {
     return(itemUri(selectedItem));
+  }
+  
+  void upload(List<h.File> files) {
+    if (files == null || files.length < 1)
+      return;
+    h.File file = files[0];
+    String filePath = uri.path + '/' + file.name;
+    doc.uploadFile(filePath, file).then((v) {
+      openDir(uri);
+    }, onError: (DaxeException ex) {
+      h.window.alert(ex.toString());
+    });
   }
 }
 

@@ -180,7 +180,7 @@ class DNFile extends DaxeNode {
       } else
         super.newNodeCreationUI(okfct);
     };
-    dlg = new FileChooser(openDir, action);
+    dlg = new FileChooser(openDir, action, withUpload:(doc.saveURL != null));
     dlg.show();
   }
   

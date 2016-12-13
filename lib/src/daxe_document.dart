@@ -202,10 +202,6 @@ class DaxeDocument {
     request.onLoad.listen((h.ProgressEvent event) {
       String response = request.responseText;
       if (response.startsWith('ok')) {
-        if (_undoPosition >= 0)
-          _lastSavedEdit = _edits[_undoPosition];
-        else
-          _lastSavedEdit = null;
         completer.complete();
       } else {
         String errorMessage;

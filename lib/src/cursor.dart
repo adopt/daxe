@@ -1925,11 +1925,16 @@ class Cursor {
       filename = 'pasted_image_${newNumber}.' + extension;
     }
     String uri = dirURI + filename;
-    await doc.uploadFile(uri, blob);
-    DNFile img = NodeFactory.create(imageRef);
-    img.setSrc(filename);
-    doc.insertNode(img, selectionStart);
-    return true;
+    try {
+      await doc.uploadFile(uri, blob);
+      DNFile img = NodeFactory.create(imageRef);
+      img.setSrc(filename);
+      doc.insertNode(img, selectionStart);
+      return true;
+    } catch (ex) {
+      h.window.alert(ex.toString());
+      return false;
+    }
   }
 
   void mergeBlocks(DaxeNode dn1, DaxeNode dn2) {

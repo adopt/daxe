@@ -1242,7 +1242,9 @@ abstract class DaxeNode {
   
   /**
    * Returns true if the children should be using ParentUpdatingDNText
-   * or another class defined by specialDNTextConstructor instead of DNText
+   * or another class defined by specialDNTextConstructor instead of DNText.
+   * This node's fromNode constructor should make sure to replace any
+   * DNText by the special class (this is not done automatically).
    */
   bool get needsSpecialDNText {
     return false;

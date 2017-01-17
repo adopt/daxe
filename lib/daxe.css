@@ -474,6 +474,7 @@ div.dlg2 {
   position: absolute;
   left: 50%;
   height: 100%;
+  max-width: 100%;
 }
 
 div.dlg3 {

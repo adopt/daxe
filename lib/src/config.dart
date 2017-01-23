@@ -1426,7 +1426,10 @@ class Config {
         sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
-    return(_schema.elementDocumentation(elementRef));
+    String schemaDoc = _schema.elementDocumentation(elementRef);
+    if (schemaDoc != null)
+      schemaDoc = schemaDoc.trim();
+    return(schemaDoc);
   }
   
   /**
@@ -1582,7 +1585,10 @@ class Config {
         sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
-    return(_schema.attributeDocumentation(attributeRef));
+    String schemaDoc = _schema.attributeDocumentation(attributeRef);
+    if (schemaDoc != null)
+      schemaDoc = schemaDoc.trim();
+    return(schemaDoc);
   }
   
   /**

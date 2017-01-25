@@ -934,6 +934,18 @@ class Config {
   }
   
   /**
+   * Returns the attribute reference for a given element reference and
+   * attribute name.
+   */
+  x.Element attributeReference(final x.Element elementRef, String attributeName) {
+    List<x.Element> attRefs = _schema.elementAttributes(elementRef);
+    for (x.Element attRef in attRefs)
+      if (_schema.attributeName(attRef) == attributeName)
+        return attRef;
+    return null;
+  }
+  
+  /**
    * Returns the name of an attribute based on its reference.
    */
   String attributeName(final x.Element attributeRef) {

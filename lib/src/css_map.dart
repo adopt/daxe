@@ -36,13 +36,13 @@ class CSSMap extends MapBase<String, String> {
     }
   }
   
-  String operator [](String key) => map[key];
+  String operator [](Object key) => map[key];
   
   void operator []=(String key, String value) {
     map[key] = value;
   }
   
-  String remove(String key) {
+  String remove(Object key) {
     return(map.remove(key));
   }
   

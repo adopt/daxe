@@ -149,11 +149,9 @@ class WebPage {
         }
       });
       if (doc.saveURL != null) {
-        h.window.onBeforeUnload.listen((h.BeforeUnloadEvent e) {
-          if (doc.changed() && !_hasQuit) {
-            String message = Strings.get('save.document_not_saved');
-            e.returnValue = message;
-            return message;
+        h.window.onBeforeUnload.listen((h.Event e) {
+          if (e is h.BeforeUnloadEvent && doc.changed() && !_hasQuit) {
+            e.returnValue = Strings.get('save.document_not_saved');
           }
         });
         if (application) {

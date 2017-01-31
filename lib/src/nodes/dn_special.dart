@@ -152,7 +152,7 @@ class SpecialDialog {
       table.append(tr);
     }
     table.onClick.listen((h.MouseEvent event) => select(event.target));
-    table.onDoubleClick.listen((h.MouseEvent event) {
+    table.onDoubleClick.listen((h.Event event) {
       select(event.target);
       if (selectedTD != null)
         ok(null);

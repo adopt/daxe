@@ -116,7 +116,7 @@ class Tag {
       }
     } else
       span.append(new h.Text(title));
-    span.onDoubleClick.listen((h.MouseEvent event) {
+    span.onDoubleClick.listen((h.Event event) {
       page.selectNode(_dn);
       event.preventDefault();
       event.stopPropagation();

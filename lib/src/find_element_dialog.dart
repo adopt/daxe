@@ -64,7 +64,7 @@ class FindElementDialog {
         next();
       }
     });
-    elementInput.onInput.listen((h.KeyboardEvent event) {
+    elementInput.onInput.listen((h.Event event) {
       updateAttributes();
     });
     List<x.Element> allRefs = doc.cfg.allElementsList();

@@ -42,7 +42,7 @@ class DNItem extends DaxeNode {
     if (attRefs != null && attRefs.length > 0)
       bullet1.onClick.listen((h.MouseEvent event) => attributeDialog());
     else {
-      bullet1.onDoubleClick.listen((h.MouseEvent event) {
+      bullet1.onDoubleClick.listen((h.Event event) {
         page.selectNode(this);
         event.preventDefault();
         event.stopPropagation();
@@ -62,7 +62,7 @@ class DNItem extends DaxeNode {
     if (attRefs != null && attRefs.length > 0)
       bullet2.onClick.listen((h.MouseEvent event) => attributeDialog());
     else {
-      bullet2.onDoubleClick.listen((h.MouseEvent event) {
+      bullet2.onDoubleClick.listen((h.Event event) {
         page.selectNode(this);
         event.preventDefault();
         event.stopPropagation();

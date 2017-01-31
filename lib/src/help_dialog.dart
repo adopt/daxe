@@ -220,7 +220,7 @@ class HelpDialog {
             title = doc.cfg.elementTitle(ref);
           else
             title = doc.cfg.elementTitle(ref) + " (" + ancestorTitle + ")";
-          Set set = titleSets[title];
+          Set<x.Element> set = titleSets[title];
           if (set == null) {
             set = new HashSet<x.Element>();
             titleSets[title] = set;
@@ -336,5 +336,3 @@ class HelpDialog {
     page.focusCursor();
   }
 }
-
-

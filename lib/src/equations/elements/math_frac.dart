@@ -85,7 +85,7 @@ class MathFrac extends MathElement {
 
   @override
   double getDescentHeight(final bool dynamicParts) {
-    return max(0, getMathElement(1).getHeight(true) + 1 + _linethickness / 2 - getMiddleShift());
+    return max(0.0, getMathElement(1).getHeight(true) + 1 + _linethickness / 2 - getMiddleShift());
   }
   
 }

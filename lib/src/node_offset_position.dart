@@ -67,15 +67,19 @@ class NodeOffsetPosition implements Position {
     return(ropos.rightOffset);
   }
   
-  bool operator ==(Position other) {
-    NodeOffsetPosition nopos;
-    if (other is NodeOffsetPosition)
-      nopos = other;
-    else if (other is LeftOffsetPosition)
-      nopos = new NodeOffsetPosition.fromLeftOffsetPosition(other);
-    else if (other is RightOffsetPosition)
-      nopos = new NodeOffsetPosition.fromRightOffsetPosition(other);
-    return(_dn == nopos._dn && _dnOffset == nopos._dnOffset);
+  bool operator ==(Object other) {
+    if (other is Position) {
+      NodeOffsetPosition nopos;
+      if (other is NodeOffsetPosition)
+        nopos = other;
+      else if (other is LeftOffsetPosition)
+        nopos = new NodeOffsetPosition.fromLeftOffsetPosition(other);
+      else if (other is RightOffsetPosition)
+        nopos = new NodeOffsetPosition.fromRightOffsetPosition(other);
+      return(_dn == nopos._dn && _dnOffset == nopos._dnOffset);
+    } else {
+      return false;
+    }
   }
   
   bool operator <(Position other) {

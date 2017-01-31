@@ -48,9 +48,10 @@ class Locale {
     return result;
   }
   
-  bool operator ==(Locale other) {
-    return(language == other.language && country == other.country);
+  bool operator ==(Object other) {
+    if (other is Locale)
+      return(language == other.language && country == other.country);
+    return false;
   }
   
 }
-

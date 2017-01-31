@@ -92,8 +92,10 @@ class LeftOffsetPosition implements Position {
     return(ropos.rightOffset);
   }
   
-  bool operator ==(Position other) {
-    return(_leftOffset == other.leftOffset);
+  bool operator ==(Object other) {
+    if (other is Position)
+      return(_leftOffset == other.leftOffset);
+    return false;
   }
   
   bool operator <(Position other) {

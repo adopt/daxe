@@ -66,7 +66,7 @@ class DNAnchor extends DaxeNode {
         span.append(dn.html());
         dn = dn.nextSibling;
       }
-      span.onDoubleClick.listen((h.MouseEvent event) => attributeDialog());
+      span.onDoubleClick.listen((h.Event event) => attributeDialog());
     }
     return(span);
   }

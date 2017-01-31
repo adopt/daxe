@@ -159,7 +159,7 @@ class WXSSchema implements WXSThing {
 
   Future<WXSSchema> newIncludedSchema(final String schemaLocation,
       final String importNamespace, final WXSSchema parentSchema) { // can throw a WXSException
-    Completer completer = new Completer();
+    var completer = new Completer<WXSSchema>();
     _dwxs._newIncludedSchema(_url, schemaLocation, importNamespace, parentSchema).then((WXSSchema schemaInclu) {
       if (schemaInclu != null && !_includedSchemas.contains(schemaInclu))
         _includedSchemas.add(schemaInclu);

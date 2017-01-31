@@ -200,7 +200,7 @@ class FileChooser {
         event.preventDefault();
         select(item, tr);
       });
-      tr.onDoubleClick.listen((h.MouseEvent event) => open(item));
+      tr.onDoubleClick.listen((h.Event event) => open(item));
       {
         DirectoryItem pi = previousItem;
         h.TableRowElement pt = previousTr;

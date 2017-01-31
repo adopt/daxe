@@ -73,7 +73,7 @@ class DNSimpleType extends DaxeNode {
     control = new SimpleTypeControl.forElement(ref, value, valueChanged: () => changeValue());
     span.append(control.html());
     
-    span.onDoubleClick.listen((h.MouseEvent event) {
+    span.onDoubleClick.listen((h.Event event) {
       page.selectNode(this);
       event.preventDefault();
       event.stopPropagation();

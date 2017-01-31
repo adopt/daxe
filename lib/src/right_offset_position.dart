@@ -92,8 +92,11 @@ class RightOffsetPosition implements Position {
     return(_rightOffset);
   }
   
-  bool operator ==(Position other) {
-    return(_rightOffset == other.rightOffset);
+  bool operator ==(Object other) {
+    if (other is Position)
+      return(_rightOffset == other.rightOffset);
+    else
+      return false;
   }
   
   bool operator <(Position other) {

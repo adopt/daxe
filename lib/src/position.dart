@@ -94,7 +94,7 @@ abstract class Position {
    */
   int get rightOffset;
 
-  bool operator ==(Position other);
+  bool operator ==(Object other);
 
   bool operator <(Position other);
 

@@ -996,6 +996,134 @@ span.simple_type-title {
   padding-right: 3px;
 }
 
+/* DNBlock */
+.dnblock {
+  clear: both;
+  border-top: 1px solid #AAA;
+  border-left: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+  box-shadow: 0px 1px 1px #BBB;
+  border-top-left-radius: 0.4em;
+  border-top-right-radius: 0.4em;
+  border-bottom-left-radius: 0.4em;
+}
+
+.dnblock .dnblock {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.dnblock.invalid {
+  border-top: 1px solid #F00;
+  border-left: 1px solid #F00;
+  border-bottom: 1px solid #F00;
+}
+
+.selected .dnblock-header {
+  background-color: #50A0FF;
+}
+
+.dnblock-header {
+  background-color: #F5F5F5;
+  padding: 2px;
+  border-top-left-radius: 0.4em;
+  border-top-right-radius: 0.4em;
+  box-shadow: 0px 1px 2px #AAA;
+  cursor: default;
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: medium;
+  color: black;
+  text-align: left;
+}
+
+.dnblock-header:after {
+  /* clearfix for floating buttons */
+  /* we can't use overflow:auto because of the parameter template menu which needs to overflow */
+  visibility: hidden;
+  display: block;
+  content: "";
+  clear: both;
+  height: 0;
+}
+
+.dnblock-header.without-content-afterwards {
+  border-bottom-left-radius: 0.4em;
+}
+
+.dnblock.invalid>.dnblock-header {
+  background-color: #FFE0B0;
+}
+
+.dnblock.invalid.selected>.dnblock-header {
+  background-color: #50A0FF;
+}
+
+.selected .dnblock.invalid>.dnblock-header {
+  background-color: #50A0FF;
+}
+
+.dnblock-title {
+  margin-left: 4px;
+  margin-right: 5px;
+  font-style: italic;
+}
+
+.dnblock-attributes {
+  font-size: 90%;
+}
+
+.dnblock-content {
+  margin-top: 3px;
+}
+
+.dnblock-button-box {
+  display: inline-block;
+  line-height: 20px;
+  border: 1px solid #AAA;
+  margin: 0.2em;
+  background: #FAFAFA;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: default;
+}
+
+.dnblock-button {
+  display: inline-block;
+  line-height: 18px;
+  padding: 3px;
+  cursor: default;
+}
+
+.dnblock-button-disabled {
+  opacity: 0.3;
+}
+
+.dnblock-button-selected {
+  background-color: #DDD;
+}
+
+.dnblock-button:hover {
+  background-color: #EEE;
+}
+
+.dnblock-button-disabled:hover {
+  background-color: transparent;
+}
+
+.dnblock-button-disabled:hover {
+  background-color: transparent;
+}
+
+.dnblock-button img {
+  vertical-align: middle;
+}
+
+.dnblock .dnblock-button-box {
+  float: right;
+}
+
 /* Fonts for symbols and equations */
 
 @font-face {

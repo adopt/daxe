@@ -39,6 +39,8 @@ import '../../daxe.dart' show doc, page, ActionFunction, CSSMap, DaxeAttr, DaxeN
 
 part 'dn_anchor.dart';
 part 'dn_area.dart';
+part 'dn_block.dart';
+part 'block_button.dart';
 part 'dn_cdata.dart';
 part 'dn_comment.dart';
 part 'dn_division.dart';

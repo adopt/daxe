@@ -51,6 +51,10 @@ class NodeFactory {
         (x.Element ref) => new DNArea.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNArea.fromNode(node, parent)
     );
+    setDisplayType('block',
+        (x.Element ref) => new DNBlock.fromRef(ref),
+        (x.Node node, DaxeNode parent) => new DNBlock.fromNode(node, parent)
+    );
     setDisplayType('br',
         (x.Element ref) => new DNLineBreak.fromRef(ref),
         (x.Node node, DaxeNode parent) => new DNLineBreak.fromNode(node, parent)

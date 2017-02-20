@@ -130,6 +130,7 @@
       <TR><TH>Type</TH><TH>Description</TH><TH>Display</TH></TR>
       <TR><TD><CODE>division</CODE></TD><TD>Two bars extending to the window's right side, clearly separating large areas in the document.</TD><TD><FICHIER nom="images_types/division.png"/></TD></TR>
       <TR><TD><CODE>area</CODE></TD><TD>Two tags and carriage returns, to separate areas smaller than with <CODE>division</CODE>.</TD><TD><FICHIER nom="images_types/zone.png"/></TD></TR>
+      <TR><TD><CODE>block</CODE></TD><TD>A block hiding the start and end tags, as an alternative to <CODE>division</CODE> and <CODE>area</CODE>. Attributes are displayed on top, in a short or editable view, and the block can be collapsed with a button.</TD><TD><FICHIER nom="images_types/block.png"/></TD></TR>
       <TR><TD><CODE>string</CODE></TD><TD>Two tags to identify a small string, without any carriage return.</TD><TD><FICHIER nom="images_types/string.png"/></TD></TR>
       <TR><TD><CODE>empty</CODE></TD><TD>A single tag, typically for an empty element.</TD><TD><FICHIER nom="images_types/vide.png"/></TD></TR>
       <TR><TD><CODE>table</CODE></TD><TD>Table display allowing the use of XML elements inside the cells. Also handles the rowspan and colspan attributes to gather cells vertically and horizontally.</TD><TD rowspan="3"><FICHIER nom="images_types/tabletexte.png"/></TD></TR>

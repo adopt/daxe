@@ -389,10 +389,22 @@
 <tr>
 
 <td class="tableaux1">
+<span class="code">block</span>
+</td>
+<td class="tableaux1">A block hiding the start and end tags, as an alternative to <span class="code">division</span> and <span class="code">area</span>. Attributes are displayed on top, in a short or editable view, and the block can be collapsed with a button.</td>
+<td class="tableaux1">
+<img src="../pages_doc-config-en/images_types/block.png" alt="images_types/block.png">
+</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
 <span class="code">string</span>
 </td>
-<td class="tableaux1">Two tags to identify a small string, without any carriage return.</td>
-<td class="tableaux1">
+<td class="tableaux2">Two tags to identify a small string, without any carriage return.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/string.png" alt="images_types/string.png">
 </td>
 
@@ -400,11 +412,11 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">empty</span>
 </td>
-<td class="tableaux2">A single tag, typically for an empty element.</td>
-<td class="tableaux2">
+<td class="tableaux1">A single tag, typically for an empty element.</td>
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/vide.png" alt="images_types/vide.png">
 </td>
 
@@ -412,11 +424,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">table</span>
 </td>
-<td class="tableaux1">Table display allowing the use of XML elements inside the cells. Also handles the rowspan and colspan attributes to gather cells vertically and horizontally.</td>
-<td class="tableaux1" rowspan="3">
+<td class="tableaux2">Table display allowing the use of XML elements inside the cells. Also handles the rowspan and colspan attributes to gather cells vertically and horizontally.</td>
+<td class="tableaux2" rowspan="3">
 <img src="../pages_doc-config-en/images_types/tabletexte.png" alt="images_types/tabletexte.png">
 </td>
 
@@ -424,29 +436,29 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">tr</span>
 </td>
-<td class="tableaux2">Table row.</td>
+<td class="tableaux1">Table row.</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">td</span>
+</td>
+<td class="tableaux2">Table cell.</td>
 
 </tr>
       
 <tr>
 
 <td class="tableaux1">
-<span class="code">td</span>
-</td>
-<td class="tableaux1">Table cell.</td>
-
-</tr>
-      
-<tr>
-
-<td class="tableaux2">
 <span class="code">style</span>
 </td>
-<td class="tableaux2">For use in the case (very rare if the XML language encodes the meaning as opposed to the presentation) where an XML element only conveys a style information. Displays the characters in the chosen style (bold, italic, ...), without any tag. An alternative is to use the <span class="code">string</span> type, which can also use a style, but displays the tags.</td>
-<td class="tableaux2">
+<td class="tableaux1">For use in the case (very rare if the XML language encodes the meaning as opposed to the presentation) where an XML element only conveys a style information. Displays the characters in the chosen style (bold, italic, ...), without any tag. An alternative is to use the <span class="code">string</span> type, which can also use a style, but displays the tags.</td>
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/style.png" alt="images_types/style.png">
 </td>
 
@@ -454,11 +466,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">file</span>
 </td>
-<td class="tableaux1">Displays an image based on its path on the disk coming from an attribute of the XML element (to be defined). It is possible to copy/paste images and Daxe will automatically create the XML element and save the image file whenever possible, using the first element of type <span class="code">file</span>.</td>
-<td class="tableaux1">
+<td class="tableaux2">Displays an image based on its path on the disk coming from an attribute of the XML element (to be defined). It is possible to copy/paste images and Daxe will automatically create the XML element and save the image file whenever possible, using the first element of type <span class="code">file</span>.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/fichier.png" alt="images_types/fichier.png">
 </td>
 
@@ -466,11 +478,11 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">symbol</span>
 </td>
-<td class="tableaux2">Special character stored as a UNICODE character within the element tags. If no element has this type, users will still be able to insert UNICODE characters from a table.</td>
-<td class="tableaux2">
+<td class="tableaux1">Special character stored as a UNICODE character within the element tags. If no element has this type, users will still be able to insert UNICODE characters from a table.</td>
+<td class="tableaux1">
 <span class="symbole">&hArr;</span>
 </td>
 
@@ -478,11 +490,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">list</span>
 </td>
-<td class="tableaux1">For an element representing a bulleted or ordered list. The sub-element must use the <span class="code">item</span> type. The tags are displayed as for <span class="code">area</span>, with a '+' button to create new items.</td>
-<td class="tableaux1">
+<td class="tableaux2">For an element representing a bulleted or ordered list. The sub-element must use the <span class="code">item</span> type. The tags are displayed as for <span class="code">area</span>, with a '+' button to create new items.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/liste.png" alt="images_types/liste.png">
 </td>
 
@@ -490,11 +502,11 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">item</span>
 </td>
-<td class="tableaux2">List item in a list displayed with the <span class="code">list</span> type. Displayed with bullets or numbers, depending on the list type.</td>
-<td class="tableaux2">
+<td class="tableaux1">List item in a list displayed with the <span class="code">list</span> type. Displayed with bullets or numbers, depending on the list type.</td>
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/item.png" alt="images_types/item.png">
 </td>
 
@@ -502,11 +514,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">wlist</span>
 </td>
-<td class="tableaux1">Displays a list with the default browser display for the HTML <span class="code">ul</span> element. This provides a more WYSIWYG interface than <span class="code">list</span>, because the list tags are hidden (which might also make it harder to edit the XML precisely). The <span class="code">witem</span> type must be used for items.</td>
-<td class="tableaux1">
+<td class="tableaux2">Displays a list with the default browser display for the HTML <span class="code">ul</span> element. This provides a more WYSIWYG interface than <span class="code">list</span>, because the list tags are hidden (which might also make it harder to edit the XML precisely). The <span class="code">witem</span> type must be used for items.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/wlist.png" alt="images_types/wlist.png">
 </td>
 
@@ -514,11 +526,11 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">witem</span>
 </td>
-<td class="tableaux2">Must be used for items in a list using the <span class="code">wlist</span> type.</td>
-<td class="tableaux2">
+<td class="tableaux1">Must be used for items in a list using the <span class="code">wlist</span> type.</td>
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/witem.png" alt="images_types/witem.png">
 </td>
 
@@ -526,11 +538,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">simpletype</span>
 </td>
-<td class="tableaux1">Displays an element having a simple value, in a small panel. Usable only for the elements with a simple type in the XML schema. The precise display (text field, menu or checkbox) and the validation are done based on the XML schema constraints.</td>
-<td class="tableaux1">
+<td class="tableaux2">Displays an element having a simple value, in a small panel. Usable only for the elements with a simple type in the XML schema. The precise display (text field, menu or checkbox) and the validation are done based on the XML schema constraints.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/typesimple.png" alt="images_types/typesimple.png">
 </td>
 
@@ -538,11 +550,11 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">equationmem</span>
 </td>
-<td class="tableaux2">Displays the image of an equation. The equation can be edited by a simple click on the image, with a dialog showing at the same time the text of the equation (using a very simple <a class="lien" href="../pages_/equations.html">syntax</a> specific to Jaxe/Daxe) and the corresponding image. The text of the equation is store as an attribute, and the image is encoded in base64 and added as text inside the element.</td>
-<td class="tableaux2">
+<td class="tableaux1">Displays the image of an equation. The equation can be edited by a simple click on the image, with a dialog showing at the same time the text of the equation (using a very simple <a class="lien" href="../pages_/equations.html">syntax</a> specific to Jaxe/Daxe) and the corresponding image. The text of the equation is store as an attribute, and the image is encoded in base64 and added as text inside the element.</td>
+<td class="tableaux1">
 <img class="maths" src="../pages_doc-config-en/equations_doc-config-en/equation1.png" alt="int(1/sqrt(x);x;1;infty)">
 </td>
 
@@ -550,11 +562,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">equatexmem</span>
 </td>
-<td class="tableaux1">This works in the same way as the previous type, but using a TeX syntax.</td>
-<td class="tableaux1">
+<td class="tableaux2">This works in the same way as the previous type, but using a TeX syntax.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/equatex.png" alt="images_types/equatex.png">
 </td>
 
@@ -562,12 +574,12 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">form</span>
 </td>
-<td class="tableaux2">Displays an element and all its sub-elements as a form. Beware not to use this type with elements that could have an infinitely deep subtree !
+<td class="tableaux1">Displays an element and all its sub-elements as a form. Beware not to use this type with elements that could have an infinitely deep subtree !
           Sub-elements can be displayed as fields with the <span class="code">field</span> type, or with other types (using other types within a form is only possible with Daxe, not Jaxe).</td>
-<td class="tableaux2">
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/formulaire.png" alt="images_types/formulaire.png">
 </td>
 
@@ -575,21 +587,21 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">field</span>
 </td>
-<td class="tableaux1">Form field</td>
-<td class="tableaux1">see above</td>
+<td class="tableaux2">Form field</td>
+<td class="tableaux2">see above</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">anchor</span>
 </td>
-<td class="tableaux2">This is used to display WYSIWYG links with the HTML <span class="code">a</span> element.</td>
-<td class="tableaux2">
+<td class="tableaux1">This is used to display WYSIWYG links with the HTML <span class="code">a</span> element.</td>
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/anchor.png" alt="images_types/anchor.png">
 </td>
 
@@ -597,11 +609,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">hiddenp</span>
 </td>
-<td class="tableaux1">Provides a WYSIWYG interface to paragraph elements. Tags are not displayed, and entering a newline where the paragraph element is allowed automatically triggers the insertion of a new paragraph.</td>
-<td class="tableaux1">
+<td class="tableaux2">Provides a WYSIWYG interface to paragraph elements. Tags are not displayed, and entering a newline where the paragraph element is allowed automatically triggers the insertion of a new paragraph.</td>
+<td class="tableaux2">
 <img src="../pages_doc-config-en/images_types/hiddenp.png" alt="images_types/hiddenp.png">
 </td>
 
@@ -609,10 +621,20 @@
       
 <tr>
 
-<td class="tableaux2">
+<td class="tableaux1">
 <span class="code">hiddendiv</span>
 </td>
-<td class="tableaux2">Hides elements such as the HTML <span class="code">div</span> to provide a more WYSIWYG interface. A new menu appears in the contextual menu to remove a parent <span class="code">div</span>.</td>
+<td class="tableaux1">Hides elements such as the HTML <span class="code">div</span> to provide a more WYSIWYG interface. A new menu appears in the contextual menu to remove a parent <span class="code">div</span>.</td>
+<td class="tableaux1"></td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">
+<span class="code">stylespan</span>
+</td>
+<td class="tableaux2">Normally used on an HTML <span class="code">span</span> element, this makes Daxe use the element with this type to add style to text. Note that it is better to provide semantic elements rather than style ones like <span class="code">span</span>.</td>
 <td class="tableaux2"></td>
 
 </tr>
@@ -620,20 +642,10 @@
 <tr>
 
 <td class="tableaux1">
-<span class="code">stylespan</span>
-</td>
-<td class="tableaux1">Normally used on an HTML <span class="code">span</span> element, this makes Daxe use the element with this type to add style to text. Note that it is better to provide semantic elements rather than style ones like <span class="code">span</span>.</td>
-<td class="tableaux1"></td>
-
-</tr>
-      
-<tr>
-
-<td class="tableaux2">
 <span class="code">hr</span>
 </td>
-<td class="tableaux2">Displayed as a horizontal line, as for the HTML <span class="code">hr</span> element.</td>
-<td class="tableaux2">
+<td class="tableaux1">Displayed as a horizontal line, as for the HTML <span class="code">hr</span> element.</td>
+<td class="tableaux1">
 <img src="../pages_doc-config-en/images_types/hr.png" alt="images_types/hr.png">
 </td>
 
@@ -641,11 +653,11 @@
       
 <tr>
 
-<td class="tableaux1">
+<td class="tableaux2">
 <span class="code">br</span>
 </td>
-<td class="tableaux1">Displayed as a line break, as the HTML <span class="code">br</span> element. This display type might not play well with <span class="code">hiddenp</span>, and should be avoided in general.</td>
-<td class="tableaux1"></td>
+<td class="tableaux2">Displayed as a line break, as the HTML <span class="code">br</span> element. This display type might not play well with <span class="code">hiddenp</span>, and should be avoided in general.</td>
+<td class="tableaux2"></td>
 
 </tr>
     

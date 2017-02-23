@@ -61,17 +61,17 @@ class DNFile extends DaxeNode {
   
   @override
   h.Element html() {
-    assert(error || getAttribute(_srcAtt).startsWith('data:') ||
-        doc.filePath != null);
+    // NOTE: _resetErrorWithSrc() has been called before
     if (!error) {
       _img = new h.ImageElement();
       _img.id = "$id";
       _img.classes.add('dn');
-      String folder = '';
       String xmlFilePath = doc.filePath;
       String src = getAttribute(_srcAtt);
-      if (xmlFilePath != null) {
+      if (xmlFilePath != null && !src.startsWith('/') &&
+          !src.startsWith('http://') && !src.startsWith('https://')) {
         int ind = xmlFilePath.lastIndexOf('/');
+        String folder = '';
         if (ind != -1)
           folder = xmlFilePath.substring(0, ind + 1);
         if (!src.startsWith('data:'))
@@ -148,40 +148,55 @@ class DNFile extends DaxeNode {
         port:htmlUri.port, pathSegments:segments);
     FileChooser dlg;
     ActionFunction action = () {
-      Uri imgUri = dlg.getSelectedUri();
-      List<String> imgPathSegments = imgUri.pathSegments;
-      // make path relative to the XML file:
-      int baseInd = 0;
-      for (int i=0; i<min(segments.length, imgPathSegments.length-1); i++) {
-        if (segments[i] != imgPathSegments[i])
-          break;
-        baseInd++;
-      }
-      List<String> newSegments = new List<String>();
-      for (int i=0; i<segments.length - baseInd; i++)
-        newSegments.add('..');
-      for (int i=baseInd; i<imgPathSegments.length; i++)
-        newSegments.add(imgPathSegments[i]);
-      // encode all segments before setting the attribute
-      for (int i=0; i<newSegments.length; i++)
-        newSegments[i] = Uri.encodeComponent(newSegments[i]);
-      setAttribute(_srcAtt, newSegments.join('/'));
-      if (_widthAtt != null && _heightAtt != null) {
-        h.ImageElement img = new h.ImageElement();
-        img.src = imgUri.path;
-        img.onLoad.listen((h.Event event) {
-          if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-            setAttribute(_widthAtt, img.naturalWidth.toString());
-            setAttribute(_heightAtt, img.naturalHeight.toString());
-          }
-          error = false;
-          super.newNodeCreationUI(okfct);
-        });
-      } else
-        super.newNodeCreationUI(okfct);
+      newNodeChooserAction(dlg, segments, okfct);
     };
     dlg = new FileChooser(openDir, action, withUpload:(doc.saveURL != null));
     dlg.show();
+  }
+  
+  /**
+   * Action executed after the user validates the chooser dialog
+   * for creating a new element.
+   * [segments] contains the path to the XML document.
+   * [okfct] is the function to be executed after the node has been created.
+   */
+  void newNodeChooserAction(FileChooser dlg, List<String> segments, ActionFunction okfct) {
+    Uri imgUri = dlg.getSelectedUri();
+    String newSrc = fixSrcPath(segments, imgUri);
+    setAttribute(_srcAtt, newSrc);
+    if (_widthAtt != null && _heightAtt != null) {
+      h.ImageElement img = new h.ImageElement();
+      img.src = imgUri.path;
+      img.onLoad.listen((h.Event event) {
+        if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+          setAttribute(_widthAtt, img.naturalWidth.toString());
+          setAttribute(_heightAtt, img.naturalHeight.toString());
+        }
+        error = false;
+        super.newNodeCreationUI(okfct);
+      });
+    } else
+      super.newNodeCreationUI(okfct);
+  }
+  
+  String fixSrcPath(List<String> segments, Uri imgUri) {
+    List<String> imgPathSegments = imgUri.pathSegments;
+    // make path relative to the XML file:
+    int baseInd = 0;
+    for (int i=0; i<min(segments.length, imgPathSegments.length-1); i++) {
+      if (segments[i] != imgPathSegments[i])
+        break;
+      baseInd++;
+    }
+    List<String> newSegments = new List<String>();
+    for (int i=0; i<segments.length - baseInd; i++)
+      newSegments.add('..');
+    for (int i=baseInd; i<imgPathSegments.length; i++)
+      newSegments.add(imgPathSegments[i]);
+    // encode all segments before setting the attribute
+    for (int i=0; i<newSegments.length; i++)
+      newSegments[i] = Uri.encodeComponent(newSegments[i]);
+    return newSegments.join('/');
   }
   
   @override
@@ -192,6 +207,9 @@ class DNFile extends DaxeNode {
   
   void _resetErrorWithSrc() {
     String src = getAttribute(_srcAtt);
-    error = (src == null || (doc.filePath == null && !src.startsWith('data:')));
+    error = (src == null ||
+      (doc.filePath == null && !src.startsWith('data:') &&
+      !src.startsWith('/') && !src.startsWith('http://') &&
+      !src.startsWith('https://')));
   }
 }

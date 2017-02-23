@@ -32,7 +32,12 @@ class DNSpecial extends DaxeNode {
   }
   
   DNSpecial.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent, createChildren: false) {
-    _character = node.firstChild.nodeValue;
+    if (node.firstChild != null)
+      _character = node.firstChild.nodeValue;
+    else {
+      print("Warning: empty DNSpecial element");
+      _character = '';
+    }
   }
   
   @override

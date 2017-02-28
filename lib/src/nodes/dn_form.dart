@@ -212,7 +212,7 @@ class DNForm extends DaxeNode {
   }
   
   h.TableRowElement attributeHTML(x.Element refAttr) {
-    String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+    String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
     h.TableRowElement tr = new h.TableRowElement();
     
     h.TableCellElement td = new h.TableCellElement();
@@ -223,7 +223,7 @@ class DNForm extends DaxeNode {
     
     td = new h.TableCellElement();
     td.classes.add('shrink');
-    td.text = doc.cfg.attributeTitle(ref, refAttr);
+    td.text = doc.cfg.attributeTitle(this, ref, refAttr);
     if (doc.cfg.requiredAttribute(ref, refAttr))
       td.classes.add('required');
     else
@@ -259,7 +259,7 @@ class DNForm extends DaxeNode {
   
   void changeAttributeValue(x.Element refAttr, SimpleTypeControl attributeControl) {
     String value = attributeControl.getValue();
-    String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+    String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
     String defaultValue = doc.cfg.defaultAttributeValue(refAttr);
     DaxeAttr attr;
     if ((value == '' && defaultValue == null) || value == defaultValue)
@@ -372,7 +372,7 @@ class DNForm extends DaxeNode {
   @override
   void updateAttributes() {
     for (x.Element refAttr in attRefs) {
-      String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+      String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
       String value = getAttribute(name);
       String defaultValue = doc.cfg.defaultAttributeValue(refAttr);
       if (value == null) {
@@ -397,7 +397,7 @@ class DNForm extends DaxeNode {
       okfct();
       if (attributeControls != null && attributeControls.length > 0) {
         x.Element refAttr = attRefs.first;
-        String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+        String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
         // run later in case scrolling generates a focus event
         Timer.run(() => attributeControls[name].focus());
       } else if (firstChild is DNForm) {

@@ -424,10 +424,17 @@ class XMLParser {
   void _fixNamespaces(Element el) {
     if (el.attributes != null) {
       for (Attr attr in el.attributes.values) {
+        if (attr.prefix != null) {
+          if (attr.prefix == 'xml')
+            attr.namespaceURI = 'http://www.w3.org/XML/1998/namespace';
+          else if (attr.prefix == 'xmlns')
+            attr.namespaceURI = 'http://www.w3.org/2000/xmlns/';
+          else
+            attr.namespaceURI = el.lookupNamespaceURI(attr.prefix);
+        }
         if (attr.name == 'xmlns' ||
             (attr.prefix == 'xmlns' && attr.localName == el.prefix)) {
           el.namespaceURI = attr.value;
-          break;
         }
       }
     }

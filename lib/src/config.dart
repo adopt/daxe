@@ -369,8 +369,12 @@ class Config {
       return("xml");
     x.Element pe = _findElement(_getSaving(), "NAMESPACE_PREFIX");
     while (pe != null) {
-      if (namespace == pe.getAttribute("uri"))
-        return(pe.getAttribute("prefix"));
+      if (namespace == pe.getAttribute("uri")) {
+        String prefix = pe.getAttribute("prefix");
+        if (prefix == '')
+          prefix = null;
+        return(prefix);
+      }
       pe = _nextElement(pe, "NAMESPACE_PREFIX");
     }
     return(_schema.namespacePrefix(namespace));
@@ -522,13 +526,40 @@ class Config {
   }
   
   /**
-   * Returns the prefix to use for a new element with the given reference,
+   * Returns the prefix to use for a new element with the given namespace,
    * or null if no prefix should be used.
+   * The new node and a parent node can be specified
+   * to check for ancestor namespace prefixes.
    */
-  String elementPrefix(final x.Element elementRef) {
-    final String namespace = elementNamespace(elementRef);
+  String elementPrefix(final String namespace, final DaxeNode dn,
+      final DaxeNode parent) {
     if (namespace == null)
       return(null);
+    if (dn != null) {
+      // check the new node xmlns attributes first
+      if (dn.getAttribute('xmlns') == namespace)
+        return(null);
+      if (dn.attributes != null) {
+        for (DaxeAttr att in dn.attributes) {
+          if (att.prefix == 'xmlns' && att.value == namespace)
+            return(att.localName);
+        }
+      }
+    }
+    DaxeNode p = parent;
+    while (p != null) {
+      // then look for future ancestors
+      if (p.namespaceURI == namespace)
+        return(p.prefix);
+      if (p.attributes != null) {
+        for (DaxeAttr att in p.attributes) {
+          if (att.prefix == 'xmlns' && att.value == namespace)
+            return(att.localName);
+        }
+      }
+      p = p.parent;
+    }
+    // otherwise look at the config and schema
     return(namespacePrefix(namespace));
   }
   
@@ -953,16 +984,15 @@ class Config {
   }
   
   /**
-   * Returns the qualified name of an attribute based on its reference.
+   * Returns the qualified name of an attribute based on a Daxe node,
+   * the element reference and the attribute reference.
    */
-  String attributeQualifiedName(final x.Element parentRef, final x.Element attributeRef) {
+  String attributeQualifiedName(final DaxeNode dn, final x.Element parentRef,
+      final x.Element attributeRef) {
     String name = _schema.attributeName(attributeRef);
-    String namespace = _schema.attributeNamespace(attributeRef);
-    if (namespace != null) {
-      String prefix = attributePrefix(parentRef, attributeRef);
-      if (prefix != null)
-        name = "$prefix:$name";
-    }
+    String prefix = attributePrefix(dn, attributeRef);
+    if (prefix != null)
+      name = "$prefix:$name";
     return(name);
   }
   
@@ -974,10 +1004,10 @@ class Config {
   }
   
   /**
-   * Returns the prefix tu use to create an attribute, given the parent element and the attribute reference,
+   * Returns the prefix to use to create an attribute, given the parent element and the attribute reference,
    * or null if no prefix should be used.
    */
-  String attributePrefix(final x.Element parent, final x.Element attributeRef) {
+  String attributePrefix(final DaxeNode dn, final x.Element attributeRef) {
     final String namespace = attributeNamespace(attributeRef);
     if (namespace == null)
       return(null);
@@ -985,19 +1015,22 @@ class Config {
       return("xml");
     if (namespace == "http://www.w3.org/2000/xmlns/" && attributeName(attributeRef) != "xmlns")
       return("xmlns");
-    // we try lookupPrefix with the parent and with its document
-    // (case of an element being created and not yet inserted in the document)
-    String prefix = parent.lookupPrefix(namespace);
-    if (prefix == null) {
-      if (parent.ownerDocument.documentElement != null) {
-        // the root element exists
-        prefix = parent.ownerDocument.lookupPrefix(namespace);
-      } else {
-        // we assume the root will be created with addNamespaceAttributes
-        prefix = namespacePrefix(namespace);
+    // look first for a prefix based on the Daxe node,
+    // then use the config and schema if necessary
+    String prefix = null;
+    if (dn != null) {
+      DaxeNode p = dn;
+      while (p != null && prefix == null) {
+        if (p.attributes != null) {
+          for (DaxeAttr att in p.attributes) {
+            if (att.prefix == 'xmlns' && att.value == namespace)
+              return(att.localName);
+          }
+        }
+        p = p.parent;
       }
     }
-    return(prefix);
+    return(namespacePrefix(namespace));
   }
   
   /**
@@ -1501,9 +1534,10 @@ class Config {
   }
   
   /**
-   * Returns an attribute title based on the parent element reference and the attribute reference.
+   * Returns an attribute title based on an optional Daxe node, the parent element reference
+   * and the attribute reference.
    */
-  String attributeTitle(final x.Element parentRef, final x.Element attributeRef) {
+  String attributeTitle(final DaxeNode dn, final x.Element parentRef, final x.Element attributeRef) {
     final String elName = elementName(parentRef);
     final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
@@ -1525,7 +1559,7 @@ class Config {
         sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
     }
-    final String prefix = attributePrefix(parentRef, attributeRef);
+    final String prefix = attributePrefix(dn, attributeRef);
     if (prefix != null)
       return("$prefix:$attName");
     return(attName);

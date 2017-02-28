@@ -264,6 +264,12 @@ class UndoableEdit {
         parent.insertBefore(dn, next);
         parentToUpdate = parent;
       }
+      if (dn.namespaceURI != null) {
+        // fix prefix if necessary
+        dn.prefix = doc.cfg.elementPrefix(dn.namespaceURI, dn, parentToUpdate);
+        // do it also for descendants
+        // TODO
+      }
       if (update) {
         if (dn.nodeType == DaxeNode.ELEMENT_NODE)
           dn.updateValidity();

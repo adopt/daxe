@@ -184,7 +184,7 @@ class FindElementDialog {
         for (x.Element attRef in attRefs) {
           var tr = new h.TableRowElement();
           var td = new h.TableCellElement();
-          td.text = doc.cfg.attributeTitle(elementRef, attRef);
+          td.text = doc.cfg.attributeTitle(null, elementRef, attRef);
           tr.append(td);
           td = new h.TableCellElement();
           // NOTE: we can't use SimpleTypeControl for attribute values,
@@ -315,8 +315,9 @@ class FindElementDialog {
       if (!caseSensitive)
         value = value.toLowerCase();
       bool contains = attContains[attRef];
+      String attNamespace = doc.cfg.attributeNamespace(attRef);
       String attName = doc.cfg.attributeName(attRef);
-      String testString = dn.getAttribute(attName);
+      String testString = dn.getAttributeNS(attNamespace, attName);
       if (testString == null)
         return false;
       if (!caseSensitive)

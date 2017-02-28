@@ -1433,6 +1433,7 @@ class Cursor {
    * Returns the current XML selection as a String.
    */
   String copy() {
+    // TODO: add the namespace attributes
     StringBuffer sb = new StringBuffer();
     if (selectionStart.dn == selectionEnd.dn) {
       DaxeNode dn = selectionStart.dn;

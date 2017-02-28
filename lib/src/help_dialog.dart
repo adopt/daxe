@@ -61,7 +61,7 @@ class HelpDialog {
     if (attributeRef == null)
       title.text = doc.cfg.elementTitle(elementRef);
     else
-      title.text = doc.cfg.attributeTitle(elementRef, attributeRef);
+      title.text = doc.cfg.attributeTitle(null, elementRef, attributeRef);
     div3.append(title);
     
     if (attributeRef == null) {
@@ -309,7 +309,7 @@ class HelpDialog {
     if (attributes == null || attributes.length == 0)
       return;
     HashMap<x.Element, String> titleMap = new HashMap.fromIterable(attributes,
-        value:(x.Element attRef) => doc.cfg.attributeTitle(elementRef, attRef));
+        value:(x.Element attRef) => doc.cfg.attributeTitle(null, elementRef, attRef));
     attributes.sort((ref1, ref2) => titleMap[ref1].toLowerCase().compareTo(
         titleMap[ref2].toLowerCase()));
     for (x.Element attRef in attributes) {

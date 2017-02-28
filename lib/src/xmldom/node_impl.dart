@@ -241,7 +241,7 @@ abstract class NodeImpl implements Node {
   }
 
   _lookupNamespacePrefix(final String namespaceURI) {
-      final RegExp xmlnsPattern = new RegExp(r"/^xmlns:(.*)$/");
+      final RegExp xmlnsPattern = new RegExp(r"^xmlns:(.*)$");
       if (namespaceURI != null && this.namespaceURI == namespaceURI &&
               prefix != null && lookupNamespaceURI(prefix) == namespaceURI) {
           return(prefix);
@@ -250,12 +250,12 @@ abstract class NodeImpl implements Node {
           for (Attr att in attributes.values) {
               if (xmlnsPattern.hasMatch(att.name) && att.value == namespaceURI &&
                   lookupNamespaceURI(att.localName) == namespaceURI) {
-                return(localName);
+                return(att.localName);
               }
           }
       }
       if (parentNode != null) {
-          return((parentNode as ElementImpl)._lookupNamespacePrefix(namespaceURI));
+          return((parentNode as NodeImpl)._lookupNamespacePrefix(namespaceURI));
       }
       return null;
   }

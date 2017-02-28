@@ -136,7 +136,7 @@ abstract class DaxeNode {
     parent = null;
     nodeType = ELEMENT_NODE;
     _namespaceURI = doc.cfg.elementNamespace(ref);
-    prefix = doc.cfg.elementPrefix(ref);
+    prefix = doc.cfg.elementPrefix(_namespaceURI, null, null);
     localName = doc.cfg.elementName(ref);
     nodeValue = null;
     _firstChild = null;
@@ -386,7 +386,7 @@ abstract class DaxeNode {
   
   String getAttribute(String name) {
     for (DaxeAttr att in attributes) {
-      if (att.localName == name)
+      if (att.name == name)
         return(att.value);
     }
     return(null);

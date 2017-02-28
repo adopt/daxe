@@ -66,8 +66,9 @@ class AttributeDialog {
       }
       tr.append(td);
       td = new h.TableCellElement();
-      String name = doc.cfg.attributeQualifiedName(ref, attref);
-      String title = doc.cfg.attributeTitle(ref, attref);
+      String namespace = doc.cfg.attributeNamespace(attref);
+      String localName = doc.cfg.attributeName(attref);
+      String title = doc.cfg.attributeTitle(el, ref, attref);
       td.appendText(title);
       if (doc.cfg.requiredAttribute(ref, attref))
         td.classes.add('required');
@@ -76,7 +77,7 @@ class AttributeDialog {
       td.classes.add('attribute-title');
       tr.append(td);
       td = new h.TableCellElement();
-      String value = el.getAttribute(name);
+      String value = el.getAttributeNS(namespace, localName);
       String defaultValue = doc.cfg.defaultAttributeValue(attref);
       if (value == null) {
         if (defaultValue != null)
@@ -95,7 +96,7 @@ class AttributeDialog {
       table.append(tr);
     }
     for (DaxeAttr att in el.attributes) {
-      if (att.name == 'xmlns')
+      if (att.name == 'xmlns' || att.prefix == 'xmlns')
         continue;
       bool found = false;
       for (x.Element attref in controls.keys) {
@@ -165,7 +166,7 @@ class AttributeDialog {
     LinkedHashMap<String, DaxeAttr> attributes = el.getAttributesMapCopy();
     for (x.Element attref in controls.keys) {
       SimpleTypeControl control = controls[attref];
-      String name = doc.cfg.attributeQualifiedName(ref, attref);
+      String name = doc.cfg.attributeQualifiedName(el, ref, attref);
       String value = control.getValue();
       String namespace = doc.cfg.attributeNamespace(attref);
       String defaultValue = doc.cfg.defaultAttributeValue(attref);

@@ -141,7 +141,7 @@ class DNBlock extends DaxeNode {
       h.TableElement table = new h.TableElement();
       table.classes.add('expand');
       for (x.Element refAttr in attRefs) {
-        if (doc.cfg.attributeQualifiedName(ref, refAttr) != 'xml:space')
+        if (doc.cfg.attributeQualifiedName(this, ref, refAttr) != 'xml:space')
           table.append(attributeHTML(refAttr));
       }
       for (DaxeAttr att in attributes) {
@@ -204,7 +204,7 @@ class DNBlock extends DaxeNode {
   void updateAttributes() {
     if (state == 0) {
       for (x.Element refAttr in attRefs) {
-        String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+        String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
         String value = getAttribute(name);
         String defaultValue = doc.cfg.defaultAttributeValue(refAttr);
         if (value == null) {
@@ -291,7 +291,7 @@ class DNBlock extends DaxeNode {
     state = 0;
     updateHTML();
     if (attRefs.length > 0) {
-      String firstAttName = doc.cfg.attributeQualifiedName(ref, attRefs.first);
+      String firstAttName = doc.cfg.attributeQualifiedName(this, ref, attRefs.first);
       attributeControls[firstAttName].focus();
     }
   }
@@ -313,7 +313,7 @@ class DNBlock extends DaxeNode {
   }
   
   h.TableRowElement attributeHTML(x.Element refAttr) {
-    String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+    String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
     h.TableRowElement tr = new h.TableRowElement();
     
     h.TableCellElement td = new h.TableCellElement();
@@ -324,7 +324,7 @@ class DNBlock extends DaxeNode {
     
     td = new h.TableCellElement();
     td.classes.add('shrink');
-    td.text = doc.cfg.attributeTitle(ref, refAttr);
+    td.text = doc.cfg.attributeTitle(this, ref, refAttr);
     if (doc.cfg.requiredAttribute(ref, refAttr))
       td.classes.add('required');
     else
@@ -396,7 +396,7 @@ class DNBlock extends DaxeNode {
   
   void changeAttributeValue(x.Element refAttr, SimpleTypeControl attributeControl) {
     String value = attributeControl.getValue();
-    String name = doc.cfg.attributeQualifiedName(ref, refAttr);
+    String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
     String defaultValue = doc.cfg.defaultAttributeValue(refAttr);
     DaxeAttr attr;
     if ((value == '' && defaultValue == null) || value == defaultValue)

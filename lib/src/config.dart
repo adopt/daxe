@@ -966,13 +966,16 @@ class Config {
   
   /**
    * Returns the attribute reference for a given element reference and
-   * attribute name.
+   * attribute local name and namespace.
    */
-  x.Element attributeReference(final x.Element elementRef, String attributeName) {
+  x.Element attributeReference(final x.Element elementRef,
+      String attributeLocalName, attributeNamespace) {
     List<x.Element> attRefs = _schema.elementAttributes(elementRef);
-    for (x.Element attRef in attRefs)
-      if (_schema.attributeName(attRef) == attributeName)
+    for (x.Element attRef in attRefs) {
+      if (_schema.attributeName(attRef) == attributeLocalName &&
+          _schema.attributeNamespace(attRef) == attributeNamespace)
         return attRef;
+    }
     return null;
   }
   
@@ -1013,8 +1016,7 @@ class Config {
       return(null);
     if (namespace == "http://www.w3.org/XML/1998/namespace")
       return("xml");
-    if (namespace == "http://www.w3.org/2000/xmlns/" && attributeName(attributeRef) != "xmlns")
-      return("xmlns");
+    // NOTE: there is not going to be an attribute reference for xmlns attributes.
     // look first for a prefix based on the Daxe node,
     // then use the config and schema if necessary
     String prefix = null;

@@ -265,10 +265,8 @@ class UndoableEdit {
         parentToUpdate = parent;
       }
       if (dn.namespaceURI != null) {
-        // fix prefix if necessary
-        dn.prefix = doc.cfg.elementPrefix(dn.namespaceURI, dn, parentToUpdate);
-        // do it also for descendants
-        // TODO
+        // fix prefixes if necessary
+        _fixPrefixes(dn, parent);
       }
       if (update) {
         if (dn.nodeType == DaxeNode.ELEMENT_NODE)
@@ -281,6 +279,29 @@ class UndoableEdit {
           page.moveCursorTo(new Position(dn.parent, dn.parent.offsetOf(dn) + 1));
       }
       dn.callAfterInsert();
+    }
+  }
+  
+  /**
+   * Fix the prefixes of the given node and descendants,
+   * based on the reference.
+   */
+  void _fixPrefixes(DaxeNode dn, DaxeNode parent) {
+    dn.prefix = doc.cfg.elementPrefix(dn.namespaceURI, dn, parent);
+    for (DaxeAttr attr in dn.attributes) {
+      if (attr.namespaceURI == 'http://www.w3.org/XML/1998/namespace')
+        attr.prefix = 'xml';
+      else if (attr.namespaceURI == 'http://www.w3.org/2000/xmlns/' &&
+          attr.localName != 'xmlns')
+        attr.prefix = 'xmlns';
+      else {
+        x.Element attref = doc.cfg.attributeReference(dn.ref, attr.localName, attr.namespaceURI);
+        attr.prefix = doc.cfg.attributePrefix(dn, attref);
+      }
+    }
+    for (DaxeNode child in dn.childNodes) {
+      if (child.nodeType == DaxeNode.ELEMENT_NODE)
+        _fixPrefixes(child, dn);
     }
   }
   

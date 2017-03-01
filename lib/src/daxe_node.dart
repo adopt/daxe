@@ -99,6 +99,8 @@ abstract class DaxeNode {
         // there is probably an error in the document, but we will try to use
         // another reference by ignoring the parent
         ref = doc.cfg.elementReference(localName);
+        // also fix the namespace
+        _namespaceURI = doc.cfg.elementNamespace(ref);
       }
     }
     

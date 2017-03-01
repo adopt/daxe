@@ -90,6 +90,8 @@ class Tag {
       if (listAllAttributes) {
         span.append(new h.Text(title));
         for (DaxeAttr ja in _dn.attributes) {
+          if (ja.prefix == 'xmlns' || ja.name == 'xmlns')
+            continue;
           span.append(new h.Text(" "));
           h.Element nom_att = new h.SpanElement();
           nom_att.attributes['class'] = 'attribute_name';

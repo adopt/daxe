@@ -412,12 +412,12 @@ class WXSElement extends WXSAnnotated implements WithSubElements, Parent {
       for (WXSElement el in correspondant)
         if (el == subElements[i])
           found = true;
-          if (!found) {
-            if (!insertion && nb < _minOccurs)
-              return(start);
-            return(i);
-          }
-          nb++;
+      if (!found) {
+        if (!insertion && nb < _minOccurs)
+          return(start);
+        return(i);
+      }
+      nb++;
     }
     if (!insertion && nb < _minOccurs)
       return(start);

@@ -24,9 +24,6 @@ part of nodes;
  * 
  * Parameters:
  * 
- * * `trTag`: the name of row elements
- * * `tdTag`: the name of cell elements
- * * `thTag`: the name of header elements
  * * `tbodyTag`: 'tbody' in HTML (only import is supported)
  * * `theadTag`: 'thead' in HTML (only import is supported)
  * * `tfootTag`: 'tfoot' in HTML (only import is supported)
@@ -34,7 +31,6 @@ part of nodes;
  * * `rowspanAttr`: the name of the rowspan attribute
  */
 class DNTable extends DaxeNode {
-  String _trtag, _tdtag, _thtag;
   x.Element _trref, _tdref, _thref;
   String _theadtag, _tbodytag, _tfoottag;
   String _colspanAttr, _rowspanAttr, _alignAttr;
@@ -65,8 +61,9 @@ class DNTable extends DaxeNode {
   
   // appends only the tr/td and tr/th from the node to the table
   void _appendRowsFromDOM(x.Node node) {
+    String trLocalName = doc.cfg.elementName(_trref);
     for (x.Node xtr=node.firstChild; xtr != null; xtr=xtr.nextSibling) {
-      if (xtr.nodeType == x.Node.ELEMENT_NODE && xtr.nodeName == _trtag) {
+      if (xtr.nodeType == x.Node.ELEMENT_NODE && xtr.localName == trLocalName) {
         DaxeNode tr = new DNTR.fromNode(xtr, this);
         appendChild(tr);
       }
@@ -75,14 +72,11 @@ class DNTable extends DaxeNode {
   
   void init() {
     userCannotEdit = true;
-    _trtag = doc.cfg.elementParameterValue(ref, 'trTag', 'tr');
-    List<x.Element> trRefs = doc.cfg.elementReferences(_trtag);
+    List<x.Element> trRefs = doc.cfg.elementsWithType('tr');
     _trref = doc.cfg.findSubElement(ref, trRefs);
-    _tdtag = doc.cfg.elementParameterValue(ref, 'tdTag', 'td');
-    List<x.Element> tdRefs = doc.cfg.elementReferences(_tdtag);
+    List<x.Element> tdRefs = doc.cfg.elementsWithType('td');
     _tdref = doc.cfg.findSubElement(_trref, tdRefs);
-    _thtag = doc.cfg.elementParameterValue(ref, 'thTag', 'th');
-    List<x.Element> thRefs = doc.cfg.elementReferences(_thtag);
+    List<x.Element> thRefs = doc.cfg.elementsWithType('th');
     _thref = doc.cfg.findSubElement(_trref, thRefs);
     _tbodytag = doc.cfg.elementParameterValue(ref, 'tbodyTag', 'tbody');
     _theadtag = doc.cfg.elementParameterValue(ref, 'theadTag', 'thead');

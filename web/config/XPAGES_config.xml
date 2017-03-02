@@ -142,9 +142,6 @@
     <ELEMENT_DISPLAY element="RUBRIQUES" type="form"/>
     <ELEMENT_DISPLAY element="LANGUE" type="form"/>
     <ELEMENT_DISPLAY element="TABLEAU" type="table">
-      <PARAMETER name="trTag" value="TR"/>
-      <PARAMETER name="tdTag" value="TD"/>
-      <PARAMETER name="thTag" value="TH"/>
       <PARAMETER name="colspanAttr" value="colspan"/>
       <PARAMETER name="rowspanAttr" value="rowspan"/>
       <PARAMETER name="alignAttr" value="align"/>

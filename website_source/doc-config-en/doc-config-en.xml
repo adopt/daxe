@@ -185,9 +185,6 @@
       <TR><TH>type</TH><TH>parameter name</TH><TH>description</TH></TR>
       <TR><TD>division and area</TD><TD>titleAtt</TD><TD>attribute for the title</TD></TR>
       <TR><TD>division, area, string and empty</TD><TD>visibleAttributes</TD><TD>displays all the attributes on the start tag (true|false)</TD></TR>
-      <TR><TD>table</TD><TD>trTag</TD><TD>element for a line</TD></TR>
-      <TR><TD>table</TD><TD>tdTag</TD><TD>element for a cell</TD></TR>
-      <TR><TD>table</TD><TD>thTag</TD><TD>element for a header cell</TD></TR>
       <TR><TD>table</TD><TD>colspanAttr</TD><TD>attribute to merge columns</TD></TR>
       <TR><TD>table</TD><TD>rowspanAttr</TD><TD>attribute to merge rows</TD></TR>
       <TR><TD>table</TD><TD>alignAttr</TD><TD>attribute to align text</TD></TR>

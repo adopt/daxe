@@ -288,15 +288,17 @@ class UndoableEdit {
    */
   void _fixPrefixes(DaxeNode dn, DaxeNode parent) {
     dn.prefix = doc.cfg.elementPrefix(dn.namespaceURI, dn, parent);
-    for (DaxeAttr attr in dn.attributes) {
-      if (attr.namespaceURI == 'http://www.w3.org/XML/1998/namespace')
-        attr.prefix = 'xml';
-      else if (attr.namespaceURI == 'http://www.w3.org/2000/xmlns/' &&
-          attr.localName != 'xmlns')
-        attr.prefix = 'xmlns';
-      else {
-        x.Element attref = doc.cfg.attributeReference(dn.ref, attr.localName, attr.namespaceURI);
-        attr.prefix = doc.cfg.attributePrefix(dn, attref);
+    if (dn.ref != null) {
+      for (DaxeAttr attr in dn.attributes) {
+        if (attr.namespaceURI == 'http://www.w3.org/XML/1998/namespace')
+          attr.prefix = 'xml';
+        else if (attr.namespaceURI == 'http://www.w3.org/2000/xmlns/' &&
+            attr.localName != 'xmlns')
+          attr.prefix = 'xmlns';
+        else {
+          x.Element attref = doc.cfg.attributeReference(dn.ref, attr.localName, attr.namespaceURI);
+          attr.prefix = doc.cfg.attributePrefix(dn, attref);
+        }
       }
     }
     for (DaxeNode child in dn.childNodes) {

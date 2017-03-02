@@ -140,8 +140,13 @@ class DNWList extends DaxeNode {
   
   static x.Element findItemRef(x.Element listRef) {
     List<x.Element> subElements = doc.cfg.subElements(listRef);
-    if (subElements.length > 0)
+    if (subElements.length > 0) {
+      for (x.Element childref in subElements) {
+        if (doc.cfg.elementDisplayType(childref) == 'witem')
+          return(childref);
+      }
       return(subElements[0]);
+    }
     return(null);
   }
   

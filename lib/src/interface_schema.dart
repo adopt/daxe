@@ -49,7 +49,7 @@ abstract class InterfaceSchema {
   Element elementReference(final Element el, final Element parentRef);
   
   /**
-   * Returns the name of the element.
+   * Returns the local name of the element.
    */
   String elementName(final Element elementRef);
   

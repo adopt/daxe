@@ -488,7 +488,7 @@ class Config {
   }
   
   /**
-   * Returns the name of the element
+   * Returns the local name of the element
    */
   String elementName(final x.Element elementRef) {
     return(_elementsToNamesCache[elementRef]);

@@ -432,7 +432,7 @@ class XMLParser {
           else
             attr.namespaceURI = el.lookupNamespaceURI(attr.prefix);
         }
-        if (attr.name == 'xmlns' ||
+        if ((attr.name == 'xmlns' && el.prefix == null) ||
             (attr.prefix == 'xmlns' && attr.localName == el.prefix)) {
           el.namespaceURI = attr.value;
         }

@@ -34,7 +34,7 @@
           <ITEM><CODE>save</CODE>: the relative path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</ITEM>
         </LISTE>
       </SECTION>
-      <PARAGRAPHE>Upon saving, the server script receives a POST request with the path of the document in the <CODE>path</CODE> parameter and its content in the <CODE>file</CODE> parameter. It replies with the text <CODE>ok</CODE> if no error occured, or a string starting with <CODE>error</CODE> if there was an error.</PARAGRAPHE>
+      <PARAGRAPHE>Upon saving, the server script receives a multipart POST request with the path of the document in the <CODE>path</CODE> parameter and its content in the <CODE>file</CODE> parameter. It replies with the text <CODE>ok</CODE> if no error occured, or a string starting with <CODE>error</CODE> if there was an error.</PARAGRAPHE>
     </SECTION>
     <SECTION titre="Building and testing">
       <LISTE>
@@ -54,12 +54,9 @@
       </PARAGRAPHE>
     </SECTION>
     <SECTION titre="Documentation">
-      <PARAGRAPHE>Although it doesn't have as many features, Daxe was designed to look like Jaxe, and use Jaxe configuration files. So Jaxe documentation can be used as well<NBSP/>:</PARAGRAPHE>
-      <LISTE>
-        <ITEM><LIENWEB url="http://jaxe.sourceforge.net/en/pages_jaxe-user-guide/xml-pinciples.html">Jaxe User guide</LIENWEB></ITEM>
-        <ITEM><LIENWEB url="http://jaxe.sourceforge.net/en/pages_doc-config-en/intro-doc-config-en.html">Jaxe Configuration file syntax</LIENWEB></ITEM>
-      </LISTE>
-      <PARAGRAPHE>There is also a specific documentation for <LIENPAGE contribution="doc-config-en">Daxe configuration files</LIENPAGE>.</PARAGRAPHE>
+      <PARAGRAPHE>
+        <LIENPAGE contribution="doc-config-en">Daxe configuration files</LIENPAGE>
+      </PARAGRAPHE>
     </SECTION>
     <SECTION titre="Extending Daxe">
       <PARAGRAPHE>As with Jaxe, it is possible to create new display types for elements. Since the programming language is not the same, it doesn't work in the same way.</PARAGRAPHE>

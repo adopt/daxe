@@ -23698,7 +23698,7 @@ if(z!=null)for(z=J.X(J.cH(z));z.A();){y=z.gK()
 if(y.gaI()!=null)if(J.a(y.gaI(),"xml"))y.saD("http://www.w3.org/XML/1998/namespace")
 else if(J.a(y.gaI(),"xmlns"))y.saD("http://www.w3.org/2000/xmlns/")
 else y.saD(a.b3(y.gaI()))
-if(!J.a(y.gZ(y),"xmlns"))x=J.a(y.gaI(),"xmlns")&&J.a(y.gaO(y),a.cx)
+if(!(J.a(y.gZ(y),"xmlns")&&a.cx==null))x=J.a(y.gaI(),"xmlns")&&J.a(y.gaO(y),a.cx)
 else x=!0
 if(x)a.ch=y.gU(y)}if(a.ch==null&&a.d!=null)a.ch=a.d.b3(a.cx)
 for(w=a.f;w!=null;w=w.gt())if(!!J.h(w).$isE)this.ku(w)}},y4:{"^":"c:11;",

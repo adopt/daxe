@@ -21,6 +21,7 @@
         <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml">New XHTML 1.0 document</LIENWEB></ITEM>
         <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML5_config.xml">New XHTML 5 document</LIENWEB></ITEM>
         <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XPAGES_config.xml">New XPAGES document</LIENWEB></ITEM>
+        <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XMLSchema_config.xml&amp;file=config/XHTML5.xsd">XHTML5 schema</LIENWEB></ITEM>
       </LISTE>
     </SECTION>
     <PARAGRAPHE/>

@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DAXE_CONFIG>
+  <LANGUAGE>
+    <SCHEMA_FILE name="SimplerSchema.xsd"/>
+    <ROOT element="schema"/>
+  </LANGUAGE>
+  
+  <SAVING>
+    <NAMESPACE_PREFIX uri="http://www.w3.org/2001/XMLSchema" prefix="xs"/>
+  </SAVING>
+  
+  <MENUS>
+    <MENU name="top-level">
+      <INSERT_MENU name="include" node_type="element"/>
+      <INSERT_MENU name="redefine"/>
+      <INSERT_MENU name="import" node_type="element"/>
+      <INSERT_MENU name="element" node_type="element"/>
+      <INSERT_MENU name="attribute" node_type="element"/>
+      <INSERT_MENU name="simpleType" node_type="element"/>
+      <INSERT_MENU name="complexType" node_type="element"/>
+      <INSERT_MENU name="group" node_type="element"/>
+      <INSERT_MENU name="attributeGroup" node_type="element"/>
+      <INSERT_MENU name="annotation" node_type="element"/>
+      <INSERT_MENU name="documentation" node_type="element"/>
+    </MENU>
+    <MENU name="structure">
+      <INSERT_MENU name="choice" node_type="element"/>
+      <INSERT_MENU name="sequence" node_type="element"/>
+      <INSERT_MENU name="all"/>
+      <INSERT_MENU name="simpleContent" node_type="element"/>
+      <INSERT_MENU name="complexContent" node_type="element"/>
+      <INSERT_MENU name="extension" node_type="element"/>
+      <INSERT_MENU name="restriction" node_type="element"/>
+      <INSERT_MENU name="any" node_type="element"/>
+    </MENU>
+    <MENU name="keys">
+      <INSERT_MENU name="unique"/>
+      <INSERT_MENU name="key"/>
+      <INSERT_MENU name="keyref"/>
+      <INSERT_MENU name="selector"/>
+      <INSERT_MENU name="field"/>
+    </MENU>
+    <MENU name="types">
+      <INSERT_MENU name="list"/>
+      <INSERT_MENU name="union"/>
+      <INSERT_MENU name="enumeration" node_type="element"/>
+      <INSERT_MENU name="minExclusive" node_type="element"/>
+      <INSERT_MENU name="minInclusive" node_type="element"/>
+      <INSERT_MENU name="maxExclusive" node_type="element"/>
+      <INSERT_MENU name="maxInclusive" node_type="element"/>
+      <INSERT_MENU name="totalDigits" node_type="element"/>
+      <INSERT_MENU name="fractionDigits" node_type="element"/>
+      <INSERT_MENU name="length" node_type="element"/>
+      <INSERT_MENU name="minLength" node_type="element"/>
+      <INSERT_MENU name="maxLength" node_type="element"/>
+      <INSERT_MENU name="pattern" node_type="element"/>
+    </MENU>
+  </MENUS>
+  
+  <ELEMENTS_DISPLAY>
+    <ELEMENT_DISPLAY element="schema" type="division">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="include" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="redefine" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="import" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="element" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="attribute" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="simpleType" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="complexType" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="group" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="attributeGroup" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="annotation" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="documentation" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="choice" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="sequence" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="all" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="simpleContent" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="complexContent" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="extension" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="restriction" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="any" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="unique" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="key" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="keyref" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="selector" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="field" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    
+    <ELEMENT_DISPLAY element="list" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="union" type="area">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="enumeration" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="minExclusive" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="minInclusive" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="maxExclusive" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="maxInclusive" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="totalDigits" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="fractionDigits" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="length" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="minLength" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="maxLength" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+    <ELEMENT_DISPLAY element="pattern" type="empty">
+      <PARAMETER name="visibleAttributes" value="true"/>
+    </ELEMENT_DISPLAY>
+  </ELEMENTS_DISPLAY>
+  
+  
+  
+  <STRINGS language="en">
+    <CONFIG_DESCRIPTION>W3C XML Schema</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="top-level">
+      <TITLE>Top-level</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="structure">
+      <TITLE>Structure</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="keys">
+      <TITLE>Keys</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="types">
+      <TITLE>Types</TITLE>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="schema">
+      <TITLE>Schema</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="include">
+      <TITLE>Include</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="redefine">
+      <TITLE>Redefine</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="import">
+      <TITLE>Import</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="element">
+      <TITLE>Element</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="attribute">
+      <TITLE>Attribute</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="simpleType">
+      <TITLE>Simple type</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="complexType">
+      <TITLE>Complex type</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="group">
+      <TITLE>Group</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="attributeGroup">
+      <TITLE>Attribute group</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="annotation">
+      <TITLE>Annotation</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="documentation">
+      <TITLE>Documentation</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="choice">
+      <TITLE>Choice</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="sequence">
+      <TITLE>Sequence</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="all">
+      <TITLE>All</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="simpleContent">
+      <TITLE>Simple content</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="complexContent">
+      <TITLE>Complex content</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="extension">
+      <TITLE>Extension</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="restriction">
+      <TITLE>Restriction</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="any">
+      <TITLE>Any</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="unique">
+      <TITLE>Unique</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="key">
+      <TITLE>Key</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="keyref">
+      <TITLE>Keyref</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="selector">
+      <TITLE>Selector</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="field">
+      <TITLE>Field</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="list">
+      <TITLE>List</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="union">
+      <TITLE>Union</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="enumeration">
+      <TITLE>Enumeration</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="minExclusive">
+      <TITLE>minExclusive</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="minInclusive">
+      <TITLE>minInclusive</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="maxExclusive">
+      <TITLE>maxExclusive</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="maxInclusive">
+      <TITLE>maxInclusive</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="totalDigits">
+      <TITLE>totalDigits</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="fractionDigits">
+      <TITLE>fractionDigits</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="length">
+      <TITLE>length</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="minLength">
+      <TITLE>minLength</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="maxLength">
+      <TITLE>maxLength</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="pattern">
+      <TITLE>pattern</TITLE>
+    </ELEMENT_STRINGS>
+    
+  
+  </STRINGS>
+  
+  <STRINGS language="fr">
+    <CONFIG_DESCRIPTION>Schéma XML du W3C</CONFIG_DESCRIPTION>
+    
+    <MENU_STRINGS menu="top-level">
+      <TITLE>Plus haut niveau</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="structure">
+      <TITLE>Structure</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="keys">
+      <TITLE>Clés</TITLE>
+    </MENU_STRINGS>
+    <MENU_STRINGS menu="types">
+      <TITLE>Types</TITLE>
+    </MENU_STRINGS>
+    
+    <ELEMENT_STRINGS element="schema">
+      <TITLE>Schéma</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="include">
+      <TITLE>Inclusion</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="redefine">
+      <TITLE>Redéfinition</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="import">
+      <TITLE>Importation</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="element">
+      <TITLE>Elément</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="attribute">
+      <TITLE>Attribut</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="simpleType">
+      <TITLE>Type simple</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="complexType">
+      <TITLE>Type complexe</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="group">
+      <TITLE>Groupe</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="attributeGroup">
+      <TITLE>Groupe d'attributs</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="annotation">
+      <TITLE>Annotation</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="documentation">
+      <TITLE>Documentation</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="choice">
+      <TITLE>Choix</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="sequence">
+      <TITLE>Séquence</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="all">
+      <TITLE>Tous parmi</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="simpleContent">
+      <TITLE>Contenu simple</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="complexContent">
+      <TITLE>Contenu complexe</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="extension">
+      <TITLE>Extension</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="restriction">
+      <TITLE>Restriction</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="any">
+      <TITLE>N'importe quel élément</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="unique">
+      <TITLE>Unique</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="key">
+      <TITLE>Clé</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="keyref">
+      <TITLE>Réf. clé</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="selector">
+      <TITLE>Sélecteur</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="field">
+      <TITLE>Champ</TITLE>
+    </ELEMENT_STRINGS>
+    
+    <ELEMENT_STRINGS element="list">
+      <TITLE>Liste</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="union">
+      <TITLE>Union</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="enumeration">
+      <TITLE>Enumération</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="minExclusive">
+      <TITLE>Min exclusif</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="minInclusive">
+      <TITLE>Min inclusif</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="maxExclusive">
+      <TITLE>Max exclusif</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="maxInclusive">
+      <TITLE>Max inclusif</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="totalDigits">
+      <TITLE>Total chiffres</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="fractionDigits">
+      <TITLE>Fraction chiffres</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="length">
+      <TITLE>Longueur</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="minLength">
+      <TITLE>Longueur min</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="maxLength">
+      <TITLE>Longueur max</TITLE>
+    </ELEMENT_STRINGS>
+    <ELEMENT_STRINGS element="pattern">
+      <TITLE>pattern</TITLE>
+    </ELEMENT_STRINGS>
+    
+  
+  </STRINGS>
+  
+</DAXE_CONFIG>

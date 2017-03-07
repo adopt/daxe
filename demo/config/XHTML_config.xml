@@ -133,16 +133,13 @@
     <ELEMENT_DISPLAY element="dt" type="string"/>
     <ELEMENT_DISPLAY element="dd" type="string"/>
     <ELEMENT_DISPLAY element="table" type="table">
-      <PARAMETER name="trTag" value="tr"/>
-      <PARAMETER name="tdTag" value="td"/>
-      <PARAMETER name="thTag" value="th"/>
       <PARAMETER name="colspanAttr" value="colspan"/>
       <PARAMETER name="rowspanAttr" value="rowspan"/>
       <PARAMETER name="alignAttr" value="align"/>
     </ELEMENT_DISPLAY>
-    <ELEMENT_DISPLAY element="tr" type="area"/>
-    <ELEMENT_DISPLAY element="td" type="string"/>
-    <ELEMENT_DISPLAY element="th" type="string">
+    <ELEMENT_DISPLAY element="tr" type="tr"/>
+    <ELEMENT_DISPLAY element="td" type="td"/>
+    <ELEMENT_DISPLAY element="th" type="th">
       <PARAMETER name="style" value="BOLD"/>
     </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="img" type="file">

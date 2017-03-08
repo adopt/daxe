@@ -186,7 +186,7 @@ class DNBlock extends DaxeNode {
     super.updateHTMLAfterChildrenChange(changed);
     if (hasContent && state != 2) {
       h.DivElement contents = getHTMLContentsNode();
-      if (contents.nodes.length > 0) {
+      if (contents != null && contents.nodes.length > 0) {
         h.Node hn = contents.nodes.first;
         while (hn != null) {
           h.Node next = hn.nextNode;

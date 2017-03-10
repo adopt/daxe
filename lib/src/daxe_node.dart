@@ -923,6 +923,28 @@ abstract class DaxeNode {
           hnx2 = box.right;
           hny2 = box.bottom;
           bottomLineHeight = box.height * 1.4;
+          // NOTE: If there is an image or an inline-block div on the line,
+          // the top left might be wrong unless we use vertical-align: top on the span.
+          // Changing the style and using getClientRects twice might slow things down a bit.
+          // Also, using a Range afterwards to find the position within the text will not work...
+          /* this is an experiment to solve the problem:
+          hn.style.verticalAlign = 'top';
+          List<h.Rectangle> topRects = hn.getClientRects();
+          if (topRects.length == 0)
+            return(null);
+          hn.style.verticalAlign = '';
+          h.Rectangle firstTopBox = topRects.first;
+          h.Rectangle lastTopBox = topRects.last;
+          List<h.Rectangle> bottomRects = hn.getClientRects();
+          h.Rectangle firstBottomBox = bottomRects.first;
+          h.Rectangle lastBottomBox = bottomRects.last;
+          hnx1 = firstTopBox.left;
+          hny1 = firstTopBox.top;
+          topLineHeight = firstBottomBox.bottom - firstTopBox.top;
+          hnx2 = lastTopBox.right;
+          hny2 = lastBottomBox.bottom;
+          bottomLineHeight = lastBottomBox.bottom - lastTopBox.top;
+          */
         } else if (hn.firstChild is h.Element && hn.lastChild is h.SpanElement &&
             hn.lastChild.lastChild is h.Text &&
             !hn.lastChild.lastChild.nodeValue.endsWith('\n')) {

@@ -913,6 +913,7 @@ class Cursor {
   void updateCaretPosition(bool scroll) {
     if (selectionEnd != selectionStart)
       return;
+    caret.style.height = null;
     Point pt = selectionStart.positionOnScreen();
     if (pt == null) {
       visible = false;
@@ -931,6 +932,7 @@ class Cursor {
       }
     }
     if (visible) {
+      pt.x -= 0.5;
       caret.style.visibility = 'visible';
       caret.style.top = "${pt.y}px";
       caret.style.left = "${pt.x}px";
@@ -938,6 +940,11 @@ class Cursor {
       // move and focus the textarea
       ta.style.top = "${pt.y}px";
       ta.style.left = "${pt.x}px";
+      // change height if inside a text node
+      if (selectionStart.dn is DNText) {
+        h.Element hn = selectionStart.dn.getHTMLNode();
+        caret.style.height = hn.getComputedStyle().fontSize;
+      }
       ta.focus();
     } else {
       caret.style.visibility = 'hidden';

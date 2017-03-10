@@ -310,26 +310,20 @@ class NodeOffsetPosition implements Position {
       List<DaxeNode> children = _dn.childNodes;
       if (children != null && _dnOffset > 0 && _dnOffset == children.length) {
         // at the end of the children
-        h.Element n = children[_dnOffset-1].getHTMLNode();
-        if (n == null)
+        DaxeNode lastDn = children[_dnOffset-1];
+        h.Element hn = lastDn.getHTMLNode();
+        if (hn == null)
           return(null);
         h.Rectangle r;
-        if (n is h.ImageElement) {
-          r = n.getBoundingClientRect();
-          return(new Point(r.right, r.top)); // should be 1em above bottom
-        } else if (n is h.TableRowElement) {
-          r = n.getBoundingClientRect();
-          return(new Point(r.left, r.bottom));
-        } else if (n is h.DivElement || n is h.ParagraphElement || n is h.TableElement ||
-            n is h.UListElement || n is h.LIElement) {
-          r = n.getBoundingClientRect();
+        if (lastDn.block) {
+          r = hn.getBoundingClientRect();
           return(new Point(r.left, r.bottom));
         } else {
           /*
-          // FIXME: adding a span with text can change a table layout with Firefox, causing wrong results
+          // Adding a span with text can change a table layout with Firefox, causing wrong results
           h.SpanElement spos = new h.SpanElement();
           spos.append(new h.Text("|"));
-          n.append(spos);
+          hn.append(spos);
           List<h.Rectangle> rects = spos.getClientRects();
           if (rects.length > 0)
             r = rects[0];
@@ -340,12 +334,13 @@ class NodeOffsetPosition implements Position {
             return(null);
           return(new Point(r.left, r.top));
           */
-          // this seems to work (top right corner of the last rect of the last child's HTML):
-          List<h.Rectangle> rects = n.getClientRects();
+          // this seems to work (using the last rect of the last child's HTML):
+          List<h.Rectangle> rects = hn.getClientRects();
           if (rects.length == 0)
             return(null);
           h.Rectangle r = rects.last;
-          return(new Point(r.right, r.top));
+          h.SpanElement caret = h.document.getElementById('caret');
+          return(new Point(r.right, r.bottom - caret.offsetHeight));
         }
       } else if (children != null && _dnOffset < children.length) {
         // within the children
@@ -370,7 +365,8 @@ class NodeOffsetPosition implements Position {
               if (rects2.length == 0 )
                 return(null);
               h.Rectangle r2 = rects2.first;
-              return(new Point(r2.left, r2.top));
+              h.SpanElement caret = h.document.getElementById('caret');
+              return(new Point(r2.left, r2.bottom - caret.offsetHeight));
             } else if (dn1.block && dn2.block) {
               // block-block
               h.Rectangle r1 = hn1.getBoundingClientRect();
@@ -382,7 +378,8 @@ class NodeOffsetPosition implements Position {
               if (rects1.length == 0 )
                 return(null);
               h.Rectangle r1 = rects1.last;
-              return(new Point(r1.right, r1.top));
+              h.SpanElement caret = h.document.getElementById('caret');
+              return(new Point(r1.right, r1.bottom - caret.offsetHeight));
             }
           }
         }
@@ -395,8 +392,10 @@ class NodeOffsetPosition implements Position {
         h.Rectangle r = hn.getClientRects()[0];
         if (children[_dnOffset].block)
           return(new Point(r.left, r.top - 1));
-        else
-          return(new Point(r.left, r.top));
+        else {
+          h.SpanElement caret = h.document.getElementById('caret');
+          return(new Point(r.left, r.bottom - caret.offsetHeight));
+        }
       } else {
         // no child inside _dn
         assert(_dnOffset == 0);

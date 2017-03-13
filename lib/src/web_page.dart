@@ -781,12 +781,36 @@ class WebPage {
   }
   
   /**
-   * Calls the custom saveFunction from the constructor if defined or saves the document.
+   * Asks for a file path if necessary, and
+   * calls the custom saveFunction from the constructor if defined or saves the document.
    */
   void save() {
-    if (saveFunction != null)
+    if (doc.filePath != null) {
+      saveNoDlg();
+      return;
+    }
+    // use the HTML file directory as the default directory to save the file
+    Uri htmlUri = Uri.parse(h.window.location.toString());
+    List<String> segments = new List<String>.from(htmlUri.pathSegments);
+    segments.removeLast();
+    Uri openDir = new Uri(scheme:htmlUri.scheme, host:htmlUri.host,
+        port:htmlUri.port, pathSegments:segments);
+    FileChooser dlg;
+    dlg = new FileChooser(openDir, () {
+      Uri saveUri = dlg.getSelectedUri();
+      doc.filePath = saveUri.path;
+      saveNoDlg();
+    }, saveAs:true);
+    dlg.show();
+  }
+  
+  /**
+   * Calls the custom saveFunction from the constructor if defined or saves the document.
+   */
+  void saveNoDlg() {
+    if (saveFunction != null) {
       saveFunction();
-    else {
+    } else {
       doc.save().then((_) {
         h.window.alert(Strings.get('save.success'));
       }, onError: (DaxeException ex) {

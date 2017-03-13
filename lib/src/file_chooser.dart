@@ -20,7 +20,7 @@ part of daxe;
 enum DirectoryItemType { FILE, DIRECTORY }
 
 /**
- * Open dialog for the desktop application.
+ * Open or save dialog.
  * This assumes the server sends directory listings using the following syntax:
  * <directory name="current_dir">
  *   <file name="example.txt" size="10" modified="2015-08-07T13:49:59"/>
@@ -37,8 +37,18 @@ class FileChooser {
   DirectoryItem selectedItem;
   h.TableRowElement selectedTR;
   bool withUpload;
+  bool saveAs;
+  Uri saveUri;
   
-  FileChooser(this.uri, this.okfct, {this.withUpload:false});
+  /**
+   * FileChooser constructor.
+   * [uri] is the directory URI.
+   * [okfct] is called when the dialog is validated.
+   * [withUpload] can be set to true to allow file upload,
+   * typically for uploading and selecting an image.
+   * [saveAs] has to be set to true for a save dialog.
+   */
+  FileChooser(this.uri, this.okfct, {this.withUpload:false, this.saveAs:false});
   
   Future show() async {
     try {
@@ -70,10 +80,25 @@ class FileChooser {
       div_upload.append(fileInput);
       h.ButtonElement bUpload = new h.ButtonElement();
       bUpload.attributes['type'] = 'button';
-      bUpload.appendText(Strings.get("open.upload"));
+      bUpload.appendText(Strings.get("chooser.upload"));
       bUpload.onClick.listen((h.MouseEvent event) => upload(fileInput.files));
       div_upload.append(bUpload);
       form.append(div_upload);
+    }
+    
+    if (saveAs) {
+      h.DivElement div_fileName = new h.DivElement();
+      div_fileName.appendText(Strings.get('chooser.name') + ': ');
+      h.InputElement fileInput = new h.InputElement();
+      fileInput.id = 'save_filename';
+      fileInput.type = 'text';
+      fileInput.size = 20;
+      fileInput.onInput.listen((h.Event event) {
+        h.ButtonElement bOk = h.document.getElementById('open_ok');
+        bOk.disabled = (fileInput.value == '');
+      });
+      div_fileName.append(fileInput);
+      form.append(div_fileName);
     }
     
     h.DivElement div_buttons = new h.DivElement();
@@ -145,13 +170,13 @@ class FileChooser {
     h.Element th = new h.Element.tag('th');
     tr.append(th);
     th = new h.Element.tag('th');
-    th.text = Strings.get('open.name');
+    th.text = Strings.get('chooser.name');
     tr.append(th);
     th = new h.Element.tag('th');
-    th.text = Strings.get('open.size');
+    th.text = Strings.get('chooser.size');
     tr.append(th);
     th = new h.Element.tag('th');
-    th.text = Strings.get('open.modified');
+    th.text = Strings.get('chooser.modified');
     tr.append(th);
     table.append(tr);
     h.TableRowElement previousTr = null;
@@ -243,7 +268,7 @@ class FileChooser {
       x.Document xmldoc = await dp.parseFromURL(suri, disableCache:false);
       x.Element root = xmldoc.documentElement;
       if (root == null || root.nodeName != 'directory') {
-        throw new DaxeException(Strings.get('open.error') + ': <${root.nodeName}>');
+        throw new DaxeException(Strings.get('chooser.error') + ': <${root.nodeName}>');
       }
       for (x.Node n=root.firstChild; n != null; n=n.nextSibling) {
         if (n is x.Element) {
@@ -270,7 +295,7 @@ class FileChooser {
         return(item1.name.compareTo(item2.name));
       });
     } on x.DOMException catch (ex) {
-      throw new DaxeException(Strings.get('open.error'), ex);
+      throw new DaxeException(Strings.get('chooser.error'), ex);
     }
     return items;
   }
@@ -281,7 +306,7 @@ class FileChooser {
     tr.classes.add('selected');
     selectedTR = tr;
     selectedItem = item;
-    h.ButtonElement bOk = h.querySelector('button#open_ok');
+    h.ButtonElement bOk = h.document.getElementById('open_ok');
     bOk.disabled = false;
     h.DivElement previewDiv = h.document.getElementById('open-preview-div');
     previewDiv.children.clear();
@@ -289,6 +314,10 @@ class FileChooser {
       h.ImageElement img = new h.ImageElement();
       img.src = uri.path + '/' + item.name;
       previewDiv.append(img);
+    }
+    if (saveAs) {
+      h.InputElement fileInput = h.document.getElementById('save_filename');
+      fileInput.value = item.name;
     }
     tr.focus();
   }
@@ -303,8 +332,15 @@ class FileChooser {
     if (item.type == DirectoryItemType.DIRECTORY) {
       Uri uri = itemUri(item);
       openDir(uri);
-    } else
+    } else {
+      if (saveAs) {
+        bool confirmed = h.window.confirm(Strings.get('chooser.replace_existing'));
+        if (!confirmed)
+          return;
+      }
+      saveUri = itemUri(selectedItem);
       closeAndLaunchOpenAction();
+    }
   }
   
   void closeAndLaunchOpenAction() {
@@ -328,9 +364,28 @@ class FileChooser {
   void ok(h.MouseEvent event) {
     if (event != null)
       event.preventDefault();
-    if (selectedItem == null)
+    if (selectedItem == null && !saveAs)
       return;
-    open(selectedItem);
+    if (saveAs) {
+      h.InputElement fileInput = h.document.getElementById('save_filename');
+      if (fileInput.value == '')
+        return;
+      String filename = fileInput.value;
+      for (DirectoryItem item in items) {
+        if (item.name == filename) {
+          bool confirmed = h.window.confirm(Strings.get('chooser.replace_existing'));
+          if (!confirmed)
+            return;
+          break;
+        }
+      }
+      List<String> segments = new List<String>.from(uri.pathSegments);
+      segments.add(filename);
+      saveUri = uri.replace(pathSegments:segments);
+      closeAndLaunchOpenAction();
+    } else {
+      open(selectedItem);
+    }
   }
   
   void cancel() {
@@ -339,7 +394,7 @@ class FileChooser {
   }
   
   Uri getSelectedUri() {
-    return(itemUri(selectedItem));
+    return saveUri;
   }
   
   void upload(List<h.File> files) {

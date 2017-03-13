@@ -26,8 +26,8 @@ part of nodes;
  * Parameters:
  * 
  * * srcAtt: the name of the attribute giving the file path
- * * chooser: it set to true, use the file chooser to select the file
- * (see OpenDialog)
+ * * chooser: if set to true and the file path is known,
+ * use the file chooser to select the file
  * * widthAtt: the name of the attribute with the width (in pixels)
  * * heightAtt: the name of the attribute with the width (in pixels)
  */
@@ -131,7 +131,7 @@ class DNFile extends DaxeNode {
   
   @override
   void newNodeCreationUI(ActionFunction okfct) {
-    if (!chooser) {
+    if (!chooser || doc.filePath == null) {
       super.newNodeCreationUI(() {
         _resetErrorWithSrc();
         okfct();

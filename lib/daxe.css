@@ -139,6 +139,11 @@ button {
   background-color: #DDD;
 }
 
+.tree_node_title.selected {
+  background-color: #CCC;
+  color: black;
+}
+
 #insert button.insertb {
   width: 80%
 }

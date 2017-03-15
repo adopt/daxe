@@ -26,12 +26,14 @@ class TreeItem {
   TreeItem firstChild;
   TreeItem nextSibling;
   bool expanded;
+  bool selected;
   h.DivElement div;
   h.SpanElement titleSpan;
   h.SpanElement expandButton;
   
   TreeItem(this.dn, this.parent) {
     expanded = false;
+    selected = false;
     createDiv();
     if (dn.parent == doc.dndoc) {
       // expand root automatically
@@ -246,4 +248,35 @@ class TreeItem {
     return(false);
   }
   
+  /**
+   * Returns the child linked to given DaxeNode, or null if there is none.
+   */
+  TreeItem getChildForDaxeNode(DaxeNode dn) {
+    for (TreeItem item=firstChild; item != null; item=item.nextSibling)
+      if (item.dn == dn)
+        return item;
+    return null;
+  }
+  
+  void select() {
+    if (selected)
+      return;
+    selected = true;
+    titleSpan.classes.add('selected');
+    // scroll to item if necessary
+    h.DivElement treeDiv = h.document.getElementById('tree');
+    h.Rectangle r1 = treeDiv.getBoundingClientRect();
+    h.Rectangle r2 = titleSpan.getBoundingClientRect();
+    if (r2.bottom > r1.bottom)
+      treeDiv.scrollTop += r2.bottom - r1.bottom;
+    else if (r2.top < r1.top)
+      treeDiv.scrollTop -= r1.top - r2.top;
+  }
+  
+  void deselect() {
+    if (!selected)
+      return;
+    selected = false;
+    titleSpan.classes.remove('selected');
+  }
 }

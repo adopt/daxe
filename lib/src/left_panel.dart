@@ -21,7 +21,7 @@ part of daxe;
  * Left panel, with the insert and tree tabs.
  */
 class LeftPanel {
-  int _selected;
+  int _selected; // 0 = insert panel, 1 = tree panel
   InsertPanel _insertP;
   TreePanel _treeP;
   
@@ -130,8 +130,18 @@ class LeftPanel {
   void update(DaxeNode parent, List<x.Element> refs, List<x.Element> validRefs) {
     if (_selected == 0)
       _insertP.update(parent, refs, validRefs);
-    else
+    else {
       _treeP.update();
+      _treeP.selectNode(parent);
+    }
+  }
+  
+  /**
+   * Selects a node in the tree if it is visible.
+   */
+  void selectNode(DaxeNode dn) {
+    if (_selected == 1)
+      _treeP.selectNode(dn);
   }
   
 }

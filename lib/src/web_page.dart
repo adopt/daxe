@@ -661,6 +661,7 @@ class WebPage {
     _cursor.moveTo(p1); // to scroll
     _cursor.setSelection(p1, p2);
     updateAfterPathChange();
+    _left.selectNode(dn);
   }
   
   void selectAll() {

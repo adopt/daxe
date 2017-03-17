@@ -4,6 +4,7 @@
     <TITRE>Daxe</TITRE>
     <LOGO fichier="icon.png"/>
     <INTERFACE>nuages</INTERFACE>
+    <RUBRIQUES>non</RUBRIQUES>
     <LANGUE>en</LANGUE>
   </INFORMATIONS>
   
@@ -13,9 +14,6 @@
       <PARAGRAPHE>Daxe is written in <LIENWEB url="https://www.dartlang.org/">Dart</LIENWEB>, which is transformed into Javascript to work in modern web browsers (it does not work on IE before version 9). As with any Javascript application, it works without the need for a plugin.</PARAGRAPHE>
       <PARAGRAPHE>In itself, Daxe is not very useful, because it cannot open or save a local file (because of browser restrictions). It needs to be either used with the <LIENWEB url="https://github.com/adopt/daxapp">Daxe desktop application</LIENWEB>, or included into a larger system like a CMS. Daxe is now integrated into <LIENWEB url="http://media4.obspm.fr/outils/webjaxe/en/">WebJaxe</LIENWEB>, and will soon be used in <LIENWEB url="http://www.lon-capa.org/">LON-CAPA</LIENWEB>.</PARAGRAPHE>
     </SECTION>
-    <SECTION titre="Licence">
-      <PARAGRAPHE>Daxe is licenced under the <LIENWEB url="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL version 3</LIENWEB> or later.</PARAGRAPHE>
-    </SECTION>
     <SECTION titre="Demo">
       <LISTE>
         <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XHTML_config.xml">New XHTML 1.0 document</LIENWEB></ITEM>
@@ -24,18 +22,17 @@
         <ITEM><LIENWEB url="http://adopt.github.io/daxe/demo/daxe.html?config=config/XMLSchema_config.xml&amp;file=config/XHTML5.xsd">XHTML5 schema</LIENWEB></ITEM>
       </LISTE>
     </SECTION>
-    <PARAGRAPHE/>
     <SECTION titre="Using Daxe">
-      <PARAGRAPHE>Daxe is using a whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.</PARAGRAPHE>
-      <PARAGRAPHE/>
-      <SECTION titre="Parameters">
-        <LISTE>
-          <ITEM><CODE>config</CODE>: the relative path to the configuration file (required)</ITEM>
-          <ITEM><CODE>file</CODE>: the relative path to the file to be edited (optional, a new document is created if it is not specified)</ITEM>
-          <ITEM><CODE>save</CODE>: the relative path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</ITEM>
-        </LISTE>
-      </SECTION>
-      <PARAGRAPHE>Upon saving, the server script receives a multipart POST request with the path of the document in the <CODE>path</CODE> parameter and its content in the <CODE>file</CODE> parameter. It replies with the text <CODE>ok</CODE> if no error occured, or a string starting with <CODE>error</CODE> if there was an error.</PARAGRAPHE>
+      <PARAGRAPHE>
+        An XML file can easily be opened in Daxe with the following parameters:
+      </PARAGRAPHE>
+      <LISTE>
+        <ITEM><CODE>config</CODE>: the path to the configuration file (required)</ITEM>
+        <ITEM><CODE>file</CODE>: the path to the file to be edited (optional, a new document is created if it is not specified)</ITEM>
+      </LISTE>
+      <PARAGRAPHE>
+        To integrate Daxe into a larger system and make it possible to save documents, see <LIENPAGE contribution="integration">CMS integration</LIENPAGE>.
+      </PARAGRAPHE>
     </SECTION>
     <SECTION titre="Building and testing">
       <LISTE>
@@ -64,6 +61,12 @@
       <PARAGRAPHE>Extensions are written in Dart. A new display type can be added by calling the <CODE>addDisplayType</CODE> function in the daxe library. Two constructors have to be provided to create a new class extending <CODE>DaxeNode</CODE> (the equivalent of <CODE>JaxeElement</CODE> with Jaxe): one with a simple reference to the element in the schema (for new nodes), and one using a DOM node to create the node from an existing document. The new class must have an <CODE>html()</CODE> method that returns an HTML element with the node <CODE>id</CODE>.</PARAGRAPHE>
       <PARAGRAPHE>Menu functions can also be added with <CODE>addCustomFunction</CODE>.</PARAGRAPHE>
     </SECTION>
+    <SECTION titre="Licence">
+      <PARAGRAPHE>
+        Daxe is licenced under the <LIENWEB url="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL version 3</LIENWEB> or later.
+      </PARAGRAPHE>
+    </SECTION>
   </PAGE>
   <REFXPAGES label="doc-config-en"/>
+  <REFXPAGES label="integration"/>
 </XPAGES>

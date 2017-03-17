@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><XPAGES>
+  <INFORMATIONS><LABEL>integration</LABEL>
+    <TITRE>CMS integration</TITRE>
+    <DATECRE>17/3/2017</DATECRE>
+    <LANGUE>en</LANGUE>
+  </INFORMATIONS>
+  <PAGE label="introduction" titre="Introduction">
+    <PARAGRAPHE>
+      The Daxe web application needs to be integrated into a larger system to be able to save documents, as a web application does not have the rights to save a local file. Examples of integration include the <LIENWEB url="https://github.com/adopt/daxapp">Daxe desktop application</LIENWEB> (written in Dart), <LIENWEB url="http://media4.obspm.fr/outils/webjaxe/en/">WebJaxe</LIENWEB> (written in PHP) and <LIENWEB url="http://www.lon-capa.org/">LON-CAPA</LIENWEB> (written in Perl).
+    </PARAGRAPHE>
+    <PARAGRAPHE>
+      In addition to a server-side processing of a request to save documents, servers should also provide directory listings with a specific format to let Daxe display a file chooser. This file chooser can be used to let users decide where to save an unsaved document, or to upload files used in the XML, such as image files.
+    </PARAGRAPHE>
+  </PAGE>
+  <PAGE label="launching-daxe" titre="Launching Daxe">
+    <PARAGRAPHE>
+      The <CODE>daxe</CODE> directory on the web server should simply be a copy of the <CODE>web</CODE> directory after a build. These files are static and should be cached for better performance. The <CODE>daxe.html</CODE> is used for debugging with <LIENWEB url="https://webdev.dartlang.org/tools/dartium">Dartium</LIENWEB>, and can be removed in production. The file to launch is named <CODE>daxe_js.html</CODE> after a build, and is usually renamed <CODE>daxe.html</CODE> for simplicity.
+    </PARAGRAPHE>
+    <PARAGRAPHE>
+      Daxe is using the whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.
+    </PARAGRAPHE>
+    <PARAGRAPHE>
+      The <CODE>config</CODE> directory can be purged of configurations that are not used, although they will not cause additional requests if left there. The configuration files are the ones ending in <CODE>_config.xml</CODE>, and they are often used with a schema file with a name ending in <CODE>.xsd</CODE>.
+    </PARAGRAPHE>
+    <PARAGRAPHE>
+      The following parameters can be passed to the HTML file, as GET parameters. Paths can be relative to the HTML file.
+    </PARAGRAPHE>
+    <SECTION titre="Parameters">
+      <LISTE>
+        <ITEM><CODE>config</CODE>: the URL or path to the configuration file (required)</ITEM>
+        <ITEM><CODE>file</CODE>: the URL or path to the file to be edited (optional, a new document is created if it is not specified)</ITEM>
+        <ITEM><CODE>save</CODE>: the URL or path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</ITEM>
+        <ITEM><CODE>application</CODE>: should be <CODE>true</CODE> for a desktop application (this adds the Open and Quit menus, and tells the server to quit at the end)</ITEM>
+      </LISTE>
+    </SECTION>
+  </PAGE>
+  <PAGE label="saving" titre="Saving files">
+    <PARAGRAPHE>
+      When a <CODE>save</CODE> parameter is used to launch Daxe, a Save menu and toolbar button will appear.
+    </PARAGRAPHE>
+    <PARAGRAPHE>
+      Upon saving, the server receives a <EM>multipart</EM> POST request with the path of the document in the <CODE>path</CODE> parameter and its content in the <CODE>file</CODE> parameter. It replies with the text <CODE>ok</CODE> if no error occured, or a string starting with <CODE>error\n</CODE> if there was an error. An error message to display to the user can be included after <CODE>error\n</CODE>.
+    </PARAGRAPHE>
+  </PAGE>
+  <PAGE label="directory-listing" titre="Directory listing">
+    <PARAGRAPHE>
+      To enable the file chooser in Daxe, the server simply has to return directory listings when a GET request to a directory is sent by the client. The returned content should be an XML file with the following syntax:
+    </PARAGRAPHE>
+    <CODE>
+       &lt;directory name="current_dir"&gt;
+          &lt;file name="example.txt" size="10" modified="2015-08-07T13:49:59"/&gt;
+          &lt;directory name="sub_dir"/&gt;
+        &lt;/directory&gt;
+    </CODE>
+    <PARAGRAPHE>
+        The file size is in bytes. The modified timestamp is using ISO-8601.
+    </PARAGRAPHE>
+    <PARAGRAPHE>
+      To enable file uploads for the <CODE>file</CODE> display type, the <CODE>chooser</CODE> parameter should be set to <CODE>true</CODE> in the configuration file. For instance, the whole element display for HTML's <CODE>img</CODE> element would be:
+    </PARAGRAPHE>
+    <CODE>
+      &lt;ELEMENT_DISPLAY element="img" type="file"&gt;
+        &lt;PARAMETER name="srcAtt" value="src"/&gt;
+        &lt;PARAMETER name="chooser" value="true"/&gt;
+        &lt;PARAMETER name="widthAtt" value="width"/&gt;
+        &lt;PARAMETER name="heightAtt" value="height"/&gt;
+      &lt;/ELEMENT_DISPLAY&gt;
+    </CODE>
+  </PAGE>
+</XPAGES>

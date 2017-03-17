@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Directory listing</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_integration/saving.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="CMS integration : Page for printing" href="../pages_integration/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_integration/saving.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_integration/introduction.html">&nbsp;CMS integration</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_integration/introduction.html">&bull; Introduction</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_integration/launching-daxe.html">&bull; Launching Daxe</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_integration/saving.html">&bull; Saving files</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Directory listing</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Directory listing</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>
+      To enable the file chooser in Daxe, the server simply has to return directory listings when a GET request to a directory is sent by the client. The returned content should be an XML file with the following syntax:
+    </p>
+    
+<pre>
+       &lt;directory name="current_dir"&gt;
+          &lt;file name="example.txt" size="10" modified="2015-08-07T13:49:59"/&gt;
+          &lt;directory name="sub_dir"/&gt;
+        &lt;/directory&gt;
+    </pre>
+    
+<p>
+        The file size is in bytes. The modified timestamp is using ISO-8601.
+    </p>
+    
+<p>
+      To enable file uploads for the <span class="code">file</span> display type, the <span class="code">chooser</span> parameter should be set to <span class="code">true</span> in the configuration file. For instance, the whole element display for HTML's <span class="code">img</span> element would be:
+    </p>
+    
+<pre>
+      &lt;ELEMENT_DISPLAY element="img" type="file"&gt;
+        &lt;PARAMETER name="srcAtt" value="src"/&gt;
+        &lt;PARAMETER name="chooser" value="true"/&gt;
+        &lt;PARAMETER name="widthAtt" value="width"/&gt;
+        &lt;PARAMETER name="heightAtt" value="height"/&gt;
+      &lt;/ELEMENT_DISPLAY&gt;
+    </pre>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_integration/saving.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

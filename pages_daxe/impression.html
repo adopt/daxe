@@ -18,6 +18,13 @@
 <li>Strings</li>
 </ul>
 </li>
+<li>CMS integration<ul>
+<li>Introduction</li>
+<li>Launching Daxe</li>
+<li>Saving files</li>
+<li>Directory listing</li>
+</ul>
+</li>
 </ul>
 <hr>
 <div style="page-break-after: always"></div>
@@ -32,13 +39,6 @@
 <p>Daxe is written in <a target="_blank" class="lien" href="https://www.dartlang.org/">Dart</a>, which is transformed into Javascript to work in modern web browsers (it does not work on IE before version 9). As with any Javascript application, it works without the need for a plugin.</p>
 
 <p>In itself, Daxe is not very useful, because it cannot open or save a local file (because of browser restrictions). It needs to be either used with the <a target="_blank" class="lien" href="https://github.com/adopt/daxapp">Daxe desktop application</a>, or included into a larger system like a CMS. Daxe is now integrated into <a target="_blank" class="lien" href="http://media4.obspm.fr/outils/webjaxe/en/">WebJaxe</a>, and will soon be used in <a target="_blank" class="lien" href="http://www.lon-capa.org/">LON-CAPA</a>.</p>
-
-</div>
-
-<div class="section_normale">
-<h2>Licence</h2>
-
-<p>Daxe is licenced under the <a target="_blank" class="lien" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL version 3</a> or later.</p>
 
 </div>
 
@@ -61,37 +61,34 @@
 <a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XPAGES_config.xml">New XPAGES document</a>
 
 </li>
+<li>
+
+<a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XMLSchema_config.xml&amp;file=config/XHTML5.xsd">XHTML5 schema</a>
+
+</li>
 </ul>
 
 </div>
-
-<p></p>
 
 <div class="section_normale">
 <h2>Using Daxe</h2>
 
-<p>Daxe is using a whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.</p>
-
-<p></p>
-
-<div class="section_normale">
-<h3>Parameters</h3>
+<p>
+An XML file can easily be opened in Daxe with the following parameters:
+</p>
 
 <ul>
 <li>
 
-<span class="code">config</span>: the relative path to the configuration file (required)</li>
+<span class="code">config</span>: the path to the configuration file (required)</li>
 <li>
 
-<span class="code">file</span>: the relative path to the file to be edited (optional, a new document is created if it is not specified)</li>
-<li>
-
-<span class="code">save</span>: the relative path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</li>
+<span class="code">file</span>: the path to the file to be edited (optional, a new document is created if it is not specified)</li>
 </ul>
 
-</div>
-
-<p>Upon saving, the server script receives a POST request with the path of the document in the <span class="code">path</span> parameter and its content in the <span class="code">file</span> parameter. It replies with the text <span class="code">ok</span> if no error occured, or a string starting with <span class="code">error</span> if there was an error.</p>
+<p>
+To integrate Daxe into a larger system and make it possible to save documents, see <a class="lien" href="../pages_integration/introduction.html">CMS integration</a>.
+</p>
 
 </div>
 
@@ -132,22 +129,11 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 <div class="section_normale">
 <h2>Documentation</h2>
 
-<p>Although it doesn't have as many features, Daxe was designed to look like Jaxe, and use Jaxe configuration files. So Jaxe documentation can be used as well&nbsp;:</p>
+<p>
 
-<ul>
-<li>
+<a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a>
 
-<a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/pages_jaxe-user-guide/xml-pinciples.html">Jaxe User guide</a>
-
-</li>
-<li>
-
-<a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/pages_doc-config-en/intro-doc-config-en.html">Jaxe Configuration file syntax</a>
-
-</li>
-</ul>
-
-<p>There is also a specific documentation for <a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a>.</p>
+</p>
 
 </div>
 
@@ -159,6 +145,15 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 <p>Extensions are written in Dart. A new display type can be added by calling the <span class="code">addDisplayType</span> function in the daxe library. Two constructors have to be provided to create a new class extending <span class="code">DaxeNode</span> (the equivalent of <span class="code">JaxeElement</span> with Jaxe): one with a simple reference to the element in the schema (for new nodes), and one using a DOM node to create the node from an existing document. The new class must have an <span class="code">html()</span> method that returns an HTML element with the node <span class="code">id</span>.</p>
 
 <p>Menu functions can also be added with <span class="code">addCustomFunction</span>.</p>
+
+</div>
+
+<div class="section_normale">
+<h2>Licence</h2>
+
+<p>
+Daxe is licenced under the <a target="_blank" class="lien" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL version 3</a> or later.
+</p>
 
 </div>
 
@@ -857,41 +852,41 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
       
 <tr>
 
+<td class="tableaux1">table</td>
+<td class="tableaux1">colspanAttr</td>
+<td class="tableaux1">attribute to merge columns</td>
+
+</tr>
+      
+<tr>
+
 <td class="tableaux2">table</td>
-<td class="tableaux2">colspanAttr</td>
-<td class="tableaux2">attribute to merge columns</td>
+<td class="tableaux2">rowspanAttr</td>
+<td class="tableaux2">attribute to merge rows</td>
 
 </tr>
       
 <tr>
 
 <td class="tableaux1">table</td>
-<td class="tableaux1">rowspanAttr</td>
-<td class="tableaux1">attribute to merge rows</td>
+<td class="tableaux1">alignAttr</td>
+<td class="tableaux1">attribute to align text</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux2">table</td>
-<td class="tableaux2">alignAttr</td>
-<td class="tableaux2">attribute to align text</td>
+<td class="tableaux2">wlist</td>
+<td class="tableaux2">type</td>
+<td class="tableaux2">type of list (<span class="code">ul|ol</span>) (unordered/ordered)</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux1">wlist</td>
-<td class="tableaux1">type</td>
-<td class="tableaux1">type of list (<span class="code">ul|ol</span>) (unordered/ordered)</td>
-
-</tr>
-      
-<tr>
-
-<td class="tableaux2">style, area and string</td>
-<td class="tableaux2">style</td>
-<td class="tableaux2">
+<td class="tableaux1">style, area and string</td>
+<td class="tableaux1">style</td>
+<td class="tableaux1">
 <span class="code">BOLD</span> | <span class="code">ITALIC</span> | <span class="code">SUPERSCRIPT</span> | <span class="code">SUBSCRIPT</span> | <span class="code">UNDERLINE</span> | <span class="code">STRIKETHROUGH</span> | <span class="code">FOREGROUND[###,###,###]</span> | <span class="code">BACKGROUND[###,###,###]</span>
 </td>
 
@@ -899,97 +894,97 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
       
 <tr>
 
-<td class="tableaux1">area and string</td>
-<td class="tableaux1">font</td>
-<td class="tableaux1">font family</td>
-
-</tr>
-      
-<tr>
-
 <td class="tableaux2">area and string</td>
-<td class="tableaux2">size</td>
-<td class="tableaux2">font size</td>
+<td class="tableaux2">font</td>
+<td class="tableaux2">font family</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux1">file</td>
-<td class="tableaux1">srcAtt</td>
-<td class="tableaux1">attribute with the file name</td>
-
-</tr>
-      
-<tr>
-
-<td class="tableaux2">file</td>
-<td class="tableaux2">chooser</td>
-<td class="tableaux2">when set to "true", the file chooser is used to select a file, from the XML file directory</td>
-
-</tr>
-      
-<tr>
-
-<td class="tableaux1">file</td>
-<td class="tableaux1">widthAtt</td>
-<td class="tableaux1">the name of the attribute with the width (in pixels)</td>
+<td class="tableaux1">area and string</td>
+<td class="tableaux1">size</td>
+<td class="tableaux1">font size</td>
 
 </tr>
       
 <tr>
 
 <td class="tableaux2">file</td>
-<td class="tableaux2">heightAtt</td>
+<td class="tableaux2">srcAtt</td>
+<td class="tableaux2">attribute with the file name</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">file</td>
+<td class="tableaux1">chooser</td>
+<td class="tableaux1">when set to "true", the file chooser is used to select a file, from the XML file directory</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux2">file</td>
+<td class="tableaux2">widthAtt</td>
 <td class="tableaux2">the name of the attribute with the width (in pixels)</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux1">item</td>
-<td class="tableaux1">image1</td>
-<td class="tableaux1">first bullet image</td>
+<td class="tableaux1">file</td>
+<td class="tableaux1">heightAtt</td>
+<td class="tableaux1">the name of the attribute with the width (in pixels)</td>
 
 </tr>
       
 <tr>
 
 <td class="tableaux2">item</td>
-<td class="tableaux2">image2</td>
-<td class="tableaux2">second bullet image</td>
+<td class="tableaux2">image1</td>
+<td class="tableaux2">first bullet image</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux1">equationmem and equatexmem</td>
-<td class="tableaux1">textAtt</td>
-<td class="tableaux1">attribute with the equation text</td>
+<td class="tableaux1">item</td>
+<td class="tableaux1">image2</td>
+<td class="tableaux1">second bullet image</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux2">anchor</td>
-<td class="tableaux2">nameAtt</td>
-<td class="tableaux2">the name of the name attribute</td>
+<td class="tableaux2">equationmem and equatexmem</td>
+<td class="tableaux2">textAtt</td>
+<td class="tableaux2">attribute with the equation text</td>
 
 </tr>
       
 <tr>
 
 <td class="tableaux1">anchor</td>
-<td class="tableaux1">hrefAtt</td>
-<td class="tableaux1">the name of the href attribute</td>
+<td class="tableaux1">nameAtt</td>
+<td class="tableaux1">the name of the name attribute</td>
 
 </tr>
       
 <tr>
 
-<td class="tableaux2">hiddenp, hiddendiv and stylespan</td>
-<td class="tableaux2">styleAtt</td>
-<td class="tableaux2">the name of the CSS style attribute</td>
+<td class="tableaux2">anchor</td>
+<td class="tableaux2">hrefAtt</td>
+<td class="tableaux2">the name of the href attribute</td>
+
+</tr>
+      
+<tr>
+
+<td class="tableaux1">hiddenp, hiddendiv and stylespan</td>
+<td class="tableaux1">styleAtt</td>
+<td class="tableaux1">the name of the CSS style attribute</td>
 
 </tr>
     
@@ -1155,6 +1150,113 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 </ul>
     
 </div>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<div style="page-break-after: always"></div>
+<h1>CMS integration</h1>
+<hr>
+<h1>Introduction</h1>
+<div class="zone_texte">
+    
+<p>
+      The Daxe web application needs to be integrated into a larger system to be able to save documents, as a web application does not have the rights to save a local file. Examples of integration include the <a target="_blank" class="lien" href="https://github.com/adopt/daxapp">Daxe desktop application</a> (written in Dart), <a target="_blank" class="lien" href="http://media4.obspm.fr/outils/webjaxe/en/">WebJaxe</a> (written in PHP) and <a target="_blank" class="lien" href="http://www.lon-capa.org/">LON-CAPA</a> (written in Perl).
+    </p>
+    
+<p>
+      In addition to a server-side processing of a request to save documents, servers should also provide directory listings with a specific format to let Daxe display a file chooser. This file chooser can be used to let users decide where to save an unsaved document, or to upload files used in the XML, such as image files.
+    </p>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Launching Daxe</h1>
+<div class="zone_texte">
+    
+<p>
+      The <span class="code">daxe</span> directory on the web server should simply be a copy of the <span class="code">web</span> directory after a build. These files are static and should be cached for better performance. The <span class="code">daxe.html</span> is used for debugging with <a target="_blank" class="lien" href="https://webdev.dartlang.org/tools/dartium">Dartium</a>, and can be removed in production. The file to launch is named <span class="code">daxe_js.html</span> after a build, and is usually renamed <span class="code">daxe.html</span> for simplicity.
+    </p>
+    
+<p>
+      Daxe is using the whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.
+    </p>
+    
+<p>
+      The <span class="code">config</span> directory can be purged of configurations that are not used, although they will not cause additional requests if left there. The configuration files are the ones ending in <span class="code">_config.xml</span>, and they are often used with a schema file with a name ending in <span class="code">.xsd</span>.
+    </p>
+    
+<p>
+      The following parameters can be passed to the HTML file, as GET parameters. Paths can be relative to the HTML file.
+    </p>
+    
+<div class="section_normale">
+<h2>Parameters</h2>
+      
+<ul>
+<li>
+
+<span class="code">config</span>: the URL or path to the configuration file (required)</li>
+<li>
+
+<span class="code">file</span>: the URL or path to the file to be edited (optional, a new document is created if it is not specified)</li>
+<li>
+
+<span class="code">save</span>: the URL or path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</li>
+<li>
+
+<span class="code">application</span>: should be <span class="code">true</span> for a desktop application (this adds the Open and Quit menus, and tells the server to quit at the end)</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Saving files</h1>
+<div class="zone_texte">
+    
+<p>
+      When a <span class="code">save</span> parameter is used to launch Daxe, a Save menu and toolbar button will appear.
+    </p>
+    
+<p>
+      Upon saving, the server receives a <em>multipart</em> POST request with the path of the document in the <span class="code">path</span> parameter and its content in the <span class="code">file</span> parameter. It replies with the text <span class="code">ok</span> if no error occured, or a string starting with <span class="code">error\n</span> if there was an error. An error message to display to the user can be included after <span class="code">error\n</span>.
+    </p>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Directory listing</h1>
+<div class="zone_texte">
+    
+<p>
+      To enable the file chooser in Daxe, the server simply has to return directory listings when a GET request to a directory is sent by the client. The returned content should be an XML file with the following syntax:
+    </p>
+    
+<pre>
+       &lt;directory name="current_dir"&gt;
+          &lt;file name="example.txt" size="10" modified="2015-08-07T13:49:59"/&gt;
+          &lt;directory name="sub_dir"/&gt;
+        &lt;/directory&gt;
+    </pre>
+    
+<p>
+        The file size is in bytes. The modified timestamp is using ISO-8601.
+    </p>
+    
+<p>
+      To enable file uploads for the <span class="code">file</span> display type, the <span class="code">chooser</span> parameter should be set to <span class="code">true</span> in the configuration file. For instance, the whole element display for HTML's <span class="code">img</span> element would be:
+    </p>
+    
+<pre>
+      &lt;ELEMENT_DISPLAY element="img" type="file"&gt;
+        &lt;PARAMETER name="srcAtt" value="src"/&gt;
+        &lt;PARAMETER name="chooser" value="true"/&gt;
+        &lt;PARAMETER name="widthAtt" value="width"/&gt;
+        &lt;PARAMETER name="heightAtt" value="height"/&gt;
+      &lt;/ELEMENT_DISPLAY&gt;
+    </pre>
   
 </div>
 <div class="spacer"></div>

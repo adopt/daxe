@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Launching Daxe</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_integration/introduction.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="../pages_integration/saving.html" rel="Next">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="CMS integration : Page for printing" href="../pages_integration/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_integration/introduction.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"><a title="Next page" accesskey="l" href="../pages_integration/saving.html"><img border="0" alt="->" height="16" width="25" src="../interface/nuages/petiteflechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_integration/introduction.html">&nbsp;CMS integration</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_integration/introduction.html">&bull; Introduction</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Launching Daxe</span>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_integration/saving.html">&bull; Saving files</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_integration/directory-listing.html">&bull; Directory listing</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Launching Daxe</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>
+      The <span class="code">daxe</span> directory on the web server should simply be a copy of the <span class="code">web</span> directory after a build. These files are static and should be cached for better performance. The <span class="code">daxe.html</span> is used for debugging with <a target="_blank" class="lien" href="https://webdev.dartlang.org/tools/dartium">Dartium</a>, and can be removed in production. The file to launch is named <span class="code">daxe_js.html</span> after a build, and is usually renamed <span class="code">daxe.html</span> for simplicity.
+    </p>
+    
+<p>
+      Daxe is using the whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.
+    </p>
+    
+<p>
+      The <span class="code">config</span> directory can be purged of configurations that are not used, although they will not cause additional requests if left there. The configuration files are the ones ending in <span class="code">_config.xml</span>, and they are often used with a schema file with a name ending in <span class="code">.xsd</span>.
+    </p>
+    
+<p>
+      The following parameters can be passed to the HTML file, as GET parameters. Paths can be relative to the HTML file.
+    </p>
+    
+<div class="section_normale">
+<h2>Parameters</h2>
+      
+<ul>
+<li>
+
+<span class="code">config</span>: the URL or path to the configuration file (required)</li>
+<li>
+
+<span class="code">file</span>: the URL or path to the file to be edited (optional, a new document is created if it is not specified)</li>
+<li>
+
+<span class="code">save</span>: the URL or path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</li>
+<li>
+
+<span class="code">application</span>: should be <span class="code">true</span> for a desktop application (this adds the Open and Quit menus, and tells the server to quit at the end)</li>
+</ul>
+    
+</div>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_integration/introduction.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"><a title="Next page" href="../pages_integration/saving.html"><img border="0" alt="Next page" height="31" width="48" src="../interface/nuages/flechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

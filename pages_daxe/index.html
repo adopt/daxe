@@ -28,6 +28,9 @@
 <div class="fondsel1sommaire">
 <img height="11" width="11" alt="+" border="0" src="../interface/nuages/listeinactive.png"><a class="sommaire3" href="../pages_doc-config-en/intro-doc-config-en.html">&nbsp;Daxe configuration files</a>
 </div>
+<div class="fondsel1sommaire">
+<img height="11" width="11" alt="+" border="0" src="../interface/nuages/listeinactive.png"><a class="sommaire3" href="../pages_integration/introduction.html">&nbsp;CMS integration</a>
+</div>
 </div>
 </div>
 </div>
@@ -56,13 +59,6 @@
 </div>
 
 <div class="section_normale">
-<h2>Licence</h2>
-
-<p>Daxe is licenced under the <a target="_blank" class="lien" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL version 3</a> or later.</p>
-
-</div>
-
-<div class="section_normale">
 <h2>Demo</h2>
 
 <ul>
@@ -81,37 +77,34 @@
 <a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XPAGES_config.xml">New XPAGES document</a>
 
 </li>
+<li>
+
+<a target="_blank" class="lien" href="http://adopt.github.io/daxe/demo/daxe.html?config=config/XMLSchema_config.xml&amp;file=config/XHTML5.xsd">XHTML5 schema</a>
+
+</li>
 </ul>
 
 </div>
-
-<p></p>
 
 <div class="section_normale">
 <h2>Using Daxe</h2>
 
-<p>Daxe is using a whole HTML document, using the URL to read parameters. It can be included in an iframe to fit inside a larger document.</p>
-
-<p></p>
-
-<div class="section_normale">
-<h3>Parameters</h3>
+<p>
+An XML file can easily be opened in Daxe with the following parameters:
+</p>
 
 <ul>
 <li>
 
-<span class="code">config</span>: the relative path to the configuration file (required)</li>
+<span class="code">config</span>: the path to the configuration file (required)</li>
 <li>
 
-<span class="code">file</span>: the relative path to the file to be edited (optional, a new document is created if it is not specified)</li>
-<li>
-
-<span class="code">save</span>: the relative path to the server script used to save a document (optional, the save menu does not appear if it is not specified)</li>
+<span class="code">file</span>: the path to the file to be edited (optional, a new document is created if it is not specified)</li>
 </ul>
 
-</div>
-
-<p>Upon saving, the server script receives a POST request with the path of the document in the <span class="code">path</span> parameter and its content in the <span class="code">file</span> parameter. It replies with the text <span class="code">ok</span> if no error occured, or a string starting with <span class="code">error</span> if there was an error.</p>
+<p>
+To integrate Daxe into a larger system and make it possible to save documents, see <a class="lien" href="../pages_integration/introduction.html">CMS integration</a>.
+</p>
 
 </div>
 
@@ -152,22 +145,11 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 <div class="section_normale">
 <h2>Documentation</h2>
 
-<p>Although it doesn't have as many features, Daxe was designed to look like Jaxe, and use Jaxe configuration files. So Jaxe documentation can be used as well&nbsp;:</p>
+<p>
 
-<ul>
-<li>
+<a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a>
 
-<a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/pages_jaxe-user-guide/xml-pinciples.html">Jaxe User guide</a>
-
-</li>
-<li>
-
-<a target="_blank" class="lien" href="http://jaxe.sourceforge.net/en/pages_doc-config-en/intro-doc-config-en.html">Jaxe Configuration file syntax</a>
-
-</li>
-</ul>
-
-<p>There is also a specific documentation for <a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a>.</p>
+</p>
 
 </div>
 
@@ -179,6 +161,15 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 <p>Extensions are written in Dart. A new display type can be added by calling the <span class="code">addDisplayType</span> function in the daxe library. Two constructors have to be provided to create a new class extending <span class="code">DaxeNode</span> (the equivalent of <span class="code">JaxeElement</span> with Jaxe): one with a simple reference to the element in the schema (for new nodes), and one using a DOM node to create the node from an existing document. The new class must have an <span class="code">html()</span> method that returns an HTML element with the node <span class="code">id</span>.</p>
 
 <p>Menu functions can also be added with <span class="code">addCustomFunction</span>.</p>
+
+</div>
+
+<div class="section_normale">
+<h2>Licence</h2>
+
+<p>
+Daxe is licenced under the <a target="_blank" class="lien" href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPL version 3</a> or later.
+</p>
 
 </div>
 

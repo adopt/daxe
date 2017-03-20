@@ -25,6 +25,13 @@
 <li>Directory listing</li>
 </ul>
 </li>
+<li>Extending Daxe<ul>
+<li>Introduction</li>
+<li>Creating a new extension</li>
+<li>Creating new display types</li>
+<li>More customization</li>
+</ul>
+</li>
 </ul>
 <hr>
 <div style="page-break-after: always"></div>
@@ -129,22 +136,23 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 <div class="section_normale">
 <h2>Documentation</h2>
 
-<p>
+<ul>
+<li>
 
 <a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a>
 
-</p>
+</li>
+<li>
 
-</div>
+<a class="lien" href="../pages_integration/introduction.html">CMS integration</a>
 
-<div class="section_normale">
-<h2>Extending Daxe</h2>
+</li>
+<li>
 
-<p>As with Jaxe, it is possible to create new display types for elements. Since the programming language is not the same, it doesn't work in the same way.</p>
+<a class="lien" href="../pages_extension/introduction.html">Extending Daxe</a>
 
-<p>Extensions are written in Dart. A new display type can be added by calling the <span class="code">addDisplayType</span> function in the daxe library. Two constructors have to be provided to create a new class extending <span class="code">DaxeNode</span> (the equivalent of <span class="code">JaxeElement</span> with Jaxe): one with a simple reference to the element in the schema (for new nodes), and one using a DOM node to create the node from an existing document. The new class must have an <span class="code">html()</span> method that returns an HTML element with the node <span class="code">id</span>.</p>
-
-<p>Menu functions can also be added with <span class="code">addCustomFunction</span>.</p>
+</li>
+</ul>
 
 </div>
 
@@ -1257,6 +1265,217 @@ Daxe is licenced under the <a target="_blank" class="lien" href="http://www.gnu.
         &lt;PARAMETER name="heightAtt" value="height"/&gt;
       &lt;/ELEMENT_DISPLAY&gt;
     </pre>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<div style="page-break-after: always"></div>
+<h1>Extending Daxe</h1>
+<hr>
+<h1>Introduction</h1>
+<div class="zone_texte">
+    
+<p>
+      XML editors which do not have knowledge of specific XML languages cannot provide a very good user interface. For instance, it would be hard to edit HTML documents if the <span class="code">p</span> (paragraph) and <span class="code">a</span> (anchor or link) elements from HTML were displayed in the same way. One is a block element, separating parts of the text, while the other is an inline element, which can be mixed with text. While some (usually data-oriented) XML languages can easily be edited with a tree, a tree user interface does not work so well with other XML languages.
+    </p>
+    
+<p>
+      On the other hand, creating a new editor from scratch for each XML language is not the most efficient solution, as at least half of the code will be the same from one editor to another. For instance, all editors have to ensure document validity, and they have to provide ways to edit content with a cursor aware of the XML structure. Common parts of XML editors should be reused.
+    </p>
+    
+<p>
+      Daxe is an answer to these questions: it provides all the building blocks for a new XML editor for a specific language, many predefined displays for elements which can be associated to the language XML elements, and ways to extend it further and include it into a larger application.
+    </p>
+    
+<p>
+      
+<a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a> provide an easy way to customize the editor for a given XML language using built-in solutions. The following pages describe how to go beyond what can be done with configuration files, especially to create new display types.
+    </p>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Creating a new extension</h1>
+<div class="zone_texte">
+    
+<p>
+      An extension of Daxe has to be implemented in <a target="_blank" class="lien" href="https://www.dartlang.org/">Dart</a>, so the Dart SDK needs to be installed. Daxe's API documentation can be generated from the the source with the <a target="_blank" class="lien" href="https://github.com/dart-lang/dartdoc">dartdoc</a> command launched in the root of the source tree (the <span class="code">daxe</span> directory).
+    </p>
+    
+<p>
+      An extension is a Dart web application. Here is a basic example, adding a new display type named <span class="code">mydn</span> with the class <span class="code">MyDN</span>. This code would be in a file named <span class="code">my_daxe.dart</span>:
+    </p>
+    
+<pre>
+      library my_daxe;
+      
+      import 'package:daxe/daxe.dart';
+      part 'my_dn.dart';
+      
+      void main() {
+        NodeFactory.addCoreDisplayTypes();
+        
+        setDisplayType('mydn',
+              (x.Element ref) =&gt; new MyDN.fromRef(ref),
+              (x.Node node, DaxeNode parent) =&gt; new MyDN.fromNode(node, parent)
+          );
+      
+        Strings.load().then((bool b) {
+          initDaxe();
+        }).catchError((e) {
+          h.document.body.appendText('Error when loading the strings.');
+        });
+      }
+    </pre>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>Creating new display types</h1>
+<div class="zone_texte">
+    
+<p>
+      A display type is defined by a class deriving from the <span class="code">DaxeNode</span> class in the <span class="code">daxe</span> package.
+    </p>
+    
+<p>
+      The implementation of the display type class needs 2 constructors, <span class="code">.fromRef()</span> to create a new instance from the language definition of the element, and <span class="code">.fromNode()</span>, to create a new instance from a DOM node. It also needs at least one method, <span class="code">html()</span>, which returns the DOM node for the node to display, with the node <span class="code">id</span>. As an example, let's look at the implementation for the <span class="code">string</span> display, which is simply an inline display with a start tag and an end tag:
+    </p>
+    
+<pre>
+      part of nodes;
+      
+      class DNString extends DaxeNode {
+        Tag _b1, _b2;
+        
+        DNString.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
+          _b1 = new Tag(this, Tag.START);
+          _b2 = new Tag(this, Tag.END);
+        }
+        
+        DNString.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
+          _b1 = new Tag(this, Tag.START);
+          _b2 = new Tag(this, Tag.END);
+        }
+        
+        @override
+        h.Element html() {
+          var span = new h.SpanElement();
+          span.id = "$id";
+          span.classes.add('dn');
+          if (!valid)
+            span.classes.add('invalid');
+          span.append(_b1.html());
+          var contents = new h.SpanElement();
+          DaxeNode dn = firstChild;
+          while (dn != null) {
+            contents.append(dn.html());
+            dn = dn.nextSibling;
+          }
+          setStyle(contents);
+          span.append(contents);
+          span.append(_b2.html());
+          return(span);
+        }
+        
+        @override
+        h.Element getHTMLContentsNode() {
+          return(getHTMLNode().nodes[1]);
+        }
+      }
+    </pre>
+    
+<p>
+      The constructors derive from the <span class="code">fromRef()</span> and <span class="code">fromNode()</span> constructors in <span class="code">DaxeNode</span>, doing all the basic initialization for free. The start and end tags are created in the constructors, using the <span class="code">Tag</span> class. The <span class="code">html()</span> method creates a <span class="code">span</span> for the DOM node, sets the id based on <span class="code">DaxeNode.id</span>, adds an <span class="code">invalid</span> CSS class if necessary, and appends the tags' HTML nodes and the contents in another span. Style is applied to the contents with <span class="code">DaxeNode.setStyle()</span>, and the span is returned.
+    </p>
+    
+<p>
+      Another method is overridden, <span class="code">getHTMLContentsNode()</span>, to return the DOM node containing the children, which can be different depending on the implementation of <span class="code">html()</span>. In this case, we can simply return the second child of the node's DOM node, which we can get with <span class="code">DaxeNode.getHTMLNode()</span>.
+    </p>
+    
+<p>
+      While all display type classes have to derive from <span class="code">DaxeNode</span>, all the methods can be overridden, so these classes have complete control over appearance and resulting DOM, for the node itself and all the descendants.
+    </p>
+  
+</div>
+<div class="spacer"></div>
+<hr>
+<h1>More customization</h1>
+<div class="zone_texte">
+    
+<p>
+      Configuration files can be used to customize the menus used to insert nodes, but it is also possible to define menus with custom functions, and only a Daxe extension can implement these. It is also easy to customize the toolbar, the left panel, and the function used to save documents.
+    </p>
+    
+<p>
+      Function menus in configuration files are defined with a <span class="code">FUNCTION_MENU</span> element, and these have a <span class="code">function_name</span> attribute with the function name. This function can be added to Daxe in an extension with the <span class="code">addCustomFunction()</span> function in the <span class="code">daxe</span> package.
+    </p>
+    
+<p>
+      More customization can be done by passing named parameters to the <span class="code">initDaxe()</span> function:
+    </p>
+    
+<ul>
+<li>
+
+<span class="code">left</span>: should be a <span class="code">LeftPanel</span> or a class deriving from it, representing the left panel</li>
+<li>
+
+<span class="code">saveFunction</span>: a function called when the document should be saved (by default, <span class="code">doc.save()</span>)</li>
+<li>
+
+<span class="code">customizeToolbar</span>: a function called at the right time to customize the toolbar (after <span class="code">page.toolbar</span> is created but before the HTML is generated)</li>
+</ul>
+    
+<p>
+      On top of that, more code can be executed after initialization, by using the fact that <span class="code">initDaxe()</span> returns a Future. Here is an example combining different customizations:
+    </p>
+    
+<p>
+      (Daxe's DOM package is included with <span class="code">import 'package:daxe/src/xmldom/xmldom.dart' as x;</span> in this example)
+    </p>
+    
+<pre>
+        // use a custom insert panel, MyOwnInsertPanel, implemented elsewhere
+        InsertPanel insertP = new MyOwnInsertPanel();
+        LeftPanel left = new LeftPanel(insert:insertP);
+        ActionFunction saveFunction= () {
+          // display an alert after a save
+          doc.save().then((_) {
+            h.window.alert(Strings.get('save.success'));
+          }, onError: (DaxeException ex) {
+            h.window.alert(Strings.get('save.error') + ': ' + ex.message);
+          });
+        };
+        ActionFunction customizeToolbar = () {
+          // add a button to insert a mydn node
+          Toolbar toolbar = page.toolbar;
+          List&lt;x.Element&gt; refs = doc.cfg.elementsWithType('mydn');
+          if (refs != null &amp;&amp; refs.length &gt; 0) {
+            ToolbarBox myBox = new ToolbarBox();
+            toolbar.addInsertButton(doc.cfg, myBox, refs, 'my_dn.png');
+            toolbar.add(myBox);
+          }
+        };
+        Strings.load().then((bool b) {
+          initDaxe(left:left, saveFunction:saveFunction,
+              customizeToolbar:customizeToolbar).then((v) {
+            // more customizations can be added here
+          }).catchError((e) {
+            String msg = 'Initialization error: ' + (e is String ? e : e.toString());
+            print(msg);
+            h.document.body.appendText(msg);
+          });
+        }).catchError((e) {
+          String msg = 'Initialization error: ' + (e is String ? e : e.toString());
+          print(msg);
+          h.document.body.appendText(msg);
+        });
+    </pre>
+    
+<p>
+      A large example of an extension is LON-CAPA Daxe, which lets LON-CAPA users edit documents using the LON-CAPA language, featuring a mix of HTML and custom elements for online problems. The source code is currently (as of 2017) available <a target="_blank" class="lien" href="http://source.lon-capa.org/cgi-bin/cvsweb.cgi/modules/damieng/graphical_editor/loncapa_daxe/">here</a>.
+    </p>
   
 </div>
 <div class="spacer"></div>

@@ -31,6 +31,9 @@
 <div class="fondsel1sommaire">
 <img height="11" width="11" alt="+" border="0" src="../interface/nuages/listeinactive.png"><a class="sommaire3" href="../pages_integration/introduction.html">&nbsp;CMS integration</a>
 </div>
+<div class="fondsel1sommaire">
+<img height="11" width="11" alt="+" border="0" src="../interface/nuages/listeinactive.png"><a class="sommaire3" href="../pages_extension/introduction.html">&nbsp;Extending Daxe</a>
+</div>
 </div>
 </div>
 </div>
@@ -145,22 +148,23 @@ If you have trouble compiling (the Dart SDK is not available on all platforms), 
 <div class="section_normale">
 <h2>Documentation</h2>
 
-<p>
+<ul>
+<li>
 
 <a class="lien" href="../pages_doc-config-en/intro-doc-config-en.html">Daxe configuration files</a>
 
-</p>
+</li>
+<li>
 
-</div>
+<a class="lien" href="../pages_integration/introduction.html">CMS integration</a>
 
-<div class="section_normale">
-<h2>Extending Daxe</h2>
+</li>
+<li>
 
-<p>As with Jaxe, it is possible to create new display types for elements. Since the programming language is not the same, it doesn't work in the same way.</p>
+<a class="lien" href="../pages_extension/introduction.html">Extending Daxe</a>
 
-<p>Extensions are written in Dart. A new display type can be added by calling the <span class="code">addDisplayType</span> function in the daxe library. Two constructors have to be provided to create a new class extending <span class="code">DaxeNode</span> (the equivalent of <span class="code">JaxeElement</span> with Jaxe): one with a simple reference to the element in the schema (for new nodes), and one using a DOM node to create the node from an existing document. The new class must have an <span class="code">html()</span> method that returns an HTML element with the node <span class="code">id</span>.</p>
-
-<p>Menu functions can also be added with <span class="code">addCustomFunction</span>.</p>
+</li>
+</ul>
 
 </div>
 

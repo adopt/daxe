@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>More customization</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_extension/creating-new-display-types.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="Extending Daxe : Page for printing" href="../pages_extension/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_extension/creating-new-display-types.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_extension/introduction.html">&nbsp;Extending Daxe</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/introduction.html">&bull; Introduction</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/creating-a-new-extension.html">&bull; Creating a new extension</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/creating-new-display-types.html">&bull; Creating new display types</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; More customization</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>More customization</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>
+      Configuration files can be used to customize the menus used to insert nodes, but it is also possible to define menus with custom functions, and only a Daxe extension can implement these. It is also easy to customize the toolbar, the left panel, and the function used to save documents.
+    </p>
+    
+<p>
+      Function menus in configuration files are defined with a <span class="code">FUNCTION_MENU</span> element, and these have a <span class="code">function_name</span> attribute with the function name. This function can be added to Daxe in an extension with the <span class="code">addCustomFunction()</span> function in the <span class="code">daxe</span> package.
+    </p>
+    
+<p>
+      More customization can be done by passing named parameters to the <span class="code">initDaxe()</span> function:
+    </p>
+    
+<ul>
+<li>
+
+<span class="code">left</span>: should be a <span class="code">LeftPanel</span> or a class deriving from it, representing the left panel</li>
+<li>
+
+<span class="code">saveFunction</span>: a function called when the document should be saved (by default, <span class="code">doc.save()</span>)</li>
+<li>
+
+<span class="code">customizeToolbar</span>: a function called at the right time to customize the toolbar (after <span class="code">page.toolbar</span> is created but before the HTML is generated)</li>
+</ul>
+    
+<p>
+      On top of that, more code can be executed after initialization, by using the fact that <span class="code">initDaxe()</span> returns a Future. Here is an example combining different customizations:
+    </p>
+    
+<p>
+      (Daxe's DOM package is included with <span class="code">import 'package:daxe/src/xmldom/xmldom.dart' as x;</span> in this example)
+    </p>
+    
+<pre>
+        // use a custom insert panel, MyOwnInsertPanel, implemented elsewhere
+        InsertPanel insertP = new MyOwnInsertPanel();
+        LeftPanel left = new LeftPanel(insert:insertP);
+        ActionFunction saveFunction= () {
+          // display an alert after a save
+          doc.save().then((_) {
+            h.window.alert(Strings.get('save.success'));
+          }, onError: (DaxeException ex) {
+            h.window.alert(Strings.get('save.error') + ': ' + ex.message);
+          });
+        };
+        ActionFunction customizeToolbar = () {
+          // add a button to insert a mydn node
+          Toolbar toolbar = page.toolbar;
+          List&lt;x.Element&gt; refs = doc.cfg.elementsWithType('mydn');
+          if (refs != null &amp;&amp; refs.length &gt; 0) {
+            ToolbarBox myBox = new ToolbarBox();
+            toolbar.addInsertButton(doc.cfg, myBox, refs, 'my_dn.png');
+            toolbar.add(myBox);
+          }
+        };
+        Strings.load().then((bool b) {
+          initDaxe(left:left, saveFunction:saveFunction,
+              customizeToolbar:customizeToolbar).then((v) {
+            // more customizations can be added here
+          }).catchError((e) {
+            String msg = 'Initialization error: ' + (e is String ? e : e.toString());
+            print(msg);
+            h.document.body.appendText(msg);
+          });
+        }).catchError((e) {
+          String msg = 'Initialization error: ' + (e is String ? e : e.toString());
+          print(msg);
+          h.document.body.appendText(msg);
+        });
+    </pre>
+    
+<p>
+      A large example of an extension is LON-CAPA Daxe, which lets LON-CAPA users edit documents using the LON-CAPA language, featuring a mix of HTML and custom elements for online problems. The source code is currently (as of 2017) available <a target="_blank" class="lien" href="http://source.lon-capa.org/cgi-bin/cvsweb.cgi/modules/damieng/graphical_editor/loncapa_daxe/">here</a>.
+    </p>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_extension/creating-new-display-types.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

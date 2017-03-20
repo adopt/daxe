@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Creating new display types</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_extension/creating-a-new-extension.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="../pages_extension/more-customization.html" rel="Next">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="Extending Daxe : Page for printing" href="../pages_extension/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_extension/creating-a-new-extension.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"><a title="Next page" accesskey="l" href="../pages_extension/more-customization.html"><img border="0" alt="->" height="16" width="25" src="../interface/nuages/petiteflechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_extension/introduction.html">&nbsp;Extending Daxe</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/introduction.html">&bull; Introduction</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/creating-a-new-extension.html">&bull; Creating a new extension</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Creating new display types</span>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/more-customization.html">&bull; More customization</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Creating new display types</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>
+      A display type is defined by a class deriving from the <span class="code">DaxeNode</span> class in the <span class="code">daxe</span> package.
+    </p>
+    
+<p>
+      The implementation of the display type class needs 2 constructors, <span class="code">.fromRef()</span> to create a new instance from the language definition of the element, and <span class="code">.fromNode()</span>, to create a new instance from a DOM node. It also needs at least one method, <span class="code">html()</span>, which returns the DOM node for the node to display, with the node <span class="code">id</span>. As an example, let's look at the implementation for the <span class="code">string</span> display, which is simply an inline display with a start tag and an end tag:
+    </p>
+    
+<pre>
+      part of nodes;
+      
+      class DNString extends DaxeNode {
+        Tag _b1, _b2;
+        
+        DNString.fromRef(x.Element elementRef) : super.fromRef(elementRef) {
+          _b1 = new Tag(this, Tag.START);
+          _b2 = new Tag(this, Tag.END);
+        }
+        
+        DNString.fromNode(x.Node node, DaxeNode parent) : super.fromNode(node, parent) {
+          _b1 = new Tag(this, Tag.START);
+          _b2 = new Tag(this, Tag.END);
+        }
+        
+        @override
+        h.Element html() {
+          var span = new h.SpanElement();
+          span.id = "$id";
+          span.classes.add('dn');
+          if (!valid)
+            span.classes.add('invalid');
+          span.append(_b1.html());
+          var contents = new h.SpanElement();
+          DaxeNode dn = firstChild;
+          while (dn != null) {
+            contents.append(dn.html());
+            dn = dn.nextSibling;
+          }
+          setStyle(contents);
+          span.append(contents);
+          span.append(_b2.html());
+          return(span);
+        }
+        
+        @override
+        h.Element getHTMLContentsNode() {
+          return(getHTMLNode().nodes[1]);
+        }
+      }
+    </pre>
+    
+<p>
+      The constructors derive from the <span class="code">fromRef()</span> and <span class="code">fromNode()</span> constructors in <span class="code">DaxeNode</span>, doing all the basic initialization for free. The start and end tags are created in the constructors, using the <span class="code">Tag</span> class. The <span class="code">html()</span> method creates a <span class="code">span</span> for the DOM node, sets the id based on <span class="code">DaxeNode.id</span>, adds an <span class="code">invalid</span> CSS class if necessary, and appends the tags' HTML nodes and the contents in another span. Style is applied to the contents with <span class="code">DaxeNode.setStyle()</span>, and the span is returned.
+    </p>
+    
+<p>
+      Another method is overridden, <span class="code">getHTMLContentsNode()</span>, to return the DOM node containing the children, which can be different depending on the implementation of <span class="code">html()</span>. In this case, we can simply return the second child of the node's DOM node, which we can get with <span class="code">DaxeNode.getHTMLNode()</span>.
+    </p>
+    
+<p>
+      While all display type classes have to derive from <span class="code">DaxeNode</span>, all the methods can be overridden, so these classes have complete control over appearance and resulting DOM, for the node itself and all the descendants.
+    </p>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_extension/creating-a-new-extension.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"><a title="Next page" href="../pages_extension/more-customization.html"><img border="0" alt="Next page" height="31" width="48" src="../interface/nuages/flechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Creating a new extension</title>
+<link href="../interface/nuages/style.css" rel="stylesheet" type="text/css">
+<link href="../pages_extension/introduction.html" rel="Prev">
+<link href="index.html" rel="Contents">
+<link href="../pages_extension/creating-new-display-types.html" rel="Next">
+<link href="index.html" rel="Up">
+</head>
+<body class="page">
+<div class="zone_logo">
+<img alt="icon.png" src="../pages_daxe/icon.png"></div>
+<div class="titre_site_1">Daxe</div>
+<div class="titre_site_2">Daxe</div>
+<div class="zone_sommaire">
+<div class="zone_mininav">
+<table style="width: 100%">
+<tr>
+<td style="text-align: center"><a title="Home page" href="../index.html"><img border="0" alt="Home page" height="25" width="25" src="../interface/nuages/home.png"></a></td><td style="text-align: center"><a title="Summary" href="../pages_daxe/sommaire.html"><img alt="Summary" border="0" height="25" width="25" src="../interface/nuages/sommaire_petit.png"></a></td><td style="text-align: center"><a target="_blank" title="Extending Daxe : Page for printing" href="../pages_extension/impression.html"><img alt="Page for printing" border="0" height="25" width="25" src="../interface/nuages/impression.png"></a></td><td style="text-align: center"><a title="Previous page" accesskey="j" href="../pages_extension/introduction.html"><img border="0" alt="<-" height="16" width="25" src="../interface/nuages/petiteflechegauche.png"></a></td><td style="text-align: center"><a title="Next page" accesskey="l" href="../pages_extension/creating-new-display-types.html"><img border="0" alt="->" height="16" width="25" src="../interface/nuages/petiteflechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+<div class="sommaire">
+<div class="fondsel1sommaire">
+<a href="../pages_daxe/index.html"><img src="../interface/nuages/listeactive.png" border="0" alt="-" width="11" height="11"></a><a class="sommaire2" href="../pages_extension/introduction.html">&nbsp;Extending Daxe</a>
+<div class="divsommaire">
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/introduction.html">&bull; Introduction</a>
+</div>
+<div class="fondsel2sommaire">
+<span class="sommairepage">&bull; Creating a new extension</span>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/creating-new-display-types.html">&bull; Creating new display types</a>
+</div>
+<div class="fondsel1sommaire">
+<a class="sommairepage" href="../pages_extension/more-customization.html">&bull; More customization</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="zone_titre">
+<table>
+<tr>
+<td>
+<h1>Creating a new extension</h1>
+</td>
+</tr>
+</table>
+</div>
+<div class="zone_contenu">
+<div class="zone_texte">
+    
+<p>
+      An extension of Daxe has to be implemented in <a target="_blank" class="lien" href="https://www.dartlang.org/">Dart</a>, so the Dart SDK needs to be installed. Daxe's API documentation can be generated from the the source with the <a target="_blank" class="lien" href="https://github.com/dart-lang/dartdoc">dartdoc</a> command launched in the root of the source tree (the <span class="code">daxe</span> directory).
+    </p>
+    
+<p>
+      An extension is a Dart web application. Here is a basic example, adding a new display type named <span class="code">mydn</span> with the class <span class="code">MyDN</span>. This code would be in a file named <span class="code">my_daxe.dart</span>:
+    </p>
+    
+<pre>
+      library my_daxe;
+      
+      import 'package:daxe/daxe.dart';
+      part 'my_dn.dart';
+      
+      void main() {
+        NodeFactory.addCoreDisplayTypes();
+        
+        setDisplayType('mydn',
+              (x.Element ref) =&gt; new MyDN.fromRef(ref),
+              (x.Node node, DaxeNode parent) =&gt; new MyDN.fromNode(node, parent)
+          );
+      
+        Strings.load().then((bool b) {
+          initDaxe();
+        }).catchError((e) {
+          h.document.body.appendText('Error when loading the strings.');
+        });
+      }
+    </pre>
+  
+</div>
+<div class="spacer"></div>
+<div class="zone_liens">
+<table style="width: 100%">
+<tr>
+<td><a title="Previous page" href="../pages_extension/introduction.html"><img border="0" alt="Previous page" height="31" width="48" src="../interface/nuages/flechegauche.png"></a></td><td style="text-align: right"><a title="Next page" href="../pages_extension/creating-new-display-types.html"><img border="0" alt="Next page" height="31" width="48" src="../interface/nuages/flechedroite.png"></a></td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>

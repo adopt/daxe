@@ -139,6 +139,11 @@ button {
   background-color: #DDD;
 }
 
+.tree_node_title.selected {
+  background-color: #CCC;
+  color: black;
+}
+
 #insert button.insertb {
   width: 80%
 }
@@ -886,8 +891,8 @@ td.header {
 /* DNFile */
 img.dn {
   cursor: default;
-  padding-left: 2px;
-  padding-right: 1px;
+  margin-left: 2px;
+  margin-right: 1px;
 }
 
 img.dn.selected, .selected img.dn {

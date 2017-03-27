@@ -452,7 +452,7 @@
         </DOCUMENTATION>
       </ATTRIBUTE_STRINGS>
       <ATTRIBUTE_STRINGS attribute="function_name">
-        <TITLE>class</TITLE>
+        <TITLE>function</TITLE>
         <DOCUMENTATION>
           The name of the function
         </DOCUMENTATION>
@@ -934,7 +934,7 @@
         </DOCUMENTATION>
       </ATTRIBUTE_STRINGS>
       <ATTRIBUTE_STRINGS attribute="function_name">
-        <TITLE>classe</TITLE>
+        <TITLE>fonction</TITLE>
         <DOCUMENTATION>
           Le nom de la fonction
         </DOCUMENTATION>
@@ -1417,7 +1417,7 @@
         </DOCUMENTATION>
       </ATTRIBUTE_STRINGS>
       <ATTRIBUTE_STRINGS attribute="function_name">
-        <TITLE>Класс</TITLE>
+        <TITLE>function</TITLE>
         <DOCUMENTATION>
           The name of the function
         </DOCUMENTATION>

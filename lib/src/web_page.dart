@@ -533,11 +533,13 @@ class WebPage {
       title = "${Strings.get('contextual.help_about_element')} $elementTitle";
       _contextualMenu.add(new MenuItem(title, () =>
           (new HelpDialog.Element(parent.ref)).show()));
-      title = "${Strings.get('contextual.remove')} $elementTitle";
-      _contextualMenu.add(new MenuItem(title, () {
-        doc.removeNode(parent);
-        page.updateAfterPathChange();
-      }));
+      if (!parent.userCannotRemove) {
+        title = "${Strings.get('contextual.remove')} $elementTitle";
+        _contextualMenu.add(new MenuItem(title, () {
+          doc.removeNode(parent);
+          page.updateAfterPathChange();
+        }));
+      }
       addSeparator = true;
     }
     if (doc.hiddendiv != null) {

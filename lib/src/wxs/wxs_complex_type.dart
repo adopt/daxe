@@ -232,7 +232,8 @@ class WXSComplexType extends WXSAnnotated implements WXSType, WithSubElements, P
   bool validValue(final String value) {
     if (_simpleContent != null)
       return(_simpleContent.validValue(value));
-    // FIXME: we should check whether spaces matter or not here
+    if (value != '' && !_mixed && _model == null)
+      return(false);
     return(value.trim() == '' || containsText());
   }
 

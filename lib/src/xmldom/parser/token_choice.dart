@@ -23,9 +23,9 @@ class TokenChoice extends TokenItem {
   
   TokenChoice(this.items);
   
-  MatchResult evaluateString(String doc, int pos) {
+  MatchResult evaluateString(String doc, int pos, int line) {
     for (TokenItem item in items) {
-      MatchResult match = item.evaluateString(doc, pos);
+      MatchResult match = item.evaluateString(doc, pos, line);
       if (match != null)
         return(match);
     }

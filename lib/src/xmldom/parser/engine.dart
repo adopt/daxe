@@ -38,12 +38,16 @@ class Engine {
     List<Token> result = new List<Token>();
     states = new HashMap<String, bool>();
     int pos = 0;
+    int line = 1;
     while (pos < s.length) {
       int pos1 = pos;
       for (TokenRule rule in rules) {
-        MatchResult match = rule.evaluateString(s, pos);
+        MatchResult match = rule.evaluateString(s, pos, line);
         if (match == null)
           continue;
+        for (int i = pos; i < pos + match.nbMatched; i++)
+          if (s[i] == '\n')
+            line++;
         pos += match.nbMatched;
         if (match.tokens.length > 0) {
           assert(match.nbMatched != 0); // there is a match but no token is consumed by the rule: this could lead to an endless loop
@@ -52,8 +56,8 @@ class Engine {
         }
       }
       if (pos1 == pos) {
-        // TODO: add line information
-        throw new DOMException("parser blocking at character $pos: ${s.substring(pos, min(pos + 10, s.length))}");
+        String text = s.substring(pos, min(pos + 10, s.length));
+        throw new DOMException("parser blocking at '$text' on line $line");
       }
     }
     return(result);
@@ -77,8 +81,15 @@ class Engine {
         }
       }
       if (pos1 == pos) {
-        // TODO: add line information
-        throw new DOMException("parser blocking at character ${tokens[pos].position}");
+        Token token = tokens[pos];
+        int line = token.line;
+        String where = '';
+        String ms = token.matchedString;
+        if (ms != null) {
+          String text = ms.substring(0, min(10, ms.length));
+          where = " at '$text'";
+        }
+        throw new DOMException("parser blocking$where on line $line");
       }
     }
     return(result);

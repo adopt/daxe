@@ -41,7 +41,7 @@ class TokenChar extends TokenItem {
   
   TokenChar.except(this.exceptions);
   
-  MatchResult evaluateString(String doc, int pos) {
+  MatchResult evaluateString(String doc, int pos, int line) {
     String c = doc[pos];
     
     if (character != null) {

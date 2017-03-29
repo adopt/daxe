@@ -29,13 +29,13 @@ class TokenSequence extends TokenItem {
       items.add(new TokenChar(s[i]));
   }
   
-  MatchResult evaluateString(String doc, int pos) {
+  MatchResult evaluateString(String doc, int pos, int line) {
     StringBuffer sb = null;
     int i = pos;
     for (TokenItem item in items) {
       if (i >= doc.length)
         return(null);
-      MatchResult match = item.evaluateString(doc, i);
+      MatchResult match = item.evaluateString(doc, i, line);
       if (match == null)
         return(null);
       if (sb == null)

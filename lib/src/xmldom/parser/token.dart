@@ -24,11 +24,12 @@ class Token {
   List<Token> matchedTokens;
   Object data;
   int position;
+  int line;
   
   
-  Token.characters(this.id, this.matchedString, this.position);
+  Token.characters(this.id, this.matchedString, this.position, this.line);
   
-  Token.tokens(this.id, this.matchedTokens, this.position);
+  Token.tokens(this.id, this.matchedTokens, this.position, this.line);
   
   String toString() {
     StringBuffer sb = new StringBuffer();

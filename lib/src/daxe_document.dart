@@ -89,6 +89,8 @@ class DaxeDocument {
       this.filePath = filePath;
       x.DOMParser dp = new x.DOMParser();
       dp.parseFromURL(filePath).then((x.Document xmldoc) {
+        // remove the DOCTYPE, not supported (it can be set with the config):
+        xmldoc.doctype = null;
         if (removeIndents && xmldoc.documentElement != null)
           removeWhitespace(xmldoc.documentElement);
         dndoc = NodeFactory.createFromNode(xmldoc, null);

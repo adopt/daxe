@@ -37,9 +37,9 @@ class TokenRepeat extends TokenItem {
     repeat = ONE_OR_MORE;
   }
   
-  MatchResult evaluateString(String doc, int pos) {
+  MatchResult evaluateString(String doc, int pos, int line) {
     if (repeat == ZERO_OR_ONE) {
-      MatchResult match = item.evaluateString(doc, pos);
+      MatchResult match = item.evaluateString(doc, pos, line);
       if (match == null)
         return(new MatchResult.ch(0, ''));
       else
@@ -48,7 +48,7 @@ class TokenRepeat extends TokenItem {
     StringBuffer sb = null;
     int i = pos;
     while (i < doc.length) {
-      MatchResult match = item.evaluateString(doc, i);
+      MatchResult match = item.evaluateString(doc, i, line);
       if (match == null)
         break;
       if (sb == null)

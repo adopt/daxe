@@ -31,13 +31,13 @@ class TokenRule extends TokenItem {
   
   TokenRule(this.id, this.content, {this.conditions:null, this.changes:null, this.ignore:false, this.action:null});
   
-  MatchResult evaluateString(String doc, int pos) {
+  MatchResult evaluateString(String doc, int pos, int line) {
     if (!engine.checkConditions(this))
       return(null); // next rule
-    MatchResult match = content.evaluateString(doc, pos);
+    MatchResult match = content.evaluateString(doc, pos, line);
     if (match == null)
       return(null);
-    Token token = new Token.characters(id, match.characters, pos);
+    Token token = new Token.characters(id, match.characters, pos, line);
     if (action != null)
       action(token);
     engine.changeStates(this);
@@ -58,7 +58,8 @@ class TokenRule extends TokenItem {
     MatchResult match = content.evaluateTokens(tokens, pos);
     if (match == null)
       return(null);
-    Token token = new Token.tokens(id, match.tokens, match.tokens[0].position);
+    Token first = match.tokens[0];
+    Token token = new Token.tokens(id, match.tokens, first.position, first.line);
     if (action != null)
       action(token);
     engine.changeStates(this);

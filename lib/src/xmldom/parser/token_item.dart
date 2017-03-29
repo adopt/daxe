@@ -19,7 +19,7 @@ part of xmldom;
 
 abstract class TokenItem {
   
-  MatchResult evaluateString(String doc, int pos);
+  MatchResult evaluateString(String doc, int pos, int line);
   
   MatchResult evaluateTokens(List<Token> tokens, int pos);
   

@@ -329,8 +329,9 @@ class XMLParser {
         // (this could be disabled for speed, assuming documents are well-formed)
         Token endTagToken = token.matchedTokens[token.matchedTokens.length - 1];
         String endName = endTagToken.matchedTokens[1].matchedString;
+        int line = endTagToken.line;
         if (endName != name)
-          throw new Exception("End tag not matching start tag: $endName != $name");
+          throw new Exception("End tag not matching start tag: $endName != $name on line $line.");
       }
       Element el = new ElementImpl.NS(doc, null, name);
       int nbAttributes = startTagToken.matchedTokens.length - 3;
@@ -409,12 +410,20 @@ class XMLParser {
     
     engine = new Engine(xmlRules);
     tokens = engine.parseTokens(tokens);
+    int nbroot = 0;
     for (Token token in tokens) {
       Object data = token.data;
-      if (data is DocumentType)
+      if (data is DocumentType) {
         doc.doctype = data;
-      else if (data is Node)
+      } else if (data is Node) {
+        if (data is Element)
+          nbroot++;
+        if (nbroot > 1)
+          throw new Exception("Syntax error: more than one root element at line ${token.line}.");
         doc.appendChild(data);
+      } else if (token.id != 'DOC_DECL') {
+        throw new Exception("Unrecognized token at line ${token.line}.");
+      }
     }
     if (doc.documentElement != null)
       _fixNamespaces(doc.documentElement);

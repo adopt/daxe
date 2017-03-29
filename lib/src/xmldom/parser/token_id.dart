@@ -23,7 +23,7 @@ class TokenId extends TokenItem {
   
   TokenId(this.id);
   
-  MatchResult evaluateString(String doc, int pos) {
+  MatchResult evaluateString(String doc, int pos, int line) {
     return(null);
   }
   

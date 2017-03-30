@@ -31,30 +31,8 @@ class InsertPanel {
     if (cfg == null)
       return;
     
-    // test if an update is really needed
-    if (parent == _oldParent && _oldRefs != null && _oldValidRefs != null &&
-        _oldRefs.length == refs.length && _oldValidRefs.length == validRefs.length) {
-      bool same = true;
-      for (int i=0; i<refs.length; i++) {
-        if (refs[i] != _oldRefs[i]) {
-          same = false;
-          break;
-        }
-      }
-      if (same) {
-        for (int i=0; i<validRefs.length; i++) {
-          if (validRefs[i] != _oldValidRefs[i]) {
-            same = false;
-            break;
-          }
-        }
-      }
-      if (same)
-        return;
-    }
-    _oldParent = parent;
-    _oldRefs = refs;
-    _oldValidRefs = validRefs;
+    if (!updateNeeded(parent, refs, validRefs))
+      return;
     
     h.Element oldDivInsert = h.document.getElementById('insert');
     h.DivElement divInsert = h.document.createElement('div');
@@ -99,6 +77,33 @@ class InsertPanel {
       divInsert.append(new h.BRElement());
     }
     oldDivInsert.replaceWith(divInsert);
+  }
+  
+  bool updateNeeded(DaxeNode parent, List<x.Element> refs, List<x.Element> validRefs) {
+    if (parent == _oldParent && _oldRefs != null && _oldValidRefs != null &&
+        _oldRefs.length == refs.length && _oldValidRefs.length == validRefs.length) {
+      bool same = true;
+      for (int i=0; i<refs.length; i++) {
+        if (refs[i] != _oldRefs[i]) {
+          same = false;
+          break;
+        }
+      }
+      if (same) {
+        for (int i=0; i<validRefs.length; i++) {
+          if (validRefs[i] != _oldValidRefs[i]) {
+            same = false;
+            break;
+          }
+        }
+      }
+      if (same)
+        return false;
+    }
+    _oldParent = parent;
+    _oldRefs = refs;
+    _oldValidRefs = validRefs;
+    return true;
   }
   
   h.ButtonElement makeHelpButton(x.Element ref) {

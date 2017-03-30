@@ -22,14 +22,43 @@ part of daxe;
  * the cursor position, according to the schema.
  */
 class InsertPanel {
+  DaxeNode _oldParent = null;
+  List<x.Element> _oldRefs = null;
+  List<x.Element> _oldValidRefs = null;
   
   void update(DaxeNode parent, List<x.Element> refs, List<x.Element> validRefs) {
-    h.Element divInsert = h.document.getElementById('insert');
-    for (h.Element child in divInsert.children)
-      child.remove();
     Config cfg = doc.cfg;
     if (cfg == null)
       return;
+    
+    // test if an update is really needed
+    if (parent == _oldParent && _oldRefs != null && _oldValidRefs != null &&
+        _oldRefs.length == refs.length && _oldValidRefs.length == validRefs.length) {
+      bool same = true;
+      for (int i=0; i<refs.length; i++) {
+        if (refs[i] != _oldRefs[i]) {
+          same = false;
+          break;
+        }
+      }
+      if (same) {
+        for (int i=0; i<validRefs.length; i++) {
+          if (validRefs[i] != _oldValidRefs[i]) {
+            same = false;
+            break;
+          }
+        }
+      }
+      if (same)
+        return;
+    }
+    _oldParent = parent;
+    _oldRefs = refs;
+    _oldValidRefs = validRefs;
+    
+    h.Element oldDivInsert = h.document.getElementById('insert');
+    h.DivElement divInsert = h.document.createElement('div');
+    divInsert.id = 'insert';
     if (parent.nodeType == DaxeNode.ELEMENT_NODE && parent.ref != null) {
       divInsert.append(makeHelpButton(parent.ref));
       String name = cfg.elementName(parent.ref);
@@ -69,6 +98,7 @@ class InsertPanel {
       divInsert.append(button);
       divInsert.append(new h.BRElement());
     }
+    oldDivInsert.replaceWith(divInsert);
   }
   
   h.ButtonElement makeHelpButton(x.Element ref) {

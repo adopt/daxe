@@ -295,6 +295,8 @@ class UndoableEdit {
         else if (attr.namespaceURI == 'http://www.w3.org/2000/xmlns/' &&
             attr.localName != 'xmlns')
           attr.prefix = 'xmlns';
+        else if (attr.name == 'xmlns')
+          ;
         else {
           x.Element attref = doc.cfg.attributeReference(dn.ref, attr.localName, attr.namespaceURI);
           attr.prefix = doc.cfg.attributePrefix(dn, attref);

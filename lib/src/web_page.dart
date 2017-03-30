@@ -341,7 +341,7 @@ class WebPage {
         else
           _selectionEnd = positions[0];
       }
-      _cursor.setSelection(_selectionStart, _selectionEnd, updateUI:false);
+      _cursor.setSelection(_selectionStart, _selectionEnd);
     }
     event.preventDefault();
   }

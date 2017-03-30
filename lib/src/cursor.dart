@@ -1045,7 +1045,7 @@ class Cursor {
    * Starting with start and end, the selection is reduced to
    * avoid cutting elements, so that the selection can be cut.
    */
-  setSelection(Position start, Position end, {updateUI:true}) {
+  setSelection(Position start, Position end) {
     if (selectionStart == start && selectionEnd == end) {
       if (start == end) {
         updateCaretPosition(false);
@@ -1196,7 +1196,7 @@ class Cursor {
     }
     if (selectionEnd != selectionStart)
       hide();
-    if (updateUI && selectionStart != previousStart)
+    if (selectionStart != previousStart)
       page.updateAfterPathChange();
   }
 

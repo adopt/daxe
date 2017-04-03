@@ -412,7 +412,8 @@ class DNBlock extends DaxeNode {
   
   void changeUnknownAttributeValue(DaxeAttr att, h.TextInputElement input) {
     String value = input.value;
-    if (getAttributeNS(att.namespaceURI, att.localName) != value) {
+    String current = getAttributeNS(att.namespaceURI, att.localName);
+    if (current != value && !(current == null && value == '')) {
       String name = att.name;
       DaxeAttr attr;
       if (value == '')

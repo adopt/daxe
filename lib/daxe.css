@@ -376,8 +376,8 @@ div.indent {
 }
 
 div.block {
-  margin-top: 1px;
-  margin-bottom: 1px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 /* Tag */
@@ -858,6 +858,11 @@ ul.wlist>li.selected span {
 }
 
 /* DNTable */
+div.table {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
 div.table>table {
   width: 100%;
   border-collapse: collapse;
@@ -960,6 +965,13 @@ div.form {
   font-size: medium;
   text-align: left;
   color: black;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+div.form div.form {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 div.form table {

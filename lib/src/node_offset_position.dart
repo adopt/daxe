@@ -317,7 +317,7 @@ class NodeOffsetPosition implements Position {
         h.Rectangle r;
         if (lastDn.block) {
           r = hn.getBoundingClientRect();
-          return(new Point(r.left, r.bottom));
+          return(new Point(r.left, r.bottom + 1)); // assuming some margin-bottom
         } else {
           /*
           // Adding a span with text can change a table layout with Firefox, causing wrong results
@@ -391,7 +391,7 @@ class NodeOffsetPosition implements Position {
         }
         h.Rectangle r = hn.getClientRects()[0];
         if (children[_dnOffset].block)
-          return(new Point(r.left, r.top - 1));
+          return(new Point(r.left, r.top - 2)); // assuming some margin-top
         else {
           h.SpanElement caret = h.document.getElementById('caret');
           return(new Point(r.left, r.bottom - caret.offsetHeight));

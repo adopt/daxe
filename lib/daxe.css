@@ -9,6 +9,11 @@ button {
   padding: 2px;
 }
 
+button:hover {
+  /* for Win7 IE11, to fix button highlighting */
+  padding: 2px;
+}
+
 #headers {
   position: absolute;
   top: 0em;

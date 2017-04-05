@@ -648,7 +648,11 @@ class WebPage {
   
   void scrollToNode(DaxeNode dn) {
     Position startPos = new Position(dn.parent, dn.parent.offsetOf(dn));
-    Point pt = startPos.positionOnScreen();
+    scrollToPosition(startPos);
+  }
+  
+  void scrollToPosition(Position pos) {
+    Point pt = pos.positionOnScreen();
     if (pt == null)
       return;
     h.DivElement doc1 = h.document.getElementById('doc1');

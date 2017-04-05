@@ -290,6 +290,8 @@ class Cursor {
    */
   void lineStart() {
     Point pt = selectionStart.positionOnScreen();
+    if (pt == null)
+      return;
     //pt.x = 0;
     // this does not work when blocks are used (it moves the cursor outside)
     DaxeNode dn = selectionStart.dn;
@@ -315,6 +317,8 @@ class Cursor {
    */
   void lineEnd() {
     Point pt = selectionStart.positionOnScreen();
+    if (pt == null)
+      return;
     //pt.x += 10000;
     // this does not work when blocks are used (it moves the cursor outside)
     DaxeNode dn = selectionStart.dn;
@@ -324,7 +328,7 @@ class Cursor {
       dn = dn.parent;
     h.Element hnode = dn.getHTMLNode();
     h.Rectangle rect = hnode.getBoundingClientRect();
-    pt.x = rect.right - 1;
+    pt.x = rect.right - 2;
     pt.y += 5;
     Position pos = doc.findPosition(pt.x, pt.y);
     if (pos == null)
@@ -622,7 +626,8 @@ class Cursor {
 
   /**
    * Action for the tab key.
-   * Only does something if spaces are preserved in the element
+   * Moves the cursor to the next cell in a table.
+   * Inserts spaces if spaces are preserved in the element
    * (without looking at parents).
    * If selection is empty, inserts 4 spaces.
    * If a text node is selected from the start or a new line,
@@ -651,8 +656,39 @@ class Cursor {
         }
       }
     }
-    if (!spacePreserve)
+    if (!spacePreserve) {
+      DNTD cell = null;
+      while (parent != null) {
+        if (parent is DNTD) {
+          cell = parent;
+          break;
+        }
+        parent = parent.parent;
+      }
+      if (cell != null) {
+        // switch to next/previous cell if possible
+        DNTD newCell = null;
+        if (!shift) {
+          if (cell.nextSibling is DNTD)
+            newCell = cell.nextSibling;
+          else if (cell.parent != null && cell.parent.nextSibling != null &&
+              cell.parent.nextSibling.firstChild is DNTD)
+            newCell = cell.parent.nextSibling.firstChild;
+        } else {
+          if (cell.previousSibling is DNTD)
+            newCell = cell.previousSibling;
+          else if (cell.parent != null && cell.parent.previousSibling != null &&
+              cell.parent.previousSibling.lastChild is DNTD)
+            newCell = cell.parent.previousSibling.lastChild;
+        }
+        if (newCell != null) {
+          event.preventDefault();
+          page.moveCursorTo(new Position(newCell, newCell.offsetLength));
+          page.updateAfterPathChange();
+        }
+      }
       return;
+    }
     if (selectionStart != selectionEnd) {
       // for a block of text
       if (selectionStart.dn is! DNText || selectionEnd.dn is! DNText ||
@@ -708,7 +744,8 @@ class Cursor {
         dn2 = new DNText(s2);
       edit.addSubEdit(new UndoableEdit.insertNode(dnpos, dn2));
       doc.doNewEdit(edit);
-      page.cursor.setSelection(new Position(dn2, offset1), new Position(dn2, newEnd));
+      setSelection(new Position(dn2, offset1), new Position(dn2, newEnd));
+      page.scrollToPosition(selectionStart);
       event.preventDefault();
       return;
     }

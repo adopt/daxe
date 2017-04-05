@@ -894,6 +894,10 @@ form.table_buttons {
   color: black;
 }
 
+.selected>form.table_buttons {
+  background-color: #50A0FF;
+}
+
 td.header {
   font-weight: bold;
 }

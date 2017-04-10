@@ -132,7 +132,12 @@ class DNForm extends DaxeNode {
       else
         value = '';
       control = new SimpleTypeControl.forElement(ref, value, valueChanged: () => changeElementValue());
-      td.append(control.html());
+      h.Element span = control.html();
+      control.hcontrol.onFocus.listen((h.Event e) {
+        page.moveCursorTo(new Position(this, 0), display:false);
+        page.updateAfterPathChange();
+      });
+      td.append(span);
 
       tr.append(td);
       
@@ -247,6 +252,10 @@ class DNForm extends DaxeNode {
     h.Element ht = attributeControl.html();
     if (ht.firstChild is h.TextInputElement)
       (ht.firstChild as h.TextInputElement).classes.add('form_field');
+    attributeControl.hcontrol.onFocus.listen((h.Event e) {
+      page.moveCursorTo(new Position(this, 0), display:false);
+      page.updateAfterPathChange();
+    });
     td.append(ht);
     tr.append(td);
     
@@ -283,6 +292,7 @@ class DNForm extends DaxeNode {
       int colspan;
       if (dn is! DNForm) {
         td = new h.TableCellElement();
+        td.classes.add('shrink');
         h.ButtonElement bHelp = makeHelpButton(dn.ref, null);
         td.append(bHelp);
         tr.append(td);
@@ -291,6 +301,7 @@ class DNForm extends DaxeNode {
         colspan = 3;
       td = new h.TableCellElement();
       td.colSpan = colspan;
+      td.classes.add('expand');
       td.append(childHTML);
       tr.append(td);
       addPlusMinusButtons(tr, dn);

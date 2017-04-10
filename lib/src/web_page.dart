@@ -638,8 +638,8 @@ class WebPage {
     return(_cursor.selectionEnd);
   }
   
-  void moveCursorTo(Position pos) {
-    _cursor.moveTo(pos);
+  void moveCursorTo(Position pos, {bool display:true}) {
+    _cursor.moveTo(pos, display:display);
   }
   
   void focusCursor() {

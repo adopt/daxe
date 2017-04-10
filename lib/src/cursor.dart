@@ -1034,12 +1034,15 @@ class Cursor {
   /**
    * Moves the caret to the given Position.
    */
-  void moveTo(Position pos) {
+  void moveTo(Position pos, {bool display:true}) {
     deSelect();
     selectionStart = new Position.clone(pos);
     selectionStart.moveInsideTextNodeIfPossible();
     selectionEnd = new Position.clone(selectionStart);
-    updateCaretPosition(true);
+    if (display)
+      updateCaretPosition(true);
+    else
+      hide();
   }
 
   /**

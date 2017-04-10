@@ -203,6 +203,8 @@ class DNBlock extends DaxeNode {
   @override
   void updateAttributes() {
     if (state == 0) {
+      // update attribute fields
+      List<DaxeAttr> attributesLeft = new List.from(attributes);
       for (x.Element refAttr in attRefs) {
         String name = doc.cfg.attributeQualifiedName(this, ref, refAttr);
         String value = getAttribute(name);
@@ -218,6 +220,10 @@ class DNBlock extends DaxeNode {
           control.setValue(value);
           control.checkValue(false);
         }
+        String localName = doc.cfg.attributeName(refAttr);
+        String namespaceURI = doc.cfg.attributeNamespace(refAttr);
+        attributesLeft.removeWhere((DaxeAttr att) =>
+          att.localName == localName && att.namespaceURI == namespaceURI);
       }
       if (unknownAttributeFields != null) {
         unknownAttributeFields.forEach((DaxeAttr attr, h.TextInputElement input) {
@@ -225,7 +231,27 @@ class DNBlock extends DaxeNode {
           if (value == null)
             value = '';
           input.value = value;
+          attributesLeft.removeWhere((DaxeAttr attLeft) =>
+            attLeft.localName == attr.localName &&
+            attLeft.namespaceURI == attr.namespaceURI);
         });
+      }
+      if (attributesLeft.length > 0) {
+        // there are new unknown attributes
+        h.DivElement div = getHTMLNode();
+        if (div != null) {
+          h.DivElement headerDiv = div.firstChild;
+          h.Element last = headerDiv.lastChild;
+          if (last is! h.TableElement) {
+            h.Element attHTML = createAttributesHTML();
+            if (attHTML != null)
+              headerDiv.append(attHTML);
+          } else {
+            h.TableElement table = last;
+            for (DaxeAttr att in attributesLeft)
+              table.append(unknownAttributeHTML(att));
+          }
+        }
       }
       updateValidity();
     } else if (state == 1) {
@@ -289,6 +315,7 @@ class DNBlock extends DaxeNode {
     bNormal.deselect();
     bCollapsed.deselect();
     state = 0;
+    unknownAttributeFields = null; // unknown attributes may have changed because of undo/redo
     updateHTML();
     if (attRefs.length > 0) {
       String firstAttName = doc.cfg.attributeQualifiedName(this, ref, attRefs.first);

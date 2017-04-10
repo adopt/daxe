@@ -847,6 +847,8 @@ ul.list {
 
 img.bullet {
   cursor: default;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 /* DNWList */

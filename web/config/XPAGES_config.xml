@@ -122,7 +122,7 @@
         <SUGGESTED_VALUE>citation</SUGGESTED_VALUE>
       </ATTRIBUTE_DISPLAY>
     </ELEMENT_DISPLAY>
-    <ELEMENT_DISPLAY element="PARAGRAPHE" type="area"/>
+    <ELEMENT_DISPLAY element="PARAGRAPHE" type="hiddenp"/>
     <ELEMENT_DISPLAY element="INFORMATIONS" type="form"/>
     <ELEMENT_DISPLAY element="LABEL" type="form"/>
     <ELEMENT_DISPLAY element="TITRE" type="form"/>

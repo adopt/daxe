@@ -21,34 +21,41 @@ part of daxe;
  * Cursor and related operations (such as keyboard input and copy/paste)
  */
 class Cursor {
+  /// used to find the next or previous word position for ctrl arrow key events
   static final String wordDelimiters = "\n \t`~!@#^&*()-+=[{]}|;:'\",<.>/?";
 
-  h.TextAreaElement ta;
-  h.SpanElement caret;
+  h.TextAreaElement _ta;
+  h.SpanElement _caret;
+  /// cursor selection position; use setSelection() to change
   Position selectionStart, selectionEnd;
-  List<h.SpanElement> spansSelection = new List<h.SpanElement>();
-  List<DaxeNode> selectedNodes = new List<DaxeNode>();
+  List<h.SpanElement> _spansSelection = new List<h.SpanElement>();
+  List<DaxeNode> _selectedNodes = new List<DaxeNode>();
+  /// true if the cursor is visible; use hide() and show() to change visibility
   bool visible;
+  /// caret blinking delay
   static const Duration delay = const Duration(milliseconds: 700);
-  Timer timer;
-  HashMap<int, ActionFunction> shortcuts;
-  bool donePaste;
-  int metaKeyCode; // previous keyDown keyCode if event.metaKey was true
-  bool shiftOnKeyPress = false; // shift active during keyPress
+  /// caret blinking timer
+  Timer _timer;
+  HashMap<int, ActionFunction> _shortcuts;
+  bool _donePaste;
+  /// previous keyDown keyCode if event.metaKey was true
+  int _metaKeyCode;
+  /// shift active during keyPress
+  bool _shiftOnKeyPress = false;
   Position _draggedSelectionStart = null;
   Position _draggedSelectionEnd = null;
 
   Cursor() {
-    ta = h.querySelector("#tacursor");
-    caret = h.querySelector("#caret");
+    _ta = h.querySelector("#tacursor");
+    _caret = h.querySelector("#caret");
     visible = true;
-    shortcuts = new HashMap<int, ActionFunction>();
+    _shortcuts = new HashMap<int, ActionFunction>();
     // FIXME: IE is always intercepting Ctrl-P
-    ta.onKeyUp.listen((h.KeyboardEvent event) => _keyUp(event));
-    ta.onKeyPress.listen((h.KeyboardEvent event) => _keyPress(event));
-    ta.onKeyDown.listen((h.KeyboardEvent event) => _keyDown(event));
-    ta.onBlur.listen((h.Event event) => _blur(event));
-    ta.onPaste.listen((h.ClipboardEvent e) {
+    _ta.onKeyUp.listen((h.KeyboardEvent event) => _keyUp(event));
+    _ta.onKeyPress.listen((h.KeyboardEvent event) => _keyPress(event));
+    _ta.onKeyDown.listen((h.KeyboardEvent event) => _keyDown(event));
+    _ta.onBlur.listen((h.Event event) => _blur(event));
+    _ta.onPaste.listen((h.ClipboardEvent e) {
       // check if current language might understand HTML.
       // If not, onPaste is not useful.
       List<String> hnames = ['p', 'ul', 'a'];
@@ -69,20 +76,25 @@ class Cursor {
           if (data.types.contains('text/html')) {
             pasteHTML(data.getData('text/html'), data.getData('text/plain'));
             e.preventDefault();
-            donePaste = true;
+            _donePaste = true;
           } else if (data.types.contains('Files')) {
-            donePaste = pasteImage(data);
-            if (donePaste)
+            _donePaste = pasteImage(data);
+            if (_donePaste)
               e.preventDefault();
           }
         }
       }
     });
-    donePaste = false;
-    metaKeyCode = 0;
+    _donePaste = false;
+    _metaKeyCode = 0;
     newTimer();
   }
 
+  /**
+   * Defines the keyboard shortcuts with a map key name -> action.
+   * This converts the map into the internal shortcuts property,
+   * a map key code -> action used to handle events.
+   */
   void setShortcuts(HashMap<String, ActionFunction> stringShortcuts) {
     HashMap<String, int> mappings = new HashMap<String, int>();
     mappings['A'] = h.KeyCode.A;
@@ -114,34 +126,21 @@ class Cursor {
     for (String key in stringShortcuts.keys) {
       String up = key.toUpperCase();
       if (mappings[up] != null)
-        shortcuts[mappings[up]] = stringShortcuts[key];
+        _shortcuts[mappings[up]] = stringShortcuts[key];
     }
   }
 
+  /**
+   * Returns the document position for the mouse event, making sure
+   * the position is inside a text node when it is possible.
+   * Returns null if the mouse event is not in the document.
+   */
   static Position findPosition(h.MouseEvent event) {
     Position pos1 = doc.findPosition(event.client.x, event.client.y);
     if (pos1 == null)
       return(null);
     pos1.moveInsideTextNodeIfPossible();
     assert(pos1.dn != null);
-    /*
-     * we can't use window.getSelection in a MouseDown event,
-     * we need another way to get the position inside text, see DaxeNode.findPosition
-    if (pos1.daxeNode.nodeType == DaxeNode.TEXT_NODE) {
-      h.DomSelection selection = h.window.getSelection();
-      if (selection.rangeCount != 0) {
-        h.Range r = selection.getRangeAt(0);
-        if (r.startContainer == r.endContainer && r.startOffset == r.endOffset &&
-            r.startContainer.parent.classes.contains('dn')) {
-          // with "white-space: pre-wrap", bad position with a click to the right
-          // of a newline caused by wrap
-          Position pos2 = new Position.fromHTML(r.startContainer, r.startOffset);
-          if (pos2.daxeNode == pos1.daxeNode)
-            return(pos2);
-        }
-      }
-    }
-    */
     return(pos1);
   }
 
@@ -149,27 +148,27 @@ class Cursor {
     if (selectionStart == null)
       return;
     page.stopSelection();
-    donePaste = false;
+    _donePaste = false;
     bool ctrl = event.ctrlKey || event.metaKey;
     bool shift = event.shiftKey;
     int keyCode = event.keyCode;
     if (event.metaKey) {
-      metaKeyCode = keyCode;
-      ta.value = ''; // remove content added for Safari
+      _metaKeyCode = keyCode;
+      _ta.value = ''; // remove content added for Safari
     } else
-      metaKeyCode = 0;
-    shiftOnKeyPress = false;
+      _metaKeyCode = 0;
+    _shiftOnKeyPress = false;
     if (keyCode == 91 || keyCode == 93) {
       // for Safari, command key down, put something in the field and select it
       // so that it will not beep and refuse to copy with a command-C
-      ta.value = ' ';
-      ta.select();
+      _ta.value = ' ';
+      _ta.select();
     } else if (ctrl && keyCode == h.KeyCode.X) {
-      ta.value = copy();
-      ta.select();
+      _ta.value = copy();
+      _ta.select();
     } else if (ctrl && keyCode == h.KeyCode.C) {
-      ta.value = copy();
-      ta.select();
+      _ta.value = copy();
+      _ta.select();
     } else if (keyCode == h.KeyCode.PAGE_DOWN) {
       pageDown();
     } else if (keyCode == h.KeyCode.PAGE_UP) {
@@ -198,14 +197,14 @@ class Cursor {
       suppr();
     } else if (keyCode == h.KeyCode.TAB && !ctrl) {
       tab(event, shift);
-    } else if (ctrl && shortcuts[keyCode] != null) {
+    } else if (ctrl && _shortcuts[keyCode] != null) {
       event.preventDefault();
       return;
-    } else if (ta.value != '') {
+    } else if (_ta.value != '') {
       // note: the first char will only be in ta.value in keyUp, this part
       // is only for long-pressed keys
-      String v = ta.value;
-      ta.value = '';
+      String v = _ta.value;
+      _ta.value = '';
       doc.insertNewString(v, shift);
     } else {
       return;
@@ -218,7 +217,7 @@ class Cursor {
     // because shift might be released by the time of keyUp,
     // but should still be taken into account.
     if (event.shiftKey)
-      shiftOnKeyPress = true;
+      _shiftOnKeyPress = true;
   }
 
   void _keyUp(h.KeyboardEvent event) {
@@ -228,52 +227,52 @@ class Cursor {
     // here keyUp for command key is used (event.metaKey is false because the key is released)
     // pb with this solution: cmd_down, Z, Z, cmd_up will only do a single cmd-Z
     bool ctrl = event.ctrlKey || event.metaKey;
-    bool shift = event.shiftKey || shiftOnKeyPress;
-    shiftOnKeyPress = false;
+    bool shift = event.shiftKey || _shiftOnKeyPress;
+    _shiftOnKeyPress = false;
     int keyCode = event.keyCode;
-    if ((keyCode == 91 || keyCode == 93) && ta.value != '' && metaKeyCode == 0) {
-      ta.value = ''; // remove content added for Safari
+    if ((keyCode == 91 || keyCode == 93) && _ta.value != '' && _metaKeyCode == 0) {
+      _ta.value = ''; // remove content added for Safari
     }
-    if ((keyCode == 224 || keyCode == 91 || keyCode == 93 || keyCode == 17) && metaKeyCode != 0) {
+    if ((keyCode == 224 || keyCode == 91 || keyCode == 93 || keyCode == 17) && _metaKeyCode != 0) {
       ctrl = true;
-      keyCode = metaKeyCode;
+      keyCode = _metaKeyCode;
     }
-    metaKeyCode = 0;
+    _metaKeyCode = 0;
     if (selectionStart == null)
       return;
     if (ctrl && !shift && keyCode == h.KeyCode.Z) { // Ctrl Z
       doc.undo();
-      ta.value = '';
+      _ta.value = '';
     } else if (ctrl && ((!shift && keyCode == h.KeyCode.Y) ||
         (shift && keyCode == h.KeyCode.Z))) { // Ctrl-Y and Ctrl-Shift-Z
       doc.redo();
-      ta.value = '';
+      _ta.value = '';
     } else if (ctrl && !shift && keyCode == h.KeyCode.X) { // Ctrl-X
       removeSelection();
-      ta.value = '';
+      _ta.value = '';
       page.updateAfterPathChange();
     } else if (ctrl && !shift && keyCode == h.KeyCode.C) { // Ctrl-C
-      ta.value = '';
+      _ta.value = '';
     } else if (ctrl && !shift && keyCode == h.KeyCode.V) { // Ctrl-V
-      if (donePaste) {
+      if (_donePaste) {
         return;
       }
-      if (ta.value != '') {
+      if (_ta.value != '') {
         try {
-          pasteString(ta.value);
+          pasteString(_ta.value);
         } on DaxeException catch(ex) {
           h.window.alert(ex.toString());
         }
-        ta.value = '';
+        _ta.value = '';
         page.updateAfterPathChange();
       }
-    } else if (ctrl && shortcuts[keyCode] != null) {
+    } else if (ctrl && _shortcuts[keyCode] != null) {
       event.preventDefault();
-      shortcuts[keyCode]();
+      _shortcuts[keyCode]();
       page.updateAfterPathChange();
-    } else if (ta.value != '') {
-      String v = ta.value;
-      ta.value = '';
+    } else if (_ta.value != '') {
+      String v = _ta.value;
+      _ta.value = '';
       doc.insertNewString(v, shift);
     } else {
       return;
@@ -522,7 +521,7 @@ class Cursor {
           if (prev.ref != next.ref && !prev.block &&
               ((prev is DNText && doc.cfg.canContainText(next.ref)) ||
                   (prev.ref != null && doc.cfg.isSubElement(next.ref, prev.ref)))) {
-            mergeBlockWithPreviousNodes(next);
+            _mergeBlockWithPreviousNodes(next);
             return;
           }
         }
@@ -533,7 +532,7 @@ class Cursor {
           if (prev.ref != next.ref && !next.block &&
               ((next is DNText && doc.cfg.canContainText(prev.ref)) ||
               (next.ref != null && doc.cfg.isSubElement(prev.ref, next.ref)))) {
-            mergeBlockWithNextNodes(prev);
+            _mergeBlockWithNextNodes(prev);
             return;
           }
         }
@@ -589,7 +588,7 @@ class Cursor {
         if (prev.noDelimiter && prev.block && next.ref != prev.ref && !next.block &&
             ((next is DNText && doc.cfg.canContainText(prev.ref)) ||
                 (next.ref != null && doc.cfg.isSubElement(prev.ref, next.ref)))) {
-          mergeBlockWithNextNodes(prev);
+          _mergeBlockWithNextNodes(prev);
           return;
         }
         // if the next node is a paragraph and the previous node can move inside,
@@ -597,7 +596,7 @@ class Cursor {
         if (next.noDelimiter && next.block && next.ref != prev.ref && !prev.block) {
           if ((prev is DNText && doc.cfg.canContainText(next.ref)) ||
               (prev.ref != null && doc.cfg.isSubElement(next.ref, prev.ref))) {
-            mergeBlockWithPreviousNodes(next);
+            _mergeBlockWithPreviousNodes(next);
             return;
           }
         }
@@ -756,6 +755,12 @@ class Cursor {
     event.preventDefault();
   }
 
+  /**
+   * Returns the document position for the caret following the given one.
+   * The new position should be visually different, so it can advance
+   * several times in the document when moving through nodes with
+   * no visual delimiters.
+   */
   Position nextCaretPosition(Position pos) {
     if (pos.dn is DNDocument && pos.dnOffset == pos.dn.offsetLength)
       return(pos);
@@ -950,7 +955,7 @@ class Cursor {
   void updateCaretPosition(bool scroll) {
     if (selectionEnd != selectionStart)
       return;
-    caret.style.height = null;
+    _caret.style.height = null;
     Point pt = selectionStart.positionOnScreen();
     if (pt == null) {
       visible = false;
@@ -970,21 +975,21 @@ class Cursor {
     }
     if (visible) {
       pt.x -= 0.5;
-      caret.style.visibility = 'visible';
-      caret.style.top = "${pt.y}px";
-      caret.style.left = "${pt.x}px";
+      _caret.style.visibility = 'visible';
+      _caret.style.top = "${pt.y}px";
+      _caret.style.left = "${pt.x}px";
       setCaretStyle();
       // move and focus the textarea
-      ta.style.top = "${pt.y}px";
-      ta.style.left = "${pt.x}px";
+      _ta.style.top = "${pt.y}px";
+      _ta.style.left = "${pt.x}px";
       // change height if inside a text node
       if (selectionStart.dn is DNText) {
         h.Element hn = selectionStart.dn.getHTMLNode();
-        caret.style.height = hn.getComputedStyle().fontSize;
+        _caret.style.height = hn.getComputedStyle().fontSize;
       }
-      ta.focus();
+      _ta.focus();
     } else {
-      caret.style.visibility = 'hidden';
+      _caret.style.visibility = 'hidden';
     }
   }
 
@@ -1021,11 +1026,15 @@ class Cursor {
     } else
       horizontal = false;
     if (horizontal)
-      caret.classes.add('horizontal');
-    else if (caret.classes.contains('horizontal'))
-      caret.classes.remove('horizontal');
+      _caret.classes.add('horizontal');
+    else if (_caret.classes.contains('horizontal'))
+      _caret.classes.remove('horizontal');
   }
-
+  
+  /**
+   * Returns true if the given HTML element is a block element using
+   * all horizontal space (this is used to set the caret style).
+   */
   bool _isBlock(h.Element el) {
     return(el is h.DivElement || el is h.ParagraphElement || el is h.TableElement ||
       el is h.TableRowElement || el is h.UListElement || el is h.LIElement);
@@ -1050,7 +1059,7 @@ class Cursor {
    */
   void hide() {
     visible = false;
-    caret.style.visibility = 'hidden';
+    _caret.style.visibility = 'hidden';
   }
 
   /**
@@ -1059,7 +1068,7 @@ class Cursor {
   void show() {
     if (selectionStart != null && selectionStart == selectionEnd) {
       visible = true;
-      caret.style.visibility = 'visible';
+      _caret.style.visibility = 'visible';
     }
   }
 
@@ -1069,14 +1078,14 @@ class Cursor {
   void focus() {
     if (visible)
       show();
-    ta.focus();
+    _ta.focus();
   }
 
   /**
-   * Clears the hidden field
+   * Clears the hidden text area.
    */
   void clearField() {
-    ta.value = '';
+    _ta.value = '';
   }
 
   /**
@@ -1177,12 +1186,12 @@ class Cursor {
     if (selectionStart.dn == selectionEnd.dn) {
       DaxeNode dn = selectionStart.dn;
       if (dn.nodeType == DaxeNode.TEXT_NODE) {
-        selectText(dn, selectionStart.dnOffset, selectionEnd.dnOffset);
+        _selectText(dn, selectionStart.dnOffset, selectionEnd.dnOffset);
       } else {
         for (int i = selectionStart.dnOffset; i < selectionEnd.dnOffset; i++) {
           DaxeNode child = dn.childAtOffset(i);
           child.setSelected(true);
-          selectedNodes.add(child);
+          _selectedNodes.add(child);
         }
       }
     } else {
@@ -1210,12 +1219,12 @@ class Cursor {
           Position p2 = new Position(selectionStart.dn, selectionStart.dnOffset + 1);
           if (selectionEnd >= p2) {
             firstNode.setSelected(true);
-            selectedNodes.add(firstNode);
+            _selectedNodes.add(firstNode);
           }
         }
       } else {
         firstNode = selectionStart.dn;
-        selectText(firstNode, selectionStart.dnOffset, firstNode.offsetLength);
+        _selectText(firstNode, selectionStart.dnOffset, firstNode.offsetLength);
       }
       if (firstNode != null) {
         for (DaxeNode next = firstNode.nextSibling; next != null; next = next.nextSibling) {
@@ -1224,14 +1233,14 @@ class Cursor {
             if (next.nodeType != DaxeNode.TEXT_NODE ||
                 selectionEnd >= new Position(next.parent, next.parent.offsetOf(next) + 1)) {
               next.setSelected(true);
-              selectedNodes.add(next);
+              _selectedNodes.add(next);
             }
           } else
             break;
         }
       }
       if (selectionEnd.dn.nodeType == DaxeNode.TEXT_NODE) {
-        selectText(selectionEnd.dn, 0, selectionEnd.dnOffset);
+        _selectText(selectionEnd.dn, 0, selectionEnd.dnOffset);
       }
     }
     if (selectionEnd != selectionStart)
@@ -1240,7 +1249,11 @@ class Cursor {
       page.updateAfterPathChange();
   }
 
-  void selectText(DaxeNode dn, int offset1, int offset2) {
+  /**
+   * Called by setSelection to add a span over characters to make them look selected.
+   * Also sets up drag and drop on that span.
+   */
+  void _selectText(DaxeNode dn, int offset1, int offset2) {
     h.Element parent = dn.getHTMLNode();
     if (parent == null)
       return;
@@ -1254,7 +1267,7 @@ class Cursor {
       n.text = s.substring(0, offset1);
     }
     h.SpanElement span = new h.SpanElement();
-    spansSelection.add(span);
+    _spansSelection.add(span);
     span.classes.add('selection');
     //span.appendText(s.substring(offset1, offset2));
     //see comment in deSelect
@@ -1273,8 +1286,12 @@ class Cursor {
     setupDrag(span, null);
   }
 
+  /**
+   * Deselects anything selected and sets the selection end to
+   * the selection start.
+   */
   void deSelect() {
-    for (h.SpanElement span in spansSelection) {
+    for (h.SpanElement span in _spansSelection) {
       h.Element parent = span.parent;
       if (parent == null)
         continue;
@@ -1290,14 +1307,15 @@ class Cursor {
       selectionEnd = new Position.clone(selectionStart);
       visible = true;
     }
-    spansSelection.clear();
-    for (DaxeNode dn in selectedNodes) {
+    _spansSelection.clear();
+    for (DaxeNode dn in _selectedNodes) {
       dn.setSelected(false);
     }
-    selectedNodes.clear();
+    _selectedNodes.clear();
     /*
-    this is causing too many problems (for instance with undo, or text select)
-    a better solution is to make invisible styles visible (see DNStyle)
+    This was an experiment to automatically remove empty style nodes.
+    It is causing too many problems (for instance with undo, or text select).
+    A better solution is to make invisible styles visible (see DNStyle).
     if (selectionStart != null && selectionStart == selectionEnd &&
         selectionStart.dn is DNStyle &&
         selectionStart.dn.firstChild == null) {
@@ -1318,22 +1336,28 @@ class Cursor {
     */
   }
 
+  /**
+   * Starts a new timer for caret blinking.
+   */
   void newTimer() {
     if (!visible)
       return;
-    if (timer != null)
-      timer.cancel();
-    caret.style.visibility = "visible";
-    timer = new Timer.periodic(delay, (Timer t) => caretBlink());
+    if (_timer != null)
+      _timer.cancel();
+    _caret.style.visibility = "visible";
+    _timer = new Timer.periodic(delay, (Timer t) => caretBlink());
   }
 
+  /**
+   * Blinks the caret.
+   */
   void caretBlink() {
     if (!visible)
       return;
-    if (caret.style.visibility == "hidden")
-      caret.style.visibility = "visible";
-    else if (caret.style.visibility == "visible")
-      caret.style.visibility = "hidden";
+    if (_caret.style.visibility == "hidden")
+      _caret.style.visibility = "visible";
+    else if (_caret.style.visibility == "visible")
+      _caret.style.visibility = "hidden";
   }
 
   /**
@@ -1365,7 +1389,7 @@ class Cursor {
       if (toremove.noDelimiter && toremove.block) {
         if (toremove.nextSibling.ref == toremove.ref) {
           // merge the blocks with no delimiter
-          mergeBlocks(toremove, toremove.nextSibling);
+          _mergeBlocks(toremove, toremove.nextSibling);
         } else {
           // remove something just after this character
           Position after = new Position.clone(pos);
@@ -1381,7 +1405,7 @@ class Cursor {
       if (toremove.noDelimiter && toremove.block) {
         if (toremove.nextSibling != null && toremove.nextSibling.ref == toremove.ref) {
           // merge the blocks with no delimiter
-          mergeBlocks(toremove, toremove.nextSibling);
+          _mergeBlocks(toremove, toremove.nextSibling);
           return;
         }
       }
@@ -1391,7 +1415,7 @@ class Cursor {
       if (toremove.noDelimiter && toremove.block) {
         if (toremove.previousSibling != null && toremove.previousSibling.ref == toremove.ref) {
           // merge the blocks with no delimiter
-          mergeBlocks(toremove.previousSibling, toremove);
+          _mergeBlocks(toremove.previousSibling, toremove);
           return;
         } else if (toremove.offsetLength > 0) {
           // remove something just before this character
@@ -1524,7 +1548,7 @@ class Cursor {
 
   /**
    * Parses the given String and pastes the XML or text at the current position.
-   * Throws a DaxeException if it was not valid.
+   * Throws a [DaxeException] if it was not valid.
    */
   void pasteString(String s) {
     s = s.replaceAll(new RegExp(r'<\?xml[^?]*\?>'), ''); // remove doc decl
@@ -1724,6 +1748,10 @@ class Cursor {
     h.DivElement div = new h.DivElement();
     MyTreeSanitizer sanitizer = new MyTreeSanitizer();
     div.setInnerHtml(html, treeSanitizer:sanitizer);
+    // XmlSerializer is deprecated; dart:js could be used if it is removed
+    // from the dart API.
+    // If it was removed from web browsers, we could not use browser sanitizing 
+    // anymore, and would just parse the string directly.
     String fixed = (new h.XmlSerializer()).serializeToString(div);
     x.Document tmpdoc;
     try {
@@ -1733,7 +1761,7 @@ class Cursor {
         tmpdoc.documentElement.removeAttribute('xmlns');
         _removeNamespace(tmpdoc.documentElement);
       }
-      cleanupHTML(tmpdoc.documentElement);
+      _cleanupHTML(tmpdoc.documentElement);
       // removeWhitespace needs the right references
       DaxeNode parent = selectionStart.dn;
       if (parent is DNText)
@@ -1790,7 +1818,7 @@ class Cursor {
    * Try to cleanup the HTML, removing all style information and
    * some text processor crap.
    */
-  void cleanupHTML(x.Element el) {
+  void _cleanupHTML(x.Element el) {
     if (el.getAttribute('class') != '')
       el.removeAttribute('class');
     if (el.getAttribute('style') != '')
@@ -1803,7 +1831,7 @@ class Cursor {
         if (n.prefix != null) {
           el.removeChild(n);
         } else {
-          cleanupHTML(n);
+          _cleanupHTML(n);
           String name = n.nodeName;
           bool replaceByChildren = false;
           if (name == 'center' || name == 'font') {
@@ -1900,8 +1928,12 @@ class Cursor {
     if (data.items != null) {
       // Chromium, pasted image (not a file)
       for (int i=0; i<data.items.length; i++) {
-        if (data.items[i].type.indexOf('image') == 0) {
-          blob = data.items[i].getAsFile();
+        // Interestingly, data.items[i] now crashes Dartium
+        // (but it works with a more recent Chromium),
+        // this might be dart bug 26435 which has been fixed recently...
+        h.DataTransferItem item = data.items[i];
+        if (item.type.indexOf('image') == 0) {
+          blob = item.getAsFile();
           break;
         }
       }
@@ -1985,7 +2017,7 @@ class Cursor {
     }
   }
 
-  void mergeBlocks(DaxeNode dn1, DaxeNode dn2) {
+  void _mergeBlocks(DaxeNode dn1, DaxeNode dn2) {
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
     DaxeNode clone;
     Position clonep1 = new Position(dn2, 0);
@@ -2006,7 +2038,7 @@ class Cursor {
     page.moveCursorTo(futureCursorPos);
   }
 
-  void mergeBlockWithPreviousNodes(DaxeNode dn) {
+  void _mergeBlockWithPreviousNodes(DaxeNode dn) {
     assert(dn.previousSibling != null);
     int offset = dn.parent.offsetOf(dn);
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
@@ -2035,7 +2067,7 @@ class Cursor {
     return;
   }
 
-  void mergeBlockWithNextNodes(DaxeNode dn) {
+  void _mergeBlockWithNextNodes(DaxeNode dn) {
     assert(dn.nextSibling != null);
     int offset = dn.parent.offsetOf(dn.nextSibling);
     UndoableEdit edit = new UndoableEdit.compound(Strings.get('undo.remove_text'));
@@ -2071,15 +2103,15 @@ class Cursor {
   void clipboardCopy() {
     if (selectionStart == null || selectionStart == selectionEnd)
       return;
-    ta.value = copy();
-    ta.select();
+    _ta.value = copy();
+    _ta.select();
     bool success;
     try {
       success = h.document.execCommand('copy', false, null);
     } catch(ex) {
       success = false;
     }
-    ta.value = '';
+    _ta.value = '';
     if (!success) {
       h.window.alert(Strings.get('menu.copy_with_keyboard'));
     }
@@ -2092,15 +2124,15 @@ class Cursor {
   void clipboardCut() {
     if (selectionStart == null || selectionStart == selectionEnd)
       return;
-    ta.value = copy();
-    ta.select();
+    _ta.value = copy();
+    _ta.select();
     bool success;
     try {
       success = h.document.execCommand('cut', false, null);
     } catch(ex) {
       success = false;
     }
-    ta.value = '';
+    _ta.value = '';
     if (success) {
       removeSelection();
       page.updateAfterPathChange();
@@ -2145,6 +2177,12 @@ class Cursor {
     });
   }
   
+  /**
+   * Handles the effects of a drag and drop.
+   * [pos] is the drop position in the document.
+   * [data] is serialized XML or text (binary data or HTML are not handled).
+   * [dropEffect] can be 'copy' or 'move'.
+   */
   void drop(Position pos, String data, String dropEffect) {
     bool combine = false;
     if (_draggedSelectionStart != null && dropEffect == 'move') {

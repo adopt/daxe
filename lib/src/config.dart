@@ -29,7 +29,7 @@ class Config {
   String schemaURL;
   /// config folder URL (in which the config file must be)
   String _cfgdir;
-  /// cache for associations name -> AFFICHAGE_ELEMENT
+  /// cache for associations name -> ELEMENT_DISPLAY
   HashMap<String, x.Element> _elementDisplayCache;
   /// cache for associations element reference -> name
   HashMap<x.Element, String> _elementsToNamesCache;
@@ -202,7 +202,8 @@ class Config {
     final String schemaLocation = getSchemaLocation();
     final String noNamespaceSchemaLocation = getNoNamespaceSchemaLocation();
     if (schemaLocation != null || noNamespaceSchemaLocation != null) {
-      root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+      root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi",
+        "http://www.w3.org/2001/XMLSchema-instance");
       if (schemaLocation != null)
         root.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
             "xsi:schemaLocation", schemaLocation);
@@ -229,7 +230,7 @@ class Config {
   
   /**
    * Returns the hash table by name of the element displays in the config file
-   * (element AFFICHAGE_ELEMENT)
+   * (element ELEMENT_DISPLAY)
    */
   HashMap<String, x.Element> _buildElementDisplayCache() {
     _elementDisplayCache = new HashMap<String, x.Element>();
@@ -244,7 +245,10 @@ class Config {
     return(_elementDisplayCache);
   }
   
-  x.Element getElementDisplay(String name) {
+  /**
+   * Returns the ELEMENT_DISPLAY element with the given element attribute.
+   */
+  x.Element _getElementDisplay(String name) {
     return _elementDisplayCache[name];
   }
   
@@ -419,7 +423,7 @@ class Config {
         if (nodeType == "element") {
           refElement = elementReference(name);
           if (refElement == null)
-            logError("Error: MENU_INSERTION: '$name' is not defined in the schema");
+            _logError("Error: MENU_INSERTION: '$name' is not defined in the schema");
         } else
           refElement = null;
         item = new MenuItem(title, () => doc.insertNewNode(refElement, nodeType),
@@ -649,7 +653,8 @@ class Config {
   }
   
   /**
-   * Returns the first reference in the list that is a child of the parent, or null if none is found.
+   * Returns the first reference in the list that is a child of the parent,
+   * or null if none is found.
    */
   x.Element findSubElement(final x.Element parentRef, final List<x.Element> refs) {
     final List<x.Element> children = subElements(parentRef);
@@ -715,7 +720,8 @@ class Config {
    * Returns true if the toInsert element can be inserted under the parent element
    * on the selection defined by the start and end positions
    */
-  bool insertIsPossible(DaxeNode parent, final int startOffset, final int endOffset, final x.Element toInsert) {
+  bool insertIsPossible(DaxeNode parent, final int startOffset, final int endOffset,
+      final x.Element toInsert) {
     if (parent.nodeType == DaxeNode.DOCUMENT_NODE) {
       for (DaxeNode dn in parent.childNodes) {
         if (dn.isXMLElement())
@@ -727,7 +733,7 @@ class Config {
     if (_schema is SimpleSchema)
       return(true); // for SimpleSchema we assume the test has already been done
     if (startOffset < 0) {
-      logError("Config.insertionPossible: debutSelection < parent.debut");
+      _logError("Config.insertionPossible: debutSelection < parent.debut");
       return(false);
     }
     if (_schema is DaxeWXS) {
@@ -770,8 +776,9 @@ class Config {
   }
   
   /**
-   * Throws an exception if the parent element is not valid, considering its attributes,
-   * its first level children, its node value, and its parent if there is one.
+   * Throws an exception if the parent element is not valid, considering its
+   * attributes, its first level children, its node value, and its parent
+   * if there is one.
    */
   void testValidity(final DaxeNode parent) {
     if (parent is DNComment || parent is DNProcessingInstruction || parent is DNCData) {
@@ -814,7 +821,8 @@ class Config {
     
     if (parent.firstChild == null && !isElementValueValid(parent.ref, ''))
       throw new DaxeException(Strings.get('config.invalid_value'));
-    else if (parent.childNodes.length == 1 && parent.firstChild is DNText && parent.firstChild.nodeValue != null &&
+    else if (parent.childNodes.length == 1 && parent.firstChild is DNText &&
+        parent.firstChild.nodeValue != null &&
         !isElementValueValid(parent.ref, parent.firstChild.nodeValue))
       throw new DaxeException(Strings.get('config.invalid_value'));
     
@@ -853,7 +861,7 @@ class Config {
       try {
         r = new RegExp(r"^$regexp$");
       } on Exception catch(ex) {
-        logError("Config.testValidity() - Malformed Pattern: ^${regexp}\$:", ex);
+        _logError("Config.testValidity() - Malformed Pattern: ^${regexp}\$:", ex);
         return;
       }
       _validPatternCache[refParent] = r;
@@ -879,11 +887,12 @@ class Config {
   }
   
   /**
-   * Returns true if the element attributes are valid and if there is not missing required attribute.
+   * Returns true if the element attributes are valid and if there is not
+   * missing required attribute.
    */
   bool attributesAreValid(final DaxeNode dn) {
     if (dn.nodeType != DaxeNode.ELEMENT_NODE) {
-      logError("Config.attributesAreValid : this is not an element: $dn");
+      _logError("Config.attributesAreValid : this is not an element: $dn");
       return(false);
     }
     // checking attributes defined in the schema
@@ -1007,8 +1016,8 @@ class Config {
   }
   
   /**
-   * Returns the prefix to use to create an attribute, given the parent element and the attribute reference,
-   * or null if no prefix should be used.
+   * Returns the prefix to use to create an attribute, given the parent element
+   * and the attribute reference, or null if no prefix should be used.
    */
   String attributePrefix(final DaxeNode dn, final x.Element attributeRef) {
     final String namespace = attributeNamespace(attributeRef);
@@ -1088,11 +1097,12 @@ class Config {
   // METHODS FOR DISPLAY TYPES
   
   /**
-   * Returns a node display type based on the element reference, the node name and the DOM node type.
+   * Returns a node display type based on the element reference, the node name
+   * and the DOM node type.
    */
   String nodeDisplayType(final x.Element elementRef, final String name, final int nodeType) {
     if (nodeType == x.Node.ELEMENT_NODE) {
-      final x.Element elDisplay = getElementDisplay(localValue(name));
+      final x.Element elDisplay = _getElementDisplay(localValue(name));
       if (elDisplay == null)
         return(_defaultDisplayType);
       return(elDisplay.getAttribute("type"));
@@ -1114,14 +1124,15 @@ class Config {
    * Returns an element display type based on its reference.
    */
   String elementDisplayType(final x.Element elementRef) {
-    final x.Element elDisplay = getElementDisplay(elementName(elementRef));
+    final x.Element elDisplay = _getElementDisplay(elementName(elementRef));
     if (elDisplay == null)
       return(_defaultDisplayType);
     return(elDisplay.getAttribute("type"));
   }
   
   /**
-   * Returns the reference of the first element with the given display type in the config file.
+   * Returns the reference of the first element with the given display type
+   * in the config file.
    */
   x.Element firstElementWithType(final String displayType) {
     if (_cfgroot == null)
@@ -1136,7 +1147,8 @@ class Config {
   }
   
   /**
-   * Returns the references of the elements with the given display type in the config file.
+   * Returns the references of the elements with the given display type
+   * in the config file.
    */
   List<x.Element> elementsWithType(final String displayType) {
     if (_cfgroot == null)
@@ -1223,10 +1235,11 @@ class Config {
    * Returns the table of a node display parameters.
    * The name can be null if nodeType is "element" and elementRef is not null.
    */
-  HashMap<String, List<String>> getNodeParameters(final x.Element elementRef, final String nodeType, final String name) {
+  HashMap<String, List<String>> getNodeParameters(final x.Element elementRef,
+      final String nodeType, final String name) {
     x.Element base;
     if (nodeType == "element")
-      base = getElementDisplay(elementName(elementRef));
+      base = _getElementDisplay(elementName(elementRef));
     else
       base = null;
     if (base == null)
@@ -1248,7 +1261,7 @@ class Config {
     List<String> schemaSuggestions = _schema.suggestedElementValues(elementRef);
     if (schemaSuggestions != null)
       set.addAll(_schema.suggestedElementValues(elementRef));
-    final x.Element elDisplay = getElementDisplay(elementName(elementRef));
+    final x.Element elDisplay = _getElementDisplay(elementName(elementRef));
     if (elDisplay != null) {
       x.Element sv = _findElement(elDisplay, "SUGGESTED_VALUE");
       while (sv != null) {
@@ -1274,7 +1287,7 @@ class Config {
     List<String> schemaSuggestions = _schema.suggestedAttributeValues(attributeRef);
     if (schemaSuggestions != null)
       set.addAll(schemaSuggestions);
-    final x.Element elDisplay = getElementDisplay(elementName(parentRef));
+    final x.Element elDisplay = _getElementDisplay(elementName(parentRef));
     if (elDisplay != null) {
       final String attName = attributeName(attributeRef);
       x.Element attDisplay = _findElement(elDisplay, "ATTRIBUTE_DISPLAY");
@@ -1350,7 +1363,7 @@ class Config {
   }
   
   /**
-   * Returns the config description (element DESCRIPTION_CONFIG).
+   * Returns the config description (element CONFIG_DESCRIPTION).
    */
   String description() {
     final List<x.Element> lstrings = _stringsElements();
@@ -1427,7 +1440,7 @@ class Config {
       return(title);
     final String name = elementName(elementRef);
     if (name == null) {
-      logError("Config.elementTitle : no name for $elementRef");
+      _logError("Config.elementTitle : no name for $elementRef");
       return(null);
     }
     final List<x.Element> lstrings = _stringsElements();
@@ -1525,7 +1538,7 @@ class Config {
         }
         sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
-      // the language was found but there is no matching TITRE_VALEUR
+      // the language was found but there is no matching VALUE_TITLE
       // -> we return the real value rather than looking
       // for a title in other languages.
       final String language = strings.getAttribute("language");
@@ -1536,8 +1549,8 @@ class Config {
   }
   
   /**
-   * Returns an attribute title based on an optional Daxe node, the parent element reference
-   * and the attribute reference.
+   * Returns an attribute title based on an optional Daxe node,
+   * the parent element reference and the attribute reference.
    */
   String attributeTitle(final DaxeNode dn, final x.Element parentRef, final x.Element attributeRef) {
     final String elName = elementName(parentRef);
@@ -1571,7 +1584,8 @@ class Config {
    * Returns the title for an attribute value, based on the parent element reference,
    * the attribute reference and the value.
    */
-  String attributeValueTitle(final x.Element parentRef, final x.Element attributeRef, final String value) {
+  String attributeValueTitle(final x.Element parentRef,
+      final x.Element attributeRef, final String value) {
     final String elName = elementName(parentRef);
     final String attName = attributeName(attributeRef);
     final List<x.Element> lstrings = _stringsElements();
@@ -1597,7 +1611,7 @@ class Config {
         }
         sel = _nextElement(sel, "ELEMENT_STRINGS");
       }
-      // The language was found but there is no matching TITRE_VALEUR
+      // The language was found but there is no matching VALUE_TITLE
       // -> we return the real attribute value rather than looking
       // for a title in other languages.
       final String language = strings.getAttribute("language");
@@ -1813,7 +1827,7 @@ class Config {
     return null;
   }
   
-  static void logError(String message, [Exception ex]) {
+  static void _logError(String message, [Exception ex]) {
     if (ex != null)
       print("Config: $message: $ex");
     else

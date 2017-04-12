@@ -43,8 +43,8 @@ class WebPage {
   /// true if [quit] has been called (used by Desktop application only)
   bool _hasQuit;
   /// optional save function, replacing the default
-  ActionFunction saveFunction;
-  ActionFunction customizeToolbar;
+  ActionFunction _saveFunction;
+  ActionFunction _customizeToolbar;
   bool _inited;
   Timer _scrollDocumentTimer;
   
@@ -57,8 +57,8 @@ class WebPage {
    * * [customizeToolbar] can be used to customize the toolbar
    * (it is called after page.toolbar is created but before the HTML is generated).
    */
-  WebPage({this.application:false, LeftPanel left, ActionFunction this.saveFunction,
-      ActionFunction this.customizeToolbar}) {
+  WebPage({this.application:false, LeftPanel left, ActionFunction saveFunction,
+      ActionFunction customizeToolbar}) {
     _cursor = new Cursor();
     if (left != null)
       _left = left;
@@ -69,6 +69,8 @@ class WebPage {
     _selectionByWords = false;
     _hasQuit = false;
     _inited = false;
+    _saveFunction = saveFunction;
+    _customizeToolbar = customizeToolbar;
   }
   
   Future newDocument(String configPath) {
@@ -224,8 +226,8 @@ class WebPage {
     headers.append(mbar.html());
     
     toolbar = new Toolbar(doc.cfg);
-    if (customizeToolbar != null)
-      customizeToolbar();
+    if (_customizeToolbar != null)
+      _customizeToolbar();
     headers.append(toolbar.html());
     HashMap<String, ActionFunction> shortcuts = new HashMap<String, ActionFunction>();
     for (ToolbarButton button in toolbar.buttons)
@@ -815,8 +817,8 @@ class WebPage {
    * Calls the custom saveFunction from the constructor if defined or saves the document.
    */
   void saveNoDlg() {
-    if (saveFunction != null) {
-      saveFunction();
+    if (_saveFunction != null) {
+      _saveFunction();
     } else {
       doc.save().then((_) {
         h.window.alert(Strings.get('save.success'));

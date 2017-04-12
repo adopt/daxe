@@ -580,7 +580,7 @@ abstract class DaxeNode {
   
   /**
    * Inserts [newdn] as a child of this node before [beforedn].
-   * beforedn may be null, in which case it is inserted as the last child.
+   * [beforedn] may be null, in which case it is inserted as the last child.
    */
   void insertBefore(DaxeNode newdn, DaxeNode beforedn) {
     assert(beforedn == null || this == beforedn.parent);
@@ -602,8 +602,12 @@ abstract class DaxeNode {
     }
   }
   
+  /**
+   * Inserts [newdn] as a child of this node after [afterdn].
+   * [afterdn] may not be null.
+   */
   void insertAfter(DaxeNode newdn, DaxeNode afterdn) {
-    assert(this == afterdn.parent);
+    assert(afterdn != null && this == afterdn.parent);
     if (afterdn._nextSibling == null)
       appendChild(newdn);
     else

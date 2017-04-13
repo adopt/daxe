@@ -127,7 +127,9 @@
       <PARAMETER name="titleAtt" value="name"/>
     </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="link" type="empty"/>
-    <ELEMENT_DISPLAY element="style" type="area"/>
+    <ELEMENT_DISPLAY element="style" type="area">
+      <PARAMETER name="font" value="Monospaced"/>
+    </ELEMENT_DISPLAY>
     <ELEMENT_DISPLAY element="script" type="area">
       <PARAMETER name="font" value="Monospaced"/>
     </ELEMENT_DISPLAY>

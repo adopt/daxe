@@ -9,6 +9,11 @@ button {
   padding: 2px;
 }
 
+button:hover {
+  /* for Win7 IE11, to fix button highlighting */
+  padding: 2px;
+}
+
 #headers {
   position: absolute;
   top: 0em;
@@ -371,8 +376,8 @@ div.indent {
 }
 
 div.block {
-  margin-top: 1px;
-  margin-bottom: 1px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 /* Tag */
@@ -842,6 +847,8 @@ ul.list {
 
 img.bullet {
   cursor: default;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 /* DNWList */
@@ -853,6 +860,11 @@ ul.wlist>li.selected span {
 }
 
 /* DNTable */
+div.table {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
 div.table>table {
   width: 100%;
   border-collapse: collapse;
@@ -882,6 +894,10 @@ form.table_buttons {
   font-size: medium;
   text-align: left;
   color: black;
+}
+
+.selected>form.table_buttons {
+  background-color: #50A0FF;
 }
 
 td.header {
@@ -955,6 +971,13 @@ div.form {
   font-size: medium;
   text-align: left;
   color: black;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+div.form div.form {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 div.form table {
